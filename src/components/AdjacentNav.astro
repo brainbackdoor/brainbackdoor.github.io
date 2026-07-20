@@ -1,0 +1,32 @@
+---
+import type { PostSummary } from '../lib/posts';
+
+interface Props {
+  prev: PostSummary | null;
+  next: PostSummary | null;
+}
+const { prev, next } = Astro.props;
+---
+
+{
+  (prev || next) && (
+    <nav class="grid grid-cols-1 gap-5 border-t border-ink/12 pt-8 pb-18 md:grid-cols-2">
+      {prev ? (
+        <a href={prev.href} class="text-left transition-opacity hover:opacity-70">
+          <div class="mb-2 text-xs text-ink-faint">← 이전 글</div>
+          <div class="text-base font-semibold tracking-[-0.01em]">{prev.title}</div>
+        </a>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <a href={next.href} class="text-right transition-opacity hover:opacity-70">
+          <div class="mb-2 text-xs text-ink-faint">다음 글 →</div>
+          <div class="text-base font-semibold tracking-[-0.01em]">{next.title}</div>
+        </a>
+      ) : (
+        <span />
+      )}
+    </nav>
+  )
+}

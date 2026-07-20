@@ -1,0 +1,44 @@
+---
+/*
+ * 코드 블록 복사 버튼. Shiki가 만든 pre에 런타임으로 붙인다.
+ * 상태를 공유하지 않아 React island가 아니라 인라인 스크립트로 처리한다.
+ */
+---
+
+<script>
+  for (const pre of document.querySelectorAll<HTMLPreElement>('.prose pre')) {
+    /*
+     * 버튼을 pre 안에 넣으면 두 가지가 깨진다. pre의 텍스트에 "복사"가 섞여
+     * 사용자가 코드를 직접 드래그해 복사할 때 딸려 나가고, pre가 가로 스크롤
+     * 컨테이너라 코드를 옆으로 밀면 버튼도 같이 밀려 화면 밖으로 나간다.
+     * 그래서 스크롤되지 않는 래퍼를 씌우고 거기에 붙인다.
+     */
+    const wrapper = document.createElement('div');
+    wrapper.className = 'relative';
+    pre.replaceWith(wrapper);
+    wrapper.appendChild(pre);
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = '복사';
+    button.className =
+      'absolute top-3 right-3 rounded-lg border border-code-ink/15 bg-code-ink/10 px-2.5 py-1 text-[11px] font-medium text-code-ink/60 opacity-0 transition-opacity hover:bg-code-ink/20 hover:text-code-ink/90 focus-visible:opacity-100';
+
+    wrapper.addEventListener('mouseenter', () => (button.style.opacity = '1'));
+    wrapper.addEventListener('mouseleave', () => (button.style.opacity = ''));
+
+    button.addEventListener('click', async () => {
+      const code = pre.querySelector('code')?.textContent ?? '';
+      try {
+        await navigator.clipboard.writeText(code);
+        button.textContent = '복사됨';
+      } catch {
+        // 클립보드 권한이 없거나 비보안 컨텍스트인 경우
+        button.textContent = '복사 실패';
+      }
+      setTimeout(() => (button.textContent = '복사'), 1600);
+    });
+
+    wrapper.appendChild(button);
+  }
+</script>

@@ -8,9 +8,11 @@ interface Props {
   description?: string;
   /** 헤더에서 현재 위치를 표시할 nav 키 */
   active?: string;
+  /** 아카이브처럼 본문 폭이 900px인 페이지 */
+  narrow?: boolean;
 }
 
-const { title, description, active } = Astro.props;
+const { title, description, active, narrow = false } = Astro.props;
 const lang = Astro.currentLocale ?? 'ko';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -34,14 +36,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
   </head>
 
   <body class="min-h-screen">
     <Header active={active} />
-    <main class="mx-auto max-w-container px-8">
+    <main class:list={['mx-auto px-8', narrow ? 'max-w-container-narrow' : 'max-w-container']}>
       <slot />
     </main>
     <Footer />

@@ -15,7 +15,7 @@ const posts = defineCollection({
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
-    category: z.enum(['tech', 'retro', 'personal']),
+    category: z.enum(['retrospect', 'infra', 'guide', 'life']),
     draft: z.boolean().default(false),
   }),
 });

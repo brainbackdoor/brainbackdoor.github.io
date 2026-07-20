@@ -38,26 +38,7 @@
   --spacing-header: 56px;
 }
 
-/*
- * 다크모드 대응값. 지금은 토글 UI가 없지만(2단계) 토큰을 미리 쌍으로 정의해 둔다.
- * 나중에 붙이면 컴포넌트를 전부 다시 만져야 하므로.
- * 명도를 뒤집고 채도는 살짝 낮춘다 — 어두운 배경에서 채도가 높으면 눈이 아프다.
- */
 @layer base {
-  :root[data-theme='dark'] {
-    --color-canvas: oklch(0.19 0.008 70);
-    --color-surface: oklch(0.235 0.008 70);
-    --color-sunken: oklch(0.165 0.008 70);
-
-    --color-ink: oklch(0.93 0.006 85);
-    --color-ink-muted: oklch(0.75 0.008 80);
-    --color-ink-subtle: oklch(0.62 0.01 78);
-    --color-ink-faint: oklch(0.5 0.01 75);
-
-    --color-accent: oklch(0.72 0.09 32);
-    --color-accent-hover: oklch(0.79 0.09 32);
-  }
-
   html {
     scroll-behavior: smooth;
   }

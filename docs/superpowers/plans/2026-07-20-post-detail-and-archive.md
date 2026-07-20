@@ -308,6 +308,7 @@ git commit -m "한국어 기준 읽기 시간 계산 추가
   - `interface PostSummary { slug: string; lang: string; title: string; description: string; pubDate: Date; category: CategorySlug; tags: string[]; minutes: number; href: string }`
   - `parseEntryId(id: string): { lang: string; slug: string }`
   - `sortByDateDesc(posts: PostSummary[]): PostSummary[]`
+  - `groupByKey<T>(items: T[], key: (item: T) => string): { key: string; items: T[] }[]`
   - `groupByYear(posts: PostSummary[]): { year: string; items: PostSummary[] }[]`
   - `relatedPosts(target: PostSummary, pool: PostSummary[], limit?: number): PostSummary[]`
   - `adjacentPosts(target: PostSummary, sorted: PostSummary[]): { prev: PostSummary | null; next: PostSummary | null }`
@@ -321,6 +322,7 @@ import { describe, expect, it } from 'vitest';
 import type { PostSummary } from './posts';
 import {
   adjacentPosts,
+  groupByKey,
   groupByYear,
   parseEntryId,
   relatedPosts,
@@ -370,6 +372,20 @@ describe('sortByDateDesc', () => {
     const input = [post({ slug: 'a', pubDate: '2022-01-01' }), post({ slug: 'b', pubDate: '2024-01-01' })];
     sortByDateDesc(input);
     expect(input.map((p) => p.slug)).toEqual(['a', 'b']);
+  });
+});
+
+describe('groupByKey', () => {
+  it('키별로 묶고 첫 등장 순서를 유지한다', () => {
+    const result = groupByKey(['apple', 'avocado', 'banana', 'apricot'], (s) => s[0]);
+    expect(result).toEqual([
+      { key: 'a', items: ['apple', 'avocado', 'apricot'] },
+      { key: 'b', items: ['banana'] },
+    ]);
+  });
+
+  it('빈 목록은 빈 배열이 된다', () => {
+    expect(groupByKey([], () => 'x')).toEqual([]);
   });
 });
 
@@ -480,17 +496,32 @@ export function sortByDateDesc(posts: PostSummary[]): PostSummary[] {
   return [...posts].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 }
 
+/**
+ * 키별로 묶되 첫 등장 순서를 유지한다(Map의 삽입 순서).
+ * 입력이 이미 정렬돼 있으면 그룹 순서도 그 정렬을 따른다.
+ * 아카이브 페이지의 클라이언트 필터도 이 함수를 쓴다 — 그룹핑 로직을
+ * 서버와 클라이언트에 각각 두지 않기 위해서다.
+ */
+export function groupByKey<T>(
+  items: T[],
+  key: (item: T) => string,
+): { key: string; items: T[] }[] {
+  const groups = new Map<string, T[]>();
+  for (const item of items) {
+    const k = key(item);
+    const bucket = groups.get(k);
+    if (bucket) bucket.push(item);
+    else groups.set(k, [item]);
+  }
+  return [...groups.entries()].map(([k, v]) => ({ key: k, items: v }));
+}
+
 export function groupByYear(
   posts: PostSummary[],
 ): { year: string; items: PostSummary[] }[] {
-  const groups = new Map<string, PostSummary[]>();
-  for (const p of sortByDateDesc(posts)) {
-    const year = String(p.pubDate.getFullYear());
-    const bucket = groups.get(year);
-    if (bucket) bucket.push(p);
-    else groups.set(year, [p]);
-  }
-  return [...groups.entries()].map(([year, items]) => ({ year, items }));
+  return groupByKey(sortByDateDesc(posts), (p) =>
+    String(p.pubDate.getFullYear()),
+  ).map(({ key, items }) => ({ year: key, items }));
 }
 
 /**
@@ -736,6 +767,7 @@ git commit -m "Collection 어댑터와 시드 글 3편 추가"
 ```tsx
 import { useMemo, useState } from 'react';
 import { CATEGORIES, type CategorySlug } from '../lib/categories';
+import { groupByKey } from '../lib/posts';
 
 /** 서버에서 직렬화되어 넘어오므로 Date가 아니라 문자열로 받는다. */
 export interface FilterablePost {
@@ -765,15 +797,10 @@ export default function CategoryFilter({ posts }: Props) {
     return map;
   }, [posts]);
 
+  // posts는 서버에서 최신순으로 정렬돼 넘어오므로 연도 그룹 순서도 그대로 최신순이다.
   const groups = useMemo(() => {
     const visible = filter === 'all' ? posts : posts.filter((p) => p.category === filter);
-    const byYear = new Map<string, FilterablePost[]>();
-    for (const p of visible) {
-      const bucket = byYear.get(p.year);
-      if (bucket) bucket.push(p);
-      else byYear.set(p.year, [p]);
-    }
-    return [...byYear.entries()];
+    return groupByKey(visible, (p) => p.year);
   }, [posts, filter]);
 
   return (
@@ -801,7 +828,7 @@ export default function CategoryFilter({ posts }: Props) {
       </div>
 
       <div className="pt-4 pb-18">
-        {groups.map(([year, items]) => (
+        {groups.map(({ key: year, items }) => (
           <div key={year} className="pt-9 pb-2">
             <div className="pb-1.5 font-mono text-[22px] font-semibold tracking-[-0.01em] text-ink-faint">
               {year}
@@ -1053,7 +1080,9 @@ https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family
 
 - [ ] **Step 4: Shiki 테마 설정**
 
-디자인의 코드 블록은 어두운 배경(`#26241f`)에 GitHub Dark 계열 색을 쓴다. `github-dark-default`가 가장 가깝다. 배경만 디자인 값으로 덮는다.
+디자인의 코드 블록은 어두운 배경(`#26241f`)에 GitHub Dark 계열 색을 쓴다. `github-dark-default`가 가장 가깝다. 배경만 디자인 값으로 바꾼다.
+
+Shiki는 배경색을 `<pre>`의 **인라인 style 속성**에 넣는다. 인라인 스타일은 어떤 선택자보다 우선하므로 CSS로는 덮을 수 없고, `!important`를 쓰면 이후 어떤 규칙도 이 배경을 못 건드리게 된다. 대신 transformer로 인라인 배경 선언만 걷어내고, 색은 평범한 CSS로 지정한다.
 
 `astro.config.mjs`의 `defineConfig` 객체에 `markdown` 키를 추가한다 (`integrations` 아래, `vite` 위):
 
@@ -1062,16 +1091,27 @@ https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family
     shikiConfig: {
       theme: 'github-dark-default',
       wrap: false,
+      transformers: [
+        {
+          // Shiki가 pre에 박는 인라인 배경색을 걷어낸다.
+          // 인라인 스타일은 CSS로 덮을 수 없어 !important가 필요해지는데,
+          // 그러면 이후 어떤 규칙도 배경을 조정할 수 없게 된다.
+          pre(node) {
+            const style = String(node.properties.style ?? '');
+            node.properties.style = style.replace(/background-color:[^;]*;?/g, '');
+          },
+        },
+      ],
     },
   },
 ```
 
-배경색 덮어쓰기를 `src/styles/global.css`의 `@layer components` 안, `.prose pre` 규칙 바로 뒤에 추가한다:
+배경색을 `src/styles/global.css`의 `@layer components` 안, `.prose pre` 규칙 바로 뒤에 추가한다:
 
 ```css
-  /* Shiki 테마의 배경 대신 디자인 값을 쓴다 */
+  /* Shiki가 인라인 배경을 떼고 나가므로 여기서 지정한다 */
   .prose pre.astro-code {
-    background-color: oklch(0.21 0.008 75) !important;
+    background-color: oklch(0.21 0.008 75);
   }
 ```
 

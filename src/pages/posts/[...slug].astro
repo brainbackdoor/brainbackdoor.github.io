@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostMeta from '../../components/PostMeta.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
@@ -7,17 +7,17 @@ import RelatedPosts from '../../components/RelatedPosts.astro';
 import AdjacentNav from '../../components/AdjacentNav.astro';
 import ReadingProgress from '../../components/ReadingProgress.astro';
 import CodeCopyButton from '../../components/CodeCopyButton.astro';
-import { loadPosts, toSummary } from '../../lib/collection';
-import { adjacentPosts, relatedPosts } from '../../lib/posts';
+import { loadEntries, loadPosts, toSummary } from '../../lib/collection';
+import { adjacentPosts, parseEntryId, relatedPosts } from '../../lib/posts';
 
+// 목록(loadPosts)과 같은 선별·같은 slug 분해를 쓴다. 그래야 목록에 뜬 글은
+// 반드시 페이지가 있다.
 export async function getStaticPaths() {
-  const entries = await getCollection('posts', ({ data }) => !data.draft);
-  return entries
-    .filter((e) => e.id.startsWith('ko/'))
-    .map((entry) => ({
-      params: { slug: entry.id.slice('ko/'.length) },
-      props: { entry },
-    }));
+  const entries = await loadEntries('ko');
+  return entries.map((entry) => ({
+    params: { slug: parseEntryId(entry.id).slug },
+    props: { entry },
+  }));
 }
 
 const { entry } = Astro.props;

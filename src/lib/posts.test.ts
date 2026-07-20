@@ -33,6 +33,12 @@ describe('parseEntryId', () => {
     expect(parseEntryId('en/tcp-recovery')).toEqual({ lang: 'en', slug: 'tcp-recovery' });
   });
 
+  it('언어 디렉터리가 없으면 기본 로케일로 본다', () => {
+    // 라우트 생성도 이 판단을 그대로 쓴다. 여기서 ko로 보는 글은 목록에도 뜨고
+    // 페이지도 생겨야 한다 — 예전에는 라우트만 'ko/' 접두사를 따로 따져 404가 났다.
+    expect(parseEntryId('hello')).toEqual({ lang: 'ko', slug: 'hello' });
+  });
+
   it('중첩 디렉터리는 slug에 남긴다', () => {
     expect(parseEntryId('ko/2023/tcp')).toEqual({ lang: 'ko', slug: '2023/tcp' });
   });

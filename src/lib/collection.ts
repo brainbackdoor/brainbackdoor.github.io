@@ -23,8 +23,20 @@ export function toSummary(entry: CollectionEntry<'posts'>): PostSummary {
   };
 }
 
+/**
+ * draft를 뺀 해당 언어의 엔트리. "이 글이 무슨 언어인가"를 판단하는 곳은
+ * 여기 하나뿐이어야 한다.
+ *
+ * 목록은 parseEntryId로, 라우트는 id.startsWith('ko/')로 각각 판단하던 때,
+ * 언어 디렉터리 없이 posts/ 바로 아래 둔 글이 목록과 RSS에는 나오면서 페이지는
+ * 만들어지지 않아 링크가 404로 끊겼다. 판단이 둘이면 언젠가 어긋난다.
+ */
+export async function loadEntries(lang = 'ko'): Promise<CollectionEntry<'posts'>[]> {
+  const entries = await getCollection('posts', ({ data }) => !data.draft);
+  return entries.filter((entry) => parseEntryId(entry.id).lang === lang);
+}
+
 /** draft는 제외하고 최신순으로 반환한다. */
 export async function loadPosts(lang = 'ko'): Promise<PostSummary[]> {
-  const entries = await getCollection('posts', ({ data }) => !data.draft);
-  return sortByDateDesc(entries.map(toSummary).filter((p) => p.lang === lang));
+  return sortByDateDesc((await loadEntries(lang)).map(toSummary));
 }

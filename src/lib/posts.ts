@@ -16,7 +16,12 @@ export interface PostSummary {
   href: string;
 }
 
-/** Content Collection의 id는 "ko/tcp-recovery" 형태다. */
+/**
+ * Content Collection의 id는 "ko/tcp-recovery" 형태다.
+ *
+ * 언어 디렉터리 없이 둔 글은 기본 로케일(ko)로 본다. 목록·라우트·RSS가 모두
+ * 이 함수 하나로 언어를 판단하므로, 그렇게 둔 글도 목록에 뜨고 페이지도 생긴다.
+ */
 export function parseEntryId(id: string): { lang: string; slug: string } {
   const at = id.indexOf('/');
   if (at === -1) return { lang: 'ko', slug: id };

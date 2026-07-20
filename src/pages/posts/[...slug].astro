@@ -5,6 +5,8 @@ import PostMeta from '../../components/PostMeta.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import RelatedPosts from '../../components/RelatedPosts.astro';
 import AdjacentNav from '../../components/AdjacentNav.astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import CodeCopyButton from '../../components/CodeCopyButton.astro';
 import { loadPosts, toSummary } from '../../lib/collection';
 import { adjacentPosts, relatedPosts } from '../../lib/posts';
 
@@ -29,6 +31,8 @@ const { prev, next } = adjacentPosts(post, pool);
 ---
 
 <BaseLayout title={`${post.title} · 씨유`} description={post.description} active="archive">
+  <ReadingProgress />
+
   <div class="grid items-start gap-16 lg:grid-cols-[1fr_220px]">
     <article class="min-w-0 pt-14 pb-10">
       <PostMeta post={post} />
@@ -41,4 +45,5 @@ const { prev, next } = adjacentPosts(post, pool);
 
   <RelatedPosts posts={related} />
   <AdjacentNav prev={prev} next={next} />
+  <CodeCopyButton />
 </BaseLayout>

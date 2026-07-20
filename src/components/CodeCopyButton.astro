@@ -1,0 +1,35 @@
+---
+/*
+ * 코드 블록 복사 버튼. Shiki가 만든 pre에 런타임으로 붙인다.
+ * 상태를 공유하지 않아 React island가 아니라 인라인 스크립트로 처리한다.
+ */
+---
+
+<script>
+  for (const pre of document.querySelectorAll<HTMLPreElement>('.prose pre')) {
+    pre.style.position = 'relative';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = '복사';
+    button.className =
+      'absolute top-3 right-3 rounded-lg border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/60 opacity-0 transition-opacity hover:bg-white/20 hover:text-white/90 focus-visible:opacity-100';
+
+    pre.addEventListener('mouseenter', () => (button.style.opacity = '1'));
+    pre.addEventListener('mouseleave', () => (button.style.opacity = ''));
+
+    button.addEventListener('click', async () => {
+      const code = pre.querySelector('code')?.textContent ?? '';
+      try {
+        await navigator.clipboard.writeText(code);
+        button.textContent = '복사됨';
+      } catch {
+        // 클립보드 권한이 없거나 비보안 컨텍스트인 경우
+        button.textContent = '복사 실패';
+      }
+      setTimeout(() => (button.textContent = '복사'), 1600);
+    });
+
+    pre.appendChild(button);
+  }
+</script>

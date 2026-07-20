@@ -23,6 +23,10 @@
   --color-accent: oklch(0.45 0.1 32); /* 테라코타 */
   --color-accent-hover: oklch(0.52 0.1 32);
 
+  /* ── 코드 블록 (본문에서 유일하게 어두운 면) ── */
+  --color-code-surface: oklch(0.21 0.008 75); /* Shiki 배경 */
+  --color-code-ink: oklch(0.99 0 0); /* 어두운 면 위의 글자·테두리 기준색 */
+
   /* ── 타이포 ── */
   --font-sans: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
   --font-mono: 'Space Grotesk', ui-monospace, monospace;
@@ -36,6 +40,7 @@
 
   /* ── 레이아웃 ── */
   --spacing-container: 1120px;
+  --spacing-container-narrow: 900px; /* 아카이브처럼 본문만 있는 페이지 */
   --spacing-header: 56px;
 }
 
@@ -149,7 +154,7 @@
 
   /* Shiki가 인라인 배경을 떼고 나가므로(astro.config.mjs) 여기서 지정한다 */
   .prose pre.astro-code {
-    background-color: oklch(0.21 0.008 75);
+    background-color: var(--color-code-surface);
   }
 
   .prose pre code {

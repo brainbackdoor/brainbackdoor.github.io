@@ -2,11 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { readingTime } from './reading-time';
 
 describe('readingTime', () => {
-  it('짧은 글도 최소 1분으로 올린다', () => {
+  it('빈 글에서도 최소 1분을 보장한다', () => {
+    // 글자 수가 0이면 minutes도 0이라 Math.max(1, ...) 바닥 없이는 0분이 나온다.
+    // 5글자짜리 입력은 올림 때문에 이미 1이 나와 바닥 로직 유무를 구분하지 못한다.
+    expect(readingTime('')).toBe(1);
+  });
+
+  it('아주 짧은 한글 글도 1분으로 올린다', () => {
     expect(readingTime('안녕하세요.')).toBe(1);
   });
 
-  it('한글 500자를 1분으로 센다', () => {
+  it('한글 1000자를 2분으로 센다', () => {
     expect(readingTime('가'.repeat(1000))).toBe(2);
   });
 
@@ -17,6 +23,14 @@ describe('readingTime', () => {
 
   it('펜스 코드 블록은 분당 250자로 따로 센다', () => {
     const code = '```js\n' + 'x'.repeat(1000) + '\n```';
+    expect(readingTime(code)).toBe(4);
+  });
+
+  it('한 줄짜리 펜스 코드도 코드 글자 수로 센다', () => {
+    // FENCED_CODE는 한 줄 펜스도 매치해 산문에서 지우지만, 예전 FENCED_CODE_CONTENT는
+    // 여는 펜스 뒤 개행을 요구해 한 줄 펜스를 매치하지 못했다. 그 결과 내용이 산문에서
+    // 지워지기만 하고 코드로도 세어지지 않아 통째로 사라졌다.
+    const code = '```' + 'x'.repeat(1000) + '```';
     expect(readingTime(code)).toBe(4);
   });
 

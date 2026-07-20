@@ -12,7 +12,9 @@ const CODE_CHARS_PER_MIN = 250;
 const FENCED_CODE = /```[\s\S]*?```/g;
 // 코드 글자 수는 펜스(```)와 언어 태그(예: js)를 뺀 실제 코드 내용만 센다.
 // 이 둘은 읽는 대상이 아니라 마크다운 문법이라 산문에서 기호를 걷어내는 것과 같은 이유다.
-const FENCED_CODE_CONTENT = /```[^\n]*\n([\s\S]*?)```/g;
+// 언어 태그+개행은 있을 수도 없을 수도 있다(예: 한 줄짜리 ```code``` 펜스는 개행이 없다).
+// FENCED_CODE와 같은 범위를 잡아야 하므로 태그 유무와 무관하게 항상 매치되게 한다.
+const FENCED_CODE_CONTENT = /```(?:[^\n]*\n)?([\s\S]*?)```/g;
 const KOREAN = /[가-힣]/g;
 const LATIN_WORD = /[A-Za-z][A-Za-z'-]*/g;
 

@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CategoryFilter, { type FilterablePost } from '../../components/CategoryFilter';
+import { loadPosts } from '../../lib/collection';
+
+const posts = await loadPosts('ko');
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+const items: FilterablePost[] = posts.map((p) => ({
+  title: p.title,
+  category: p.category,
+  href: p.href,
+  year: String(p.pubDate.getFullYear()),
+  meta: `${pad(p.pubDate.getMonth() + 1)}.${pad(p.pubDate.getDate())} · ${p.minutes}분`,
+}));
+
+// posts는 최신순이므로 마지막 글이 가장 오래된 글이다.
+const firstYear = posts.length
+  ? posts[posts.length - 1].pubDate.getFullYear()
+  : new Date().getFullYear();
+---
+
+<BaseLayout
+  title="기록의 목차 · 씨유"
+  description={`${firstYear}년부터 남긴 ${posts.length}편의 글.`}
+  active="archive"
+  narrow
+>
+  <section class="pt-16 pb-10">
+    <div class="mb-4.5 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
+      아카이브
+    </div>
+    <h1 class="m-0 text-[44px] leading-[1.12] font-extrabold tracking-[-0.03em]">
+      기록의 목차
+    </h1>
+    <p class="mt-4 text-[17px] leading-relaxed text-ink-muted">
+      {firstYear}년부터 남긴 {posts.length}편의 글. 카테고리로 골라 보거나, 아래에서
+      연도별로 훑어보세요.
+    </p>
+  </section>
+
+  <CategoryFilter posts={items} client:load />
+</BaseLayout>

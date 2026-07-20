@@ -1,0 +1,31 @@
+---
+import type { TopicSection } from '../data/infra';
+
+interface Props {
+  section: TopicSection;
+}
+const { section } = Astro.props;
+---
+
+<section
+  id={section.id}
+  class="scroll-mt-20 border-t border-ink/10 py-7"
+>
+  <div class="mb-4 flex items-baseline justify-between">
+    <h2 class="text-[21px] font-bold tracking-[-0.02em]">{section.title}</h2>
+    <span class="font-mono text-xs text-ink-faint">{section.count}</span>
+  </div>
+  <div class="grid grid-cols-1 gap-2.5 md:grid-cols-2">
+    {
+      section.items.map((item) => (
+        <a
+          href={item.href}
+          class="flex items-center gap-3 rounded-item border border-ink/8 bg-surface px-4 py-3.5 transition-colors hover:border-ink/22"
+        >
+          <span class="text-[13px] font-bold text-accent">›</span>
+          <span class="text-[14.5px] font-medium">{item.label}</span>
+        </a>
+      ))
+    }
+  </div>
+</section>

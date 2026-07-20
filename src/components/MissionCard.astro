@@ -1,0 +1,32 @@
+---
+import type { Mission } from '../data/infra';
+
+interface Props {
+  mission: Mission;
+}
+const { mission } = Astro.props;
+---
+
+<article class="overflow-hidden rounded-card border border-ink/10 bg-surface">
+  <div
+    class="h-[130px]"
+    style="background: repeating-linear-gradient(45deg, oklch(0.905 0.014 82), oklch(0.905 0.014 82) 11px, oklch(0.875 0.015 82) 11px, oklch(0.875 0.015 82) 22px)"
+  >
+  </div>
+  <div class="px-[22px] pt-5 pb-[22px]">
+    <h3 class="text-lg font-bold tracking-[-0.01em]">{mission.title}</h3>
+    <p class="mt-1.5 text-[13px] leading-normal text-ink-subtle">{mission.desc}</p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      {
+        mission.links.map((l) => (
+          <a
+            href={l.href}
+            class="rounded-[16px] bg-ink/5 px-[13px] py-[7px] text-[12.5px] font-medium text-ink-muted transition-colors hover:bg-ink/10"
+          >
+            {l.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</article>

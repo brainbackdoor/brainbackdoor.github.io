@@ -1,0 +1,53 @@
+---
+interface Props {
+  active?: string;
+}
+const { active } = Astro.props;
+
+const nav = [
+  { key: 'home', label: '홈', href: '/' },
+  { key: 'tech', label: '기술', href: '/tech/infra' },
+  { key: 'retro', label: '회고', href: '/posts' },
+  { key: 'personal', label: '개인', href: '/posts' },
+  { key: 'about', label: '소개', href: '/about' },
+];
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-ink/8 bg-canvas/72 backdrop-blur-[20px] backdrop-saturate-180"
+>
+  <div
+    class="mx-auto flex h-header max-w-container items-center justify-between px-8"
+  >
+    <a href="/" class="flex items-center gap-[11px]">
+      <div
+        class="size-[26px] rounded-full"
+        style="background: repeating-linear-gradient(45deg, oklch(0.9 0.012 85), oklch(0.9 0.012 85) 4px, oklch(0.87 0.014 85) 4px, oklch(0.87 0.014 85) 8px)"
+      >
+      </div>
+      <span class="text-[15px] font-bold tracking-[-0.01em]">씨유</span>
+    </a>
+
+    <nav class="flex items-center gap-[26px] text-[13.5px] font-medium">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'transition-colors hover:text-ink',
+              active === item.key ? 'text-ink' : 'text-ink-subtle',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href="/search"
+        class="flex items-center gap-[7px] rounded-pill bg-ink/5 px-[13px] py-[7px] text-[12.5px] text-ink-faint transition-colors hover:bg-ink/9"
+      >
+        <span class="text-[13px]">⌕</span><span>글 검색</span>
+      </a>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,59 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+const { headings } = Astro.props;
+
+// 디자인의 목차는 한 층이다. h2만 노출한다.
+const items = headings.filter((h) => h.depth === 2);
+---
+
+{
+  items.length > 0 && (
+    <aside class="hidden lg:sticky lg:top-20 lg:block lg:pt-14 lg:pb-10">
+      <div class="mb-4 text-[11px] font-semibold tracking-[0.14em] text-ink-subtle uppercase">
+        목차
+      </div>
+      <nav class="flex flex-col gap-0.5 border-l-2 border-ink/10">
+        {items.map((h) => (
+          <a
+            href={`#${h.slug}`}
+            data-toc-link={h.slug}
+            class="-ml-0.5 border-l-2 border-transparent py-1.5 pl-4 text-[13px] leading-snug text-ink-subtle transition-all hover:border-accent hover:text-ink"
+          >
+            {h.text}
+          </a>
+        ))}
+      </nav>
+    </aside>
+  )
+}
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+
+  if (links.length > 0) {
+    const setActive = (slug: string) => {
+      for (const link of links) {
+        const on = link.dataset.tocLink === slug;
+        link.classList.toggle('text-ink', on);
+        link.classList.toggle('border-accent', on);
+      }
+    };
+
+    // rootMargin 상단을 헤더 높이만큼 밀어, 헤더에 가린 제목은 활성으로 치지 않는다.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length > 0) setActive(visible[0].target.id);
+      },
+      { rootMargin: '-80px 0px -70% 0px', threshold: 0 },
+    );
+
+    for (const heading of document.querySelectorAll('.prose h2[id]')) {
+      observer.observe(heading);
+    }
+  }
+</script>

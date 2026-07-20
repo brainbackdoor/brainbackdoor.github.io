@@ -18,6 +18,23 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+  markdown: {
+    shikiConfig: {
+      theme: 'github-dark-default',
+      wrap: false,
+      transformers: [
+        {
+          // Shiki가 pre에 박는 인라인 배경색을 걷어낸다.
+          // 인라인 스타일은 CSS로 덮을 수 없어 !important가 필요해지는데,
+          // 그러면 이후 어떤 규칙도 코드블록 배경을 조정할 수 없게 된다.
+          pre(node) {
+            const style = String(node.properties.style ?? '');
+            node.properties.style = style.replace(/background-color:[^;]*;?/g, '');
+          },
+        },
+      ],
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

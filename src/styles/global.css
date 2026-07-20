@@ -26,6 +26,7 @@
   /* ── 타이포 ── */
   --font-sans: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
   --font-mono: 'Space Grotesk', ui-monospace, monospace;
+  --font-code: 'JetBrains Mono', ui-monospace, monospace;
 
   /* ── 반경 ── */
   --radius-card: 18px;
@@ -57,5 +58,104 @@
 
   ::selection {
     background: oklch(0.89 0.02 78);
+  }
+}
+
+/*
+ * 글 본문 타이포그래피 (기술포스팅.dc.html 기준).
+ *
+ * Tailwind typography 플러그인 대신 직접 정의한다. 디자인이 값을 이미
+ * 확정하고 있어서, 플러그인 기본값을 덮어쓰는 코드가 직접 쓰는 것보다 길어진다.
+ */
+@layer components {
+  .prose p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: color-mix(in oklab, var(--color-ink) 88%, var(--color-canvas));
+    margin: 0 0 22px;
+  }
+
+  .prose h2 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 48px 0 18px;
+    scroll-margin-top: 80px;
+  }
+
+  .prose h3 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 32px 0 14px;
+    scroll-margin-top: 80px;
+  }
+
+  .prose blockquote {
+    margin: 28px 0;
+    padding: 4px 0 4px 22px;
+    border-left: 3px solid var(--color-accent);
+    color: var(--color-ink-muted);
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin: 0 0 22px;
+    padding-left: 22px;
+    font-size: 17px;
+    line-height: 1.8;
+    color: color-mix(in oklab, var(--color-ink) 88%, var(--color-canvas));
+  }
+
+  .prose li {
+    margin-bottom: 6px;
+  }
+
+  .prose ul {
+    list-style: disc;
+  }
+
+  .prose ol {
+    list-style: decimal;
+  }
+
+  .prose a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* 인라인 코드 */
+  .prose :not(pre) > code {
+    font-family: var(--font-code);
+    font-size: 14px;
+    background: color-mix(in oklab, var(--color-ink) 6%, transparent);
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+
+  /* Shiki가 만든 코드 블록 */
+  .prose pre {
+    border-radius: var(--radius-tile);
+    padding: 22px 24px;
+    overflow-x: auto;
+    margin: 0 0 22px;
+    font-family: var(--font-code);
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  /* Shiki가 인라인 배경을 떼고 나가므로(astro.config.mjs) 여기서 지정한다 */
+  .prose pre.astro-code {
+    background-color: oklch(0.21 0.008 75);
+  }
+
+  .prose pre code {
+    font-family: inherit;
+    font-size: inherit;
+    background: none;
+    padding: 0;
   }
 }

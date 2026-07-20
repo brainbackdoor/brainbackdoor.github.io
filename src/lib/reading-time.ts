@@ -9,12 +9,18 @@ const KO_CHARS_PER_MIN = 500;
 const EN_WORDS_PER_MIN = 200;
 const CODE_CHARS_PER_MIN = 250;
 
-const FENCED_CODE = /```[\s\S]*?```/g;
-// 코드 글자 수는 펜스(```)와 언어 태그(예: js)를 뺀 실제 코드 내용만 센다.
-// 이 둘은 읽는 대상이 아니라 마크다운 문법이라 산문에서 기호를 걷어내는 것과 같은 이유다.
-// 언어 태그+개행은 있을 수도 없을 수도 있다(예: 한 줄짜리 ```code``` 펜스는 개행이 없다).
-// FENCED_CODE와 같은 범위를 잡아야 하므로 태그 유무와 무관하게 항상 매치되게 한다.
-const FENCED_CODE_CONTENT = /```(?:[^\n]*\n)?([\s\S]*?)```/g;
+/**
+ * 펜스 코드 블록. 산문에서 지우는 데도, 코드 글자를 세는 데도 이 하나만 쓴다.
+ *
+ * 정규식을 둘로 나눠 두면 "펜스가 어디서 끝나는가"에 대한 판단이 서로 어긋날 수
+ * 있고, 어긋나는 순간 그 블록은 산문에서 지워지기만 하고 코드로도 세어지지 않아
+ * 추정치에서 통째로 사라진다. 하나만 두면 지운 범위와 센 범위가 정의상 같아진다.
+ *
+ * 언어 태그 자리에서 백틱을 빼는 것(`[^\n`]*`)이 핵심이다. 백틱을 허용하면
+ * 태그가 그 블록의 닫는 펜스를 삼키고 다음 줄까지 넘어간다.
+ * 캡처 그룹은 펜스와 언어 태그를 뺀 실제 코드 내용이다.
+ */
+const FENCED_CODE = /```(?:[^\n`]*\n)?([\s\S]*?)```/g;
 const KOREAN = /[가-힣]/g;
 const LATIN_WORD = /[A-Za-z][A-Za-z'-]*/g;
 
@@ -30,7 +36,7 @@ function stripMarkdown(src: string): string {
 }
 
 export function readingTime(markdown: string): number {
-  const codeChars = Array.from(markdown.matchAll(FENCED_CODE_CONTENT))
+  const codeChars = Array.from(markdown.matchAll(FENCED_CODE))
     .map((m) => m[1].replace(/\s/g, '').length)
     .reduce((a, b) => a + b, 0);
 

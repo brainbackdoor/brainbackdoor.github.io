@@ -41,10 +41,25 @@ describe('readingTime', () => {
     expect(readingTime(code)).toBe(4); // 1000자 / 250 = 4분
   });
 
-  it('마크다운 문법 기호는 글자 수에서 뺀다', () => {
-    const plain = '가'.repeat(500);
-    const marked = `## 제목\n\n**${plain}**\n\n[링크](https://example.com)`;
-    // 제목 2자 + 본문 500자 + 링크 텍스트 2자 = 504자 → 1분이 아니라 2분(올림)
-    expect(readingTime(marked)).toBe(2);
+  /*
+   * 아래 두 케이스는 "걷어내지 않으면 결과가 달라지는" 입력이어야 한다.
+   * 제목(#)이나 강조(*) 기호만 섞은 입력으로는 스트립이 통째로 사라져도
+   * 결과가 같아서(기호는 한글도 라틴 단어도 아니라 애초에 세지 않는다)
+   * 아무것도 검증하지 못한다.
+   */
+  it('이미지 alt와 인라인 코드는 읽는 대상이 아니라 글자 수에서 뺀다', () => {
+    const body = '가'.repeat(500); // 500 / 500 = 정확히 1분
+    const alt = '나'.repeat(600);
+    const marked = `${body}\n\n![${alt}](/images/a.png)\n\n\`${'code '.repeat(200)}\``;
+    // 걷어내지 않으면 alt 600자 + 인라인 코드 200단어가 더해져 4분이 된다.
+    expect(readingTime(marked)).toBe(1);
+  });
+
+  it('링크는 표시 텍스트만 세고 URL은 뺀다', () => {
+    const body = '가'.repeat(495);
+    const marked = `${body}\n\n[읽기](/posts/${'나'.repeat(600)})`;
+    // 본문 495자 + 링크 텍스트 2자 = 497자 → 1분.
+    // URL까지 세면 1097자가 되어 3분으로 부푼다.
+    expect(readingTime(marked)).toBe(1);
   });
 });

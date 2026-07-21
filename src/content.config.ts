@@ -17,6 +17,8 @@ const posts = defineCollection({
     tags: z.array(z.string()).default([]),
     category: z.enum(['retrospect', 'infra', 'guide', 'life']),
     draft: z.boolean().default(false),
+    /** 글 대표 이미지(public 기준 경로 또는 절대 URL). OG 이미지로 쓰인다. */
+    image: z.string().optional(),
   }),
 });
 

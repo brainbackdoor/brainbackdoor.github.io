@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AboutActivity from '../components/AboutActivity.astro';
+import {
+  profile,
+  career,
+  education,
+  contact,
+  sns,
+  values,
+  activities,
+} from '../data/about';
+
+const currentActivities = activities.filter((a) => a.current);
+const pastActivities = activities.filter((a) => !a.current);
+---
+
+<BaseLayout
+  title="소개 · 이동규"
+  description="이동규 — 그란데클립 프로덕트 엔지니어 · brainbackdoor"
+  active="about"
+>
+  <div class="mx-auto max-w-container-about">
+    <!-- 프로필 헤더 -->
+    <section class="flex flex-col gap-7 border-b border-ink/10 py-16 sm:flex-row sm:items-start sm:gap-9">
+      <div
+        class="size-[104px] shrink-0 rounded-full bg-sunken ring-1 ring-ink/5 ring-inset"
+        aria-hidden="true"
+      >
+      </div>
+      <div>
+        <div class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">자기소개</div>
+        <h1 class="mt-3 text-[36px] leading-[1.05] font-extrabold tracking-[-0.04em] sm:text-[44px]">
+          {profile.name}
+        </h1>
+        <p class="mt-2.5 text-[15px] text-ink-muted">{profile.subtitle}</p>
+        <blockquote class="mt-6 border-l-2 border-accent pl-5">
+          <div class="text-[15px] font-bold tracking-[-0.01em] text-accent">{profile.quoteHeading}</div>
+          <p class="mt-2 text-[15.5px] leading-relaxed text-ink-muted">
+            좋은 울림을 주는 엔지니어를 지향하고 있어요. 좋은 개발문화를 위한 Agile, DevOps 등의
+            실천 전략에 관심이 많으며, Web Architecture를 이루는 구성 요소들에 흥미를 가지고 있습니다.
+            제가 지향하는 좋은 개발문화에 대한 자세한 이야기는 <a
+              href="#culture"
+              class="text-accent underline underline-offset-2 hover:text-accent-hover">여기</a
+            >서 확인할 수 있어요.
+          </p>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- Career / Education / Contact -->
+    <section class="grid grid-cols-1 gap-10 border-b border-ink/10 py-14 sm:grid-cols-2">
+      <div>
+        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">Career</h2>
+        <ul class="mt-5 flex flex-col gap-3.5">
+          {
+            career.map((c) => (
+              <li>
+                <div class="text-[15px] font-semibold tracking-[-0.01em]">{c.org}</div>
+                <div class="mt-0.5 text-[13.5px] text-ink-subtle">{c.role}</div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="flex flex-col gap-9">
+        <div>
+          <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">Education</h2>
+          <ul class="mt-5 flex flex-col gap-2">
+            {education.map((e) => <li class="text-[15px]">{e}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">Contact</h2>
+          <a
+            href={`mailto:${contact}`}
+            class="mt-5 inline-block text-[15px] text-accent transition-colors hover:text-accent-hover"
+          >
+            {contact}
+          </a>
+          <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+            {
+              sns.map((s) => (
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="me noopener"
+                  class="text-[13.5px] font-medium text-ink-muted transition-colors hover:text-accent"
+                >
+                  {s.label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 지향하는 개발 문화 -->
+    <section id="culture" class="scroll-mt-20 border-b border-ink/10 py-14">
+      <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">지향하는 개발 문화</h2>
+      <div class="mt-6 flex flex-col">
+        {
+          values.map((v) => (
+            <article class="border-t border-ink/10 py-7 first:border-t-0">
+              <h3 class="text-[18px] font-bold tracking-[-0.02em] text-accent">{v.name}</h3>
+              <div class="mt-1.5 text-[13.5px] text-ink-subtle">{v.tagline}</div>
+              <div class="mt-3.5 flex max-w-[640px] flex-col gap-2.5">
+                {v.body.map((p) => (
+                  <p class="text-[15px] leading-relaxed text-ink-muted">{p}</p>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 현재 하는 일 -->
+    <section class="border-b border-ink/10 py-14">
+      <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">현재 하는 일</h2>
+      <div class="mt-6 flex flex-col">
+        {currentActivities.map((a) => <AboutActivity activity={a} />)}
+      </div>
+    </section>
+
+    <!-- 이전 활동 -->
+    <section class="py-14">
+      <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">이전 활동</h2>
+      <div class="mt-6 flex flex-col">
+        {pastActivities.map((a) => <AboutActivity activity={a} />)}
+      </div>
+
+      <div class="mt-12 border-t border-ink/10 pt-10">
+        <p class="text-[17px] font-bold tracking-[-0.02em]">{profile.closingHeading}</p>
+        <p class="mt-2 text-[15px] leading-relaxed text-ink-muted">{profile.closingBody}</p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -19,16 +19,30 @@ const nav = [
   <div
     class="mx-auto flex h-header max-w-container items-center justify-between px-8"
   >
-    <a href="/" class="flex items-center gap-[11px]">
+    <a href="/" class="flex shrink-0 items-center gap-[11px]">
       <div
         class="size-[26px] rounded-full"
         style="background: repeating-linear-gradient(45deg, oklch(0.93 0 0), oklch(0.93 0 0) 4px, oklch(0.9 0 0) 4px, oklch(0.9 0 0) 8px)"
       >
       </div>
-      <span class="text-[15px] font-bold tracking-[-0.01em]">씨유</span>
+      <span class="text-[15px] font-bold tracking-[-0.01em] whitespace-nowrap">씨유</span>
     </a>
 
-    <nav class="flex items-center gap-[26px] text-[13.5px] font-medium">
+    <button
+      type="button"
+      id="nav-toggle"
+      class="-mr-2 flex size-9 shrink-0 items-center justify-center rounded-lg text-ink-subtle transition-colors hover:text-ink md:hidden"
+      aria-label="메뉴 열기"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+    >
+      <span aria-hidden="true" class="text-lg leading-none">☰</span>
+    </button>
+
+    <nav
+      id="site-nav"
+      class="hidden items-center gap-[26px] text-[13.5px] font-medium md:flex"
+    >
       {
         nav.map((item) => (
           <a
@@ -50,4 +64,51 @@ const nav = [
       </a>
     </nav>
   </div>
+
+  <div
+    id="mobile-nav"
+    class="hidden border-t border-ink/8 bg-canvas px-8 pt-2 pb-4 md:hidden"
+  >
+    <nav class="flex flex-col text-[15px] font-medium">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'py-2.5 transition-colors hover:text-ink',
+              active === item.key ? 'text-ink' : 'text-ink-subtle',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a href="/posts" class="py-2.5 text-ink-subtle transition-colors hover:text-ink">
+        글 검색
+      </a>
+    </nav>
+  </div>
 </header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('mobile-nav');
+
+  if (toggle && panel) {
+    toggle.addEventListener('click', () => {
+      const open = panel.classList.toggle('hidden') === false;
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+    });
+
+    // 데스크톱 폭으로 넓어지면 패널을 닫는다. 열어둔 채 회전하면
+    // 데스크톱 nav와 패널이 함께 보인다.
+    window.matchMedia('(min-width: 48rem)').addEventListener('change', (e) => {
+      if (e.matches) {
+        panel.classList.add('hidden');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', '메뉴 열기');
+      }
+    });
+  }
+</script>

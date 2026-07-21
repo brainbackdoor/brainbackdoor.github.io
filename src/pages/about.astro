@@ -4,70 +4,174 @@ import AboutActivity from '../components/AboutActivity.astro';
 import {
   profile,
   career,
+  projects,
+  values,
   education,
+  certifications,
   contact,
   sns,
-  values,
-  activities,
+  externalActivities,
 } from '../data/about';
-
-const currentActivities = activities.filter((a) => a.current);
-const pastActivities = activities.filter((a) => !a.current);
 ---
 
 <BaseLayout
   title="소개 · 이동규"
-  description="이동규 — 그란데클립 프로덕트 엔지니어 · brainbackdoor"
+  description="이동규 — 소프트웨어 엔지니어 · brainbackdoor"
   active="about"
 >
-  <div class="mx-auto max-w-container-about">
-    <!-- 프로필 헤더 -->
-    <section class="flex flex-col gap-7 border-b border-ink/10 py-16 sm:flex-row sm:items-start sm:gap-9">
-      <div
-        class="size-[104px] shrink-0 rounded-full bg-sunken ring-1 ring-ink/5 ring-inset"
-        aria-hidden="true"
+  <div class="lg:grid lg:grid-cols-[minmax(0,860px)_160px] lg:justify-center lg:gap-x-8">
+    <div class="mx-auto w-full max-w-container-about lg:mx-0 lg:max-w-none">
+      <!-- 소개 -->
+      <section
+        id="intro"
+        class="scroll-mt-20 flex flex-col gap-7 border-b border-ink/10 py-16 sm:flex-row sm:items-start sm:gap-9"
       >
-      </div>
-      <div>
-        <div class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">자기소개</div>
-        <h1 class="mt-3 text-[36px] leading-[1.05] font-extrabold tracking-[-0.04em] sm:text-[44px]">
-          {profile.name}
-        </h1>
-        <p class="mt-2.5 text-[15px] text-ink-muted">{profile.subtitle}</p>
-        <blockquote class="mt-6 border-l-2 border-accent pl-5">
-          <div class="text-[15px] font-bold tracking-[-0.01em] text-accent">{profile.quoteHeading}</div>
-          <p class="mt-2 text-[15.5px] leading-relaxed text-ink-muted">
-            좋은 울림을 주는 엔지니어를 지향하고 있어요. 좋은 개발문화를 위한 Agile, DevOps 등의
-            실천 전략에 관심이 많으며, Web Architecture를 이루는 구성 요소들에 흥미를 가지고 있습니다.
-            제가 지향하는 좋은 개발문화에 대한 자세한 이야기는 <a
-              href="#culture"
-              class="text-accent underline underline-offset-2 hover:text-accent-hover">여기</a
-            >서 확인할 수 있어요.
+        <div
+          class="size-[104px] shrink-0 rounded-full bg-sunken ring-1 ring-ink/5 ring-inset"
+          aria-hidden="true"
+        >
+        </div>
+        <div>
+          <div class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">자기소개</div>
+          <h1 class="mt-3 text-[36px] leading-[1.05] font-extrabold tracking-[-0.04em] sm:text-[44px]">
+            {profile.name}
+          </h1>
+          <p class="mt-2.5 text-[15px] text-ink-muted">{profile.role}</p>
+          <p class="mt-6 max-w-[640px] text-[15.5px] leading-relaxed text-ink-muted">
+            {profile.intro}
           </p>
-        </blockquote>
-      </div>
-    </section>
+        </div>
+      </section>
 
-    <!-- Career / Education / Contact -->
-    <section class="grid grid-cols-1 gap-10 border-b border-ink/10 py-14 sm:grid-cols-2">
-      <div>
-        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">Career</h2>
-        <ul class="mt-5 flex flex-col gap-3.5">
+      <!-- 경력 -->
+      <section id="career" class="scroll-mt-20 border-b border-ink/10 py-14">
+        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">경력</h2>
+        <div class="mt-6 flex flex-col">
           {
             career.map((c) => (
-              <li>
-                <div class="text-[15px] font-semibold tracking-[-0.01em]">{c.org}</div>
-                <div class="mt-0.5 text-[13.5px] text-ink-subtle">{c.role}</div>
-              </li>
+              <article class="border-t border-ink/10 py-7 first:border-t-0">
+                <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+                  <h3 class="text-[18px] font-bold tracking-[-0.02em]">{c.org}</h3>
+                  <div class="shrink-0 text-[12.5px] text-ink-faint tabular-nums">{c.period}</div>
+                </div>
+                <div class="mt-0.5 text-[13.5px] text-ink-subtle">
+                  {c.team} · {c.role}
+                </div>
+                <ul class="mt-3.5 flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
+                  {c.bullets.map((b) => (
+                    <li class="text-[14.5px] leading-relaxed text-ink-muted">{b}</li>
+                  ))}
+                </ul>
+                {c.groups?.map((g) => (
+                  <div class="mt-4 flex flex-col gap-2 border-l border-ink/8 pl-4">
+                    <div class="text-[13.5px] font-semibold tracking-[-0.01em]">{g.label}</div>
+                    <ul class="flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
+                      {g.items.map((it) => (
+                        <li class="text-[14px] leading-relaxed text-ink-subtle">{it}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </article>
             ))
           }
-        </ul>
-      </div>
-      <div class="flex flex-col gap-9">
+        </div>
+      </section>
+
+      <!-- 프로젝트 -->
+      <section id="projects" class="scroll-mt-20 border-b border-ink/10 py-14">
+        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">프로젝트</h2>
+        <div class="mt-6 flex flex-col">
+          {projects.map((p) => <AboutActivity activity={p} />)}
+        </div>
+      </section>
+
+      <!-- 지향하는 개발 문화 -->
+      <section id="culture" class="scroll-mt-20 border-b border-ink/10 py-14">
+        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">지향하는 개발 문화</h2>
+        <div class="mt-6 flex flex-col">
+          {
+            values.map((v) => (
+              <article class="border-t border-ink/10 py-7 first:border-t-0">
+                <h3 class="text-[18px] font-bold tracking-[-0.02em] text-accent">{v.name}</h3>
+                <div class="mt-1.5 text-[13.5px] text-ink-subtle">{v.tagline}</div>
+                <div class="mt-3.5 flex flex-col gap-2.5">
+                  {v.body.map((p) => (
+                    <p class="text-[15px] leading-relaxed text-ink-muted">{p}</p>
+                  ))}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- 대외활동 (카드) -->
+      <section id="activity" class="scroll-mt-20 border-b border-ink/10 py-14">
+        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">대외활동</h2>
+        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            externalActivities.map((a) => {
+              const Tag = a.href ? 'a' : 'div';
+              return (
+                <Tag
+                  href={a.href}
+                  target={a.href ? '_blank' : undefined}
+                  rel={a.href ? 'noopener' : undefined}
+                  class="group block overflow-hidden rounded-[14px] border border-ink/10 transition-colors hover:border-ink/25"
+                >
+                  <div class="aspect-[16/10] w-full bg-sunken">
+                    {a.image && (
+                      <img src={a.image} alt={a.title} loading="lazy" class="h-full w-full object-cover" />
+                    )}
+                  </div>
+                  <div class="p-4">
+                    <div class="text-[10.5px] font-semibold tracking-[0.12em] text-ink-faint uppercase">
+                      {a.kind}
+                    </div>
+                    <div class="mt-2 text-[14.5px] font-semibold tracking-[-0.01em] group-hover:text-accent">
+                      {a.title}
+                    </div>
+                    {a.org && <div class="mt-1 text-[12.5px] leading-snug text-ink-subtle">{a.org}</div>}
+                  </div>
+                </Tag>
+              );
+            })
+          }
+        </div>
+      </section>
+
+      <!-- 학력 / 자격증 / 연락 (하단) -->
+      <section class="grid grid-cols-1 gap-10 py-14 sm:grid-cols-3">
         <div>
           <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">Education</h2>
-          <ul class="mt-5 flex flex-col gap-2">
-            {education.map((e) => <li class="text-[15px]">{e}</li>)}
+          <ul class="mt-5 flex flex-col gap-3.5">
+            {
+              education.map((e) => (
+                <li>
+                  <div class="text-[15px] font-semibold tracking-[-0.01em]">{e.school}</div>
+                  <div class="mt-0.5 text-[13px] text-ink-subtle">
+                    {e.detail} · {e.status}
+                  </div>
+                  <div class="text-[12px] text-ink-faint tabular-nums">{e.period}</div>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div>
+          <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">자격증</h2>
+          <ul class="mt-5 flex flex-col gap-3.5">
+            {
+              certifications.map((c) => (
+                <li>
+                  <div class="text-[15px] font-semibold tracking-[-0.01em]">{c.name}</div>
+                  <div class="mt-0.5 text-[13px] text-ink-subtle">
+                    {c.issuer} · {c.date}
+                  </div>
+                </li>
+              ))
+            }
           </ul>
         </div>
         <div>
@@ -93,48 +197,65 @@ const pastActivities = activities.filter((a) => !a.current);
             }
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
-    <!-- 지향하는 개발 문화 -->
-    <section id="culture" class="scroll-mt-20 border-b border-ink/10 py-14">
-      <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">지향하는 개발 문화</h2>
-      <div class="mt-6 flex flex-col">
-        {
-          values.map((v) => (
-            <article class="border-t border-ink/10 py-7 first:border-t-0">
-              <h3 class="text-[18px] font-bold tracking-[-0.02em] text-accent">{v.name}</h3>
-              <div class="mt-1.5 text-[13.5px] text-ink-subtle">{v.tagline}</div>
-              <div class="mt-3.5 flex max-w-[640px] flex-col gap-2.5">
-                {v.body.map((p) => (
-                  <p class="text-[15px] leading-relaxed text-ink-muted">{p}</p>
-                ))}
-              </div>
-            </article>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- 현재 하는 일 -->
-    <section class="border-b border-ink/10 py-14">
-      <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">현재 하는 일</h2>
-      <div class="mt-6 flex flex-col">
-        {currentActivities.map((a) => <AboutActivity activity={a} />)}
-      </div>
-    </section>
-
-    <!-- 이전 활동 -->
-    <section class="py-14">
-      <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">이전 활동</h2>
-      <div class="mt-6 flex flex-col">
-        {pastActivities.map((a) => <AboutActivity activity={a} />)}
-      </div>
-
-      <div class="mt-12 border-t border-ink/10 pt-10">
-        <p class="text-[17px] font-bold tracking-[-0.02em]">{profile.closingHeading}</p>
-        <p class="mt-2 text-[15px] leading-relaxed text-ink-muted">{profile.closingBody}</p>
-      </div>
-    </section>
+    <!-- 목차 (on this page) — lg 이상에서만, 좁은 화면은 기존 단일 컬럼 유지 -->
+    <aside class="hidden lg:block">
+      <nav aria-label="목차" class="sticky top-[88px]">
+        <p class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">On this page</p>
+        <ul class="mt-4 flex flex-col">
+          <li><a data-toc href="#intro" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">소개</a></li>
+          <li><a data-toc href="#career" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">경력</a></li>
+          <li><a data-toc href="#projects" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">프로젝트</a></li>
+          <li><a data-toc href="#culture" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">개발 문화</a></li>
+          <li><a data-toc href="#activity" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">대외활동</a></li>
+        </ul>
+      </nav>
+    </aside>
   </div>
+
+  <style>
+    .toc-link {
+      border-left: 1.5px solid color-mix(in oklab, var(--color-ink) 10%, transparent);
+      color: var(--color-ink-subtle);
+    }
+    .toc-link:hover {
+      color: var(--color-ink);
+    }
+    .toc-link[aria-current='true'] {
+      color: var(--color-accent);
+      border-left-color: var(--color-accent);
+      font-weight: 600;
+    }
+  </style>
+
+  <script>
+    // 목차 스크롤스파이 — 현재 보이는 섹션을 강조. JS 없어도 앵커 이동은 동작.
+    const links = Array.from(document.querySelectorAll('a[data-toc]'));
+    if (links.length > 0) {
+      const order = ['intro', 'career', 'projects', 'culture', 'activity'];
+      const visible = new Set<string>();
+      const sync = () => {
+        const active = order.find((id) => visible.has(id)) ?? 'intro';
+        for (const a of links) {
+          a.setAttribute('aria-current', String(a.getAttribute('href') === `#${active}`));
+        }
+      };
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) visible.add(e.target.id);
+            else visible.delete(e.target.id);
+          }
+          sync();
+        },
+        { rootMargin: '-88px 0px -65% 0px' },
+      );
+      for (const id of order) {
+        const el = document.getElementById(id);
+        if (el) io.observe(el);
+      }
+    }
+  </script>
 </BaseLayout>

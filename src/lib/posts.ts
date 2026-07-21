@@ -102,3 +102,23 @@ export function adjacentPosts(
     prev: i < sorted.length - 1 ? sorted[i + 1] : null,
   };
 }
+
+export interface TagCount {
+  tag: string;
+  count: number;
+}
+
+/** 태그를 빈도 내림차순으로 집계한다. 동률이면 사전순으로 안정 정렬한다. */
+export function collectTags(posts: PostSummary[]): TagCount[] {
+  const counts = new Map<string, number>();
+  for (const p of posts) {
+    for (const tag of p.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+}
+
+export function postsWithTag(posts: PostSummary[], tag: string): PostSummary[] {
+  return sortByDateDesc(posts.filter((p) => p.tags.includes(tag)));
+}

@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const post = toSummary(entry);
-const allEntries = await getCollection('posts');
+const allEntries = await getCollection('posts', ({ data }) => !data.draft);
 const slug = parseEntryId(entry.id).slug;
 // current는 이 페이지의 언어(ko), href는 반대 언어(en)로 갈 곳.
 const altLocale = { current: 'ko' as const, href: translationHref(slug, 'en', allEntries) };

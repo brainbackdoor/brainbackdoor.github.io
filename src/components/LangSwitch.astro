@@ -6,13 +6,13 @@ interface Props {
 }
 const { current, altHref } = Astro.props;
 const alt = current === 'ko' ? 'en' : 'ko';
-const label = { ko: '한국어', en: 'English' };
+const label = { ko: 'KO', en: 'EN' } as const;
 ---
 
 <div class="flex items-center gap-1 text-[12.5px] font-medium">
-  <span class="text-ink" aria-current="true">{label[current].slice(0, 2).toUpperCase()}</span>
+  <span class="text-ink" aria-current="true">{label[current]}</span>
   <span class="text-ink-faint" aria-hidden="true">/</span>
   <a href={altHref} class="text-ink-subtle transition-colors hover:text-ink">
-    {label[alt].slice(0, 2).toUpperCase()}
+    {label[alt]}
   </a>
 </div>

@@ -171,3 +171,31 @@
     padding: 0;
   }
 }
+
+/*
+ * Pagefind 검색 UI를 중성 테마에 맞춘다.
+ *
+ * 설치된 astro-pagefind(v2)의 <Search>는 클래식 pagefind-ui(--pagefind-ui-*)가
+ * 아니라 @pagefind/component-ui의 모듈러 웹 컴포넌트(<pagefind-searchbox>)를 쓴다.
+ * 실제 변수 이름은 `grep -o '\-\-pf-[a-z-]*' dist/pagefind/pagefind-component-ui.css`로
+ * 확인했다 — 접두사가 --pagefind-ui-가 아니라 --pf-다. 기본값은 포커스 테두리/링에
+ * 파란색(#0969da)을 쓰므로 그 변수(--pf-border-focus, --pf-outline-focus)를 반드시
+ * 덮어야 한다. <pagefind-searchbox>는 섀도우 DOM 없이 자기 자신의 자식으로
+ * 결과 드롭다운을 그리므로, 이 클래스를 그 엘리먼트에 걸면 커스텀 속성이
+ * 하위 트리 전체로 상속된다.
+ */
+.pagefind-neutral {
+  --pf-text: var(--color-ink);
+  --pf-text-secondary: var(--color-ink-muted);
+  --pf-text-muted: var(--color-ink-subtle);
+  --pf-background: var(--color-surface);
+  --pf-border: color-mix(in oklab, var(--color-ink) 12%, transparent);
+  --pf-border-focus: var(--color-accent);
+  --pf-outline-focus: var(--color-accent);
+  --pf-hover: var(--color-sunken);
+  --pf-skeleton: var(--color-sunken);
+  --pf-skeleton-shine: color-mix(in oklab, var(--color-ink) 4%, transparent);
+  --pf-mark: var(--color-accent);
+  --pf-border-radius: var(--radius-item);
+  --pf-font: var(--font-sans);
+}

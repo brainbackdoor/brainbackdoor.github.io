@@ -13,4 +13,4 @@ export const NAV_ITEMS = [
   { key: 'archive', label: '글', href: '/posts' },
 ] as const;
 
-export type NavKey = (typeof NAV_ITEMS)[number]['key'];
+export type NavKey = (typeof NAV_ITEMS)[number]['key'] | 'search';

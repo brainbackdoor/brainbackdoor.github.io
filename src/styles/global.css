@@ -36,7 +36,7 @@
 
   /* ── 타이포 ── */
   --font-sans: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
-  --font-mono: 'Space Grotesk', ui-monospace, monospace;
+  --font-mono: 'Space Grotesk', 'IBM Plex Sans KR', ui-monospace, monospace;
   --font-code: 'JetBrains Mono', ui-monospace, monospace;
 
   /* ── 반경 ── */

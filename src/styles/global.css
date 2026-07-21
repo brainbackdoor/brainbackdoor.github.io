@@ -48,6 +48,7 @@
   /* ── 레이아웃 ── */
   --spacing-container: 1120px;
   --spacing-container-narrow: 900px; /* 아카이브처럼 본문만 있는 페이지 */
+  --spacing-container-about: 860px; /* 소개 — 아카이브보다 좁은 본문 폭 */
   --spacing-header: 56px;
 }
 

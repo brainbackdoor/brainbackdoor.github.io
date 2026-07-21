@@ -1,16 +1,10 @@
 ---
+import { NAV_ITEMS, type NavKey } from '../lib/nav';
+
 interface Props {
-  active?: string;
+  active?: NavKey;
 }
 const { active } = Astro.props;
-
-const nav = [
-  { key: 'home', label: '홈', href: '/' },
-  { key: 'tech', label: '기술', href: '/tech/infra' },
-  { key: 'retro', label: '회고', href: '/posts' },
-  { key: 'personal', label: '개인', href: '/posts' },
-  { key: 'about', label: '소개', href: '/about' },
-];
 ---
 
 <header
@@ -44,7 +38,7 @@ const nav = [
       class="hidden items-center gap-[26px] text-[13.5px] font-medium md:flex"
     >
       {
-        nav.map((item) => (
+        NAV_ITEMS.map((item) => (
           <a
             href={item.href}
             class:list={[
@@ -71,7 +65,7 @@ const nav = [
   >
     <nav class="flex flex-col text-[15px] font-medium">
       {
-        nav.map((item) => (
+        NAV_ITEMS.map((item) => (
           <a
             href={item.href}
             class:list={[

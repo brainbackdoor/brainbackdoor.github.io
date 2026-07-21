@@ -361,41 +361,40 @@ export const values: ValueCard[] = [
   },
 ];
 
-// ── 대외활동 (카드) ──
-export type ActivityKind = '교육사업' | '강의' | '멘토' | '특강' | '커뮤니티' | '기고';
-
+// ── 대외활동 (카드) — brainbackdoor.com/profile 갤러리에서 수집 ──
 export interface ActivityCard {
   title: string;
-  org?: string;
-  kind: ActivityKind;
   href?: string;
-  /** public/ 기준 경로(예: '/activities/nextstep.png'). 지정 시 카드 썸네일로 표시. */
+  /** public/ 기준 경로. 카드 썸네일. */
   image?: string;
 }
 
 export const externalActivities: ActivityCard[] = [
-  { title: 'NEXTSTEP 교육 사업', org: '법인 설립 멤버 · 사업/운영', kind: '교육사업', href: 'https://www.nextstep.camp/' },
-
-  { title: '우아한테크캠프 Pro', org: 'B2B 교육과정 설계·강의', kind: '강의' },
-  { title: '카카오 신입사원 교육', org: 'B2B 교육과정 설계·강의', kind: '강의' },
-  { title: '인프라공방', org: 'B2C 교육과정 설계·강의', kind: '강의' },
-  { title: '커리어 NEXTSTEP', org: 'B2C 교육과정 설계·강의', kind: '강의' },
-  { title: '챌린지코스', org: 'B2C 교육과정 설계·강의', kind: '강의' },
-  { title: '프로젝트공방', org: 'B2C 교육과정 설계·강의', kind: '강의' },
-
-  { title: '팀스파르타 항해 플러스', org: '코치 · 교육 자문위원', kind: '멘토' },
-  { title: '카카오테크캠퍼스', org: '백엔드 코치', kind: '멘토' },
-  { title: '현대차 소프티어', org: '부트캠프 멘토', kind: '멘토' },
-
-  { title: '인프런 퇴근길 밋업 #05', org: 'AWS & 인프라 · 발표', kind: '특강' },
-  { title: 'SSAFY', org: '특강', kind: '특강' },
-  { title: 'CATCH 커리어콘', org: '특강', kind: '특강' },
-
-  { title: '자바카페', org: '커뮤니티 운영진', kind: '커뮤니티' },
-  { title: '데이터야놀자', org: '커뮤니티 운영진', kind: '커뮤니티' },
-  { title: '글또', org: '커뮤니티 운영진', kind: '커뮤니티' },
-  { title: 'AWS DNA', org: '커뮤니티 운영진', kind: '커뮤니티' },
-  { title: '멘사코리아', org: '홈페이지위원장 · 사이트 리뉴얼/유지보수', kind: '커뮤니티' },
-
-  { title: '마이크로소프트웨어 397호', org: '기고', kind: '기고' },
+  { title: 'NEXTSTEP 교육자, 사업 및 운영', href: 'https://www.nextstep.camp/', image: '/activities/nextstep.png' },
+  { title: '인프라공방 강사', href: 'https://www.inflearn.com/course/%EC%9D%B8%ED%94%84%EB%9D%BC-%EA%B3%B5%EB%B0%A9-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%A7%8C%EB%93%A4%EA%B8%B0', image: '/activities/inflabang-instructor.png' },
+  { title: '카카오 신입사원 교육', href: 'https://tech.kakao.com/posts/576', image: '/activities/kakao-newcomer.png' },
+  { title: '카카오테크캠퍼스 백엔드 코치', href: 'https://www.kakaocorp.com/page/detail/11470', image: '/activities/kakao-techcampus.jpg' },
+  { title: '현대차 소프티어 부트캠프 멘토', href: 'https://www.hyundaimotorgroup.com/ko/news/CONT0000000000190131', image: '/activities/hyundai-softeer.jpg' },
+  { title: '스테이폴리오 서비스 개발', href: 'https://www.stayfolio.com/', image: '/activities/stayfolio.png' },
+  { title: '팀스파르타 항해 플러스 코치 및 교육 자문위원', href: 'https://hanghae99.spartacodingclub.kr/plus/be', image: '/activities/spartacoding-hanghae.jpg' },
+  { title: '우아한형제들 사장님서비스실', href: 'https://b2bservice.notion.site/2290acf3eacf49fdb730042b1d60316d', image: '/activities/woowa-ceoservice.png' },
+  { title: '우아한테크코스 코치', href: 'https://techblog.woowahan.com/5977/', image: '/activities/woowa-techcourse.png' },
+  { title: '우아한테크캠프 Pro', href: 'https://edu.nextstep.camp/c/lqsBs7x0', image: '/activities/woowa-techcamp-pro.png' },
+  { title: '인프라공방', href: 'https://edu.nextstep.camp/c/VI4PhjPA', image: '/activities/inflabang.png' },
+  { title: '우아한형제들 DR 서포터즈', href: 'https://techblog.woowahan.com/2666/', image: '/activities/woowa-dr.png' },
+  { title: 'F-lab 플러그인 정기 세미나', href: 'https://festa.io/events/6003', image: '/activities/flab.png' },
+  { title: 'Salarable 모의면접 멘토', href: 'https://www.salarable.site/', image: '/activities/salarable.png' },
+  { title: '부트캠프 운영자 워크숍', href: 'https://www.wanted.co.kr/events/learning_workshop_2408', image: '/activities/bootcamp-workshop.png' },
+  { title: '인프런 퇴근길 밋업 #05 AWS & 인프라', href: 'https://www.youtube.com/watch?v=QGUdBUXwNho', image: '/activities/inflearn-meetup.png' },
+  { title: '커리어 NEXTSTEP', href: 'https://edu.nextstep.camp/c/K9ZeidlI', image: '/activities/career-nextstep.png' },
+  { title: '챌린지 코스', href: 'https://edu.nextstep.camp/c/9micYRuD', image: '/activities/challenge-course.png' },
+  { title: '마이크로소프트웨어 기고', href: 'https://www.imaso.co.kr/archives/5256', image: '/activities/imaso.png' },
+  { title: 'SSAFY 채용박람회', href: 'https://youtu.be/JIr85DWNDDI', image: '/activities/ssafy.jpg' },
+  { title: 'SQL을 넘어 제플린으로', href: 'https://edu.nextstep.camp/c/VulQIb2a/', image: '/activities/sql-zeppelin.png' },
+  { title: '인프런 멘토링', href: 'https://www.inflearn.com/users/@brainbackdoor', image: '/activities/inflearn-mentoring.png' },
+  { title: '프로젝트 공방', href: 'https://edu.nextstep.camp/c/9micYRuD', image: '/activities/project-gongbang.png' },
+  { title: '데이터야놀자 운영진', href: 'https://www.facebook.com/datayanolja/', image: '/activities/datayanolja.png' },
+  { title: '자바카페 운영진', href: 'https://www.facebook.com/groups/javacafe', image: '/activities/javacafe.png' },
+  { title: '글또 운영진', href: 'https://www.facebook.com/groups/geultto/', image: '/activities/geultto.jpg' },
+  { title: 'AWS DNA', href: 'https://brainbackdoor.tistory.com/147', image: '/activities/aws-dna.png' },
 ];

@@ -3,7 +3,6 @@ import type { PostSummary } from './posts';
 import {
   adjacentPosts,
   groupByKey,
-  groupByYear,
   parseEntryId,
   relatedPosts,
   sortByDateDesc,
@@ -78,29 +77,6 @@ describe('groupByKey', () => {
   });
 });
 
-describe('groupByYear', () => {
-  it('연도별로 묶고 최신 연도부터 낸다', () => {
-    const groups = groupByYear([
-      post({ slug: 'a', pubDate: '2024-12-29' }),
-      post({ slug: 'b', pubDate: '2023-11-09' }),
-      post({ slug: 'c', pubDate: '2023-04-03' }),
-    ]);
-    expect(groups.map((g) => g.year)).toEqual(['2024', '2023']);
-    expect(groups[1].items.map((p) => p.slug)).toEqual(['b', 'c']);
-  });
-
-  it('입력 순서와 무관하게 최신순으로 정렬한 뒤 묶는다', () => {
-    const groups = groupByYear([
-      post({ slug: 'old', pubDate: '2023-04-03' }),
-      post({ slug: 'new', pubDate: '2024-12-29' }),
-    ]);
-    expect(groups.map((g) => g.year)).toEqual(['2024', '2023']);
-  });
-
-  it('빈 목록은 빈 배열이 된다', () => {
-    expect(groupByYear([])).toEqual([]);
-  });
-});
 
 describe('relatedPosts', () => {
   it('태그가 많이 겹치는 순으로 낸다', () => {

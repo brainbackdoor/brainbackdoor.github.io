@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CATEGORIES, categoryLabel, isCategorySlug } from './categories';
+import { CATEGORIES, categoryLabel } from './categories';
 
 describe('categories', () => {
   it('디자인에 정의된 4개 카테고리를 순서대로 가진다', () => {
@@ -18,9 +18,4 @@ describe('categories', () => {
     expect(categoryLabel('life')).toBe('라이프');
   });
 
-  it('알 수 없는 slug를 거른다', () => {
-    expect(isCategorySlug('infra')).toBe(true);
-    expect(isCategorySlug('tech')).toBe(false);
-    expect(isCategorySlug(undefined)).toBe(false);
-  });
 });

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import AboutActivity from '../components/AboutActivity.astro';
+import { renderInline } from '../lib/inline';
 import {
   profile,
   career,
@@ -37,9 +38,10 @@ import {
             {profile.name}
           </h1>
           <p class="mt-2.5 text-[15px] text-ink-muted">{profile.role}</p>
-          <p class="mt-6 max-w-[640px] text-[15.5px] leading-relaxed text-ink-muted">
-            {profile.intro}
-          </p>
+          <p
+            class="mt-6 max-w-[640px] text-[15.5px] leading-relaxed text-ink-muted"
+            set:html={renderInline(profile.intro)}
+          />
         </div>
       </section>
 
@@ -59,7 +61,7 @@ import {
                 </div>
                 <ul class="mt-3.5 flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
                   {c.bullets.map((b) => (
-                    <li class="text-[14.5px] leading-relaxed text-ink-muted">{b}</li>
+                    <li class="text-[14.5px] leading-relaxed text-ink-muted" set:html={renderInline(b)} />
                   ))}
                 </ul>
                 {c.groups?.map((g) => (
@@ -67,7 +69,7 @@ import {
                     <div class="text-[13.5px] font-semibold tracking-[-0.01em]">{g.label}</div>
                     <ul class="flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
                       {g.items.map((it) => (
-                        <li class="text-[14px] leading-relaxed text-ink-subtle">{it}</li>
+                        <li class="text-[14px] leading-relaxed text-ink-subtle" set:html={renderInline(it)} />
                       ))}
                     </ul>
                   </div>
@@ -93,11 +95,14 @@ import {
           {
             values.map((v) => (
               <article class="border-t border-ink/10 py-7 first:border-t-0">
-                <h3 class="text-[18px] font-bold tracking-[-0.02em] text-accent">{v.name}</h3>
+                <h3
+                  class="text-[18px] font-bold tracking-[-0.02em] text-accent [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2"
+                  set:html={renderInline(v.name)}
+                />
                 <div class="mt-1.5 text-[13.5px] text-ink-subtle">{v.tagline}</div>
                 <div class="mt-3.5 flex flex-col gap-2.5">
                   {v.body.map((p) => (
-                    <p class="text-[15px] leading-relaxed text-ink-muted">{p}</p>
+                    <p class="text-[15px] leading-relaxed text-ink-muted" set:html={renderInline(p)} />
                   ))}
                 </div>
               </article>

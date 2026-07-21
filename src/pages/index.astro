@@ -1,20 +1,145 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { loadPosts } from '../lib/collection';
+import { splitFeatured, categoryCards } from '../lib/home';
+import { categoryLabel } from '../lib/categories';
+import { formatDate } from '../lib/date';
+import { current } from '../data/about';
+
+const posts = await loadPosts('ko');
+const { featured, recent } = splitFeatured(posts, 5);
+const cards = categoryCards(posts);
+const total = posts.length;
 ---
 
-<BaseLayout
-  title="씨유 · brainbackdoor"
-  description="이동규의 기술 블로그"
-  active="home"
->
-  <section class="py-24">
-    <h1 class="text-[44px] leading-[1.1] font-extrabold tracking-[-0.03em]">씨유</h1>
-    <p class="mt-4 max-w-[560px] text-[17px] leading-relaxed text-ink-muted">
-      만들고 부수며 배웁니다.
+<BaseLayout title="씨유 · brainbackdoor" description="이동규의 기술 블로그" active="home">
+  <!-- 히어로 -->
+  <section class="py-20 sm:py-24">
+    <div class="flex items-center gap-2.5 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
+      <span class="size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
+      이동규 · brainbackdoor
+    </div>
+    <h1 class="mt-6 max-w-[900px] text-[38px] leading-[1.08] font-extrabold tracking-[-0.04em] text-balance sm:text-[60px]">
+      오늘도 한 방울의 맑은 물이 되리라.
+    </h1>
+    <p class="mt-6 max-w-[600px] text-[17px] leading-relaxed text-ink-muted sm:text-lg">
+      소프트웨어·교육·삶을 오가며 남기는 기록. 프로덕트 엔지니어이자 교육자로 일하며
+      배운 것들을 조용히 정리합니다.
     </p>
-    <p class="mt-8 text-[13px] text-ink-faint">
-      1단계 스캐폴딩 — 홈 화면은 4단계에서 구현합니다.
-      현재 검증 대상은 <a href="/tech/infra" class="text-accent hover:underline">인프라 대시보드</a>입니다.
-    </p>
+  </section>
+
+  <!-- 이달의 글 + 사이드바 -->
+  <section class="grid grid-cols-1 gap-12 pb-16 lg:grid-cols-[1fr_260px]">
+    <div>
+      <div class="mb-4 text-xs font-semibold tracking-[0.16em] text-accent uppercase">이달의 글</div>
+      {
+        featured ? (
+          <a href={featured.href} class="group block">
+            <div
+              class="relative flex h-[300px] items-end overflow-hidden rounded-[20px] bg-sunken p-7 ring-1 ring-ink/5 ring-inset"
+              aria-hidden="true"
+            >
+              <span class="absolute right-6 -bottom-2 text-[96px] leading-none font-extrabold tracking-[-0.04em] text-ink/6">
+                {categoryLabel(featured.category)}
+              </span>
+            </div>
+            <div class="mt-5 text-[11px] font-semibold tracking-[0.12em] text-accent uppercase">
+              {categoryLabel(featured.category)}
+            </div>
+            <h2 class="mt-2.5 max-w-[640px] text-[28px] leading-[1.14] font-extrabold tracking-[-0.03em] text-balance group-hover:text-accent sm:text-[36px]">
+              {featured.title}
+            </h2>
+            <p class="mt-3.5 max-w-[560px] text-[16px] leading-relaxed text-ink-muted">
+              {featured.description}
+            </p>
+            <div class="mt-4 text-[13px] text-ink-faint tabular-nums">
+              {formatDate(featured.pubDate)} · {featured.minutes}분 읽기
+            </div>
+          </a>
+        ) : (
+          <p class="text-[15px] text-ink-subtle">
+            아직 발행한 글이 없습니다. 곧 첫 글이 올라옵니다.
+          </p>
+        )
+      }
+    </div>
+
+    <aside>
+      <div class="mb-2 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">지금 하는 일</div>
+      <div>
+        {
+          current.map((item) => (
+            <a
+              href="/about"
+              class="flex items-baseline justify-between gap-3 border-t border-ink/6 py-3.5 first:border-t-0"
+            >
+              <span>
+                <span class="block text-[14.5px] font-semibold tracking-[-0.01em]">{item.title}</span>
+                <span class="mt-0.5 block text-[12px] text-ink-subtle">{item.subtitle}</span>
+              </span>
+              <span class="text-[13px] text-ink-faint" aria-hidden="true">↗</span>
+            </a>
+          ))
+        }
+      </div>
+    </aside>
+  </section>
+
+  <!-- 카테고리 -->
+  <section class="pb-16">
+    <div class="mb-2 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">카테고리</div>
+    <div class="grid grid-cols-1 gap-x-14 sm:grid-cols-2">
+      {
+        cards.map((card) => (
+          <a href="/posts" class="group block border-t border-ink/10 py-6">
+            <div class="flex items-baseline justify-between gap-3">
+              <h3 class="text-[21px] font-bold tracking-[-0.02em] group-hover:text-accent">{card.label}</h3>
+              <span class="text-[13px] text-ink-faint tabular-nums">
+                {String(card.count).padStart(2, '0')}
+              </span>
+            </div>
+            <p class:list={['mt-2.5 text-[14.5px]', card.latest ? 'text-ink-subtle' : 'text-ink-faint']}>
+              {card.latest ? card.latest.title : '아직 글이 없습니다'}
+            </p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 최근 글 -->
+  <section class="pb-12">
+    <div class="mb-2 flex items-baseline justify-between gap-3">
+      <h2 class="text-[21px] font-bold tracking-[-0.02em]">최근 글</h2>
+      <a href="/posts" class="text-[13px] font-medium text-ink-faint transition-colors hover:text-ink-subtle">
+        전체 {total}편 →
+      </a>
+    </div>
+    {
+      recent.length > 0 ? (
+        <ul>
+          {recent.map((p) => (
+            <li>
+              <a
+                href={p.href}
+                class="group grid grid-cols-[auto_1fr] items-baseline gap-x-4 gap-y-1 border-t border-ink/10 py-5 sm:grid-cols-[110px_1fr_auto] sm:gap-5"
+              >
+                <span class="text-[11px] font-semibold tracking-[0.12em] text-accent uppercase">
+                  {categoryLabel(p.category)}
+                </span>
+                <span class="text-[17px] font-semibold tracking-[-0.02em] group-hover:text-accent sm:text-[18px]">
+                  {p.title}
+                </span>
+                <span class="col-span-2 text-[12.5px] text-ink-faint tabular-nums sm:col-span-1 sm:text-right">
+                  {formatDate(p.pubDate)} · {p.minutes}분
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="text-[15px] text-ink-subtle">아직 최근 글이 없습니다.</p>
+      )
+    }
   </section>
 </BaseLayout>

@@ -19,6 +19,38 @@ interface Props {
 const { title, description, active, narrow = false, altLocale } = Astro.props;
 const lang = Astro.currentLocale ?? 'ko';
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// OG 이미지 슬러그 — 경로에서 유도(생성된 것과 매칭). 나머지는 home으로 폴백.
+const pathname = Astro.url.pathname;
+let ogSlug = 'home';
+if (pathname.startsWith('/about')) {
+  ogSlug = 'about';
+} else if (/\/posts\/.+/.test(pathname)) {
+  const seg = pathname.replace(/\/$/, '').split('/').pop();
+  if (seg && seg !== 'posts') ogSlug = seg;
+}
+const ogImage = new URL(`/og/${ogSlug}.png`, Astro.site).href;
+
+const person = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebSite', name: '씨유 · brainbackdoor', url: Astro.site?.href },
+    {
+      '@type': 'Person',
+      name: '이동규',
+      alternateName: 'brainbackdoor',
+      jobTitle: '소프트웨어 엔지니어',
+      email: 'brainbackdoor@gmail.com',
+      url: Astro.site?.href,
+      sameAs: [
+        'https://github.com/brainbackdoor',
+        'https://www.linkedin.com/in/%EB%8F%99%EA%B7%9C-%EC%9D%B4-0606b415a/',
+        'https://www.facebook.com/brainbackdoor',
+        'https://www.instagram.com/dongguulee/',
+      ],
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -34,6 +66,23 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     {description && <meta property="og:description" content={description} />}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="씨유 · brainbackdoor" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#9a4b34" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
 
     <link rel="alternate" type="application/rss+xml" title={title} href="/rss.xml" />
 

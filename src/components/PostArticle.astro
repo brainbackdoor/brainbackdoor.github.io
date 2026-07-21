@@ -26,7 +26,7 @@ const { prev, next } = adjacentPosts(post, pool);
 <ReadingProgress />
 
 <div class="grid items-start gap-16 lg:grid-cols-[1fr_220px]">
-  <article class="min-w-0 pt-14 pb-10">
+  <article class="min-w-0 pt-14 pb-10" data-pagefind-body>
     <PostMeta post={post} />
     <div class="prose">
       <Content />

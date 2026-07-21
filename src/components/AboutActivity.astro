@@ -1,5 +1,6 @@
 ---
 import type { Project } from '../data/about';
+import { renderInline } from '../lib/inline';
 
 interface Props {
   activity: Project;
@@ -19,7 +20,7 @@ const { activity } = Astro.props;
     activity.bullets.length > 0 && (
       <ul class="mt-3 flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
         {activity.bullets.map((b) => (
-          <li class="text-[14.5px] leading-relaxed text-ink-muted">{b}</li>
+          <li class="text-[14.5px] leading-relaxed text-ink-muted" set:html={renderInline(b)} />
         ))}
       </ul>
     )
@@ -38,7 +39,7 @@ const { activity } = Astro.props;
             </div>
             <ul class="mt-2 flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
               {sp.bullets.map((b) => (
-                <li class="text-[14px] leading-relaxed text-ink-subtle">{b}</li>
+                <li class="text-[14px] leading-relaxed text-ink-subtle" set:html={renderInline(b)} />
               ))}
             </ul>
           </div>

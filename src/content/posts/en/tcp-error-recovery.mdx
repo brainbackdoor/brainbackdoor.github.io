@@ -1,0 +1,44 @@
+---
+title: A Look at TCP Error Recovery
+description: Following how retransmission actually works through real scenarios.
+pubDate: 2023-11-09
+category: infra
+tags: ['TCP', '네트워크', '트러블슈팅']
+---
+
+Even a connection that looks stable constantly meets packet loss, delay, and reordering. The reliable stream we get exists thanks to the intricate recovery mechanisms running underneath.
+
+## Two triggers for retransmission
+
+TCP detects loss two ways: a timeout (RTO), and fast retransmit via duplicate ACKs. The former is conservative and slow; the latter is aggressive and fast.
+
+> On three duplicate ACKs, TCP retransmits the segment immediately without waiting for a timeout.
+
+## How RTO is computed
+
+RTO is not a fixed value — it is continuously estimated from the observed round-trip time (RTT).
+
+```js
+// Jacobson/Karels RTO estimation
+SRTT   = (1 - a) * SRTT   + a * R        // a = 1/8
+RTTVAR = (1 - b) * RTTVAR + b * abs(SRTT - R)
+RTO    = SRTT + 4 * RTTVAR               // clamped to a 1s minimum
+```
+
+If no ACK arrives within the estimated `RTO`, the segment is treated as lost and RTO doubles exponentially.
+
+## Confirming in practice
+
+To observe retransmission in real traffic, capture with `tcpdump` and follow the flow.
+
+```bash
+# filter only retransmissions to a specific host
+tcpdump -i eth0 'tcp[tcpflags] & tcp-push != 0' \
+  -n host 10.0.1.42
+```
+
+Once the retransmission rate climbs past 1%, it usually signals a bottleneck in the network path or the receive buffer.
+
+## Wrap-up
+
+TCP's reliability is not magic — it is the repetition of observe, estimate, retransmit.

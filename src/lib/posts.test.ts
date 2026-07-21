@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import type { PostSummary } from './posts';
 import {
   adjacentPosts,
+  collectTags,
   groupByKey,
   parseEntryId,
+  postsWithTag,
   relatedPosts,
   sortByDateDesc,
 } from './posts';
@@ -178,5 +180,44 @@ describe('adjacentPosts', () => {
     const sorted = [post({ slug: 'a', pubDate: '2024-01-01' })];
     const stranger = post({ slug: 'zzz', pubDate: '2020-01-01' });
     expect(adjacentPosts(stranger, sorted)).toEqual({ prev: null, next: null });
+  });
+});
+
+describe('collectTags', () => {
+  it('태그를 빈도 내림차순으로 세고, 동률이면 사전순으로 낸다', () => {
+    const result = collectTags([
+      post({ slug: 'a', pubDate: '2024-01-01', tags: ['TCP', '네트워크'] }),
+      post({ slug: 'b', pubDate: '2023-01-01', tags: ['TCP'] }),
+      post({ slug: 'c', pubDate: '2022-01-01', tags: ['DB'] }),
+    ]);
+    expect(result).toEqual([
+      { tag: 'TCP', count: 2 },
+      { tag: 'DB', count: 1 },
+      { tag: '네트워크', count: 1 },
+    ]);
+  });
+
+  it('빈 목록은 빈 배열이 된다', () => {
+    expect(collectTags([])).toEqual([]);
+  });
+});
+
+describe('postsWithTag', () => {
+  it('해당 태그를 가진 글만 최신순으로 낸다', () => {
+    const result = postsWithTag(
+      [
+        post({ slug: 'old', pubDate: '2022-01-01', tags: ['TCP'] }),
+        post({ slug: 'new', pubDate: '2024-01-01', tags: ['TCP'] }),
+        post({ slug: 'other', pubDate: '2023-01-01', tags: ['DB'] }),
+      ],
+      'TCP',
+    );
+    expect(result.map((p) => p.slug)).toEqual(['new', 'old']);
+  });
+
+  it('태그가 없으면 빈 배열이 된다', () => {
+    expect(postsWithTag([post({ slug: 'a', pubDate: '2024-01-01', tags: ['TCP'] })], 'DB')).toEqual(
+      [],
+    );
   });
 });

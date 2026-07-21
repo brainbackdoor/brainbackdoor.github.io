@@ -1,0 +1,18 @@
+---
+interface Props {
+  current: 'ko' | 'en';
+  /** 반대 언어로 갈 URL */
+  altHref: string;
+}
+const { current, altHref } = Astro.props;
+const alt = current === 'ko' ? 'en' : 'ko';
+const label = { ko: 'KO', en: 'EN' } as const;
+---
+
+<div class="flex items-center gap-1 text-[12.5px] font-medium">
+  <span class="text-ink" aria-current="true">{label[current]}</span>
+  <span class="text-ink-faint" aria-hidden="true">/</span>
+  <a href={altHref} class="text-ink-subtle transition-colors hover:text-ink">
+    {label[alt]}
+  </a>
+</div>

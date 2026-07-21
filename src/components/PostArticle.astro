@@ -1,0 +1,40 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import PostMeta from './PostMeta.astro';
+import TableOfContents from './TableOfContents.astro';
+import RelatedPosts from './RelatedPosts.astro';
+import AdjacentNav from './AdjacentNav.astro';
+import ReadingProgress from './ReadingProgress.astro';
+import CodeCopyButton from './CodeCopyButton.astro';
+import { loadPosts, toSummary } from '../lib/collection';
+import { adjacentPosts, relatedPosts } from '../lib/posts';
+
+interface Props {
+  entry: CollectionEntry<'posts'>;
+  lang: string;
+}
+const { entry, lang } = Astro.props;
+
+const { Content, headings } = await render(entry);
+const post = toSummary(entry);
+const pool = await loadPosts(lang);
+
+const related = relatedPosts(post, pool);
+const { prev, next } = adjacentPosts(post, pool);
+---
+
+<ReadingProgress />
+
+<div class="grid items-start gap-16 lg:grid-cols-[1fr_220px]">
+  <article class="min-w-0 pt-14 pb-10">
+    <PostMeta post={post} />
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+  <TableOfContents headings={headings} />
+</div>
+
+<RelatedPosts posts={related} />
+<AdjacentNav prev={prev} next={next} />
+<CodeCopyButton />

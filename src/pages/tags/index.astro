@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadPosts } from '../../lib/collection';
+import { collectTags } from '../../lib/posts';
+
+const tags = collectTags(await loadPosts('ko'));
+---
+
+<BaseLayout title="태그 · 씨유" description="태그로 글을 모아 봅니다." narrow>
+  <section class="pt-16 pb-10">
+    <div class="mb-4.5 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
+      태그
+    </div>
+    <h1 class="m-0 text-[30px] leading-[1.15] font-extrabold tracking-[-0.03em] sm:text-[44px] sm:leading-[1.12]">
+      태그로 찾기
+    </h1>
+  </section>
+
+  <div class="flex flex-wrap gap-2.5 pb-18">
+    {
+      tags.map((t) => (
+        <a
+          href={`/tags/${encodeURIComponent(t.tag)}`}
+          class="flex items-center gap-2 rounded-pill border border-ink/16 px-4 py-2 text-[13px] font-medium text-ink-subtle transition-colors hover:border-ink/32 hover:text-ink"
+        >
+          <span>#{t.tag}</span>
+          <span class="font-mono text-[11px] text-ink-faint">{t.count}</span>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

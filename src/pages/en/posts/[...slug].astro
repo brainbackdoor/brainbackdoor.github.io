@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostArticle from '../../../components/PostArticle.astro';
+import { loadEntries, toSummary } from '../../../lib/collection';
+import { parseEntryId } from '../../../lib/posts';
+import { translationHref } from '../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const entries = await loadEntries('en');
+  return entries.map((entry) => ({
+    params: { slug: parseEntryId(entry.id).slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const post = toSummary(entry);
+const allEntries = await getCollection('posts', ({ data }) => !data.draft);
+const slug = parseEntryId(entry.id).slug;
+// current는 이 페이지의 언어(en), href는 반대 언어(ko)로 갈 곳.
+const altLocale = { current: 'en' as const, href: translationHref(slug, 'ko', allEntries) };
+---
+
+<BaseLayout
+  title={`${post.title} · 씨유`}
+  description={post.description}
+  active="archive"
+  altLocale={altLocale}
+>
+  <PostArticle entry={entry} lang="en" />
+</BaseLayout>

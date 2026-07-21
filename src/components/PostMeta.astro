@@ -33,7 +33,12 @@ const date = formatDate(post.pubDate);
   post.tags.length > 0 && (
     <div class="mt-4.5 flex flex-wrap gap-2">
       {post.tags.map((tag) => (
-        <span class="rounded-[14px] bg-ink/5 px-3 py-[5px] text-xs text-ink-subtle">#{tag}</span>
+        <a
+          href={`/tags/${encodeURIComponent(tag)}`}
+          class="rounded-[14px] bg-ink/5 px-3 py-[5px] text-xs text-ink-subtle transition-colors hover:bg-ink/10 hover:text-ink"
+        >
+          #{tag}
+        </a>
       ))}
     </div>
   )

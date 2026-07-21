@@ -1,10 +1,13 @@
 ---
 import { NAV_ITEMS, type NavKey } from '../lib/nav';
+import LangSwitch from './LangSwitch.astro';
+import type { AltLocale } from '../lib/i18n';
 
 interface Props {
   active?: NavKey;
+  altLocale?: AltLocale;
 }
-const { active } = Astro.props;
+const { active, altLocale } = Astro.props;
 ---
 
 <header
@@ -56,6 +59,7 @@ const { active } = Astro.props;
       >
         <span class="text-[13px]">⌕</span><span>글 검색</span>
       </a>
+      {altLocale && <LangSwitch current={altLocale.current} altHref={altLocale.href} />}
     </nav>
   </div>
 
@@ -80,6 +84,11 @@ const { active } = Astro.props;
       <a href="/posts" class="py-2.5 text-ink-subtle transition-colors hover:text-ink">
         글 검색
       </a>
+      {altLocale && (
+        <div class="py-2.5">
+          <LangSwitch current={altLocale.current} altHref={altLocale.href} />
+        </div>
+      )}
     </nav>
   </div>
 </header>

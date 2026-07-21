@@ -11,7 +11,11 @@ const { post } = Astro.props;
 const date = formatDate(post.pubDate);
 ---
 
-<a href="/posts" class="text-[13px] text-ink-faint transition-colors hover:text-ink-subtle">
+<a
+  href="/posts"
+  data-pagefind-ignore
+  class="text-[13px] text-ink-faint transition-colors hover:text-ink-subtle"
+>
   ← 목차로
 </a>
 

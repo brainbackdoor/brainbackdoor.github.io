@@ -2,23 +2,22 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CategoryFilter, { type FilterablePost } from '../../components/CategoryFilter';
 import { loadPosts } from '../../lib/collection';
+import { formatShortDate, getYear } from '../../lib/date';
 
 const posts = await loadPosts('ko');
-
-const pad = (n: number) => String(n).padStart(2, '0');
 
 const items: FilterablePost[] = posts.map((p) => ({
   title: p.title,
   category: p.category,
   href: p.href,
-  year: String(p.pubDate.getFullYear()),
-  meta: `${pad(p.pubDate.getMonth() + 1)}.${pad(p.pubDate.getDate())} · ${p.minutes}분`,
+  year: getYear(p.pubDate),
+  meta: `${formatShortDate(p.pubDate)} · ${p.minutes}분`,
 }));
 
 // posts는 최신순이므로 마지막 글이 가장 오래된 글이다.
 const firstYear = posts.length
-  ? posts[posts.length - 1].pubDate.getFullYear()
-  : new Date().getFullYear();
+  ? getYear(posts[posts.length - 1].pubDate)
+  : String(new Date().getUTCFullYear());
 ---
 
 <BaseLayout

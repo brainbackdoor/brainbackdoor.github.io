@@ -1,5 +1,6 @@
 ---
 import { categoryLabel } from '../lib/categories';
+import { formatDate } from '../lib/date';
 import type { PostSummary } from '../lib/posts';
 
 interface Props {
@@ -7,9 +8,7 @@ interface Props {
 }
 const { post } = Astro.props;
 
-const pad = (n: number) => String(n).padStart(2, '0');
-const d = post.pubDate;
-const date = `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`;
+const date = formatDate(post.pubDate);
 ---
 
 <a href="/posts" class="text-[13px] text-ink-faint transition-colors hover:text-ink-subtle">

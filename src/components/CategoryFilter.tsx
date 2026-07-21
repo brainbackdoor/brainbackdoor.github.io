@@ -71,10 +71,10 @@ export default function CategoryFilter({ posts }: Props) {
               <a
                 key={p.href}
                 href={p.href}
-                className="grid grid-cols-[1fr_auto] items-baseline gap-5 border-t border-ink/8 py-4 transition-opacity hover:opacity-60"
+                className="flex flex-col gap-1 border-t border-ink/8 py-4 transition-opacity hover:opacity-60 sm:grid sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-5"
               >
                 <div className="flex flex-wrap items-baseline gap-3">
-                  <span className="min-w-16 text-[10.5px] font-semibold tracking-[0.06em] text-accent uppercase">
+                  <span className="text-[10.5px] font-semibold tracking-[0.06em] text-accent uppercase sm:min-w-16">
                     {categoryLabel(p.category)}
                   </span>
                   <span className="text-[17px] font-semibold tracking-[-0.01em]">{p.title}</span>

@@ -20,11 +20,13 @@ const date = `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`;
   {categoryLabel(post.category)}
 </div>
 
-<h1 class="m-0 text-[40px] leading-[1.18] font-extrabold tracking-[-0.03em] text-balance">
+<h1
+  class="m-0 text-[28px] leading-[1.22] font-extrabold tracking-[-0.03em] text-balance sm:text-[40px] sm:leading-[1.18]"
+>
   {post.title}
 </h1>
 
-<div class="mt-5.5 flex items-center gap-3.5 font-mono text-[13px] text-ink-faint">
+<div class="mt-5.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 font-mono text-[13px] text-ink-faint">
   <span>{date}</span><span>·</span><span>{post.minutes}분 읽기</span><span>·</span><span>이동규</span>
 </div>
 

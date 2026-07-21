@@ -17,7 +17,3 @@ const BY_SLUG = new Map<string, string>(CATEGORIES.map((c) => [c.slug, c.label])
 export function categoryLabel(slug: CategorySlug): string {
   return BY_SLUG.get(slug) ?? slug;
 }
-
-export function isCategorySlug(v: unknown): v is CategorySlug {
-  return typeof v === 'string' && BY_SLUG.has(v);
-}

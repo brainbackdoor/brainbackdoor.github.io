@@ -1,5 +1,6 @@
 ---
 import { categoryLabel } from '../lib/categories';
+import { formatDate } from '../lib/date';
 import type { PostSummary } from '../lib/posts';
 
 interface Props {
@@ -7,11 +8,8 @@ interface Props {
 }
 const { posts } = Astro.props;
 
-const pad = (n: number) => String(n).padStart(2, '0');
-
 function meta(p: PostSummary): string {
-  const d = p.pubDate;
-  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} · ${p.minutes}분`;
+  return `${formatDate(p.pubDate)} · ${p.minutes}분`;
 }
 ---
 

@@ -53,14 +53,6 @@ export function groupByKey<T>(
   return [...groups.entries()].map(([k, v]) => ({ key: k, items: v }));
 }
 
-export function groupByYear(
-  posts: PostSummary[],
-): { year: string; items: PostSummary[] }[] {
-  return groupByKey(sortByDateDesc(posts), (p) =>
-    String(p.pubDate.getFullYear()),
-  ).map(({ key, items }) => ({ year: key, items }));
-}
-
 /** 글은 (slug, lang) 쌍으로 식별한다. 번역본은 slug가 같아도 다른 글이다. */
 function isSame(a: PostSummary, b: PostSummary): boolean {
   return a.slug === b.slug && a.lang === b.lang;

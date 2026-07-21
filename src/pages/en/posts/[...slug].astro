@@ -1,14 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostArticle from '../../components/PostArticle.astro';
-import { toSummary } from '../../lib/collection';
-import { parseEntryId } from '../../lib/posts';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostArticle from '../../../components/PostArticle.astro';
+import { toSummary } from '../../../lib/collection';
+import { parseEntryId } from '../../../lib/posts';
 
 export async function getStaticPaths() {
   const entries = await getCollection('posts', ({ data }) => !data.draft);
   return entries
-    .filter((e) => parseEntryId(e.id).lang === 'ko')
+    .filter((e) => parseEntryId(e.id).lang === 'en')
     .map((entry) => ({ params: { slug: parseEntryId(entry.id).slug }, props: { entry } }));
 }
 
@@ -17,5 +17,5 @@ const post = toSummary(entry);
 ---
 
 <BaseLayout title={`${post.title} · 씨유`} description={post.description} active="archive">
-  <PostArticle entry={entry} lang="ko" />
+  <PostArticle entry={entry} lang="en" />
 </BaseLayout>

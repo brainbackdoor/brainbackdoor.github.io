@@ -8,23 +8,25 @@
  * 파생색이 원본과 수치로 연결된다. 원본 hex는 주석에 남긴다.
  */
 @theme {
-  /* ── 표면 ── */
-  --color-canvas: oklch(0.95 0.008 85); /* #f4f2ee 페이지 배경 */
-  --color-surface: oklch(0.972 0.007 85); /* #faf8f4 카드 */
-  --color-sunken: oklch(0.935 0.008 85); /* #efece5 푸터 */
+  /* ── 표면 (밝음 → 어두움) ──
+   * 페이지가 순백이라 카드는 페이지보다 밝을 수 없다. 2단계까지와 달리
+   * 카드가 페이지보다 어둡다. 올라온 면이 아니라 살짝 가라앉은 면으로 읽힌다. */
+  --color-canvas: oklch(1 0 0); /* #ffffff 페이지 배경 */
+  --color-surface: oklch(0.975 0 0); /* #f7f7f7 카드 */
+  --color-sunken: oklch(0.955 0 0); /* #f1f1f1 푸터 */
 
   /* ── 잉크 (진함 → 옅음) ── */
-  --color-ink: oklch(0.255 0.008 60); /* #24211d 본문·제목 */
-  --color-ink-muted: oklch(0.47 0.01 70); /* #6b6459 부제 */
-  --color-ink-subtle: oklch(0.61 0.012 78); /* #8f887c 메타 */
-  --color-ink-faint: oklch(0.72 0.014 80); /* #b0a898 라벨 */
+  --color-ink: oklch(0.25 0 0); /* #2b2b2b 본문·제목 */
+  --color-ink-muted: oklch(0.46 0 0); /* #6b6b6b 부제 */
+  --color-ink-subtle: oklch(0.58 0 0); /* #8a8a8a 메타 */
+  --color-ink-faint: oklch(0.64 0 0); /* 라벨 — 흰 배경에서 3:1 대비를 넘기는 최상단 명도 */
 
-  /* ── 강조 ── */
+  /* ── 강조 (유일하게 채도가 남는 곳) ── */
   --color-accent: oklch(0.45 0.1 32); /* 테라코타 */
   --color-accent-hover: oklch(0.52 0.1 32);
 
   /* ── 코드 블록 (본문에서 유일하게 어두운 면) ── */
-  --color-code-surface: oklch(0.21 0.008 75); /* Shiki 배경 */
+  --color-code-surface: oklch(0.21 0 0); /* Shiki 배경 */
   --color-code-ink: oklch(0.99 0 0); /* 어두운 면 위의 글자·테두리 기준색 */
 
   /* ── 타이포 ── */
@@ -62,7 +64,7 @@
   }
 
   ::selection {
-    background: oklch(0.89 0.02 78);
+    background: oklch(0.89 0 0);
   }
 }
 

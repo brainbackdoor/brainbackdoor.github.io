@@ -1,6 +1,7 @@
 /**
- * 동적 OG 이미지 생성 (satori → resvg). 빌드 타임에 페이지별 1200×630 PNG를 만든다.
- * 폰트는 src/assets/og-fonts 의 woff(=woff2 아님)를 쓴다. 한글은 IBM Plex Sans KR.
+ * 기본 OG 이미지(화이트 브랜드) 생성 — satori → resvg, 빌드 타임.
+ * 홈·소개·이미지 없는 글의 폴백으로 쓰는 /og/default.png 한 장.
+ * 글에 frontmatter image가 있으면 그 이미지를 og:image로 쓰므로 여기서 안 만든다.
  */
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
@@ -17,67 +18,49 @@ const fonts = [
   { name: 'PlexKR', data: read('plexkr-400.woff'), weight: 400, style: 'normal' },
 ] as const;
 
-// 로고 마크(테라코타+흰 로봇)를 data URI로 — favicon.svg 재사용
-const markPng = new Resvg(fs.readFileSync(path.join(process.cwd(), 'public/favicon.svg'), 'utf8'), {
-  fitTo: { mode: 'width', value: 96 },
-})
-  .render()
-  .asPng();
-const MARK = `data:image/png;base64,${Buffer.from(markPng).toString('base64')}`;
-
 const TERRA = '#9a4b34';
-const INK = '#2b2b2b';
-const MUTED = '#6b6b6b';
-const FAINT = '#a0a0a0';
+const INK = '#211d1b';
 const CANVAS = '#ffffff';
+const ROBOT =
+  'M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5A2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5a2.5 2.5 0 0 0-2.5-2.5';
 
-export interface OgInput {
-  title: string;
-  subtitle?: string;
-  kicker?: string;
+const rasterize = (svg: string, width: number) =>
+  new Resvg(svg, { fitTo: { mode: 'width', value: width } }).render().asPng();
+
+// 로봇 마크(테라코타 라운드 배경 + 흰 로봇)를 data URI로
+function markDataUri(size: number): string {
+  const inner = size * 0.72;
+  const off = (size - inner) / 2;
+  const sc = inner / 24;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="${size * 0.22}" fill="${TERRA}"/><g transform="translate(${off} ${off}) scale(${sc})" fill="#ffffff"><path d="${ROBOT}"/></g></svg>`;
+  return `data:image/png;base64,${Buffer.from(rasterize(svg, size)).toString('base64')}`;
 }
 
-// satori용 엘리먼트 트리(JSX 없이 객체로)
-function node(type: string, style: Record<string, unknown>, children?: unknown) {
-  return { type, props: { style, ...(children === undefined ? {} : { children }) } };
-}
+const el = (type: string, style: Record<string, unknown>, children?: unknown) => ({
+  type,
+  props: { style, ...(children === undefined ? {} : { children }) },
+});
 
-function tree({ title, subtitle, kicker = '씨유 · brainbackdoor' }: OgInput) {
-  const middleChildren: unknown[] = [
-    node('div', { fontSize: 72, fontWeight: 800, color: INK, lineHeight: 1.05, letterSpacing: '-0.03em' }, title),
-  ];
-  if (subtitle) {
-    middleChildren.push(
-      node('div', { marginTop: 22, fontSize: 30, fontWeight: 500, color: MUTED, lineHeight: 1.3 }, subtitle),
-    );
-  }
-  middleChildren.push(node('div', { marginTop: 30, width: 64, height: 7, backgroundColor: TERRA, borderRadius: 4 }));
-
-  return node(
+export async function generateBrandOg(): Promise<Buffer> {
+  const tree = el(
     'div',
     {
-      height: '100%',
       width: '100%',
+      height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'space-between',
-      padding: '68px 76px',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 30,
       backgroundColor: CANVAS,
       fontFamily: 'Manrope, PlexKR',
     },
     [
-      node('div', { display: 'flex', alignItems: 'center', gap: 16 }, [
-        { type: 'img', props: { src: MARK, width: 44, height: 44, style: { borderRadius: 10 } } },
-        node('div', { fontSize: 24, fontWeight: 700, color: INK }, kicker),
-      ]),
-      node('div', { display: 'flex', flexDirection: 'column' }, middleChildren),
-      node('div', { fontSize: 22, color: FAINT }, 'brainbackdoor.github.io'),
+      { type: 'img', props: { src: markDataUri(76), width: 76, height: 76, style: { borderRadius: 17 } } },
+      el('div', { fontSize: 76, fontWeight: 800, color: INK, letterSpacing: '-0.03em' }, 'brainbackdoor'),
+      el('div', { width: 56, height: 6, backgroundColor: TERRA, borderRadius: 4 }),
     ],
   );
-}
-
-export async function generateOg(input: OgInput): Promise<Buffer> {
-  // satori 타입은 ReactNode를 기대 — 객체 트리를 그대로 넘긴다.
-  const svg = await satori(tree(input) as never, { width: 1200, height: 630, fonts: fonts as never });
-  return new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
+  const svg = await satori(tree as never, { width: 1200, height: 630, fonts: fonts as never });
+  return rasterize(svg, 1200);
 }

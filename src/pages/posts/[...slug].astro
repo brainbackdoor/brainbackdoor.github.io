@@ -27,6 +27,7 @@ const altLocale = { current: 'ko' as const, href: translationHref(slug, 'en', al
   description={post.description}
   active="archive"
   altLocale={altLocale}
+  ogImage={entry.data.image}
 >
   <PostArticle entry={entry} lang="ko" />
 </BaseLayout>

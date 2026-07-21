@@ -41,9 +41,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     />
   </head>
 
-  <body class="min-h-screen">
+  <body class="flex min-h-screen flex-col">
     <Header active={active} />
-    <main class:list={['mx-auto px-8', narrow ? 'max-w-container-narrow' : 'max-w-container']}>
+    <main
+      class:list={[
+        'w-full flex-1 px-8',
+        narrow ? 'max-w-container-narrow' : 'max-w-container',
+        'mx-auto',
+      ]}
+    >
       <slot />
     </main>
     <Footer />

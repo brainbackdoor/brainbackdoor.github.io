@@ -9,6 +9,12 @@
 
 /* astryx 토큰 → 기존 디자인 값으로 매핑 (global.css @theme 과 동일 값) */
 :root {
+  /* 이 블로그는 라이트 전용이다. astryx 토큰은 light-dark()로 정의돼 있어
+   * 방문자 OS가 다크모드면 astryx 컴포넌트(Card 등)만 어두워지고 Tailwind
+   * 본문은 흰색이라 반쪽만 뒤집힌다. color-scheme을 light로 고정해 astryx의
+   * light-dark()가 항상 밝은 값을 쓰도록 못박는다. */
+  color-scheme: light;
+
   /* 폰트: astryx 기본 Figtree → 기존 Manrope + 한글 */
   --font-family-body: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
   --font-family-heading: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;

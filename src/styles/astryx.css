@@ -1,0 +1,33 @@
+/*
+ * astryx(Meta 디자인 시스템) — "라이브러리만" 도입.
+ * astryx 컴포넌트를 쓰되, astryx 토큰을 이 블로그의 기존 디자인(테라코타·Manrope·
+ * 기존 색/간격/반경)으로 오버라이드해 기존 UI/UX를 그대로 유지한다.
+ * 프리컴파일 CSS라 StyleX 빌드 불필요. reset.css는 Tailwind preflight와 충돌하므로 넣지 않는다.
+ */
+@import '@astryxdesign/core/astryx.css';
+@import '@astryxdesign/theme-neutral/theme.css';
+
+/* astryx 토큰 → 기존 디자인 값으로 매핑 (global.css @theme 과 동일 값) */
+:root {
+  /* 폰트: astryx 기본 Figtree → 기존 Manrope + 한글 */
+  --font-family-body: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
+  --font-family-heading: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
+
+  /* 색: astryx 뉴트럴 → 기존 잉크/테라코타 */
+  --color-text-primary: oklch(0.25 0 0);
+  --color-text-secondary: oklch(0.46 0 0);
+  --color-text-disabled: oklch(0.64 0 0);
+  --color-accent: oklch(0.45 0.1 32);
+  --color-on-accent: #ffffff;
+  --color-accent-muted: color-mix(in oklab, oklch(0.45 0.1 32) 10%, transparent);
+  --color-background-body: oklch(1 0 0);
+  --color-background-surface: oklch(0.975 0 0);
+  --color-background-muted: oklch(0.955 0 0);
+  --color-border: color-mix(in oklab, oklch(0.25 0 0) 10%, transparent);
+  --color-border-emphasized: color-mix(in oklab, oklch(0.25 0 0) 20%, transparent);
+
+  /* 반경: 기존 카드/타일/아이템 */
+  --radius-inner: 8px;
+  --radius-element: 12px;
+  --radius-container: 18px;
+}

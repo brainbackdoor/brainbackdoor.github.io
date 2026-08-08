@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import StatTile from '../../components/StatTile.astro';
 import MissionCard from '../../components/MissionCard.astro';
 import TopicSection from '../../components/TopicSection.astro';
+import { Button } from '@astryxdesign/core/Button';
 import { stats, topics, missions, sections } from '../../data/infra';
 
 const description =
@@ -30,9 +31,9 @@ const description =
       </div>
       <a
         href="https://www.inflearn.com/course/인프라-공방-서비스-만들기"
-        class="inline-flex shrink-0 items-center gap-2 self-start rounded-pill bg-ink px-[22px] py-[13px] text-sm font-semibold text-canvas transition-opacity hover:opacity-85 lg:self-end"
+        class="shrink-0 self-start lg:self-end"
       >
-        인프런 강의 →
+        <Button label="인프런 강의 →" variant="primary" />
       </a>
     </div>
 

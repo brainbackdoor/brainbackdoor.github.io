@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CATEGORIES, categoryLabel, type CategorySlug } from '../lib/categories';
 import { groupByKey } from '../lib/posts';
+import { Button } from '@astryxdesign/core/Button';
 
 /** 서버에서 직렬화되어 넘어오므로 Date가 아니라 문자열로 받는다. */
 export interface FilterablePost {
@@ -14,11 +15,6 @@ export interface FilterablePost {
 interface Props {
   posts: FilterablePost[];
 }
-
-const CHIP_BASE =
-  'font-sans text-[13px] font-semibold px-4 py-2 rounded-[20px] cursor-pointer transition-all duration-200 border';
-const CHIP_ON = 'bg-ink text-canvas border-ink';
-const CHIP_OFF = 'bg-transparent text-ink-subtle border-ink/16 hover:border-ink/32';
 
 export default function CategoryFilter({ posts }: Props) {
   const [filter, setFilter] = useState<CategorySlug | 'all'>('all');
@@ -39,24 +35,20 @@ export default function CategoryFilter({ posts }: Props) {
     <>
       <div className="sticky top-header z-10 border-b border-ink/10 bg-canvas/90 py-4 backdrop-blur-[8px]">
         <div className="flex flex-wrap gap-2.5">
-          <button
-            type="button"
+          <Button
+            label={`전체 ${posts.length}`}
+            size="sm"
+            variant={filter === 'all' ? 'primary' : 'secondary'}
             onClick={() => setFilter('all')}
-            aria-pressed={filter === 'all'}
-            className={`${CHIP_BASE} ${filter === 'all' ? CHIP_ON : CHIP_OFF}`}
-          >
-            전체 {posts.length}
-          </button>
+          />
           {CATEGORIES.map((c) => (
-            <button
+            <Button
               key={c.slug}
-              type="button"
+              label={`${c.label} ${counts.get(c.slug) ?? 0}`}
+              size="sm"
+              variant={filter === c.slug ? 'primary' : 'secondary'}
               onClick={() => setFilter(c.slug)}
-              aria-pressed={filter === c.slug}
-              className={`${CHIP_BASE} ${filter === c.slug ? CHIP_ON : CHIP_OFF}`}
-            >
-              {c.label} {counts.get(c.slug) ?? 0}
-            </button>
+            />
           ))}
         </div>
       </div>

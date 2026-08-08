@@ -31,3 +31,17 @@
   --radius-element: 12px;
   --radius-container: 18px;
 }
+
+/*
+ * 선택·컨트롤 키컬러 — 슬레이트 네이비.
+ * 테라코타(--color-accent)는 "글·링크 강조" 전용이라 :root 값을 그대로 두고,
+ * astryx 버튼(필터 칩·CTA)에서만 accent를 네이비로 재정의한다. 커스텀 속성은
+ * 상속되므로 button 하위 트리에서만 var(--color-accent)가 네이비로 풀리고,
+ * primary 버튼 배경(background-color:var(--color-accent))·hover(color-mix)·
+ * 포커스 링(outline:...var(--color-accent))이 함께 네이비가 된다. 본문 텍스트의
+ * 테라코타(text-accent 등)는 button 밖이라 영향받지 않는다.
+ * 채도를 크게 낮춘 남색(0.055)이라 원색 파랑이 아니라 먹빛 도는 슬레이트다.
+ */
+button {
+  --color-accent: oklch(0.42 0.055 245);
+}

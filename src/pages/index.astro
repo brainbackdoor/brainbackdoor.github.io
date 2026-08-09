@@ -39,9 +39,9 @@ const total = posts.length;
             <MediaTile
               image={featured.image}
               icon={featured.icon ?? categoryEmoji(featured.category)}
-              alt={featured.title}
               class="h-[260px] w-full rounded-[20px] ring-1 ring-ink/5 ring-inset"
               emojiClass="text-[64px] leading-none"
+              eager
             />
             <div class="mt-5 text-[11px] font-semibold tracking-[0.12em] text-accent uppercase">
               {categoryLabel(featured.category)}
@@ -79,12 +79,11 @@ const total = posts.length;
               <MediaTile
                 image={item.image}
                 icon={item.icon}
-                alt={item.title}
                 class="size-[38px] shrink-0 rounded-[9px]"
                 emojiClass="text-[17px]"
               />
               <span class="min-w-0">
-                <span class="block truncate text-[14px] font-semibold tracking-[-0.01em]">{item.title}</span>
+                <span class="block truncate text-[14px] font-semibold tracking-[-0.01em] group-hover:text-accent">{item.title}</span>
                 <span class="block truncate text-[11.5px] text-ink-subtle">{item.subtitle}</span>
               </span>
             </a>
@@ -139,7 +138,6 @@ const total = posts.length;
                 <MediaTile
                   image={p.image}
                   icon={p.icon ?? categoryEmoji(p.category)}
-                  alt={p.title}
                   class="size-[52px] rounded-[10px]"
                   emojiClass="text-[22px]"
                 />

@@ -10,13 +10,31 @@ interface Props {
   alt?: string;
   class?: string;
   emojiClass?: string;
+  eager?: boolean;
 }
-const { image, icon = '📝', alt = '', class: klass = '', emojiClass = 'text-2xl' } = Astro.props;
+const {
+  image,
+  icon = '📝',
+  alt = '',
+  class: klass = '',
+  emojiClass = 'text-2xl',
+  eager = false,
+} = Astro.props;
 const isInitials = icon.length <= 2 && /[A-Za-z0-9]/.test(icon);
 ---
 {
   image ? (
-    <img src={image} alt={alt} loading="lazy" class:list={['object-cover bg-sunken', klass]} />
+    eager ? (
+      <img
+        src={image}
+        alt={alt}
+        loading="eager"
+        fetchpriority="high"
+        class:list={['object-cover bg-sunken', klass]}
+      />
+    ) : (
+      <img src={image} alt={alt} loading="lazy" class:list={['object-cover bg-sunken', klass]} />
+    )
   ) : isInitials ? (
     <div
       class:list={['flex items-center justify-center bg-ink font-bold tracking-tight text-canvas', klass]}

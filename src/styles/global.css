@@ -29,7 +29,7 @@
   /* ── 강조 (유일하게 채도가 남는 곳) ── */
   --color-accent: oklch(0.45 0.1 32); /* 테라코타 */
   --color-accent-hover: oklch(0.52 0.1 32);
-  --color-current: oklch(0.46 0.055 165); /* 파인 그린 — "지금 하는 일" 표식 */
+  --color-now: oklch(0.46 0.055 165); /* 파인 그린 — "지금 하는 일" 표식 */
 
   /* ── 코드 블록 (본문에서 유일하게 어두운 면) ── */
   --color-code-surface: oklch(0.21 0 0); /* Shiki 배경 */
@@ -83,7 +83,7 @@
  */
 @layer components {
   .bg-current-dot {
-    background: var(--color-current);
+    background: var(--color-now);
   }
 
   .prose p {

@@ -20,6 +20,8 @@ export function toSummary(entry: CollectionEntry<'posts'>): PostSummary {
     tags: entry.data.tags,
     minutes: readingTime(entry.body ?? ''),
     href: lang === 'ko' ? `/posts/${slug}` : `/${lang}/posts/${slug}`,
+    image: entry.data.image,
+    icon: entry.data.icon,
   };
 }
 

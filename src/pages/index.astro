@@ -65,23 +65,35 @@ const total = posts.length;
     </div>
 
     <aside>
-      <div class="mb-2 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">지금 하는 일</div>
+      <div class="mb-2 flex items-center gap-2 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
+        <span class="size-1.5 rounded-full bg-current-dot" aria-hidden="true"></span>
+        지금 하는 일
+      </div>
       <div>
         {
           current.map((item) => (
             <a
-              href="/about"
-              class="flex items-baseline justify-between gap-3 border-t border-ink/6 py-3.5 first:border-t-0"
+              href={item.href ?? '/about'}
+              class="group flex items-center gap-3 border-t border-ink/6 py-3 first:border-t-0"
             >
-              <span>
-                <span class="block text-[14.5px] font-semibold tracking-[-0.01em]">{item.title}</span>
-                <span class="mt-0.5 block text-[12px] text-ink-subtle">{item.subtitle}</span>
+              <MediaTile
+                image={item.image}
+                icon={item.icon}
+                alt={item.title}
+                class="size-[38px] shrink-0 rounded-[9px]"
+                emojiClass="text-[17px]"
+              />
+              <span class="min-w-0">
+                <span class="block truncate text-[14px] font-semibold tracking-[-0.01em]">{item.title}</span>
+                <span class="block truncate text-[11.5px] text-ink-subtle">{item.subtitle}</span>
               </span>
-              <span class="text-[13px] text-ink-faint" aria-hidden="true">↗</span>
             </a>
           ))
         }
       </div>
+      <a href="/about" class="mt-3 inline-block text-[12.5px] font-medium text-accent hover:text-accent-hover">
+        소개에서 더 보기 →
+      </a>
     </aside>
   </section>
 

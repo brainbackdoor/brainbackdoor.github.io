@@ -16,10 +16,10 @@ export interface CurrentItem {
 }
 
 export const current: CurrentItem[] = [
-  { title: '그란데클립', subtitle: '프로덕트 엔지니어 · AX', icon: 'GC' },
-  { title: 'NEXTSTEP', subtitle: '교육자 · 사업/운영', image: '/activities/nextstep.webp' },
-  { title: '인프라공방', subtitle: '강사', image: '/activities/inflabang.webp' },
-  { title: '하린이 육아', subtitle: '가장 중요한 프로젝트', icon: '👶' },
+  { title: '그란데클립', subtitle: '프로덕트 엔지니어 · AX', image: '/now/grande.webp' },
+  { title: 'NEXTSTEP', subtitle: '교육자 · 사업/운영', image: '/now/nextstep.webp' },
+  { title: '인프라공방', subtitle: '강사', image: '/now/inflabang.webp' },
+  { title: '하린이 육아', subtitle: '가장 중요한 프로젝트', image: '/now/harin.webp' },
 ];
 
 // ── 소개 ──

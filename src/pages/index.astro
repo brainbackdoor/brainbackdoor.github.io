@@ -2,7 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { loadPosts } from '../lib/collection';
 import { splitFeatured, categoryCards } from '../lib/home';
-import { categoryLabel } from '../lib/categories';
+import MediaTile from '../components/MediaTile.astro';
+import { categoryLabel, categoryEmoji } from '../lib/categories';
 import { formatDate } from '../lib/date';
 import { current } from '../data/about';
 
@@ -35,14 +36,13 @@ const total = posts.length;
       {
         featured ? (
           <a href={featured.href} class="group block">
-            <div
-              class="relative flex h-[300px] items-end overflow-hidden rounded-[20px] bg-sunken p-7 ring-1 ring-ink/5 ring-inset"
-              aria-hidden="true"
-            >
-              <span class="absolute right-6 -bottom-2 text-[96px] leading-none font-extrabold tracking-[-0.04em] text-ink/6">
-                {categoryLabel(featured.category)}
-              </span>
-            </div>
+            <MediaTile
+              image={featured.image}
+              icon={featured.icon ?? categoryEmoji(featured.category)}
+              alt={featured.title}
+              class="h-[260px] w-full rounded-[20px] ring-1 ring-ink/5 ring-inset"
+              emojiClass="text-[64px] leading-none"
+            />
             <div class="mt-5 text-[11px] font-semibold tracking-[0.12em] text-accent uppercase">
               {categoryLabel(featured.category)}
             </div>

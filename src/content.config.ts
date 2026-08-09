@@ -19,6 +19,8 @@ const posts = defineCollection({
     draft: z.boolean().default(false),
     /** 글 대표 이미지(public 기준 경로 또는 절대 URL). OG 이미지로 쓰인다. */
     image: z.string().optional(),
+    /** 커버가 없을 때 홈에서 쓰는 이모지 fallback. 없으면 카테고리 기본값. */
+    icon: z.string().optional(),
   }),
 });
 

@@ -1,0 +1,50 @@
+---
+/**
+ * 홈 공통 미디어 타일. 이미지가 있으면 커버로, 없으면 이모지(또는 2글자 이니셜)
+ * 타일로 대체한다. 크기·모서리는 호출부가 class로 넘긴다.
+ * 이니셜은 2글자 이하 텍스트일 때만 크게 렌더(예: 'GC'), 그 외는 이모지로 본다.
+ */
+interface Props {
+  image?: string;
+  icon?: string;
+  alt?: string;
+  class?: string;
+  emojiClass?: string;
+  eager?: boolean;
+}
+const {
+  image,
+  icon = '📝',
+  alt = '',
+  class: klass = '',
+  emojiClass = 'text-2xl',
+  eager = false,
+} = Astro.props;
+const isInitials = icon.length <= 2 && /[A-Za-z0-9]/.test(icon);
+---
+{
+  image ? (
+    eager ? (
+      <img
+        src={image}
+        alt={alt}
+        loading="eager"
+        fetchpriority="high"
+        class:list={['object-cover bg-sunken', klass]}
+      />
+    ) : (
+      <img src={image} alt={alt} loading="lazy" class:list={['object-cover bg-sunken', klass]} />
+    )
+  ) : isInitials ? (
+    <div
+      class:list={['flex items-center justify-center bg-ink font-bold tracking-tight text-canvas', klass]}
+      aria-hidden="true"
+    >
+      <span class="text-[0.8em]">{icon}</span>
+    </div>
+  ) : (
+    <div class:list={['flex items-center justify-center bg-sunken', klass]} aria-hidden="true">
+      <span class:list={[emojiClass]}>{icon}</span>
+    </div>
+  )
+}

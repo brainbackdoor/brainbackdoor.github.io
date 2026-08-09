@@ -14,6 +14,8 @@ export interface PostSummary {
   tags: string[];
   minutes: number;
   href: string;
+  image?: string;
+  icon?: string;
 }
 
 /**

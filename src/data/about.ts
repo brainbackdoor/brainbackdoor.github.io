@@ -8,13 +8,18 @@
 export interface CurrentItem {
   title: string;
   subtitle: string;
+  /** 로고 이미지(public 기준 경로). 없으면 icon 사용. */
+  image?: string;
+  /** image가 없을 때 쓰는 이모지 또는 이니셜(2글자). */
+  icon?: string;
+  href?: string;
 }
 
 export const current: CurrentItem[] = [
-  { title: '그란데클립', subtitle: '프로덕트 엔지니어 · AX' },
-  { title: 'NEXTSTEP', subtitle: '교육자 · 사업/운영' },
-  { title: '인프라공방', subtitle: '강사' },
-  { title: '하린이 육아', subtitle: '가장 중요한 프로젝트' },
+  { title: '그란데클립', subtitle: '프로덕트 엔지니어 · AX', icon: 'GC' },
+  { title: 'NEXTSTEP', subtitle: '교육자 · 사업/운영', image: '/activities/nextstep.webp' },
+  { title: '인프라공방', subtitle: '강사', image: '/activities/inflabang.webp' },
+  { title: '하린이 육아', subtitle: '가장 중요한 프로젝트', icon: '👶' },
 ];
 
 // ── 소개 ──

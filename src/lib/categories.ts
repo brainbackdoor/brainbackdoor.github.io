@@ -17,3 +17,15 @@ const BY_SLUG = new Map<string, string>(CATEGORIES.map((c) => [c.slug, c.label])
 export function categoryLabel(slug: CategorySlug): string {
   return BY_SLUG.get(slug) ?? slug;
 }
+
+const EMOJI_BY_SLUG: Record<CategorySlug, string> = {
+  retrospect: '📝',
+  infra: '⚙️',
+  guide: '🧪',
+  life: '🌱',
+};
+
+/** 글에 icon이 없을 때 쓰는 카테고리 기본 이모지(MediaTile fallback). */
+export function categoryEmoji(slug: CategorySlug): string {
+  return EMOJI_BY_SLUG[slug] ?? '📝';
+}

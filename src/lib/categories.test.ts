@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CATEGORIES, categoryLabel } from './categories';
+import { CATEGORIES, categoryLabel, categoryEmoji } from './categories';
 
 describe('categories', () => {
   it('디자인에 정의된 4개 카테고리를 순서대로 가진다', () => {
@@ -17,5 +17,13 @@ describe('categories', () => {
     expect(categoryLabel('guide')).toBe('실습 가이드');
     expect(categoryLabel('life')).toBe('라이프');
   });
+});
 
+describe('categoryEmoji', () => {
+  it('4개 카테고리 각각 기본 이모지를 준다', () => {
+    expect(categoryEmoji('retrospect')).toBe('📝');
+    expect(categoryEmoji('infra')).toBe('⚙️');
+    expect(categoryEmoji('guide')).toBe('🧪');
+    expect(categoryEmoji('life')).toBe('🌱');
+  });
 });

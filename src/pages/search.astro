@@ -4,21 +4,27 @@ import Search from 'astro-pagefind/components/Search.astro';
 ---
 
 <BaseLayout title="검색 · 씨유" description="글을 검색합니다." active="search" narrow>
-  <section class="pt-16 pb-8">
-    <div class="mb-4.5 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
-      검색
-    </div>
-    <h1 class="m-0 text-[30px] leading-[1.15] font-extrabold tracking-[-0.03em] sm:text-[44px] sm:leading-[1.12]">
-      글 검색
-    </h1>
-  </section>
-
-  <div class="pb-18">
+  <h1 class="page-heading" id="search-heading">글 검색</h1>
+  <div class="search-page">
     <Search
       instance="site-search"
       className="pagefind-neutral"
-      searchboxOptions={{ placeholder: '무엇을 찾으세요?' }}
+      searchboxOptions={{ placeholder: '글 본문에서 검색' }}
       configOptions={{ lang: 'ko' }}
     />
   </div>
 </BaseLayout>
+
+<style>.search-page{padding-bottom:48px;min-height:360px}</style>
+
+<script>
+  // Pagefind recreates its input when translations load; preserve its accessible name.
+  const searchbox = document.querySelector('pagefind-searchbox');
+  if (searchbox) {
+    const labelInput = () => {
+      searchbox.querySelector('input')?.setAttribute('aria-labelledby', 'search-heading');
+    };
+    labelInput();
+    new MutationObserver(labelInput).observe(searchbox, { childList: true, subtree: true });
+  }
+</script>

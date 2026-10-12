@@ -1,32 +1,23 @@
 ---
 import type { PostSummary } from '../lib/posts';
-
-interface Props {
-  prev: PostSummary | null;
-  next: PostSummary | null;
-}
-const { prev, next } = Astro.props;
+interface Props { prev: PostSummary | null; next: PostSummary | null; lang?: string; }
+const { prev, next, lang = 'ko' } = Astro.props;
+const en = lang === 'en';
 ---
 
-{
-  (prev || next) && (
-    <nav class="grid grid-cols-1 gap-5 border-t border-ink/12 pt-8 pb-18 md:grid-cols-2">
-      {prev ? (
-        <a href={prev.href} class="text-left transition-opacity hover:opacity-70">
-          <div class="mb-2 text-xs text-ink-faint">← 이전 글</div>
-          <div class="text-base font-semibold tracking-[-0.01em]">{prev.title}</div>
-        </a>
-      ) : (
-        <span />
-      )}
-      {next ? (
-        <a href={next.href} class="text-right transition-opacity hover:opacity-70">
-          <div class="mb-2 text-xs text-ink-faint">다음 글 →</div>
-          <div class="text-base font-semibold tracking-[-0.01em]">{next.title}</div>
-        </a>
-      ) : (
-        <span />
-      )}
-    </nav>
-  )
-}
+{(prev || next) && (
+  <nav class="adjacent-nav" aria-label={en ? 'Adjacent posts' : '이전 글과 다음 글'}>
+    {prev ? <a href={prev.href}><span>{en ? '← Older post' : '← 이전 글'}</span><strong>{prev.title}</strong></a> : <span />}
+    {next ? <a class="next-post" href={next.href}><span>{en ? 'Newer post →' : '다음 글 →'}</span><strong>{next.title}</strong></a> : <span />}
+  </nav>
+)}
+
+<style>
+  .adjacent-nav { display:grid;grid-template-columns:1fr 1fr;gap:26px;border-top:1px solid var(--color-border);padding:25px 0 42px; }
+  a { min-width:0; }
+  a span { display:block;color:var(--color-ink-muted);font-size:12px;margin-bottom:8px; }
+  a strong { font-size:15px;font-weight:500;line-height:1.8;overflow-wrap:anywhere; }
+  a:hover strong { color:var(--color-accent); }
+  .next-post { text-align:right; }
+  @media(max-width:600px) { .adjacent-nav{grid-template-columns:1fr;gap:23px}.adjacent-nav>span{display:none}.next-post{text-align:left} }
+</style>

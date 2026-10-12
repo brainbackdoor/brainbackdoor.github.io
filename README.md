@@ -34,7 +34,9 @@ src/
 
 ## 설계 문서
 
-[docs/superpowers/specs/](docs/superpowers/specs/)
+- [기존 블로그 전체 콘텐츠 이전](docs/content-migration.md) — 다음 작업 순서, 현재 샘플 상태, 원문 보존·검수 기준
+- [본문 애니메이션 도해 작성 가이드](docs/animated-figures.md) — 공통 스타일, 시간·재생 규칙, 새 에셋 작성 템플릿과 검수 기준
+- [기존 설계 문서](docs/superpowers/specs/)
 
 ## 주의
 

@@ -1,84 +1,84 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { CATEGORIES, categoryLabel, type CategorySlug } from '../lib/categories';
 import { groupByKey } from '../lib/posts';
-import { Button } from '@astryxdesign/core/Button';
 
-/** 서버에서 직렬화되어 넘어오므로 Date가 아니라 문자열로 받는다. */
+/** Dates are serialized before entering the hydrated archive. */
 export interface FilterablePost {
   title: string;
+  description: string;
+  tags: string[];
   category: CategorySlug;
   href: string;
   year: string;
-  meta: string;
+  date: string;
+  dateTime: string;
+  minutes: number;
 }
 
-interface Props {
-  posts: FilterablePost[];
+export function filterPosts(posts: FilterablePost[], category: CategorySlug | 'all', query: string): FilterablePost[] {
+  const words = query.normalize('NFC').trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  return posts.filter((post) => {
+    if (category !== 'all' && post.category !== category) return false;
+    const text = [post.title, post.description, ...post.tags, categoryLabel(post.category)]
+      .join(' ').normalize('NFC').toLocaleLowerCase();
+    return words.every((word) => text.includes(word));
+  });
 }
 
-export default function CategoryFilter({ posts }: Props) {
-  const [filter, setFilter] = useState<CategorySlug | 'all'>('all');
+const englishCategories: Record<CategorySlug, string> = {
+  retrospect: 'Retrospectives & culture', infra: 'Infrastructure', guide: 'Guides', life: 'Life',
+};
 
+interface Props { posts: FilterablePost[]; lang?: string; }
+
+export default function CategoryFilter({ posts, lang = 'ko' }: Props) {
+  const en = lang === 'en';
+  const [category, setCategory] = useState<CategorySlug | 'all'>('all');
+  const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
   const counts = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const p of posts) map.set(p.category, (map.get(p.category) ?? 0) + 1);
-    return map;
+    const result = new Map<CategorySlug, number>();
+    for (const post of posts) result.set(post.category, (result.get(post.category) ?? 0) + 1);
+    return result;
   }, [posts]);
-
-  // posts는 서버에서 최신순으로 정렬돼 넘어오므로 연도 그룹 순서도 그대로 최신순이다.
-  const groups = useMemo(() => {
-    const visible = filter === 'all' ? posts : posts.filter((p) => p.category === filter);
-    return groupByKey(visible, (p) => p.year);
-  }, [posts, filter]);
+  const visible = useMemo(() => filterPosts(posts, category, query), [posts, category, query]);
+  const groups = useMemo(() => groupByKey(visible, (post) => post.year), [visible]);
+  const filtered = category !== 'all' || query.trim() !== '';
+  const reset = () => { setCategory('all'); setQuery(''); searchRef.current?.focus(); };
+  const label = (slug: CategorySlug) => en ? englishCategories[slug] : categoryLabel(slug);
 
   return (
-    <>
-      <div className="sticky top-header z-10 border-b border-ink/10 bg-canvas/90 py-4 backdrop-blur-[8px]">
-        <div className="flex flex-wrap gap-2.5">
-          <Button
-            label={`전체 ${posts.length}`}
-            size="sm"
-            variant={filter === 'all' ? 'primary' : 'secondary'}
-            onClick={() => setFilter('all')}
-          />
-          {CATEGORIES.map((c) => (
-            <Button
-              key={c.slug}
-              label={`${c.label} ${counts.get(c.slug) ?? 0}`}
-              size="sm"
-              variant={filter === c.slug ? 'primary' : 'secondary'}
-              onClick={() => setFilter(c.slug)}
-            />
-          ))}
+    <div className="archive-browser">
+      <section className="archive-controls" aria-label={en ? 'Find posts' : '글 찾아보기'}>
+        <label className="archive-search">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="1.5" /><path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+          <input ref={searchRef} type="search" aria-label={en ? 'Search posts' : '글 검색'} placeholder={en ? 'Search titles, descriptions, or tags' : '제목이나 키워드로 찾아보세요'} autoComplete="off" value={query} onChange={(event) => setQuery(event.target.value)} />
+        </label>
+        <div className="archive-filters" role="group" aria-label={en ? 'Post category' : '글 주제 선택'}>
+          <button type="button" aria-pressed={category === 'all'} onClick={() => setCategory('all')}>{en ? 'All' : '전체'}<span>{posts.length}</span></button>
+          {CATEGORIES.map((item) => <button key={item.slug} type="button" aria-pressed={category === item.slug} onClick={() => setCategory(item.slug)}>{label(item.slug)}<span>{counts.get(item.slug) ?? 0}</span></button>)}
         </div>
-      </div>
-
-      <div className="pt-4 pb-18">
+      </section>
+      <section aria-label={en ? 'Posts' : '글 목록'}>
+        <div className="archive-result">
+          <span role="status" aria-live="polite" aria-atomic="true">{en ? `${visible.length} ${visible.length === 1 ? 'post' : 'posts'}` : `${visible.length}개의 글`}{query.trim() ? en ? ' · Search results' : ' · 검색 결과' : ''}</span>
+          <div className="archive-result-meta">{filtered && <button className="archive-reset" type="button" onClick={reset}>{en ? 'Reset' : '초기화'}</button>}<span>{en ? 'Newest first' : '최근에 쓴 글부터'}</span></div>
+        </div>
         {groups.map(({ key: year, items }) => (
-          <div key={year} className="pt-9 pb-2">
-            <div className="pb-1.5 font-mono text-[22px] font-semibold tracking-[-0.01em] text-ink-faint">
-              {year}
-            </div>
-            {items.map((p) => (
-              <a
-                key={p.href}
-                href={p.href}
-                className="flex flex-col gap-1 border-t border-ink/8 py-4 transition-opacity hover:opacity-60 sm:grid sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-5"
-              >
-                <div className="flex flex-wrap items-baseline gap-3">
-                  <span className="text-[10.5px] font-semibold tracking-[0.06em] text-accent uppercase sm:min-w-16">
-                    {categoryLabel(p.category)}
-                  </span>
-                  <span className="text-[17px] font-semibold tracking-[-0.01em]">{p.title}</span>
-                </div>
-                <span className="font-mono text-[12.5px] whitespace-nowrap text-ink-faint">
-                  {p.meta}
-                </span>
-              </a>
-            ))}
-          </div>
+          <section className="archive-year" key={year} aria-labelledby={`archive-year-${year}`}>
+            <h2 id={`archive-year-${year}`}>{year}</h2>
+            <ul>{items.map((post) => (
+              <li className="archive-post" key={post.href}>
+                <div className="archive-category">{label(post.category)}</div>
+                <div className="archive-post-heading"><h3><a href={post.href}>{post.title}</a></h3><time dateTime={post.dateTime}>{post.date}</time></div>
+                <p>{post.description}</p>
+                <span className="archive-reading-time">{en ? `${post.minutes} min read` : `${post.minutes}분 읽기`}</span>
+              </li>
+            ))}</ul>
+          </section>
         ))}
-      </div>
-    </>
+        {!visible.length && <div className="archive-empty"><h2>{en ? 'No posts found.' : '찾는 글이 없어요.'}</h2>{filtered && <><p>{en ? 'Try another keyword or category.' : '다른 키워드로 검색하거나 주제를 전체로 바꿔보세요.'}</p><button type="button" onClick={reset}>{en ? 'View all posts' : '전체 글 보기'}</button></>}</div>}
+      </section>
+    </div>
   );
 }

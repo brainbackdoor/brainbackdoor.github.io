@@ -1,81 +1,164 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import StatTile from '../../components/StatTile.astro';
 import MissionCard from '../../components/MissionCard.astro';
 import TopicSection from '../../components/TopicSection.astro';
-import { Button } from '@astryxdesign/core/Button';
-import { stats, topics, missions, sections } from '../../data/infra';
-
-const description =
-  '만들고 부수며 인프라를 배웁니다. 인프라공방 수강생을 위한 미션 요구사항·힌트와 주제별 학습 자료를 한곳에 모았어요.';
+import { missions, sections } from '../../data/infra';
+const total = sections.reduce((count, section) => count + section.items.length, 0);
 ---
 
-<BaseLayout title="인프라 · 씨유" description={description} active="tech">
-  <section class="pt-14 pb-9">
-    <div
-      class="mb-4 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase"
-    >
-      학습 대시보드
-    </div>
-
-    <div class="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
-      <div>
-        <h1
-          class="m-0 text-[30px] leading-[1.15] font-extrabold tracking-[-0.03em] sm:text-[44px] sm:leading-[1.1]"
-        >
-          인프라
-        </h1>
-        <p class="mt-4 max-w-[560px] text-[17px] leading-relaxed text-ink-muted">
-          {description}
-        </p>
+<BaseLayout title="인프라공방 · 씨유" description="인프라공방의 실습 미션과 AWS, WAS, 데이터베이스, 네트워크 참고자료." active="curricula">
+  <div class="infra-page">
+    <header class="infra-intro">
+      <nav class="infra-breadcrumb" aria-label="현재 위치"><a href="/curricula">커리큘럼</a><span aria-hidden="true">/</span><span aria-current="page">인프라공방</span></nav>
+      <h1>인프라공방</h1>
+    </header>
+    <section class="infra-missions" id="mission" aria-labelledby="infra-mission-title">
+      <h2 id="infra-mission-title">실습 미션</h2>
+      <div class="infra-tabs" data-mission-tabs aria-label="실습 미션" hidden>
+        {missions.map((mission, index) => <button type="button" role="tab" id={`mission-tab-${mission.id}`} aria-controls={`mission-${mission.id}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1}>{mission.title}</button>)}
       </div>
-      <a
-        href="https://www.inflearn.com/course/인프라-공방-서비스-만들기"
-        class="shrink-0 self-start lg:self-end"
-      >
-        <Button label="인프런 강의 →" variant="primary" />
-      </a>
-    </div>
-
-    <div class="mt-8 flex flex-wrap gap-3.5">
-      {stats.map((s) => <StatTile value={s.value} label={s.label} />)}
-    </div>
-  </section>
-
-  <div class="grid items-start gap-14 pb-18 lg:grid-cols-[200px_1fr]">
-    <aside class="hidden lg:sticky lg:top-20 lg:block">
-      <div
-        class="mb-3.5 text-[11px] font-semibold tracking-[0.14em] text-ink-subtle uppercase"
-      >
-        주제
-      </div>
-      <nav class="flex flex-col gap-px border-l-2 border-ink/10">
-        {
-          topics.map((t) => (
-            <a
-              href={t.anchor}
-              class="-ml-0.5 border-l-2 border-transparent py-[7px] pl-4 text-[13.5px] text-ink-subtle transition-all hover:border-accent hover:text-ink"
-            >
-              {t.label}
-            </a>
-          ))
-        }
-      </nav>
-    </aside>
-
-    <div class="min-w-0">
-      <section id="mission" class="mb-13 scroll-mt-20">
-        <h2 class="mb-2 text-2xl font-bold tracking-[-0.02em]">인프라공방 미션</h2>
-        <p class="mt-0 mb-6 max-w-[640px] text-[15px] leading-relaxed text-ink-muted">
-          현업과 비슷하게, 인프라를 구성해가며 필요한 지식을 학습하고 적용합니다. 각
-          미션은 요구사항·저장소·단계별 가이드로 이루어져 있어요.
-        </p>
-        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-          {missions.map((m) => <MissionCard mission={m} />)}
-        </div>
+      {missions.map((mission) => <MissionCard mission={mission} />)}
+    </section>
+    <section id="resources" aria-labelledby="infra-resources-title">
+      <div class="infra-library-heading"><h2 id="infra-resources-title">참고자료</h2><div class="infra-result"><span id="infra-result-count" aria-live="polite" aria-atomic="true">{total}개 자료</span><button class="infra-reset" type="button" id="infra-reset" hidden>초기화</button></div></div>
+      <section class="infra-controls" aria-label="참고자료 찾기" hidden>
+        <label class="infra-search"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.5" /><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg><input id="infra-search" type="search" aria-label="참고자료 검색" placeholder="참고자료에서 주제나 키워드 찾기" autocomplete="off" /></label>
+        <div class="infra-filters" role="group" aria-label="주제 선택"><button type="button" data-topic="all" aria-pressed="true">전체</button>{sections.map((section) => <button type="button" data-topic={section.id} aria-pressed="false">{section.title}</button>)}</div>
       </section>
-
-      {sections.map((sec) => <TopicSection section={sec} />)}
-    </div>
+      {sections.map((section) => <TopicSection section={section} />)}
+      <div class="infra-empty" id="infra-empty" hidden><h3>찾는 자료가 없어요.</h3><p>다른 키워드로 검색하거나 주제를 전체로 바꿔보세요.</p><button type="button" id="infra-empty-reset">전체 자료 보기</button></div>
+    </section>
+    <p class="infra-course-link"><a href="https://www.inflearn.com/course/인프라-공방-서비스-만들기">인프라공방 강의 ↗</a></p>
   </div>
 </BaseLayout>
+
+<style>
+  .infra-page [hidden], .infra-page :global([hidden]) { display: none !important; }
+  .infra-intro { padding-bottom: 24px; }
+  .infra-intro h1 { margin: 0; font-size: 38px; font-weight: 600; letter-spacing: -1.6px; }
+  .infra-breadcrumb { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; color: var(--color-ink-muted); font-size: 12px; }
+  .infra-breadcrumb a { color: var(--color-accent); }
+  .infra-missions { margin-bottom: 35px; padding: 26px 28px 27px; border-radius: 7px; background: var(--color-surface); scroll-margin-top: 32px; }
+  .infra-missions > h2 { margin: 0 0 17px; font-size: 19px; font-weight: 600; letter-spacing: -.5px; }
+  .infra-missions[data-enhanced='true'] :global(.mission-title) { display: none; }
+  .infra-tabs { display: flex; gap: 22px; border-bottom: 1px solid #cbdcf1; }
+  .infra-tabs button { padding: 0 0 10px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--color-ink-muted); font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+  .infra-tabs button[aria-selected='true'] { border-bottom-color: var(--color-accent); color: var(--color-accent); font-weight: 600; }
+  .infra-library-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; margin-bottom: 18px; }
+  .infra-library-heading h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.4px; }
+  .infra-result { display: flex; align-items: baseline; gap: 12px; color: var(--color-ink-muted); font-size: 11px; }
+  .infra-reset { padding: 0; border: 0; border-bottom: 1px solid #b3c7df; background: none; color: var(--color-accent); font: inherit; cursor: pointer; }
+  .infra-search { display: flex; align-items: center; height: 50px; border: 1px solid #b9cbdf; border-radius: 6px; background: var(--color-canvas); }
+  .infra-search svg { flex: none; width: 19px; height: 19px; margin: 0 12px 0 16px; color: var(--color-ink-muted); }
+  .infra-search input { min-width: 0; width: 100%; height: 100%; padding: 0 14px 0 0; border: 0; outline: none; background: transparent; color: var(--color-ink); font: inherit; font-size: 14px; }
+  .infra-search:focus-within { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .infra-search input::placeholder { color: var(--color-ink-muted); }
+  .infra-filters { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+  .infra-filters button { padding: 7px 10px; border: 0; border-radius: 4px; background: transparent; color: var(--color-ink-muted); font: inherit; font-size: 12px; white-space: nowrap; cursor: pointer; }
+  .infra-filters button:hover { background: #f3f6fa; }
+  .infra-filters button[aria-pressed='true'] { background: var(--color-surface); color: var(--color-accent); font-weight: 600; }
+  .infra-empty { padding: 52px 16px 58px; border-bottom: 1px solid var(--color-border); text-align: center; }
+  .infra-empty h3 { margin: 0; font-size: 18px; font-weight: 500; }
+  .infra-empty p { margin: 10px 0 20px; color: var(--color-ink-muted); font-size: 13px; }
+  .infra-empty button { padding: 10px 14px; border: 1px solid #b7cce7; border-radius: 4px; background: var(--color-surface); color: var(--color-accent); font: inherit; font-size: 12px; cursor: pointer; }
+  .infra-course-link { margin-top: 26px; color: var(--color-accent); font-size: 12px; }
+  .infra-course-link a { padding-bottom: 1px; border-bottom: 1px solid #b3c7df; }
+  @media (max-width: 950px) { .infra-missions { padding: 24px; } }
+  @media (max-width: 600px) {
+    .infra-intro { padding-bottom: 22px; }
+    .infra-intro h1 { font-size: 31px; letter-spacing: -1.2px; }
+    .infra-breadcrumb { gap: 8px; margin-bottom: 16px; font-size: 11px; }
+    .infra-missions { margin-bottom: 28px; padding: 22px 21px; }
+    .infra-missions > h2 { margin-bottom: 19px; font-size: 18px; }
+    .infra-tabs { gap: 16px; }
+    .infra-tabs button { min-height: 44px; font-size: 12px; line-height: 1.65; }
+    .infra-library-heading h2 { font-size: 17px; }
+    .infra-search { height: 47px; }
+    .infra-search input { font-size: 13px; }
+    .infra-filters { gap: 4px; margin-top: 11px; }
+    .infra-filters button { min-height: 44px; padding: 6px 8px; }
+  }
+</style>
+
+<script>
+  const page = document.querySelector<HTMLElement>('.infra-page');
+  if (page) {
+    const search = page.querySelector<HTMLInputElement>('#infra-search')!;
+    const filters = [...page.querySelectorAll<HTMLButtonElement>('[data-topic]')];
+    const groups = [...page.querySelectorAll<HTMLElement>('[data-resource-group]')];
+    const reset = page.querySelector<HTMLButtonElement>('#infra-reset')!;
+    const count = page.querySelector<HTMLElement>('#infra-result-count')!;
+    const empty = page.querySelector<HTMLElement>('#infra-empty')!;
+    let topic = 'all';
+    page.querySelector<HTMLElement>('.infra-controls')!.hidden = false;
+
+    function update() {
+      const words = search.value.normalize('NFC').trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+      let total = 0;
+      for (const group of groups) {
+        let visible = 0;
+        for (const item of group.querySelectorAll<HTMLElement>('[data-resource-item]')) {
+          const text = (item.dataset.search ?? '').normalize('NFC').toLocaleLowerCase();
+          item.hidden = !((topic === 'all' || group.dataset.resourceGroup === topic) && words.every((word) => text.includes(word)));
+          if (!item.hidden) visible++;
+        }
+        group.hidden = visible === 0;
+        total += visible;
+      }
+      for (const button of filters) button.setAttribute('aria-pressed', String(button.dataset.topic === topic));
+      count.textContent = `${total}개 자료`;
+      empty.hidden = total > 0;
+      reset.hidden = words.length === 0 && topic === 'all';
+    }
+    function clear() { search.value = ''; topic = 'all'; update(); search.focus(); }
+    search.addEventListener('input', update);
+    for (const button of filters) button.addEventListener('click', () => { topic = button.dataset.topic!; update(); });
+    reset.addEventListener('click', clear);
+    page.querySelector<HTMLButtonElement>('#infra-empty-reset')!.addEventListener('click', clear);
+
+    // An incoming topic anchor must remain usable even after another filter hid it.
+    function revealAnchor() {
+      const id = window.location.hash.slice(1);
+      const group = groups.find((item) => item.id === id);
+      if (!group) return;
+      search.value = '';
+      topic = id;
+      update();
+      requestAnimationFrame(() => group.scrollIntoView({ block: 'start' }));
+    }
+    window.addEventListener('hashchange', revealAnchor);
+    revealAnchor();
+
+    const missionSection = page.querySelector<HTMLElement>('.infra-missions')!;
+    const tablist = page.querySelector<HTMLElement>('[data-mission-tabs]')!;
+    const tabs = [...tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    function activate(tab: HTMLButtonElement) {
+      for (const button of tabs) {
+        const selected = button === tab;
+        button.setAttribute('aria-selected', String(selected));
+        button.tabIndex = selected ? 0 : -1;
+        const panel = document.getElementById(button.getAttribute('aria-controls')!)!;
+        panel.hidden = !selected;
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', button.id);
+      }
+    }
+    for (const [index, tab] of tabs.entries()) {
+      tab.addEventListener('click', () => activate(tab));
+      tab.addEventListener('keydown', (event) => {
+        let next: HTMLButtonElement | undefined;
+        if (event.key === 'ArrowRight') next = tabs[(index + 1) % tabs.length];
+        if (event.key === 'ArrowLeft') next = tabs[(index + tabs.length - 1) % tabs.length];
+        if (event.key === 'Home') next = tabs[0];
+        if (event.key === 'End') next = tabs[tabs.length - 1];
+        if (next) { event.preventDefault(); activate(next); next.focus(); }
+      });
+    }
+    if (tabs.length) {
+      missionSection.dataset.enhanced = 'true';
+      tablist.setAttribute('role', 'tablist');
+      tablist.hidden = false;
+      activate(tabs[0]);
+    }
+  }
+</script>

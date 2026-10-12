@@ -1,44 +1,54 @@
 ---
-/*
- * 코드 블록 복사 버튼. Shiki가 만든 pre에 런타임으로 붙인다.
- * 상태를 공유하지 않아 React island가 아니라 인라인 스크립트로 처리한다.
- */
+interface Props { lang?: string; }
+const { lang = 'ko' } = Astro.props;
 ---
+<span class="sr-only" id="code-copy-feedback" role="status" data-lang={lang}></span>
 
 <script>
-  for (const pre of document.querySelectorAll<HTMLPreElement>('.prose pre')) {
-    /*
-     * 버튼을 pre 안에 넣으면 두 가지가 깨진다. pre의 텍스트에 "복사"가 섞여
-     * 사용자가 코드를 직접 드래그해 복사할 때 딸려 나가고, pre가 가로 스크롤
-     * 컨테이너라 코드를 옆으로 밀면 버튼도 같이 밀려 화면 밖으로 나간다.
-     * 그래서 스크롤되지 않는 래퍼를 씌우고 거기에 붙인다.
-     */
+  const feedback = document.getElementById('code-copy-feedback');
+  const en = feedback?.dataset.lang === 'en';
+  for (const pre of document.querySelectorAll<HTMLPreElement>('.post-content pre')) {
+    if (pre.parentElement?.classList.contains('code-block')) continue;
     const wrapper = document.createElement('div');
-    wrapper.className = 'relative';
-    pre.replaceWith(wrapper);
-    wrapper.appendChild(pre);
-
+    wrapper.className = 'code-block';
+    const toolbar = document.createElement('div');
+    toolbar.className = 'code-toolbar';
+    const label = document.createElement('span');
+    label.textContent = pre.dataset.language ?? pre.querySelector('code')?.className.match(/language-([\w+-]+)/)?.[1] ?? (en ? 'Code' : '코드');
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = '복사';
-    button.className =
-      'absolute top-3 right-3 rounded-lg border border-code-ink/15 bg-code-ink/10 px-2.5 py-1 text-[11px] font-medium text-code-ink/60 opacity-0 transition-opacity hover:bg-code-ink/20 hover:text-code-ink/90 focus-visible:opacity-100';
+    button.className = 'code-copy';
+    button.textContent = en ? 'Copy' : '복사';
+    button.setAttribute('aria-label', en ? `Copy ${label.textContent} code` : `${label.textContent} 코드 복사`);
+    pre.tabIndex = 0;
+    pre.setAttribute('aria-label', en ? `${label.textContent} code block` : `${label.textContent} 코드 블록`);
+    pre.replaceWith(wrapper);
+    toolbar.append(label, button);
+    wrapper.append(toolbar, pre);
 
-    wrapper.addEventListener('mouseenter', () => (button.style.opacity = '1'));
-    wrapper.addEventListener('mouseleave', () => (button.style.opacity = ''));
-
+    let reset: ReturnType<typeof setTimeout>;
     button.addEventListener('click', async () => {
-      const code = pre.querySelector('code')?.textContent ?? '';
+      const code = pre.querySelector('code');
+      if (!code) return;
+      clearTimeout(reset);
       try {
-        await navigator.clipboard.writeText(code);
-        button.textContent = '복사됨';
+        await navigator.clipboard.writeText(code.textContent ?? '');
+        button.textContent = en ? 'Copied' : '복사됨';
+        if (feedback) feedback.textContent = en ? 'Code copied.' : '코드를 복사했습니다.';
       } catch {
-        // 클립보드 권한이 없거나 비보안 컨텍스트인 경우
-        button.textContent = '복사 실패';
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(code);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        button.textContent = en ? 'Selected' : '선택됨';
+        if (feedback) feedback.textContent = en ? 'Code selected. Use the copy shortcut.' : '코드를 선택했습니다. 복사 단축키를 눌러 주세요.';
       }
-      setTimeout(() => (button.textContent = '복사'), 1600);
+      reset = setTimeout(() => { button.textContent = en ? 'Copy' : '복사'; if (feedback) feedback.textContent = ''; }, 1800);
     });
-
-    wrapper.appendChild(button);
+  }
+  for (const table of document.querySelectorAll<HTMLTableElement>('.post-content table')) {
+    table.tabIndex = 0;
+    if (!table.getAttribute('aria-label') && !table.querySelector('caption')) table.setAttribute('aria-label', en ? 'Scrollable table' : '가로로 스크롤할 수 있는 표');
   }
 </script>

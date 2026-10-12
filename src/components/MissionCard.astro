@@ -1,33 +1,35 @@
 ---
-import { Card } from '@astryxdesign/core/Layout';
 import type { Mission } from '../data/infra';
-
-interface Props {
-  mission: Mission;
-}
+interface Props { mission: Mission; }
 const { mission } = Astro.props;
 ---
 
-<Card padding={0}>
-  <div
-    class="h-[130px]"
-    style="background: repeating-linear-gradient(45deg, oklch(0.93 0 0), oklch(0.93 0 0) 11px, oklch(0.9 0 0) 11px, oklch(0.9 0 0) 22px)"
-  >
-  </div>
-  <div class="px-[22px] pt-5 pb-[22px]">
-    <h3 class="text-lg font-bold tracking-[-0.01em]">{mission.title}</h3>
-    <p class="mt-1.5 text-[13px] leading-normal text-ink-subtle">{mission.desc}</p>
-    <div class="mt-4 flex flex-wrap gap-2">
-      {
-        mission.links.map((l) => (
-          <a
-            href={l.href}
-            class="rounded-[16px] bg-ink/5 px-[13px] py-[7px] text-[12.5px] font-medium text-ink-muted transition-colors hover:bg-ink/10"
-          >
-            {l.label}
-          </a>
-        ))
-      }
-    </div>
-  </div>
-</Card>
+<section id={`mission-${mission.id}`} class="mission-panel" data-mission-panel aria-labelledby={`mission-title-${mission.id}`}>
+  <h3 class="mission-title" id={`mission-title-${mission.id}`}>{mission.title}</h3>
+  <ol class="mission-path">
+    {mission.steps.map((step, index) => <li><span class="mission-step-number" aria-hidden="true">{index + 1}</span><a href={step.href}>{step.label}</a></li>)}
+  </ol>
+  <div class="mission-links">{mission.links.map((link) => <a href={link.href}>{link.label} <span aria-hidden="true">↗</span></a>)}</div>
+</section>
+
+<style>
+  .mission-panel { margin-top: 20px; }
+  .mission-title { margin: 0 0 19px; font-size: 15px; font-weight: 600; }
+  .mission-path { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 25px; margin: 0; padding: 0; list-style: none; }
+  .mission-path li { position: relative; min-width: 0; padding-top: 33px; }
+  .mission-path li::before { content: ''; position: absolute; top: 10px; left: 24px; width: calc(100% + 1px); height: 1px; background: #a9c3e6; }
+  .mission-path li:last-child::before { display: none; }
+  .mission-step-number { position: absolute; top: 0; left: 0; display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid #9cbce6; border-radius: 50%; background: var(--color-surface); color: var(--color-accent); font-size: 10px; font-weight: 600; }
+  .mission-path a { font-size: 14px; font-weight: 600; letter-spacing: -.25px; line-height: 1.6; }
+  .mission-path a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .mission-links { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 18px; margin-top: 20px; padding-top: 13px; border-top: 1px solid #d1dff0; }
+  .mission-links a { color: var(--color-accent); font-size: 12px; }
+  @media (max-width: 950px) { .mission-path { gap: 16px; } }
+  @media (max-width: 600px) {
+    .mission-path { display: block; }
+    .mission-path li { min-height: 60px; padding: 0 0 24px 35px; }
+    .mission-path li:last-child { min-height: 0; padding-bottom: 0; }
+    .mission-path li::before { top: 23px; left: 10px; width: 1px; height: calc(100% - 21px); }
+    .mission-links { margin-top: 21px; }
+  }
+</style>

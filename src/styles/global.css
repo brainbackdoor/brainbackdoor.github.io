@@ -5,63 +5,67 @@
  * 빌드 CSS에 죽은 규칙으로 섞이던 것을 막는다. */
 @source not '../../docs';
 
-/*
- * 디자인 토큰 — Claude Design 프로젝트 "개인 블로그 사이트 설계"에서 추출.
- * 이 블록이 색·타이포·간격의 단일 출처다. 컴포넌트에 값을 직접 박지 말 것.
- *
- * 색은 oklch로 적는다. 명도(L)만 조절하면 hover·다크 대응값이 나오므로
- * 파생색이 원본과 수치로 연결된다. 원본 hex는 주석에 남긴다.
- */
-@theme {
-  /* ── 표면 (밝음 → 어두움) ──
-   * 페이지가 순백이라 카드는 페이지보다 밝을 수 없다. 2단계까지와 달리
-   * 카드가 페이지보다 어둡다. 올라온 면이 아니라 살짝 가라앉은 면으로 읽힌다. */
-  --color-canvas: oklch(1 0 0); /* #ffffff 페이지 배경 */
-  --color-surface: oklch(0.975 0 0); /* #f7f7f7 카드 */
-  --color-sunken: oklch(0.955 0 0); /* #f1f1f1 푸터 */
+/* B안 공통 토큰. 지면과 Canvas 모두 이 값을 사용한다. */
+@theme static {
+  --color-canvas: #ffffff;
+  --color-surface: #edf4ff;
+  --color-sunken: #f5f8fc;
+  --color-ink: #172c46;
+  --color-ink-muted: #586b80;
+  --color-ink-subtle: #617286;
+  --color-ink-faint: #617286;
+  --color-link: #1758cb;
+  --color-rule: #d9e3ef;
+  --color-accent: var(--color-link);
+  --color-accent-hover: #1147a8;
+  --color-border: var(--color-rule);
+  --color-now: #087f5b;
+  --color-code-surface: #f5f8fc;
+  --color-code-ink: #172c46;
 
-  /* ── 잉크 (진함 → 옅음) ── */
-  --color-ink: oklch(0.25 0 0); /* #2b2b2b 본문·제목 */
-  --color-ink-muted: oklch(0.46 0 0); /* #6b6b6b 부제 */
-  --color-ink-subtle: oklch(0.58 0 0); /* #8a8a8a 메타 */
-  --color-ink-faint: oklch(0.64 0 0); /* 라벨 — 흰 배경에서 3:1 대비를 넘기는 최상단 명도 */
+  --color-figure-bg: #ffffff;
+  --color-figure-border: #dee2e6;
+  --color-figure-plot: #f8f9fa;
+  --color-figure-grid: #e9ecef;
+  --color-figure-line: #ced4da;
+  --color-figure-blue: #228be6;
+  --color-figure-green: #12b886;
+  --color-figure-orange: #fd7e14;
+  --color-figure-red: #fa5252;
+  --color-figure-text: #343a40;
+  --color-figure-muted: #586b80;
+  --color-figure-blue-text: #1765a0;
+  --color-figure-green-text: #087f5b;
+  --color-figure-orange-text: #a54800;
+  --color-figure-red-text: #c92a2a;
 
-  /* ── 강조 (유일하게 채도가 남는 곳) ── */
-  --color-accent: oklch(0.45 0.1 32); /* 테라코타 */
-  --color-accent-hover: oklch(0.52 0.1 32);
-  --color-now: oklch(0.46 0.055 165); /* 파인 그린 — "지금 하는 일" 표식 */
-
-  /* ── 코드 블록 (본문에서 유일하게 어두운 면) ── */
-  --color-code-surface: oklch(0.21 0 0); /* Shiki 배경 */
-  --color-code-ink: oklch(0.99 0 0); /* 어두운 면 위의 글자·테두리 기준색 */
-
-  /* ── 타이포 ── */
-  --font-sans: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
-  --font-mono: 'Space Grotesk', 'IBM Plex Sans KR', ui-monospace, monospace;
+  --font-sans: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   --font-code: 'JetBrains Mono', ui-monospace, monospace;
-
-  /* ── 반경 ── */
-  --radius-card: 18px;
-  --radius-tile: 14px;
-  --radius-item: 12px;
+  --radius-card: 8px;
+  --radius-tile: 8px;
+  --radius-item: 6px;
   --radius-pill: 24px;
-
-  /* ── 레이아웃 ── */
-  --spacing-container: 1120px;
-  --spacing-container-narrow: 900px; /* 아카이브처럼 본문만 있는 페이지 */
-  --spacing-container-about: 860px; /* 소개 — 아카이브보다 좁은 본문 폭 */
+  --spacing-container: 1180px;
+  --spacing-container-narrow: 820px;
+  --spacing-container-about: 860px;
   --spacing-header: 56px;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 28px;
+    color-scheme: light;
   }
 
   body {
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    min-width: 0;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -71,9 +75,28 @@
   }
 
   ::selection {
-    background: oklch(0.89 0 0);
+    background: var(--color-surface);
+  }
+
+  h1, h2, h3 { word-break: keep-all; }
+  button, summary { cursor: pointer; }
+  a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 4px;
   }
 }
+
+.site-shell{max-width:var(--spacing-container);margin-inline:auto;padding:48px 42px 0;display:grid;grid-template-columns:168px minmax(0,1fr);gap:54px;min-height:100vh}
+.site-body{min-width:0;display:flex;flex-direction:column}.site-main{flex:1;min-width:0;width:100%}.site-main--narrow{max-width:var(--spacing-container-narrow)}
+.skip-link{position:fixed;left:20px;top:-100px;z-index:100;background:var(--color-canvas);padding:10px 16px;color:var(--color-accent);border:1px solid var(--color-border);border-radius:4px}.skip-link:focus{top:12px}
+.site-footer{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px 24px;margin-top:48px;padding:24px 0 32px;border-top:1px solid var(--color-border);color:var(--color-ink-muted);font-size:11px}.site-footer nav{display:flex;gap:18px;flex-wrap:wrap}.site-footer a:hover{color:var(--color-accent)}
+.page-heading{margin:0 0 30px;font-size:34px;line-height:1.4;letter-spacing:-1.2px;font-weight:600}
+@media(min-width:1300px){.site-shell{padding-top:58px}}
+@media(max-width:850px){.site-shell{padding:32px 28px 0;grid-template-columns:130px minmax(0,1fr);gap:30px}}
+@media(max-width:600px){.site-shell{display:block;padding:0 22px}.site-main{padding-top:32px}.page-heading{font-size:28px}.site-footer{margin-top:36px;font-size:10px}.site-footer nav{gap:14px}}
+@media(max-width:360px){.site-shell{padding-inline:18px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
 /*
  * 글 본문 타이포그래피 (기술포스팅.dc.html 기준).
@@ -88,7 +111,7 @@
 
   .prose p {
     font-size: 17px;
-    line-height: 1.8;
+    line-height: 1.9;
     color: color-mix(in oklab, var(--color-ink) 88%, var(--color-canvas));
     margin: 0 0 22px;
   }

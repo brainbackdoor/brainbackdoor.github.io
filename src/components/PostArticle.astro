@@ -8,33 +8,35 @@ import ReadingProgress from './ReadingProgress.astro';
 import CodeCopyButton from './CodeCopyButton.astro';
 import { loadPosts, toSummary } from '../lib/collection';
 import { adjacentPosts, relatedPosts } from '../lib/posts';
+import '../styles/post-content.css';
 
 interface Props {
   entry: CollectionEntry<'posts'>;
   lang: string;
 }
 const { entry, lang } = Astro.props;
-
 const { Content, headings } = await render(entry);
 const post = toSummary(entry);
 const pool = await loadPosts(lang);
-
 const related = relatedPosts(post, pool);
 const { prev, next } = adjacentPosts(post, pool);
 ---
 
 <ReadingProgress />
-
-<div class="grid items-start gap-16 lg:grid-cols-[1fr_220px]">
-  <article class="min-w-0 pt-14 pb-10" data-pagefind-body>
-    <PostMeta post={post} />
-    <div class="prose">
-      <Content />
-    </div>
-  </article>
-  <TableOfContents headings={headings} />
+<div class="post-page" id="post-top">
+  <div class="reading-layout">
+    <article class="post-article" data-pagefind-body>
+      <PostMeta post={post} />
+      <TableOfContents headings={headings} lang={lang} variant="mobile" />
+      <div class="prose post-content">
+        <Content />
+      </div>
+    </article>
+    <TableOfContents headings={headings} lang={lang} variant="desktop" />
+  </div>
+  <div class="post-navigation" data-pagefind-ignore>
+    <RelatedPosts posts={related} lang={lang} />
+    <AdjacentNav prev={prev} next={next} lang={lang} />
+  </div>
 </div>
-
-<RelatedPosts posts={related} />
-<AdjacentNav prev={prev} next={next} />
-<CodeCopyButton />
+<CodeCopyButton lang={lang} />

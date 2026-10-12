@@ -17,12 +17,12 @@ const { tag } = Astro.params;
 const { posts } = Astro.props;
 ---
 
-<BaseLayout title={`#${tag} · 씨유`} description={`${tag} 태그가 붙은 글.`} narrow>
-  <section class="pt-16 pb-8">
+<BaseLayout title={`#${tag} · 씨유`} description={`${tag} 태그가 붙은 글.`} active="archive" narrow>
+  <section class="pb-8">
     <a href="/tags" class="text-[13px] text-ink-faint transition-colors hover:text-ink-subtle">
       ← 태그 목록
     </a>
-    <h1 class="mt-6 mb-0 text-[30px] leading-[1.15] font-extrabold tracking-[-0.03em] sm:text-[44px] sm:leading-[1.12]">
+    <h1 class="mt-5 text-[28px] leading-[1.4] font-semibold tracking-[-0.03em] sm:text-[34px]">
       #{tag}
     </h1>
     <p class="mt-3 text-[15px] text-ink-muted">{posts.length}편</p>

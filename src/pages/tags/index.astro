@@ -6,15 +6,8 @@ import { collectTags } from '../../lib/posts';
 const tags = collectTags(await loadPosts('ko'));
 ---
 
-<BaseLayout title="태그 · 씨유" description="태그로 글을 모아 봅니다." narrow>
-  <section class="pt-16 pb-10">
-    <div class="mb-4.5 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
-      태그
-    </div>
-    <h1 class="m-0 text-[30px] leading-[1.15] font-extrabold tracking-[-0.03em] sm:text-[44px] sm:leading-[1.12]">
-      태그로 찾기
-    </h1>
-  </section>
+<BaseLayout title="태그 · 씨유" description="태그로 글을 모아 봅니다." active="archive" narrow>
+  <h1 class="page-heading">태그</h1>
 
   <div class="flex flex-wrap gap-2.5 pb-18">
     {

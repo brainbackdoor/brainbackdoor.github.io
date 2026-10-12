@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { curricula } from '../../data/curricula';
+---
+
+<BaseLayout title="커리큘럼 · 씨유" description="인프라공방과 커리큘럼별 실습 미션, 학습 자료." active="curricula">
+  <header class="catalog-intro"><h1>커리큘럼</h1></header>
+  <section aria-label="커리큘럼 목록">
+    {curricula.map((course) => (
+      <article class="course"><a class="course-link" href={course.href}>
+        <div class="course-visual" aria-hidden="true">
+          <svg viewBox="0 0 180 90" fill="none">
+            <rect x="13" y="29" width="42" height="33" rx="5" fill="white" stroke="currentColor" />
+            <path d="M21 38h25M21 46h14M55 45h22M108 45h22" stroke="#86a9d9" />
+            <rect x="77" y="29" width="31" height="33" rx="5" fill="white" stroke="currentColor" />
+            <path d="M84 38h17M84 45h17M84 52h17" stroke="#86a9d9" />
+            <path d="M131 34v23c0 9 30 9 30 0V34" fill="white" stroke="currentColor" />
+            <ellipse cx="146" cy="34" rx="15" ry="6" fill="white" stroke="currentColor" />
+          </svg>
+        </div>
+        <div class="course-content"><span class="course-kicker">{course.category}</span><h2>{course.title}</h2><p class="course-topics">{course.topics.join(' · ')}</p></div>
+        <span class="course-arrow" aria-hidden="true">→</span>
+      </a></article>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .catalog-intro { padding-bottom: 34px; }
+  .catalog-intro h1 { margin: 0; font-size: 35px; font-weight: 600; letter-spacing: -1.3px; }
+  .course { border-bottom: 1px solid var(--color-border); }
+  .course:first-child { border-top: 1px solid var(--color-border); }
+  .course-link { display: grid; grid-template-columns: 156px minmax(0, 1fr) 24px; align-items: center; gap: 28px; padding: 24px 0; }
+  .course-visual { padding: 20px 10px; border-radius: 5px; background: var(--color-surface); color: var(--color-accent); }
+  .course-visual svg { display: block; width: 100%; height: auto; }
+  .course-content { min-width: 0; }
+  .course-kicker { display: block; margin-bottom: 6px; color: var(--color-ink-muted); font-size: 11px; }
+  .course-content h2 { margin: 0; font-size: 23px; font-weight: 600; letter-spacing: -.6px; }
+  .course-topics { margin: 8px 0 0; color: var(--color-ink-muted); font-size: 12px; }
+  .course-arrow { color: var(--color-accent); font-size: 22px; }
+  .course-link:hover h2 { color: var(--color-accent); }
+  @media (max-width: 600px) {
+    .catalog-intro { padding: 0 0 26px; }
+    .catalog-intro h1 { font-size: 28px; }
+    .course-link { grid-template-columns: 74px minmax(0, 1fr) 16px; gap: 16px; padding: 23px 0; }
+    .course-visual { padding: 17px 3px; }
+    .course-content h2 { font-size: 19px; }
+    .course-kicker { font-size: 10px; }
+    .course-topics { font-size: 11px; line-height: 1.8; }
+    .course-arrow { font-size: 18px; }
+  }
+</style>

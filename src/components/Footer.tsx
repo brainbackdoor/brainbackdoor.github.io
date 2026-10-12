@@ -1,36 +1,16 @@
-import { HStack } from '@astryxdesign/core/Layout';
-import { Text } from '@astryxdesign/core/Text';
-import { Link } from '@astryxdesign/core/Link';
+import { contact, sns } from '../data/about';
 
-const links = [
-  { label: 'GitHub', href: 'https://github.com/brainbackdoor' },
-  { label: 'LinkedIn', href: '#' },
-  { label: 'Mail', href: 'mailto:brainbackdoor@gmail.com' },
-];
+const links = sns.filter(link => ['GitHub', 'LinkedIn'].includes(link.label));
 
 export default function Footer() {
-  const year = new Date().getFullYear();
   return (
-    <footer style={{ borderTop: '1px solid var(--color-border)', background: 'var(--color-background-muted)' }}>
-      <div style={{ maxWidth: 1120, margin: '0 auto', padding: '28px 32px' }}>
-        <HStack justify="between" vAlign="center">
-          <Text type="supporting" color="secondary">© 2016–{year} 이동규 · brainbackdoor</Text>
-          <HStack gap={5} vAlign="center">
-            {links.map((l) => (
-              <Link key={l.href} href={l.href}>
-                <Text type="supporting" as="span">
-                  {l.label}
-                </Text>
-              </Link>
-            ))}
-            <Link href="/rss.xml">
-              <Text type="supporting" as="span" weight="semibold" color="accent">
-                RSS
-              </Text>
-            </Link>
-          </HStack>
-        </HStack>
-      </div>
+    <footer className="site-footer" data-pagefind-ignore>
+      <p>© 2016–{new Date().getFullYear()} 이동규</p>
+      <nav aria-label="외부 링크">
+        {links.map(link => <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>)}
+        <a href={`mailto:${contact}`}>이메일</a>
+        <a href="/rss.xml">RSS</a>
+      </nav>
     </footer>
   );
 }

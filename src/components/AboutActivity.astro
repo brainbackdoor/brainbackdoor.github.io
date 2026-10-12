@@ -8,19 +8,19 @@ interface Props {
 const { activity } = Astro.props;
 ---
 
-<article class="border-t border-ink/10 py-7 first:border-t-0">
-  <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-    <h3 class="text-[17px] font-bold tracking-[-0.02em]">{activity.title}</h3>
-    <div class="shrink-0 text-[12.5px] text-ink-faint tabular-nums">
+<article class="about-entry project-entry">
+  <div class="entry-heading">
+    <h3>{activity.title}</h3>
+    <div class="entry-date">
       {activity.org} · {activity.period}
     </div>
   </div>
 
   {
     activity.bullets.length > 0 && (
-      <ul class="mt-3 flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
+      <ul class="about-bullets">
         {activity.bullets.map((b) => (
-          <li class="text-[14.5px] leading-relaxed text-ink-muted" set:html={renderInline(b)} />
+          <li set:html={renderInline(b)} />
         ))}
       </ul>
     )
@@ -28,18 +28,18 @@ const { activity } = Astro.props;
 
   {
     activity.subProjects && activity.subProjects.length > 0 && (
-      <div class="mt-4 flex flex-col gap-4 border-l border-ink/8 pl-4">
+      <div class="sub-entry">
         {activity.subProjects.map((sp) => (
-          <div>
-            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+          <div class="project-subentry">
+            <div class="entry-heading">
               <h4 class="text-[14.5px] font-semibold tracking-[-0.01em]">{sp.title}</h4>
               {sp.period && (
-                <div class="shrink-0 text-[12px] text-ink-faint tabular-nums">{sp.period}</div>
+                <div class="entry-date">{sp.period}</div>
               )}
             </div>
-            <ul class="mt-2 flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
+            <ul class="about-bullets">
               {sp.bullets.map((b) => (
-                <li class="text-[14px] leading-relaxed text-ink-subtle" set:html={renderInline(b)} />
+                <li set:html={renderInline(b)} />
               ))}
             </ul>
           </div>

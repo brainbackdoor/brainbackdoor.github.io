@@ -3,49 +3,50 @@ import { categoryLabel } from '../lib/categories';
 import { formatDate } from '../lib/date';
 import type { PostSummary } from '../lib/posts';
 
-interface Props {
-  post: PostSummary;
-}
+interface Props { post: PostSummary; }
 const { post } = Astro.props;
-
-const date = formatDate(post.pubDate);
+const en = post.lang === 'en';
+const categories = { retrospect: 'Reflections', infra: 'Infrastructure', guide: 'Guides', life: 'Life' };
 ---
 
-<a
-  href="/posts"
-  data-pagefind-ignore
-  class="text-[13px] text-ink-faint transition-colors hover:text-ink-subtle"
->
-  ← 목차로
-</a>
-
-<div class="mt-6.5 mb-3.5 text-[11px] font-semibold tracking-[0.12em] text-accent uppercase">
-  {categoryLabel(post.category)}
-</div>
-
-<h1
-  class="m-0 text-[28px] leading-[1.22] font-extrabold tracking-[-0.03em] text-balance sm:text-[40px] sm:leading-[1.18]"
->
-  {post.title}
-</h1>
-
-<div class="mt-5.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 font-mono text-[13px] text-ink-faint">
-  <span>{date}</span><span>·</span><span>{post.minutes}분 읽기</span><span>·</span><span>이동규</span>
-</div>
-
-{
-  post.tags.length > 0 && (
-    <div class="mt-4.5 flex flex-wrap gap-2">
-      {post.tags.map((tag) => (
-        <a
-          href={`/tags/${encodeURIComponent(tag)}`}
-          class="rounded-[14px] bg-ink/5 px-3 py-[5px] text-xs text-ink-subtle transition-colors hover:bg-ink/10 hover:text-ink"
-        >
-          #{tag}
-        </a>
-      ))}
+<nav class="post-breadcrumb" aria-label={en ? 'Breadcrumb' : '현재 위치'} data-pagefind-ignore>
+  <a href={en ? '/en/posts' : '/posts'}>{en ? 'Posts' : '글'}</a>
+  <span aria-hidden="true">/</span>
+  <span>{en ? categories[post.category] : categoryLabel(post.category)}</span>
+</nav>
+<header class="post-header">
+  <h1>{post.title}</h1>
+  <p class="post-description">{post.description}</p>
+  <div class="post-meta">
+    <a class="post-author" href="/about"><img src="/me.webp" width="25" height="25" alt="" />{en ? 'Donggyu Lee' : '이동규'}</a>
+    <time datetime={post.pubDate.toISOString()}>{formatDate(post.pubDate)}</time>
+    <span>{en ? `${post.minutes} min read` : `약 ${post.minutes}분`}</span>
+  </div>
+  {post.tags.length > 0 && (
+    <div class="post-tags" data-pagefind-ignore>
+      {post.tags.map((tag) => <a href={`/tags/${encodeURIComponent(tag)}`}>{tag}</a>)}
     </div>
-  )
-}
+  )}
+</header>
 
-<div class="my-8 h-px bg-ink/10"></div>
+<style>
+  .post-breadcrumb { display:flex;gap:9px;align-items:center;font-size:12px;color:var(--color-ink-muted);margin:4px 0 30px; }
+  .post-breadcrumb a:hover { color:var(--color-accent); }
+  .post-header { margin-bottom:35px; }
+  h1 { margin:0;font-size:40px;font-weight:600;letter-spacing:-.045em;line-height:1.38;overflow-wrap:anywhere;text-wrap:balance; }
+  .post-description { font-size:18px;line-height:1.8;color:var(--color-ink-muted);margin-top:17px;word-break:keep-all;overflow-wrap:anywhere; }
+  .post-meta { display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--color-ink-muted);margin-top:24px; }
+  .post-author { display:flex;align-items:center;gap:7px;color:var(--color-ink); }
+  .post-author img { width:25px;height:25px;object-fit:cover;border-radius:50%; }
+  .post-tags { display:flex;gap:12px;flex-wrap:wrap;margin-top:13px;font-size:12px;color:var(--color-accent); }
+  .post-tags a { border-bottom:1px solid #bbd0ee;padding-bottom:1px; }
+  .post-tags a:hover { border-color:var(--color-accent); }
+  @media(max-width:1100px) { h1 {font-size:37px}.post-header {margin-bottom:28px} }
+  @media(max-width:600px) {
+    .post-breadcrumb {margin:0 0 23px;font-size:11px}
+    h1 {font-size:31px;line-height:1.5}
+    .post-description {font-size:16px;margin-top:14px}
+    .post-meta {gap:14px;font-size:11px;margin-top:21px}
+    .post-tags {margin-top:15px}
+  }
+</style>

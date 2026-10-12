@@ -1,164 +1,107 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { loadPosts } from '../lib/collection';
-import { splitFeatured, categoryCards } from '../lib/home';
-import MediaTile from '../components/MediaTile.astro';
-import { categoryLabel, categoryEmoji } from '../lib/categories';
+import { categoryLabel } from '../lib/categories';
 import { formatDate } from '../lib/date';
-import { current } from '../data/about';
+import { curricula } from '../data/curricula';
+import { missions } from '../data/infra';
+import TcpRecoveryFigure from '../components/figures/TcpRecoveryFigure';
 
 const posts = await loadPosts('ko');
-const { featured, recent } = splitFeatured(posts, 5);
-const cards = categoryCards(posts);
-const total = posts.length;
+const featured = posts.find((post) => post.slug === 'tcp-error-recovery') ?? posts[0];
+const recent = posts.filter((post) => post !== featured).slice(0, 5);
+const curriculum = curricula.find((course) => course.id === 'infra');
 ---
 
-<BaseLayout title="씨유 · brainbackdoor" description="이동규의 기술 블로그" active="home">
-  <!-- 히어로 -->
-  <section class="py-20 sm:py-24">
-    <div class="flex items-center gap-2.5 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
-      <span class="size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
-      이동규 · brainbackdoor
-    </div>
-    <h1 class="mt-6 max-w-[900px] text-[38px] leading-[1.08] font-extrabold tracking-[-0.04em] text-balance sm:text-[60px]">
-      오늘도 한 방울의 맑은 물이 되리라.
-    </h1>
-    <p class="mt-6 max-w-[600px] text-[17px] leading-relaxed text-ink-muted sm:text-lg">
-      소프트웨어·교육·삶을 오가며 남기는 기록. 프로덕트 엔지니어이자 교육자로 일하며
-      배운 것들을 조용히 정리합니다.
-    </p>
-  </section>
-
-  <!-- 이달의 글 + 사이드바 -->
-  <section class="grid grid-cols-1 gap-12 pb-16 lg:grid-cols-[1fr_260px]">
-    <div>
-      <div class="mb-4 text-xs font-semibold tracking-[0.16em] text-accent uppercase">이달의 글</div>
-      {
-        featured ? (
-          <a href={featured.href} class="group block">
-            <MediaTile
-              image={featured.image}
-              icon={featured.icon ?? categoryEmoji(featured.category)}
-              class="h-[260px] w-full rounded-[20px] ring-1 ring-ink/5 ring-inset"
-              emojiClass="text-[64px] leading-none"
-              eager
-            />
-            <div class="mt-5 text-[11px] font-semibold tracking-[0.12em] text-accent uppercase">
-              {categoryLabel(featured.category)}
-            </div>
-            <h2 class="mt-2.5 max-w-[640px] text-[28px] leading-[1.14] font-extrabold tracking-[-0.03em] text-balance group-hover:text-accent sm:text-[36px]">
-              {featured.title}
-            </h2>
-            <p class="mt-3.5 max-w-[560px] text-[16px] leading-relaxed text-ink-muted">
-              {featured.description}
-            </p>
-            <div class="mt-4 text-[13px] text-ink-faint tabular-nums">
-              {formatDate(featured.pubDate)} · {featured.minutes}분 읽기
-            </div>
-          </a>
-        ) : (
-          <p class="text-[15px] text-ink-subtle">
-            아직 발행한 글이 없습니다. 곧 첫 글이 올라옵니다.
-          </p>
-        )
-      }
-    </div>
-
-    <aside>
-      <div class="mb-2 flex items-center gap-2 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
-        <span class="size-1.5 rounded-full bg-current-dot" aria-hidden="true"></span>
-        지금 하는 일
-      </div>
+<BaseLayout title="씨유 · brainbackdoor" description="이동규의 기술과 일상" active="home">
+  <header class="home-intro"><h1>씨유의 기록</h1></header>
+  {featured && (
+    <section class="home-feature" aria-label="함께 읽을 글">
       <div>
-        {
-          current.map((item) => (
-            <a
-              href={item.href ?? '/about'}
-              class="group flex items-center gap-3 border-t border-ink/6 py-3 first:border-t-0"
-            >
-              <MediaTile
-                image={item.image}
-                icon={item.icon}
-                class="size-[38px] shrink-0 rounded-[9px]"
-                emojiClass="text-[17px]"
-              />
-              <span class="min-w-0">
-                <span class="block truncate text-[14px] font-semibold tracking-[-0.01em] group-hover:text-accent">{item.title}</span>
-                <span class="block truncate text-[11.5px] text-ink-subtle">{item.subtitle}</span>
-              </span>
-            </a>
-          ))
-        }
+        <span class="feature-category">{categoryLabel(featured.category)}</span>
+        <h2><a href={featured.href}>{featured.title}</a></h2>
+        <p>{featured.description}</p>
+        <a class="feature-read" href={featured.href}>글 읽기 →</a>
       </div>
-      <a href="/about" class="mt-3 inline-block text-[12.5px] font-medium text-accent hover:text-accent-hover">
-        소개에서 더 보기 →
-      </a>
-    </aside>
-  </section>
+      {featured.slug === 'tcp-error-recovery' && (
+        <div class="home-diagram">
+          <TcpRecoveryFigure variant="preview" client:visible />
+        </div>
+      )}
+    </section>
+  )}
 
-  <!-- 카테고리 -->
-  <section class="pb-16">
-    <div class="mb-2 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">카테고리</div>
-    <div class="grid grid-cols-1 gap-x-14 sm:grid-cols-2">
-      {
-        cards.map((card) => (
-          <a href="/posts" class="group block border-t border-ink/10 py-6">
-            <div class="flex items-baseline justify-between gap-3">
-              <h3 class="text-[21px] font-bold tracking-[-0.02em] group-hover:text-accent">{card.label}</h3>
-              <span class="text-[13px] text-ink-faint tabular-nums">
-                {String(card.count).padStart(2, '0')}
-              </span>
-            </div>
-            <p class:list={['mt-2.5 text-[14.5px]', card.latest ? 'text-ink-subtle' : 'text-ink-faint']}>
-              {card.latest ? card.latest.title : '아직 글이 없습니다'}
-            </p>
-          </a>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- 최근 글 -->
-  <section class="pb-12">
-    <div class="mb-2 flex items-baseline justify-between gap-3">
-      <h2 class="text-[21px] font-bold tracking-[-0.02em]">최근 글</h2>
-      <a href="/posts" class="text-[13px] font-medium text-ink-faint transition-colors hover:text-ink-subtle">
-        전체 {total}편 →
-      </a>
-    </div>
-    {
-      recent.length > 0 ? (
-        <ul>
-          {recent.map((p) => (
-            <li>
-              <a
-                href={p.href}
-                class="group grid grid-cols-[52px_1fr_auto] items-center gap-4 border-t border-ink/10 py-4"
-              >
-                <MediaTile
-                  image={p.image}
-                  icon={p.icon ?? categoryEmoji(p.category)}
-                  class="size-[52px] rounded-[10px]"
-                  emojiClass="text-[22px]"
-                />
-                <span class="min-w-0">
-                  <span class="block text-[11px] font-semibold tracking-[0.1em] text-accent uppercase">
-                    {categoryLabel(p.category)}
-                  </span>
-                  <span class="mt-0.5 block truncate text-[17px] font-semibold tracking-[-0.02em] group-hover:text-accent sm:text-[18px]">
-                    {p.title}
-                  </span>
-                </span>
-                <span class="text-[12.5px] text-ink-faint tabular-nums">
-                  {formatDate(p.pubDate)} · {p.minutes}분
-                </span>
-              </a>
-            </li>
+  <div class="home-content">
+    <section aria-labelledby="recent-title">
+      <div class="home-section-heading"><h2 id="recent-title">최근 기록</h2><a href="/posts">모든 글 보기 →</a></div>
+      {recent.length ? (
+        <ul class="home-posts">
+          {recent.map((post) => (
+            <li><a class="home-entry" href={post.href}>
+              <div class="home-entry-meta">{categoryLabel(post.category)} <time datetime={post.pubDate.toISOString()}>{formatDate(post.pubDate)}</time></div>
+              <h3>{post.title}</h3><p>{post.description}</p>
+            </a></li>
           ))}
         </ul>
-      ) : (
-        <p class="text-[15px] text-ink-subtle">아직 최근 글이 없습니다.</p>
-      )
-    }
-  </section>
+      ) : <p class="home-empty">아직 다른 글이 없습니다.</p>}
+    </section>
+    {curriculum && (
+      <aside class="home-curriculum" aria-labelledby="home-curriculum-title">
+        <a class="curriculum-label" href="/curricula">커리큘럼</a>
+        <h2 id="home-curriculum-title"><a href={curriculum.href}>{curriculum.title} →</a></h2>
+        <ol class="curriculum-path">{missions[0].steps.map((step) => <li><a href={step.href}>{step.label}</a></li>)}</ol>
+        <a class="curriculum-link" href={curriculum.href}>커리큘럼 살펴보기 →</a>
+        <a class="catalog-link" href="/curricula">모든 커리큘럼</a>
+      </aside>
+    )}
+  </div>
 </BaseLayout>
+
+<style>
+  .home-intro { padding-bottom: 38px; }
+  .home-intro h1 { margin: 0; font-size: 35px; font-weight: 600; line-height: 1.45; letter-spacing: -1.6px; }
+  .home-feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .95fr); align-items: center; gap: 28px; padding: 28px 30px 26px; border-radius: 8px; background: var(--color-surface); }
+  .feature-category { display: block; margin-bottom: 10px; color: var(--color-accent); font-size: 12px; font-weight: 600; }
+  .home-feature h2 { max-width: 270px; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -.7px; line-height: 1.5; }
+  .home-feature p { margin: 14px 0 0; color: var(--color-ink-muted); font-size: 13px; line-height: 1.9; }
+  .feature-read { display: inline-block; margin-top: 18px; padding-bottom: 2px; border-bottom: 1px solid #9ebce8; color: var(--color-accent); font-size: 13px; font-weight: 600; }
+  .home-diagram { display: block; min-width: 0; }
+  .home-content { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 42px; margin-top: 43px; }
+  .home-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .home-section-heading h2, .home-curriculum h2 { margin: 0; font-size: 16px; font-weight: 600; }
+  .home-section-heading > a { flex-shrink: 0; color: var(--color-ink-muted); font-size: 11px; }
+  .home-posts { list-style: none; margin: 0; padding: 0; }
+  .home-entry { display: block; padding: 20px 0; border-bottom: 1px solid var(--color-border); }
+  .home-entry-meta { display: flex; flex-wrap: wrap; gap: 10px; color: var(--color-ink-muted); font-size: 11px; }
+  .home-entry h3 { margin: 5px 0; font-size: 18px; font-weight: 600; letter-spacing: -.35px; line-height: 1.6; }
+  .home-entry p, .home-empty { margin: 0; color: var(--color-ink-muted); font-size: 13px; line-height: 1.9; }
+  .home-entry:hover h3 { color: var(--color-accent); }
+  .home-curriculum { padding-left: 24px; border-left: 1px solid var(--color-border); }
+  .curriculum-label { display: block; margin-bottom: 9px; color: var(--color-accent); font-size: 11px; font-weight: 600; }
+  .curriculum-path { list-style: none; margin: 22px 0 0; padding: 0; }
+  .curriculum-path li { position: relative; margin-left: 4px; padding: 0 0 23px 21px; border-left: 1px solid #b3c9e8; font-size: 13px; }
+  .curriculum-path li:last-child { padding-bottom: 0; border-color: transparent; }
+  .curriculum-path li::before { content: ''; position: absolute; top: 7px; left: -5px; width: 8px; height: 8px; border: 2px solid var(--color-accent); border-radius: 50%; background: var(--color-canvas); }
+  .curriculum-link { display: block; margin-top: 24px; color: var(--color-accent); font-size: 11px; font-weight: 600; }
+  .catalog-link { display: inline-block; margin-top: 10px; border-bottom: 1px solid var(--color-border); color: var(--color-ink-muted); font-size: 11px; }
+  @media (max-width: 850px) {
+    .home-intro h1 { font-size: 30px; }
+    .home-feature { grid-template-columns: 1fr; }
+    .home-diagram { max-width: 320px; }
+    .home-content { grid-template-columns: 1fr; }
+    .home-curriculum { padding: 24px 0 0; border-left: 0; border-top: 1px solid var(--color-border); }
+    .curriculum-path { display: flex; gap: 16px; }
+    .curriculum-path li { flex: 1; padding-left: 14px; border-left: 0; }
+  }
+  @media (max-width: 600px) {
+    .home-intro { padding: 0 0 28px; }
+    .home-intro h1 { font-size: 28px; letter-spacing: -1.3px; }
+    .home-feature { gap: 20px; padding: 24px; }
+    .home-feature h2 { max-width: none; font-size: 23px; }
+    .home-diagram { max-width: none; }
+    .home-content { gap: 27px; margin-top: 31px; }
+    .curriculum-path { display: block; }
+    .curriculum-path li { padding-left: 21px; border-left: 1px solid #b3c9e8; }
+    .curriculum-path li:last-child { border-color: transparent; }
+  }
+</style>

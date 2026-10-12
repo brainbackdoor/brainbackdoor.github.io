@@ -6,38 +6,46 @@ category: infra
 tags: ['TCP', '네트워크', '트러블슈팅']
 ---
 
+import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
+
 Even a connection that looks stable constantly meets packet loss, delay, and reordering. The reliable stream we get exists thanks to the intricate recovery mechanisms running underneath.
+
+<TcpRecoveryFigure client:visible lang="en" />
 
 ## Two triggers for retransmission
 
 TCP detects loss two ways: a timeout (RTO), and fast retransmit via duplicate ACKs. The former is conservative and slow; the latter is aggressive and fast.
 
-> On three duplicate ACKs, TCP retransmits the segment immediately without waiting for a timeout.
+> On three duplicate ACKs, TCP retransmits the segment presumed lost without waiting for a timeout. ([RFC 5681, section 3.2](https://www.rfc-editor.org/rfc/rfc5681#section-3.2))
 
 ## How RTO is computed
 
 RTO is not a fixed value — it is continuously estimated from the observed round-trip time (RTT).
 
 ```js
-// Jacobson/Karels RTO estimation
-SRTT   = (1 - a) * SRTT   + a * R        // a = 1/8
-RTTVAR = (1 - b) * RTTVAR + b * abs(SRTT - R)
-RTO    = SRTT + 4 * RTTVAR               // clamped to a 1s minimum
+// Pseudocode for a new sample R after the first RTT measurement
+alpha = 1 / 8
+beta  = 1 / 4
+
+// Compute variation using SRTT before it is updated
+RTTVAR = (1 - beta) * RTTVAR + beta * abs(SRTT - R)
+SRTT   = (1 - alpha) * SRTT + alpha * R
+RTO    = SRTT + max(G, 4 * RTTVAR) // G: clock granularity
+RTO    = max(RTO, 1 second)        // RFC 6298 recommended minimum
 ```
 
-If no ACK arrives within the estimated `RTO`, the segment is treated as lost and RTO doubles exponentially.
+`RTTVAR` is computed using `SRTT` before it is updated. When the timer expires, TCP retransmits the unacknowledged data, doubles RTO, and restarts the timer. The calculation and timer behavior are defined in [RFC 6298](https://www.rfc-editor.org/rfc/rfc6298).
 
 ## Confirming in practice
 
 To observe retransmission in real traffic, capture with `tcpdump` and follow the flow.
 
 ```bash
-# filter only retransmissions to a specific host
-tcpdump -i eth0 'tcp[tcpflags] & tcp-push != 0' \
-  -n host 10.0.1.42
+# Save TCP traffic for a specific host on eth0
+tcpdump -i eth0 -nn -w tcp-flow.pcap 'tcp and host 10.0.1.42'
 ```
 
-Once the retransmission rate climbs past 1%, it usually signals a bottleneck in the network path or the receive buffer.
+Follow sequence numbers and ACKs in the same connection to identify retransmissions in the capture. The PSH flag alone cannot identify retransmissions. Assess the retransmission rate alongside its normal baseline, RTT, packet loss, and receive window size.
 
 ## Wrap-up
 

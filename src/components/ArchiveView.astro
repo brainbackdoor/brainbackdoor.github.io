@@ -3,37 +3,82 @@ import CategoryFilter, { type FilterablePost } from './CategoryFilter';
 import { loadPosts } from '../lib/collection';
 import { formatShortDate, getYear } from '../lib/date';
 
-interface Props {
-  lang: string;
-}
+interface Props { lang: string; }
 const { lang } = Astro.props;
-
 const posts = await loadPosts(lang);
-
-const items: FilterablePost[] = posts.map((p) => ({
-  title: p.title,
-  category: p.category,
-  href: p.href,
-  year: getYear(p.pubDate),
-  meta: `${formatShortDate(p.pubDate)} · ${p.minutes}분`,
+const items: FilterablePost[] = posts.map((post) => ({
+  title: post.title,
+  description: post.description,
+  tags: post.tags,
+  category: post.category,
+  href: post.href,
+  year: getYear(post.pubDate),
+  date: formatShortDate(post.pubDate),
+  dateTime: post.pubDate.toISOString(),
+  minutes: post.minutes,
 }));
-
-const firstYear = posts.length
-  ? getYear(posts[posts.length - 1].pubDate)
-  : String(new Date().getUTCFullYear());
 ---
 
-<section class="pt-16 pb-10">
-  <div class="mb-4.5 text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">
-    아카이브
-  </div>
-  <h1 class="m-0 text-[30px] leading-[1.15] font-extrabold tracking-[-0.03em] sm:text-[44px] sm:leading-[1.12]">
-    기록의 목차
-  </h1>
-  <p class="mt-4 text-[17px] leading-relaxed text-ink-muted">
-    {firstYear}년부터 남긴 {posts.length}편의 글. 카테고리로 골라 보거나, 아래에서
-    연도별로 훑어보세요.
-  </p>
-</section>
+<div class="archive-page">
+  <header class="archive-intro"><h1>{lang === 'en' ? 'Posts' : '글'}</h1></header>
+  <CategoryFilter posts={items} lang={lang} client:load />
+  <div class="archive-end"><a href="https://www.brainbackdoor.com/">{lang === 'en' ? 'Earlier posts ↗' : '더 오래된 기록 ↗'}</a></div>
+</div>
 
-<CategoryFilter posts={items} client:load />
+<style>
+  .archive-intro { padding-bottom: 29px; }
+  .archive-intro h1 { margin: 0; font-size: 38px; font-weight: 600; letter-spacing: -1.4px; }
+  .archive-page :global(.archive-controls) { margin-bottom: 35px; }
+  .archive-page :global(.archive-search) { display: flex; align-items: center; gap: 12px; height: 48px; border: 1px solid #b9cbdf; border-radius: 5px; background: var(--color-canvas); }
+  .archive-page :global(.archive-search svg) { flex: none; width: 18px; height: 18px; margin-left: 16px; color: var(--color-ink-muted); }
+  .archive-page :global(.archive-search input) { min-width: 0; width: 100%; height: 100%; padding: 0 14px 0 0; border: 0; outline: none; background: transparent; color: var(--color-ink); font: inherit; font-size: 13px; }
+  .archive-page :global(.archive-search:focus-within) { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .archive-page :global(.archive-search input::placeholder) { color: var(--color-ink-muted); }
+  .archive-page :global(.archive-filters) { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .archive-page :global(.archive-filters button) { padding: 7px 11px; border: 0; border-radius: 4px; background: transparent; color: var(--color-ink-muted); font: inherit; font-size: 12px; white-space: nowrap; cursor: pointer; }
+  .archive-page :global(.archive-filters button:hover) { background: #f3f6fa; }
+  .archive-page :global(.archive-filters button[aria-pressed='true']) { background: var(--color-surface); color: var(--color-accent); font-weight: 600; }
+  .archive-page :global(.archive-filters button span) { margin-left: 6px; font-size: 10px; font-weight: 400; }
+  .archive-page :global(.archive-result) { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding-bottom: 13px; border-bottom: 1px solid var(--color-border); color: var(--color-ink-muted); font-size: 11px; }
+  .archive-page :global(.archive-result-meta) { display: flex; align-items: baseline; gap: 13px; }
+  .archive-page :global(.archive-reset) { padding: 0; border: 0; border-bottom: 1px solid #b3c7df; background: transparent; color: var(--color-accent); font: inherit; cursor: pointer; }
+  .archive-page :global(.archive-year) { display: grid; grid-template-columns: 66px minmax(0, 1fr); gap: 25px; }
+  .archive-page :global(.archive-year h2) { margin: 0; padding-top: 27px; color: var(--color-ink-muted); font-size: 13px; font-weight: 500; line-height: 1.6; }
+  .archive-page :global(.archive-year ul) { min-width: 0; margin: 0; padding: 0; list-style: none; }
+  .archive-page :global(.archive-post) { padding: 25px 0 24px; border-bottom: 1px solid var(--color-border); }
+  .archive-page :global(.archive-category) { margin-bottom: 6px; color: var(--color-accent); font-size: 11px; line-height: 1.6; }
+  .archive-page :global(.archive-post-heading) { display: flex; align-items: baseline; justify-content: space-between; gap: 23px; }
+  .archive-page :global(.archive-post h3) { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -.5px; line-height: 1.5; }
+  .archive-page :global(.archive-post h3 a:hover) { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+  .archive-page :global(.archive-post time) { color: var(--color-ink-muted); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .archive-page :global(.archive-post p) { max-width: 570px; margin: 7px 0 0; color: var(--color-ink-muted); font-size: 13px; line-height: 1.85; word-break: keep-all; overflow-wrap: anywhere; }
+  .archive-page :global(.archive-reading-time) { display: block; margin-top: 7px; color: var(--color-ink-muted); font-size: 11px; }
+  .archive-page :global(.archive-empty) { padding: 58px 20px 65px; border-bottom: 1px solid var(--color-border); text-align: center; }
+  .archive-page :global(.archive-empty h2) { margin: 0; font-size: 19px; font-weight: 500; }
+  .archive-page :global(.archive-empty p) { margin: 10px 0 22px; color: var(--color-ink-muted); font-size: 13px; line-height: 1.8; }
+  .archive-page :global(.archive-empty button) { padding: 10px 14px; border: 1px solid #b7cce7; border-radius: 4px; background: var(--color-surface); color: var(--color-accent); font: inherit; font-size: 12px; cursor: pointer; }
+  .archive-end { display: flex; justify-content: flex-end; margin-top: 31px; font-size: 11px; }
+  .archive-end a { color: var(--color-accent); text-decoration: underline; text-decoration-color: #b3c7df; text-underline-offset: 4px; }
+  @media (max-width: 950px) {
+    .archive-page :global(.archive-year) { grid-template-columns: 49px minmax(0, 1fr); gap: 17px; }
+    .archive-page :global(.archive-post h3) { font-size: 18px; }
+    .archive-page :global(.archive-post-heading) { gap: 16px; }
+  }
+  @media (max-width: 600px) {
+    .archive-intro { padding-bottom: 24px; }
+    .archive-intro h1 { font-size: 31px; letter-spacing: -1px; }
+    .archive-page :global(.archive-controls) { margin-bottom: 25px; }
+    .archive-page :global(.archive-search) { height: 46px; }
+    .archive-page :global(.archive-filters) { gap: 2px; margin-top: 11px; }
+    .archive-page :global(.archive-filters button) { min-height: 44px; padding: 6px 8px; }
+    .archive-page :global(.archive-result) { gap: 12px; padding-bottom: 11px; }
+    .archive-page :global(.archive-result-meta) { gap: 10px; }
+    .archive-page :global(.archive-year) { display: block; }
+    .archive-page :global(.archive-year h2) { padding-top: 22px; font-size: 12px; }
+    .archive-page :global(.archive-post) { padding: 18px 0 19px; }
+    .archive-page :global(.archive-post-heading) { gap: 14px; }
+    .archive-page :global(.archive-post h3) { font-size: 17px; letter-spacing: -.35px; line-height: 1.6; }
+    .archive-page :global(.archive-post p) { font-size: 12px; }
+    .archive-end { margin-top: 25px; }
+  }
+</style>

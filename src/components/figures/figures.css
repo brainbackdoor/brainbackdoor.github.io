@@ -1,0 +1,52 @@
+.animated-figure {
+  container-type: inline-size;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  margin: 24px 0;
+  padding: 20px;
+  background: var(--color-figure-bg, #fff);
+  border: 1px solid var(--color-figure-border, #dee2e6);
+  border-radius: 8px;
+  font-family: var(--font-sans, sans-serif);
+}
+.animated-figure .animated-figure__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; margin-bottom: 18px; }
+.animated-figure__header strong { color: var(--color-figure-text); font-size: 13px; line-height: 1.6; font-weight: 600; }
+.animated-figure__header button { appearance: none; flex-shrink: 0; min-height: 40px; padding: 6px 10px; border: 1px solid var(--color-figure-grid); border-radius: 4px; background: var(--color-figure-bg); color: var(--color-figure-muted); font: inherit; font-size: 12px; line-height: 1.6; cursor: pointer; }
+.animated-figure__header button:hover { color: var(--color-figure-blue-text); border-color: var(--color-figure-blue); }
+.animated-figure__header button:focus-visible { outline: 2px solid var(--color-figure-blue-text); outline-offset: 3px; }
+.animated-figure .tcp-figure__panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.tcp-figure__panel { min-width: 0; }
+.tcp-figure__panel-title { display: inline-flex; align-items: center; gap: 6px; padding: 3px 7px; margin: 0 0 14px; border-radius: 4px; color: var(--color-figure-text); background: color-mix(in srgb, var(--color-figure-blue) 10%, var(--color-figure-bg)); font-size: 12px; line-height: 1.6; font-weight: 500; }
+.tcp-figure__panel-title span { width: 6px; height: 6px; border-radius: 50%; background: var(--color-figure-blue); }
+.tcp-figure__panel[data-scenario="loss"] .tcp-figure__panel-title { background: color-mix(in srgb, var(--color-figure-orange) 10%, var(--color-figure-bg)); }
+.tcp-figure__panel[data-scenario="loss"] .tcp-figure__panel-title span { background: var(--color-figure-orange); }
+.tcp-figure__plot { position: relative; width: 100%; height: 306px; }
+.animated-figure .tcp-figure__plot canvas, .animated-figure .tcp-figure__fallback { position: absolute; display: block; inset: 0; width: 100%; height: 306px; margin: 0; border: 0; max-width: 100%; }
+.tcp-figure__fallback { font: 13px var(--font-sans, sans-serif); text-anchor: middle; }
+.tcp-figure__plot canvas { visibility: hidden; }
+.tcp-figure__panel[data-ready="true"] canvas { visibility: visible; }
+.tcp-figure__panel[data-ready="true"] .tcp-figure__fallback { display: none; }
+.animated-figure .tcp-figure__description { min-height: 44px; margin: 14px 0 0; color: var(--color-figure-muted); font-size: 12px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere; }
+.animated-figure > figcaption { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid var(--color-figure-grid); color: var(--color-figure-muted); text-align: left; font-size: 11px; line-height: 1.8; word-break: keep-all; }
+@container (max-width: 559px) {
+  .animated-figure .tcp-figure__panels { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .tcp-figure__panel + .tcp-figure__panel { padding-top: 22px; border-top: 1px solid var(--color-figure-grid); }
+}
+@media (max-width: 600px) { .animated-figure { padding: 18px 16px; } }
+@media (prefers-reduced-motion: reduce) { .animated-figure__header button { display: none; } }
+@media print {
+  .animated-figure__header button, .animated-figure .tcp-figure__plot canvas { display: none; }
+  .animated-figure .tcp-figure__panel .tcp-figure__fallback { display: block; }
+}
+
+/* Home previews keep the same renderer and timing, with one compact panel. */
+.animated-figure.animated-figure--preview { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.animated-figure--preview .animated-figure__header { justify-content: flex-end; min-height: 36px; margin-bottom: 4px; }
+.animated-figure--preview .animated-figure__header button { min-height: 36px; padding: 4px 9px; font-size: 11px; }
+.animated-figure--preview .animated-figure__header strong,
+.animated-figure--preview > figcaption { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.animated-figure.animated-figure--preview .tcp-figure__panels { grid-template-columns: minmax(0, 1fr); gap: 0; }
+.animated-figure--preview .tcp-figure__plot,
+.animated-figure--preview .tcp-figure__plot canvas,
+.animated-figure--preview .tcp-figure__fallback { height: 246px; }

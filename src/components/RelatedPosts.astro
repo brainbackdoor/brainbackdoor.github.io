@@ -1,38 +1,29 @@
 ---
-import { Card } from '@astryxdesign/core/Layout';
 import { categoryLabel } from '../lib/categories';
 import { formatDate } from '../lib/date';
 import type { PostSummary } from '../lib/posts';
-
-interface Props {
-  posts: PostSummary[];
-}
-const { posts } = Astro.props;
-
-function meta(p: PostSummary): string {
-  return `${formatDate(p.pubDate)} · ${p.minutes}분`;
-}
+interface Props { posts: PostSummary[]; lang?: string; }
+const { posts, lang = 'ko' } = Astro.props;
+const en = lang === 'en';
 ---
 
-{
-  posts.length > 0 && (
-    <section class="border-t border-ink/12 py-11">
-      <div class="mb-6 text-[11px] font-semibold tracking-[0.16em] text-ink-subtle uppercase">
-        함께 읽으면 좋은 글
-      </div>
-      <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-        {posts.map((p) => (
-          <a href={p.href} class="block transition-transform duration-200 hover:-translate-y-0.5">
-            <Card padding={6}>
-              <div class="mb-2.5 text-[10.5px] font-semibold tracking-[0.06em] text-accent uppercase">
-                {categoryLabel(p.category)}
-              </div>
-              <div class="text-[17px] font-semibold tracking-[-0.01em]">{p.title}</div>
-              <div class="mt-2 font-mono text-[12.5px] text-ink-faint">{meta(p)}</div>
-            </Card>
-          </a>
-        ))}
-      </div>
-    </section>
-  )
-}
+{posts.length > 0 && (
+  <section class="related-posts" aria-labelledby="related-title">
+    <h2 id="related-title">{en ? 'Read next' : '이어서 읽기'}</h2>
+    {posts.map((post) => (
+      <a class="related-post" href={post.href}>
+        <span>{en ? post.category : categoryLabel(post.category)} · {formatDate(post.pubDate)}</span>
+        <strong>{post.title}</strong>
+      </a>
+    ))}
+  </section>
+)}
+
+<style>
+  .related-posts { border-top:1px solid var(--color-border);padding:30px 0; }
+  h2 { margin:0 0 10px;font-size:15px;font-weight:600; }
+  .related-post { display:block;padding:15px 0;border-bottom:1px solid var(--color-border); }
+  .related-post span { display:block;font-size:12px;color:var(--color-ink-muted);margin-bottom:4px; }
+  .related-post strong { font-size:16px;font-weight:500;line-height:1.7; }
+  .related-post:hover strong { color:var(--color-accent); }
+</style>

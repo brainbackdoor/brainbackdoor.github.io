@@ -10,7 +10,21 @@ import pagefind from 'astro-pagefind';
 // 프로젝트 사이트로 옮기게 되면 base: '/blog' 를 추가해야 한다.
 export default defineConfig({
   site: 'https://brainbackdoor.github.io',
-  integrations: [react(), mdx(), sitemap(), pagefind()],
+  integrations: [
+    react(),
+    mdx(),
+    sitemap(),
+    pagefind(),
+    {
+      name: 'separate-vite-caches',
+      hooks: {
+        'astro:config:setup': ({ command, updateConfig }) => {
+          // 빌드의 production React 캐시가 실행 중인 dev 서버를 덮어쓰지 않게 한다.
+          updateConfig({ vite: { cacheDir: `node_modules/.vite/${command}` } });
+        },
+      },
+    },
+  ],
   i18n: {
     defaultLocale: 'ko',
     locales: ['ko', 'en'],
@@ -21,7 +35,7 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: 'github-dark-default',
+      theme: 'github-light',
       wrap: false,
       transformers: [
         {

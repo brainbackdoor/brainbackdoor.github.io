@@ -1,53 +1,23 @@
-/*
- * astryx(Meta 디자인 시스템) — "라이브러리만" 도입.
- * astryx 컴포넌트를 쓰되, astryx 토큰을 이 블로그의 기존 디자인(테라코타·Manrope·
- * 기존 색/간격/반경)으로 오버라이드해 기존 UI/UX를 그대로 유지한다.
- * 프리컴파일 CSS라 StyleX 빌드 불필요. reset.css는 Tailwind preflight와 충돌하므로 넣지 않는다.
- */
+/* Existing astryx components share the B design tokens; no separate button theme. */
 @import '@astryxdesign/core/astryx.css';
 @import '@astryxdesign/theme-neutral/theme.css';
 
-/* astryx 토큰 → 기존 디자인 값으로 매핑 (global.css @theme 과 동일 값) */
 :root {
-  /* 이 블로그는 라이트 전용이다. astryx 토큰은 light-dark()로 정의돼 있어
-   * 방문자 OS가 다크모드면 astryx 컴포넌트(Card 등)만 어두워지고 Tailwind
-   * 본문은 흰색이라 반쪽만 뒤집힌다. color-scheme을 light로 고정해 astryx의
-   * light-dark()가 항상 밝은 값을 쓰도록 못박는다. */
   color-scheme: light;
-
-  /* 폰트: astryx 기본 Figtree → 기존 Manrope + 한글 */
-  --font-family-body: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
-  --font-family-heading: 'Manrope', 'IBM Plex Sans KR', system-ui, sans-serif;
-
-  /* 색: astryx 뉴트럴 → 기존 잉크/테라코타 */
-  --color-text-primary: oklch(0.25 0 0);
-  --color-text-secondary: oklch(0.46 0 0);
-  --color-text-disabled: oklch(0.64 0 0);
-  --color-accent: oklch(0.45 0.1 32);
-  --color-on-accent: #ffffff;
-  --color-accent-muted: color-mix(in oklab, oklch(0.45 0.1 32) 10%, transparent);
-  --color-background-body: oklch(1 0 0);
-  --color-background-surface: oklch(0.975 0 0);
-  --color-background-muted: oklch(0.955 0 0);
-  --color-border: color-mix(in oklab, oklch(0.25 0 0) 10%, transparent);
-  --color-border-emphasized: color-mix(in oklab, oklch(0.25 0 0) 20%, transparent);
-
-  /* 반경: 기존 카드/타일/아이템 */
-  --radius-inner: 8px;
-  --radius-element: 12px;
-  --radius-container: 18px;
-}
-
-/*
- * 선택·컨트롤 키컬러 — 파인 그린.
- * 테라코타(--color-accent)는 "글·링크 강조" 전용이라 :root 값을 그대로 두고,
- * astryx 버튼(필터 칩·CTA)에서만 accent를 네이비로 재정의한다. 커스텀 속성은
- * 상속되므로 button 하위 트리에서만 var(--color-accent)가 네이비로 풀리고,
- * primary 버튼 배경(background-color:var(--color-accent))·hover(color-mix)·
- * 포커스 링(outline:...var(--color-accent))이 함께 네이비가 된다. 본문 텍스트의
- * 테라코타(text-accent 등)는 button 밖이라 영향받지 않는다.
- * 채도를 낮춘 파인 그린(0.055)이라 원색 초록이 아니라 흙빛 도는 딥그린이다.
- */
-button {
-  --color-accent: oklch(0.46 0.055 165);
+  --font-family-body: var(--font-sans);
+  --font-family-heading: var(--font-sans);
+  --color-text-primary: var(--color-ink);
+  --color-text-secondary: var(--color-ink-muted);
+  --color-text-disabled: var(--color-ink-subtle);
+  --color-accent: var(--color-link);
+  --color-on-accent: var(--color-canvas);
+  --color-accent-muted: var(--color-surface);
+  --color-background-body: var(--color-canvas);
+  --color-background-surface: var(--color-surface);
+  --color-background-muted: var(--color-sunken);
+  --color-border: var(--color-rule);
+  --color-border-emphasized: color-mix(in srgb, var(--color-ink) 25%, var(--color-canvas));
+  --radius-inner: var(--radius-item);
+  --radius-element: var(--radius-tile);
+  --radius-container: var(--radius-card);
 }

@@ -20,58 +20,58 @@ import {
   description="이동규 — 소프트웨어 엔지니어 · brainbackdoor"
   active="about"
 >
-  <div class="lg:grid lg:grid-cols-[minmax(0,860px)_160px] lg:justify-center lg:gap-x-8">
-    <div class="mx-auto w-full max-w-container-about lg:mx-0 lg:max-w-none">
+  <div class="profile-layout">
+    <div class="profile-content">
       <!-- 소개 -->
       <section
         id="intro"
-        class="scroll-mt-20 flex flex-col gap-7 border-b border-ink/10 py-16 sm:flex-row sm:items-start sm:gap-9"
+        class="about-intro"
       >
         <img
           src="/me.webp"
           alt="이동규"
           width="104"
           height="104"
-          class="size-[104px] shrink-0 rounded-full object-cover ring-1 ring-ink/5 ring-inset"
+          class="about-portrait"
         />
         <div>
-          <div class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">자기소개</div>
-          <h1 class="mt-3 text-[36px] leading-[1.05] font-extrabold tracking-[-0.04em] sm:text-[44px]">
+          <div class="section-label">자기소개</div>
+          <h1 class="about-name">
             {profile.name}
           </h1>
-          <p class="mt-2.5 text-[15px] text-ink-muted">{profile.role}</p>
+          <p class="about-role">{profile.role}</p>
           <p
-            class="mt-6 max-w-[640px] text-[15.5px] leading-relaxed text-ink-muted"
+            class="about-intro-copy"
             set:html={renderInline(profile.intro)}
           />
         </div>
       </section>
 
       <!-- 경력 -->
-      <section id="career" class="scroll-mt-20 border-b border-ink/10 py-14">
-        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">경력</h2>
-        <div class="mt-6 flex flex-col">
+      <section id="career" class="about-section">
+        <h2 class="section-label">경력</h2>
+        <div class="about-entries">
           {
             career.map((c) => (
-              <article class="border-t border-ink/10 py-7 first:border-t-0">
-                <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-                  <h3 class="text-[18px] font-bold tracking-[-0.02em]">{c.org}</h3>
-                  <div class="shrink-0 text-[12.5px] text-ink-faint tabular-nums">{c.period}</div>
+              <article class="about-entry">
+                <div class="entry-heading">
+                  <h3>{c.org}</h3>
+                  <div class="entry-date">{c.period}</div>
                 </div>
-                <div class="mt-0.5 text-[13.5px] text-ink-subtle">
+                <div class="entry-team">
                   {c.team} · {c.role}
                 </div>
-                <ul class="mt-3.5 flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
+                <ul class="about-bullets">
                   {c.bullets.map((b) => (
-                    <li class="text-[14.5px] leading-relaxed text-ink-muted" set:html={renderInline(b)} />
+                    <li set:html={renderInline(b)} />
                   ))}
                 </ul>
                 {c.groups?.map((g) => (
-                  <div class="mt-4 flex flex-col gap-2 border-l border-ink/8 pl-4">
-                    <div class="text-[13.5px] font-semibold tracking-[-0.01em]">{g.label}</div>
-                    <ul class="flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
+                  <div class="sub-entry">
+                    <div class="entry-label">{g.label}</div>
+                    <ul class="about-bullets">
                       {g.items.map((it) => (
-                        <li class="text-[14px] leading-relaxed text-ink-subtle" set:html={renderInline(it)} />
+                        <li set:html={renderInline(it)} />
                       ))}
                     </ul>
                   </div>
@@ -83,28 +83,28 @@ import {
       </section>
 
       <!-- 프로젝트 -->
-      <section id="projects" class="scroll-mt-20 border-b border-ink/10 py-14">
-        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">프로젝트</h2>
-        <div class="mt-6 flex flex-col">
+      <section id="projects" class="about-section">
+        <h2 class="section-label">프로젝트</h2>
+        <div class="about-entries">
           {projects.map((p) => <AboutActivity activity={p} />)}
         </div>
       </section>
 
       <!-- 지향하는 개발 문화 -->
-      <section id="culture" class="scroll-mt-20 border-b border-ink/10 py-14">
-        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">지향하는 개발 문화</h2>
-        <div class="mt-6 flex flex-col">
+      <section id="culture" class="about-section">
+        <h2 class="section-label">지향하는 개발 문화</h2>
+        <div class="about-entries">
           {
             values.map((v) => (
-              <article class="border-t border-ink/10 py-7 first:border-t-0">
+              <article class="about-entry">
                 <h3
                   class="text-[18px] font-bold tracking-[-0.02em] text-accent [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2"
                   set:html={renderInline(v.name)}
                 />
-                <div class="mt-1.5 text-[13.5px] text-ink-subtle">{v.tagline}</div>
-                <ul class="mt-3.5 flex list-disc flex-col gap-1.5 pl-5 marker:text-ink-faint">
+                <div class="culture-tagline">{v.tagline}</div>
+                <ul class="about-bullets">
                   {v.body.map((p) => (
-                    <li class="text-[15px] leading-relaxed text-ink-muted" set:html={renderInline(p)} />
+                    <li set:html={renderInline(p)} />
                   ))}
                 </ul>
               </article>
@@ -114,9 +114,9 @@ import {
       </section>
 
       <!-- 대외활동 (카드) -->
-      <section id="activity" class="scroll-mt-20 border-b border-ink/10 py-14">
-        <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">대외활동</h2>
-        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <section id="activity" class="about-section">
+        <h2 class="section-label">대외활동</h2>
+        <div class="activity-grid">
           {
             externalActivities.map((a) => {
               const Tag = a.href ? 'a' : 'div';
@@ -125,14 +125,14 @@ import {
                   href={a.href}
                   target={a.href ? '_blank' : undefined}
                   rel={a.href ? 'noopener' : undefined}
-                  class="group block overflow-hidden rounded-[14px] border border-ink/10 transition-colors hover:border-ink/25"
+                  class="activity-card"
                 >
-                  <div class="aspect-[16/10] w-full bg-sunken">
+                  <div class="activity-image">
                     {a.image && (
-                      <img src={a.image} alt={a.title} loading="lazy" class="h-full w-full object-cover" />
+                      <img src={a.image} alt={a.title} loading="lazy" />
                     )}
                   </div>
-                  <div class="p-4">
+                  <div class="activity-body">
                     <div class="text-[14px] font-semibold tracking-[-0.01em] group-hover:text-accent">
                       {a.title}
                     </div>
@@ -145,10 +145,10 @@ import {
       </section>
 
       <!-- 학력 / 자격증 / 연락 (하단) -->
-      <section class="grid grid-cols-1 gap-10 py-14 sm:grid-cols-3">
+      <section class="about-bottom">
         <div>
-          <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">Education</h2>
-          <ul class="mt-5 flex flex-col gap-3.5">
+          <h2 class="section-label">Education</h2>
+          <ul class="credential-list">
             {
               education.map((e) => (
                 <li>
@@ -163,8 +163,8 @@ import {
           </ul>
         </div>
         <div>
-          <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">자격증</h2>
-          <ul class="mt-5 flex flex-col gap-3.5">
+          <h2 class="section-label">자격증</h2>
+          <ul class="credential-list">
             {
               certifications.map((c) => (
                 <li>
@@ -178,14 +178,14 @@ import {
           </ul>
         </div>
         <div>
-          <h2 class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">Contact</h2>
+          <h2 class="section-label">Contact</h2>
           <a
             href={`mailto:${contact}`}
             class="mt-5 inline-block text-[15px] text-accent transition-colors hover:text-accent-hover"
           >
             {contact}
           </a>
-          <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+          <div class="about-sns">
             {
               sns.map((s) => (
                 <a
@@ -203,62 +203,108 @@ import {
       </section>
     </div>
 
-    <!-- 목차 (on this page) — lg 이상에서만, 좁은 화면은 기존 단일 컬럼 유지 -->
-    <aside class="hidden lg:block">
-      <nav aria-label="목차" class="sticky top-[88px]">
-        <p class="text-xs font-semibold tracking-[0.16em] text-ink-faint uppercase">On this page</p>
-        <ul class="mt-4 flex flex-col">
-          <li><a data-toc href="#intro" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">소개</a></li>
-          <li><a data-toc href="#career" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">경력</a></li>
-          <li><a data-toc href="#projects" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">프로젝트</a></li>
-          <li><a data-toc href="#culture" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">개발 문화</a></li>
-          <li><a data-toc href="#activity" class="toc-link block py-1.5 pl-4 text-[13.5px] transition-colors">대외활동</a></li>
+    <!-- 좁은 화면에서는 본문 폭을 확보하고 모든 정보는 펼친 채 유지한다. -->
+    <aside class="profile-toc">
+      <nav aria-label="목차">
+        <p class="section-label">목차</p>
+        <ul class="toc-list">
+          <li><a data-toc href="#intro" class="toc-link">소개</a></li>
+          <li><a data-toc href="#career" class="toc-link">경력</a></li>
+          <li><a data-toc href="#projects" class="toc-link">프로젝트</a></li>
+          <li><a data-toc href="#culture" class="toc-link">개발 문화</a></li>
+          <li><a data-toc href="#activity" class="toc-link">대외활동</a></li>
         </ul>
       </nav>
     </aside>
   </div>
 
-  <style>
-    .toc-link {
-      border-left: 1.5px solid color-mix(in oklab, var(--color-ink) 10%, transparent);
-      color: var(--color-ink-subtle);
+  <style is:global>
+    .profile-layout { display:grid;grid-template-columns:minmax(0,1fr) 118px;gap:26px;align-items:start; }
+    .profile-content { min-width:0; }
+    .profile-content p, .profile-content li { overflow-wrap:anywhere;word-break:normal; }
+    .profile-content strong { color:var(--color-ink);font-weight:600; }
+    .profile-content .text-accent { color:var(--color-accent);text-decoration:underline;text-underline-offset:3px;text-decoration-color:#afc5e8; }
+    .profile-content a:hover { color:var(--color-accent); }
+    .profile-content .section-label { font-size:14px;font-weight:600;letter-spacing:.035em;color:var(--color-ink-muted); }
+    .profile-content .about-intro { display:flex;align-items:flex-start;gap:26px;padding:12px 0 42px;border-bottom:1px solid var(--color-border);scroll-margin-top:32px; }
+    .profile-content .about-portrait { width:104px;height:104px;object-fit:cover;flex-shrink:0;border-radius:50%;border:1px solid #e2e7ee; }
+    .profile-content .about-name { margin:11px 0 7px;font-size:42px;font-weight:700;line-height:1.12;letter-spacing:-1.6px; }
+    .profile-content .about-role { font-size:15px;color:var(--color-ink-muted); }
+    .profile-content .about-intro-copy { margin-top:23px;font-size:15px;line-height:1.85;color:var(--color-ink-muted); }
+    .profile-content .about-section { padding:43px 0 20px;border-bottom:1px solid var(--color-border);scroll-margin-top:32px; }
+    .profile-content .about-entries { margin-top:16px; }
+    .profile-content .about-entry { padding:25px 0;border-top:1px solid var(--color-border); }
+    .profile-content .about-entry:first-child { border-top:0;padding-top:12px; }
+    .profile-content .entry-heading { display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px 18px;align-items:baseline; }
+    .profile-content .entry-heading h3, .profile-content .about-entry>h3 { font-size:18px;line-height:1.55;letter-spacing:-.3px;font-weight:600; }
+    .profile-content .entry-date { font-size:14px;line-height:1.7;color:var(--color-ink-muted);font-variant-numeric:tabular-nums; }
+    .profile-content .entry-team { margin-top:3px;font-size:14px;color:var(--color-ink-muted);line-height:1.8; }
+    .profile-content .about-bullets { display:flex;flex-direction:column;gap:8px;padding-left:20px;margin:15px 0 0;font-size:15px;line-height:1.85;color:var(--color-ink-muted);list-style:disc; }
+    .profile-content .about-bullets li::marker { font-size:.8em;color:#7c8c9d; }
+    .profile-content .sub-entry { margin-top:21px;padding-left:17px;border-left:1px solid var(--color-border); }
+    .profile-content .sub-entry h4, .profile-content .entry-label { font-size:15px;line-height:1.8;font-weight:600;margin:0; }
+    .profile-content .sub-entry .about-bullets { margin-top:9px;font-size:14px;line-height:1.9; }
+    .profile-content .project-subentry+.project-subentry { margin-top:24px; }
+    .profile-content .culture-tagline { font-size:14px;color:var(--color-ink-muted);line-height:1.85;margin-top:7px; }
+    .profile-content .activity-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:25px 0; }
+    .profile-content .activity-card { display:block;min-width:0;border:1px solid var(--color-border);border-radius:10px;overflow:hidden;transition:border-color .15s; }
+    .profile-content .activity-card:hover { border-color:#8caee2; }
+    .profile-content .activity-image { aspect-ratio:16/10;background:#f3f5f8; }
+    .profile-content .activity-image img { width:100%;height:100%;object-fit:cover;display:block; }
+    .profile-content .activity-body { padding:14px;font-size:14px;font-weight:600;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere; }
+    .profile-content .activity-body>div { font:inherit; }
+    .profile-content .about-bottom { display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:32px 24px;padding:43px 0; }
+    .profile-content .credential-list { list-style:none;margin:19px 0 0;padding:0;display:flex;flex-direction:column;gap:19px; }
+    .profile-content .about-bottom>div>a { margin-top:18px;font-size:15px;overflow-wrap:anywhere; }
+    .profile-content .about-sns { display:flex;flex-wrap:wrap;gap:9px 22px;margin-top:17px; }
+    .profile-content .about-sns a { font-size:14px;color:var(--color-ink-muted); }
+    .profile-toc { position:sticky;top:48px;padding-top:14px; }
+    .profile-toc .section-label { color:var(--color-ink-muted);font-size:14px;font-weight:500; }
+    .profile-toc ul { list-style:none;padding:0;margin:15px 0 0; }
+    .profile-toc a { display:block;border-left:1.5px solid var(--color-border);padding:7px 0 7px 13px;font-size:14px;line-height:1.6;color:var(--color-ink-muted); }
+    .profile-toc a:hover { color:var(--color-accent); }
+    .profile-toc a[aria-current='true'] { color:var(--color-accent);border-left-color:var(--color-accent);font-weight:600; }
+    @media(max-width:1100px) {
+      .profile-layout { display:block; }
+      .profile-toc { display:none; }
     }
-    .toc-link:hover {
-      color: var(--color-ink);
+    @media(max-width:850px) {
+      .profile-content .about-bottom { grid-template-columns:1fr 1fr; }
+      .profile-content .about-bottom>div:last-child { grid-column:1/-1; }
+      .profile-content .activity-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
-    .toc-link[aria-current='true'] {
-      color: var(--color-accent);
-      border-left-color: var(--color-accent);
-      font-weight: 600;
+    @media(max-width:600px) {
+      .profile-content .about-intro { padding:0 0 32px;gap:22px;flex-direction:column; }
+      .profile-content .about-portrait { width:88px;height:88px; }
+      .profile-content .about-name { font-size:36px;margin:11px 0 8px; }
+      .profile-content .about-intro-copy { line-height:1.9;margin-top:20px; }
+      .profile-content .about-section { padding:34px 0 10px;scroll-margin-top:18px; }
+      .profile-content .about-entry { padding:24px 0; }
+      .profile-content .entry-heading { display:block; }
+      .profile-content .entry-heading .entry-date { margin-top:4px; }
+      .profile-content .entry-team { margin-top:7px; }
+      .profile-content .about-bullets { line-height:1.9;gap:10px; }
+      .profile-content .sub-entry { padding-left:14px; }
+      .profile-content .activity-grid { grid-template-columns:1fr;gap:18px;margin:24px 0; }
+      .profile-content .activity-body { font-size:15px;padding:14px 16px; }
+      .profile-content .about-bottom { grid-template-columns:1fr;gap:32px;padding:34px 0; }
     }
   </style>
 
   <script>
-    // 목차 스크롤스파이 — 현재 보이는 섹션을 강조. JS 없어도 앵커 이동은 동작.
-    const links = Array.from(document.querySelectorAll('a[data-toc]'));
-    if (links.length > 0) {
-      const order = ['intro', 'career', 'projects', 'culture', 'activity'];
-      const visible = new Set<string>();
-      const sync = () => {
-        const active = order.find((id) => visible.has(id)) ?? 'intro';
-        for (const a of links) {
-          a.setAttribute('aria-current', String(a.getAttribute('href') === `#${active}`));
-        }
-      };
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) visible.add(e.target.id);
-            else visible.delete(e.target.id);
-          }
-          sync();
-        },
-        { rootMargin: '-88px 0px -65% 0px' },
-      );
-      for (const id of order) {
-        const el = document.getElementById(id);
-        if (el) io.observe(el);
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.profile-toc [data-toc]')];
+    const sections = links.map((link) => document.getElementById(link.hash.slice(1))).filter((section): section is HTMLElement => section !== null);
+    const updateProfileToc = () => {
+      let active = sections[0]?.id;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top > 140) break;
+        active = section.id;
       }
-    }
+      for (const link of links) link.setAttribute('aria-current', String(link.hash === `#${active}`));
+    };
+    updateProfileToc();
+    window.addEventListener('scroll', updateProfileToc, { passive: true });
+    window.addEventListener('resize', updateProfileToc, { passive: true });
+    document.fonts.ready.then(updateProfileToc);
   </script>
 </BaseLayout>

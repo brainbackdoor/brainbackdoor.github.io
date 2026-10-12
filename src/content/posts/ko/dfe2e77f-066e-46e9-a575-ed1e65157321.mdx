@@ -1,0 +1,579 @@
+---
+title: "컨퍼런스 신청 플랫폼 미션 요구사항"
+description: "깃헙 저장소를 활용하여 미션을 진행할 수 있어요."
+pubDate: "2023-10-21"
+category: "guide"
+tags: []
+sourceId: "dfe2e77f-066e-46e9-a575-ed1e65157321"
+sourceUrl: "https://www.brainbackdoor.com/dfe2e77f-066e-46e9-a575-ed1e65157321"
+dateSource: "published"
+icon: "⛳"
+---
+
+<blockquote id="ba38a9b7-9fc0-499f-8398-9c1f776ec99f" className="notion-callout">
+
+<p>📌 깃헙 <a href="https://github.com/brainbackdoor/infra-workshop"><span className="notion-color-blue"><strong>저장소</strong></span></a>를 활용하여 미션을 진행할 수 있어요&#46;</p>
+
+</blockquote>
+
+<span id="842a2264-5cfd-47f9-b57f-65630d502b00"></span>
+
+## 1&#46; 실습 환경 구성하기
+
+<figure id="e1557ab1-f09c-495d-af93-1af4a591e5b0" className="notion-figure">
+
+<img src="/content/dfe2e77f-066e-46e9-a575-ed1e65157321/e1557ab1-f09c-495d-af93-1af4a591e5b0.webp" alt="" loading="lazy" width="952" height="544" />
+
+</figure>
+
+<ul className="notion-todo-list">
+
+<li id="34bca4f7-2ecf-4fb3-86f6-08868662dd44">
+
+<p><label><input type="checkbox" checked={false} disabled /> VPC, Subnet, Route Table 등을 이전에 학습했던 내용을 바탕으로 직접 망 구성</label></p>
+
+</li>
+
+<li id="4ddbe9cf-e790-4b4f-8470-5e1e0ecd1d30">
+
+<p><label><input type="checkbox" checked={false} disabled /> Security Group 설정</label></p>
+
+<ul>
+
+<li id="f20a4daa-434e-4201-908c-06b6ff746b11">
+
+<p>외부망</p>
+
+<ul>
+
+<li id="8372c07c-bc2f-4c6d-bf63-3c5c76883b5e">
+
+<p>front, member</p>
+
+<ul className="notion-todo-list">
+
+<li id="5414a5bd-3d16-4168-8303-75528f06fa87">
+
+<p><label><input type="checkbox" checked={false} disabled /> 전체 대역 &#58; 443 포트 오픈</label></p>
+
+</li>
+
+<li id="e1b9ae60-b63d-4082-bf20-940883f05bc0">
+
+<p><label><input type="checkbox" checked={false} disabled /> 관리망 &#58; 22번 포트 오픈</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="e50ad968-ba6e-426e-8590-031d9f485612">
+
+<p>conference, analysis</p>
+
+<ul className="notion-todo-list">
+
+<li id="fb58c640-daed-4644-b7d6-a2702d569f01">
+
+<p><label><input type="checkbox" checked={false} disabled /> 외부망 &#58; 443 포트 오픈</label></p>
+
+</li>
+
+<li id="9f41dd44-f9bb-4614-bb33-04ae88b75b7c">
+
+<p><label><input type="checkbox" checked={false} disabled /> 관리망 &#58; 22번 포트 오픈</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="93851ec7-daa5-4661-ab24-bb1cfc43f829">
+
+<p>내부망</p>
+
+<ul className="notion-todo-list">
+
+<li id="4ae4decc-95bf-4945-89fb-1879edb37fc2">
+
+<p><label><input type="checkbox" checked={false} disabled /> 외부망 &#58; 3306 포트 오픈</label></p>
+
+</li>
+
+<li id="da82e8c7-1ebe-4265-b1db-35eeb567aa41">
+
+<p><label><input type="checkbox" checked={false} disabled /> 관리망 &#58; 22번 포트 오픈</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="7c9317fd-e808-4348-a8f2-8c20699c950f">
+
+<p>관리망</p>
+
+<ul className="notion-todo-list">
+
+<li id="861cbae6-c0f3-461c-bd3a-2faf01b5080b">
+
+<p><label><input type="checkbox" checked={false} disabled /> 자신의 로컬 PC 공인 IP &#58; 22번 포트 오픈</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="77796545-98ed-4cff-bda6-e60722bbbfa9">
+
+<p><label><input type="checkbox" checked={false} disabled /> 서버 구성하기</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="a3638b19-60d4-41eb-9b9c-ccf28ae02a9c">
+
+<p><label><input type="checkbox" checked={false} disabled /> conference, member, analysis 등 모듈의 DB 구성 (RDS)</label></p>
+
+</li>
+
+<li id="1aa8b5c7-da74-4a62-ba93-e4d99eb3b266">
+
+<p><label><input type="checkbox" checked={false} disabled /> Launch Tempalte에서 사용할 IAM 역할 생성 (CloudWatchAgentServerPolicy, AmazonS3FullAccess 등)</label></p>
+
+</li>
+
+<li id="12ba5abd-9333-4381-8101-afd4cb39a6b5">
+
+<p><label><input type="checkbox" checked={false} disabled /> 각 모듈 Launch Template 작성</label></p>
+
+</li>
+
+<li id="abf88087-4d82-41f5-9f7b-a6598eb85549">
+
+<p><label><input type="checkbox" checked={false} disabled /> AutoScalingGroup 구성</label></p>
+
+</li>
+
+<li id="75b8c602-fd99-4d40-8ddc-e3f57067e173">
+
+<p><label><input type="checkbox" checked={false} disabled /> DNS, TLS 구성</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<hr id="394b07d7-e0fe-4ffe-87fc-e3ebec4a6506" />
+
+<span id="af4b8eaf-54d6-4ee9-90cc-4ef141b8014c"></span>
+
+## 2&#46; 서비스 운영하기
+
+<figure id="baae2f40-e3eb-4f4b-8c2c-7229d4745bc1" className="notion-figure">
+
+<img src="/content/dfe2e77f-066e-46e9-a575-ed1e65157321/baae2f40-e3eb-4f4b-8c2c-7229d4745bc1.webp" alt="" loading="lazy" width="2048" height="781" />
+
+</figure>
+
+<ul className="notion-todo-list">
+
+<li id="b983ea90-9e99-4ff6-b1fd-95eb1e4d9001">
+
+<p><label><input type="checkbox" checked={false} disabled /> 애플리케이션 로그 설정하기</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="ed4b5a60-d3ec-44da-807d-cce8dcb038f9">
+
+<p><label><input type="checkbox" checked={false} disabled /> 관리자 권한이 필요한 API</label></p>
+
+</li>
+
+<li id="decc7630-9e22-408c-a455-67a3b4b2dc55">
+
+<p><label><input type="checkbox" checked={false} disabled /> 회원 생성 (member)</label></p>
+
+</li>
+
+<li id="60556846-5618-47a6-b6fc-bd3936ae2236">
+
+<p><label><input type="checkbox" checked={false} disabled /> 이벤트 관련 API (conference)</label></p>
+
+</li>
+
+<li id="eeffe213-9132-411e-9476-4fac0d822c52">
+
+<p><label><input type="checkbox" checked={false} disabled /> 컨퍼런스 참가 API (conference)</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="a4513d8a-3585-4cb5-a592-800303bf2e28">
+
+<p><label><input type="checkbox" checked={false} disabled /> ALB Access Log 설정하기</label></p>
+
+</li>
+
+<li id="d1aaa965-459a-47db-9afc-3c7ebe56c005">
+
+<p><label><input type="checkbox" checked={false} disabled /> RDS 로그 수집하기</label></p>
+
+</li>
+
+<li id="c2208b3b-f0f5-4e62-895c-6037eeb52600">
+
+<p><label><input type="checkbox" checked={false} disabled /> Cloudwatch 대시보드 구성하기</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="6856052f-b016-4cc5-8636-f597fef35ede">
+
+<p><label><input type="checkbox" checked={false} disabled /> Cloudwatch로 로그 수집하기</label></p>
+
+</li>
+
+<li id="9f942f8d-544b-49f5-a18f-9f39466f9b06">
+
+<p><label><input type="checkbox" checked={false} disabled /> Cloudwatch로 메트릭 수집하기</label></p>
+
+</li>
+
+<li id="8e2ac124-98d3-4739-92f2-5990645419c9">
+
+<p><label><input type="checkbox" checked={false} disabled /> 알림 설정하기</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="c53cbfc9-a202-44da-90bc-6e4618939822">
+
+<p><label><input type="checkbox" checked={false} disabled /> Pinpoint 구성하기<br /></label></p>
+
+</li>
+
+</ul>
+
+<hr id="3865daa6-c449-4adf-abcf-7887aea557f3" />
+
+<span id="95c2ce2a-0f17-48ec-9c88-412cb771b067"></span>
+
+## 3&#46; 성능 테스트
+
+<figure id="ecf4adbb-d6e8-4696-b5db-d509f0ef572e" className="notion-figure">
+
+<img src="/content/dfe2e77f-066e-46e9-a575-ed1e65157321/ecf4adbb-d6e8-4696-b5db-d509f0ef572e.webp" alt="Smoke, Load, Stress test" loading="lazy" width="2048" height="295" /><figcaption>Smoke, Load, Stress test</figcaption>
+
+</figure>
+
+<ul className="notion-todo-list">
+
+<li id="1123b2f3-4889-4531-9b09-e6278aab6e9e">
+
+<p><label><input type="checkbox" checked={false} disabled /> 테스트 준비하기 (모든 시나리오)</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="3dda82f4-9693-4963-a854-65468b0c4d2a">
+
+<p><label><input type="checkbox" checked={false} disabled /> 테스트 대상 시스템 범위 정하기</label></p>
+
+</li>
+
+<li id="09336fd7-55b5-4954-bbc9-4651c05d835b">
+
+<p><label><input type="checkbox" checked={false} disabled /> 목푯값 설정하기 (latency, throughput, 부하 유지기간, 부하테스트시 저장될 데이터 건수 및 크기 등)</label></p>
+
+</li>
+
+<li id="95a9ddf9-060e-4a66-9b09-939f909dbc1a">
+
+<p><label><input type="checkbox" checked={false} disabled /> 테스트 환경 구성하기 </label></p>
+
+</li>
+
+<li id="e47e7afa-a0c1-4594-81ae-80e00522a11c">
+
+<p><label><input type="checkbox" checked={false} disabled /> 테스트를 위한 시나리오 및 스크립트 작성하기</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<ul className="notion-todo-list">
+
+<li id="d9084174-7482-41e1-bec2-f86e9b6702bf">
+
+<p><label><input type="checkbox" checked={false} disabled /> 첫번째 시나리오</label></p>
+
+<ul>
+
+<li id="65e7917a-73d6-44cb-a9fb-86fb4e4896bd">
+
+<p>컨퍼런스 신청 플랫폼을 오픈했다&#46; 사이트 접속자가 회원가입을 하는데 지연이 발생한다는 문의를 받았다&#46; </p>
+
+</li>
+
+<li id="604ae8b1-0ee8-4f5e-adbe-651715811d08">
+
+<p>VUser별 iteration time이 100ms 이하여야 한다&#46;</p>
+
+</li>
+
+</ul>
+
+<ul className="notion-todo-list">
+
+<li id="43c4fac1-e1c8-4b2a-8064-eda757cdc396">
+
+<p><label><input type="checkbox" checked={false} disabled /> Smoke Test 진행하기</label></p>
+
+</li>
+
+<li id="691e19f7-d1eb-44d9-80ca-4597060d71dc">
+
+<p><label><input type="checkbox" checked={false} disabled /> Thread dump를 통해 지연이 발생하는 구간 확인하기</label></p>
+
+</li>
+
+<li id="08f7bd0b-d7fd-4e97-9dde-6c1d1670ce01">
+
+<p><label><input type="checkbox" checked={false} disabled /> 비동기처리하여 개선하기</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<ul className="notion-todo-list">
+
+<li id="b4ca1808-e65d-4251-b753-4cc69f40ca5b">
+
+<p><label><input type="checkbox" checked={false} disabled /> 두번째 시나리오</label></p>
+
+<ul>
+
+<li id="5cf5a43a-1c9c-4741-ac0b-3eca36cc01f4">
+
+<p>MBTI 이벤트를 시작했다&#46; 회원이 이벤트를 진행하는데 지연이 발생한다는 문의를 받았다&#46;</p>
+
+</li>
+
+<li id="e3cebc47-c1a6-4b99-994e-70ca6bce2442">
+
+<p>VUser별 iteration time이 100ms 이하여야 한다&#46;</p>
+
+</li>
+
+</ul>
+
+<ul className="notion-todo-list">
+
+<li id="3f12babc-beac-4ace-acb1-41104ce74c0e">
+
+<p><label><input type="checkbox" checked={false} disabled /> Smoke Test 진행하기</label></p>
+
+</li>
+
+<li id="e62c3519-a46a-44a8-b3bf-ee00130023bb">
+
+<p><label><input type="checkbox" checked={false} disabled /> 로컬 캐싱 적용하여 개선하기</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<ul className="notion-todo-list">
+
+<li id="feb9bbde-8c63-483d-a609-c35e722550f3">
+
+<p><label><input type="checkbox" checked={false} disabled /> 세번째 시나리오</label></p>
+
+<ul>
+
+<li id="714a901c-223e-43f9-9aff-f7a864350aac">
+
+<p>컨퍼런스 추첨제(lotteryBoundary = 0) 홍보로, 컨퍼런스 신청자가 갑자기 늘어나자 지연이 발생한다는 문의를 받았다&#46;</p>
+
+</li>
+
+<li id="77280314-45ef-4424-9c67-f8d38453419c">
+
+<p>VUser별 iteration time이 100ms 이하여야 한다&#46;</p>
+
+</li>
+
+</ul>
+
+<ul className="notion-todo-list">
+
+<li id="9a18780a-04ca-4ce4-98d2-11cf4aac1def">
+
+<p><label><input type="checkbox" checked={false} disabled /> 목푯값(피크타임 rps) 세우기</label></p>
+
+</li>
+
+<li id="b2234356-8468-48ca-8ce9-cd94e09571e2">
+
+<p><label><input type="checkbox" checked={false} disabled /> Smoke, Load Test 진행하기</label></p>
+
+</li>
+
+<li id="bcbac4ae-f6f6-4e34-9455-0a46fcd49e25">
+
+<p><label><input type="checkbox" checked={false} disabled /> Front 서버 Scale out 진행하여 개선하기</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="1e64c8a7-05f4-464d-bc4c-505853439a2c">
+
+<p><label><input type="checkbox" checked={false} disabled /> Conference 서버 응답실패 증가시, 서킷 브레이커 구성 후 Scale out 진행하여 개선하기</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<ul className="notion-todo-list">
+
+<li id="d8f78c13-674f-4fd8-8eee-efdc7077efe7">
+
+<p><label><input type="checkbox" checked={false} disabled /> 네번째 시나리오</label></p>
+
+<ul>
+
+<li id="9ff3468b-6d84-47c9-b096-e38d6e90a2d7">
+
+<p>컨퍼런스 선착순(lotteryBoundary = xxx) 모집으로, 요청이 몰릴 것으로 예상된다&#46; 사전에 성능테스트를 진행해보고 구조를 개선해보려 한다&#46;</p>
+
+</li>
+
+<li id="a40cb15f-e142-40f9-a97c-cdddf62058f3">
+
+<p>VUser별 iteration time이 100ms 이하여야 한다&#46;</p>
+
+</li>
+
+</ul>
+
+<ul className="notion-todo-list">
+
+<li id="bb377eb0-ae55-40d6-b837-0393ff0f08c2">
+
+<p><label><input type="checkbox" checked={false} disabled /> 목푯값(피크타임 rps) 세우기</label></p>
+
+</li>
+
+<li id="f7cbaf7f-de36-4b46-830b-101c0b0659c6">
+
+<p><label><input type="checkbox" checked={false} disabled /> Smoke, Load, Stress Test 진행하기</label></p>
+
+</li>
+
+<li id="f12b46cb-029e-4304-a4e9-a5736b6f860f">
+
+<p><label><input type="checkbox" checked={false} disabled /> EDA 구조로 변경 및 큐를 활용하여 개선하기 <s>(뼈대 코드 작성 중&#46;&#46; 직접 해보셔도&#46;&#46;? 😏)</s></label></p>
+
+</li>
+
+<li id="d4e72d1e-b0ed-4d44-b848-ef0f8ac07503">
+
+<p><label><input type="checkbox" checked={false} disabled /> 현재 한계점을 파악하고, xxx 서버 n대 증설시 rps가 몇까지 가능한지 확인하기</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<hr id="d030bfe0-808d-4e26-a6b9-bb5212ab140e" />
+
+<span id="e19d0503-baed-4bd8-8977-629ef01d596c"></span>
+
+## 4&#46; 조회 성능 개선하기
+
+<figure id="8a108f47-4789-4bb3-aff6-731717f9e812" className="notion-figure">
+
+<img src="/content/dfe2e77f-066e-46e9-a575-ed1e65157321/8a108f47-4789-4bb3-aff6-731717f9e812.webp" alt="" loading="lazy" width="2048" height="1186" />
+
+</figure>
+
+<ul className="notion-todo-list">
+
+<li id="1815a4be-daa0-4e00-bda5-dcf95eca9b55">
+
+<p><label><input type="checkbox" checked={false} disabled /> API 응답시간이 100ms 이하로 반환</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="82a489b1-d591-43f4-bf6f-706e1f7f92b8">
+
+<p><label><input type="checkbox" checked={false} disabled /> <strong><span className="notion-color-blue"><a href="https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby">Coding as a Hobby</a></span></strong><strong><span className="notion-color-blue"> </span></strong>와 같은 결과를 반환하세요&#46;</label></p>
+
+</li>
+
+<li id="5213235c-29a0-4d1c-b60a-2a35184789f4">
+
+<p><label><input type="checkbox" checked={false} disabled /> 설문 참여자별 강의리스트를 반환하세요&#46;</label></p>
+
+</li>
+
+<li id="c2463ea7-a07a-4c48-a5d3-c955eb6390bd">
+
+<p><label><input type="checkbox" checked={false} disabled /> 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 들은 수업 이름을 반환하고 <a href="http://survey.id/">survey&#46;id</a> 기준으로 정렬하세요&#46;</label></p>
+
+</li>
+
+<li id="9e93cc29-1e4b-47a9-a684-958b666d1861">
+
+<p><label><input type="checkbox" checked={false} disabled /> 인프라공방을 들은 30대 수강생들을 OS별로 집계하세요&#46;</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<hr id="ecaecf31-a6b5-4e93-a11f-7365424e69c8" />

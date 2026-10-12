@@ -1,0 +1,382 @@
+---
+title: "서버 구성하기 미션 가이드"
+description: "서버를 구성해보며 리눅스를 경험해봅니다."
+pubDate: "2023-10-21"
+category: "guide"
+tags: []
+sourceId: "0af0d94d-8533-4416-b444-d5850f745a91"
+sourceUrl: "https://www.brainbackdoor.com/0af0d94d-8533-4416-b444-d5850f745a91"
+dateSource: "published"
+---
+
+<blockquote id="325cac4f-d6f7-4dd3-aa3d-8a0e81b08715" className="notion-callout">
+
+<p>📌 서버를 구성해보며 리눅스를 경험해봅니다&#46; 처음 리눅스를 하는 분들은 <span className="notion-color-blue"><strong><a href="/posts/b47f2941-5949-4368-890b-ca7825b419b9">리눅스 명령어 Zip</a></strong></span> 을 참고해보세요 🙏🏻</p>
+
+</blockquote>
+
+<blockquote id="d6e34246-e99e-4172-a9d8-79e52106b71b" className="notion-callout">
+
+<p>📌 Ubuntu 22&#46;04 LTS 환경을 기준으로 작성하였습니다&#46;</p>
+
+</blockquote>
+
+<span id="e5f69795-d08b-4f38-b11c-ed5b37fdf619"></span>
+
+## 1&#46; EC2 생성하기
+
+<p id="ab599f8d-d5d8-43a6-b887-b5f79dc80095"><strong>A&#46; </strong><span className="notion-color-blue"><strong><a href="https://aws.amazon.com/ko/console/">AWS web console</a></strong></span><strong>로 접속합니다&#46;</strong></p>
+
+<p id="62decda6-d22b-4146-bee2-f2ed8032c89e"><strong>B&#46; EC2 메뉴로 접근하세요&#46; </strong></p>
+
+<ul>
+
+<li id="14a12436-ad90-44d9-8083-f9c3813bea05">
+
+<p>Ubuntu 선택 (실습 명령어 테스트는 Ubuntu Server 18&#46;04 LTS 환경에서 진행해보았어요)</p>
+
+</li>
+
+<li id="e1519ad6-d3db-4494-ac64-d5573295a738">
+
+<p>InstanceType &#58; t3&#46;medium 정도면 괜찮습니다&#46;</p>
+
+</li>
+
+<li id="71b319ed-4e99-491b-bfd9-62c7feeb6957">
+
+<p>스토리지 &#58; 서비스 운영할 것을 고려해서 설정해주세요&#46; 일단 8GB로 설정하고 이후에 늘려도 괜찮습니다&#46; 이 경우, 서버를 끄지 않고 어떻게 확장하면 될지 한번 고민해보세요 😎</p>
+
+</li>
+
+<li id="a2817330-6369-49f5-902d-7879983ca011">
+
+<p>키 페어는 최초 생성한 것을 재사용해도 됩니다&#46;</p>
+
+</li>
+
+</ul>
+
+<blockquote id="182883be-3891-4260-8ed6-91e68b7ae090" className="notion-callout">
+
+<p>❗ 서버를 사용하지 않을 때는 중지(stop)해주세요&#46; 중지만 해도 EC2 비용이 나가지 않아 상당히 비용절감이 됩니다&#46; (스토리지 등의 비용만 나가는데, 스토리지 비용은 크지 않습니다&#46;)</p>
+
+</blockquote>
+
+<figure id="611b1888-6c97-43af-b64b-3c512d99c265" className="notion-figure">
+
+<img src="/content/0af0d94d-8533-4416-b444-d5850f745a91/611b1888-6c97-43af-b64b-3c512d99c265.png" alt="" loading="lazy" width="1618" height="512" />
+
+</figure>
+
+<p id="6bbef5a2-f83b-405d-9ed2-b361a1177647"><strong>C&#46; 서버에 접속하기</strong></p>
+
+<ul>
+
+<li id="59eb28c5-ebfd-4b58-9de0-fa0fc3ee7a69">
+
+<p>서버 IP는 web console로 확인 가능합니다&#46;</p>
+
+</li>
+
+<li id="6ae29be5-2580-43f9-b34b-196763b80d20">
+
+<p>맥 운영체제 사용자</p>
+
+<span id="0bcce37d-1093-46c0-87f7-4a54ae557833"></span>
+
+```bash
+# 터미널 접속한 후 앞 단계에서 생성한 key가 위치한 곳으로 이동한다.
+$ chmod 400 [pem파일명]
+$ ssh -i [pem파일명] ubuntu@[SERVER_IP]
+```
+
+</li>
+
+<li id="c044bd4f-2dec-4818-8c91-5a82e4473edb">
+
+<p>윈도우 운영체제 사용자</p>
+
+<ul>
+
+<li id="1430dfea-bca0-47a9-b1c3-d67d163efc59">
+
+<p><span className="notion-color-blue"><a href="https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/putty.html">PuTTY를 사용하여 Windows에서 Linux 인스턴스에 연결</a></span></p>
+
+</li>
+
+<li id="d865a4c8-65ed-4f87-a052-806ef0feda36">
+
+<p><span className="notion-color-blue"><a href="https://klero.tistory.com/entry/AWS-EC2-%EC%82%AC%EC%9A%A9-pem%ED%82%A4-ppk%EB%A1%9C-%EB%B3%80%ED%99%98%ED%95%98%EC%97%AC-Putty-SSH-%EC%A0%91%EC%86%8D%EB%B0%A9%EB%B2%95">putty를 위한 ppk 생성</a></span></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<span id="d1c51a64-2713-44b3-a6c7-5386695cf5cd"></span>
+
+## 2&#46; 서버간 ssh 연결 구성
+
+<ul>
+
+<li id="55acd0bf-d82b-4e78-8cc7-e9ac63e79fcc">
+
+<p>systems manager를 활용하여 Bastion 구성을 하셔도 좋습니다&#46; 해당 내용은 <span className="notion-color-blue"><strong><a href="https://www.youtube.com/watch?v=ydJkCZd5OcU">영상</a></strong></span>을 참조하세요&#126; 🙏🏻</p>
+
+</li>
+
+<li id="cdce9be1-5203-4f27-99e4-ed4e2b4efbe5">
+
+<p>Bastion Server로 사용할 별도의 EC2를 생성하고, Bastion Server에서 서비스용 서버에 ssh 연결을 설정해봅시다&#46;</p>
+
+<span id="97fc800b-8388-4e42-8421-04a8dc3eaa06"></span>
+
+```bash
+## Bastion Server에서 공개키를 생성합니다.
+bastion $ ssh-keygen -t rsa
+bastion $ cat ~/.ssh/id_rsa.pub
+
+## 접속하려는 서비스용 서버에 키를 추가합니다.
+$ vi ~/.ssh/authorized_keys
+
+## Bastion Server에서 접속을 해봅니다.
+bastion $ ssh ubuntu@[서비스용 서버 IP]
+```
+
+</li>
+
+<li id="09e3ab79-a484-40d1-85f0-f0ac38ef8bad">
+
+<p>Bastion Server는 자신의 로컬 PC 공인 IP에서만 22번 포트로 접근이 가능하도록 Security Group을 설정합니다&#46;</p>
+
+</li>
+
+<li id="9f9ca5d6-3d7c-4d3d-9f19-b18d7090c4e7">
+
+<p>서비스용 서버에 22번 포트로의 접근은 Bastion 서버에서만 가능하도록 Security Group을 설정합니다&#46;</p>
+
+</li>
+
+<li id="81b56842-142b-4a6d-bcc2-f89196d5289b">
+
+<p>Bastion 서버에서 다른 서버에 접근이 용이하도록 별칭을 설정합니다&#46;</p>
+
+<span id="2ca30cdc-9a0d-453d-b118-3e708247c0a6"></span>
+
+```bash
+bastion $ vi /etc/hosts
+[서비스용IP]    [별칭]
+
+bastion $ ssh [별칭]
+```
+
+</li>
+
+</ul>
+
+<span id="f484deb1-f7e3-4ff6-b57d-240e256030a0"></span>
+
+## 3&#46; 서버 환경설정 해보기
+
+<p id="c319e5a3-aabb-44fb-acb7-9b72b284231a"><strong>A&#46; 환경변수 적용하기</strong></p>
+
+<ul>
+
+<li id="7594fade-451d-48fc-913b-e6537dabf510">
+
+<p>Session Timeout 설정을 하여 일정 시간 작업을 하지 않을 경우 터미널 연결을 해제할 수 있습니다&#46;</p>
+
+<span id="f674a554-25a1-4613-8f8f-1a5e09824768"></span>
+
+```bash
+$ sudo vi ~/.profile
+  HISTTIMEFORMAT="%F %T -- "    ## history 명령 결과에 시간값 추가
+  export HISTTIMEFORMAT
+  export TMOUT=600              ## 세션 타임아웃 설정 
+    
+$ source ~/.profile
+$ env
+```
+
+</li>
+
+</ul>
+
+<p id="a9f851c1-ba09-434b-ab4b-418a09d21002"><strong>B&#46; Shell prompt 변경하기</strong></p>
+
+<ul>
+
+<li id="c9388f8b-3e89-45ae-a0b3-4338d85e48ce">
+
+<p>Bastion 등 식별해야 하는 서버의 Shell Prompt를 설정하여 관리자의 인적 장애를 예방할 수 있습니다&#46;</p>
+
+<ul>
+
+<li id="abbe0c77-497e-41d7-bcd9-eafcf1c7544d">
+
+<p><span className="notion-color-blue"><a href="https://webdir.tistory.com/105">쉘변수</a></span></p>
+
+</li>
+
+<li id="d7cd9363-7c7e-4b1d-ab71-d4fa8d55a799">
+
+<p><span className="notion-color-blue"><a href="http://ezprompt.net/">PS1 generator</a></span></p>
+
+</li>
+
+</ul>
+
+<span id="aa79b4ba-1d2d-4e52-8932-15ac26f27efc"></span>
+
+```bash
+$ sudo vi ~/.bashrc
+  USERNAME=BASTION
+  PS1='[\e[1;31m$USERNAME\e[0m][\e[1;32m\t\e[0m][\e[1;33m\u\e[0m@\e[1;36m\h\e[0m \w] \n\$ \[\033[00m\]'
+
+$ source ~/.bashrc
+```
+
+</li>
+
+</ul>
+
+<p id="17dab61c-5e6c-4792-9098-853602010051"><strong>C&#46; </strong><span className="notion-color-blue"><a href="https://zetawiki.com/wiki/%EB%A6%AC%EB%88%85%EC%8A%A4_logger"><strong>logger</strong></a></span><strong> 를 사용하여 감사로그 남기기</strong></p>
+
+<ul>
+
+<li id="b190389c-e85c-420a-bebb-4023a38177cd">
+
+<p>서버에 직접 접속하여 작업할 경우, 작업 이력 히스토리를 기록해두어야 장애 발생시 원인을 분석할 수 있습니다&#46; 감사로그를 기록하고 수집해봅니다&#46;</p>
+
+<span id="9bb231d3-a64d-48a1-82f7-ea5d743d96d7"></span>
+
+```bash
+$ sudo vi ~/.bashrc
+  tty=`tty | awk -F"/dev/" '{print $2}'`
+  IP=`w | grep "$tty" | awk '{print $3}'`
+  export PROMPT_COMMAND='logger -p local0.debug "[USER]$(whoami) [IP]$IP [PID]$$ [PWD]`pwd` [COMMAND] $(history 1 | sed "s/^[ ]*[0-9]\+[ ]*//" )"'
+
+$ source  ~/.bashrc
+```
+
+<span id="b7828db2-8bc0-48f5-900d-fe00e6a103fa"></span>
+
+```bash
+$ sudo vi /etc/rsyslog.d/50-default.conf
+  local0.*                        /var/log/command.log
+  # 원격지에 로그를 남기려면 어떻게 구성해야 할까요?
+    
+$ sudo service rsyslog restart
+$ tail -f /var/log/command.log
+```
+
+</li>
+
+</ul>
+
+<span id="d77b59b1-28c8-4e4c-8a66-50d0560cbefe"></span>
+
+## 4&#46; 소스코드 배포, 빌드 및 실행해보기
+
+<p id="8f77627f-82b1-4e50-bed7-99a8663d80ef"><strong>A&#46; 자바 설치</strong></p>
+
+<span id="b7aaabd7-b2e3-4c79-b8fe-9c4ec92dd901"></span>
+
+```bash
+$ which java
+$ sudo apt update
+$ sudo apt install default-jre
+$ sudo apt install default-jdk
+```
+
+<p id="0800f5b4-aa25-44ef-8782-f7b58ef82b08"><strong>B&#46; 빌드</strong></p>
+
+<span id="2dafaf0e-d118-4365-9947-cdd18109822c"></span>
+
+```bash
+$ git clone [저장소]
+$ cd [저장소]
+$ ./gradlew clean build
+
+# jar파일을 찾아본다.
+$ find ./* -name "*jar"
+```
+
+<p id="6ac75430-7f82-4730-a389-1d28889daba6"><strong>C&#46; 실행</strong></p>
+
+<span id="853c9c6f-a310-47f7-a5e7-69d3f9f12eae"></span>
+
+```bash
+$ java -jar [jar파일명] & 
+  
+# Application을 실행 후 정상적으로 동작하는지 확인해봅니다.
+# 브라우저에서도 http://{서버 ip}:{port}로 접근해보세요.
+$ curl http://localhost:8080
+```
+
+<ul>
+
+<li id="2c7f6ae1-a89b-467b-9c3d-087d34b357b2">
+
+<p>-<strong>Dserver&#46;port=8000</strong> 옵션을 활용하여 port를 변경할 수 있어요&#46;</p>
+
+</li>
+
+<li id="e7612cb1-578b-4b12-a7ac-f176b638863d">
+
+<p>서버를 시작 시간이 너무 오래 걸리는 경우 -<strong>Djava&#46;security&#46;egd</strong> 옵션을 적용해보세요&#46;</p>
+
+<span id="9e44c7f0-773b-4a6f-8291-0dcc4e853bae"></span>
+
+```bash
+$ java -Djava.security.egd=file:/dev/./urandom -jar [jar파일명] &
+```
+
+<ul>
+
+<li id="b0c579eb-6473-425c-a31c-7e821986ebef">
+
+<p><span className="notion-color-blue"><a href="https://lng1982.tistory.com/261">tomcat 구동 시 /dev/random 블로킹 이슈</a></span></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="90d62561-75b0-4e68-b3be-5a2744cb5274">
+
+<p>터미널 세션이 끊어질 경우, background로 돌던 프로세스에 hang-up signal이 발생해 죽는 경우가 있는데요&#46; 이 경우 <span className="notion-color-blue"><a href="https://youngclown.github.io/2018/10/noup"><code><strong>nohup</strong></code></a></span>명령어를 활용합니다&#46;</p>
+
+<span id="c9888f74-3448-432e-8aa1-b2bbf865aa16"></span>
+
+```bash
+$  nohup java -jar [jar파일명] 1> [로그파일명] 2>&1  &
+```
+
+</li>
+
+</ul>
+
+<p id="7098b0ab-1c33-4f3c-b43b-8c2965e2af33">D<strong>&#46; 종료</strong></p>
+
+<span id="b06a1ffe-d670-486a-b4ca-6cb6fae5c599"></span>
+
+```bash
+# 프로세스 pid를 찾아봅니다.
+$ ps -ef | grep java
+$ pgrep -f java
+
+# 프로세스를 종료합니다. 
+$ kill -2 [PID]
+```
+
+<span id="8a141d63-4940-4943-a4e3-15fade7ed9c2"></span>
+
+## 5&#46; DNS 구성하기
+
+<p id="d051e3d8-9b87-49ce-a523-1baccc5f232c"><strong><span className="notion-color-blue"><a href="https://xn--220b31d95hq8o.xn--3e0b707e/">무료 도메인 사이트</a></span></strong> 등을 활용하여 DNS 설정을 합니다&#46;</p>

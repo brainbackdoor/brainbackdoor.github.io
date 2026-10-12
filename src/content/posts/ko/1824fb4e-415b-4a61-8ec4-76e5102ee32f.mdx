@@ -1,0 +1,373 @@
+---
+title: "지하철 노선도 미션 요구사항"
+description: "깃헙 저장소를 활용하여 미션을 진행할 수 있어요."
+pubDate: "2023-10-20"
+category: "guide"
+tags: []
+sourceId: "1824fb4e-415b-4a61-8ec4-76e5102ee32f"
+sourceUrl: "https://www.brainbackdoor.com/1824fb4e-415b-4a61-8ec4-76e5102ee32f"
+dateSource: "published"
+icon: "⛳"
+---
+
+<blockquote id="74db0ba0-cb80-4e3a-8c56-7aed917fe7ef" className="notion-callout">
+
+<p>📌 깃헙 <a href="https://github.com/brainbackdoor/subway-map"><span className="notion-color-blue"><strong>저장소</strong></span></a>를 활용하여 미션을 진행할 수 있어요&#46;</p>
+
+</blockquote>
+
+<span id="41e4fdf6-a2dc-4fc4-ba73-6666c2baaac9"></span>
+
+## 1&#46; 망 구성하기
+
+<figure id="d36d232e-2274-4ee5-9a10-00421d4c1578" className="notion-figure">
+
+<img src="/content/1824fb4e-415b-4a61-8ec4-76e5102ee32f/d36d232e-2274-4ee5-9a10-00421d4c1578.webp" alt="" loading="lazy" width="2048" height="1975" />
+
+</figure>
+
+<ul className="notion-todo-list">
+
+<li id="9f823cae-a39a-4836-b77b-7459f95a9c8b">
+
+<p><label><input type="checkbox" checked={false} disabled /> VPC 생성</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="96e4c212-86c4-451f-b7a4-63bb8a554e29">
+
+<p><label><input type="checkbox" checked={false} disabled /> CIDR은 C class(x&#46;x&#46;x&#46;x/24)로 생성 (현업에선 가급적 B class로 생성해주세요 🙏🏻)</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="0b20fc98-a8d7-47f2-85e8-2feb886506bb">
+
+<p><label><input type="checkbox" checked={false} disabled /> Subnet 생성</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="5a0163c6-9fc0-48c9-bb41-9268ea9080eb">
+
+<p><label><input type="checkbox" checked={false} disabled /> 외부망으로 사용할 Subnet &#58; 64개씩 2개 (AZ를 다르게 구성)</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="aeeb6739-f7bc-4611-b5a8-05b87f0176c1">
+
+<p><label><input type="checkbox" checked={false} disabled /> 외부망은 인터넷 구간과 통신 가능</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="17c696d6-0347-4264-a388-ad00d77de38f">
+
+<p><label><input type="checkbox" checked={false} disabled /> 내부망으로 사용할 Subnet &#58; 32개씩 1개</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="45c0eba2-acd7-40b2-a6a9-6b80455625eb">
+
+<p><label><input type="checkbox" checked={false} disabled /> 내부망에서만 인터넷 접근 가능</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="059badf8-e827-4f82-aa0b-b08b10d9e0b7">
+
+<p><label><input type="checkbox" checked={false} disabled /> 관리용으로 사용할 Subnet &#58; 32개씩 1개 <br />(system manager를 사용한다면 별도의 관리망 없이 내부망 2개로 구성, 보안그룹도 상황에 맞게 구성)</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="4867428a-8d1e-4ba4-a7af-abdcbc39012f">
+
+<p><label><input type="checkbox" checked={false} disabled /> Security Group 설정</label></p>
+
+<ul>
+
+<li id="3799b697-4f61-4060-bf54-c99969061630">
+
+<p>외부망</p>
+
+<ul className="notion-todo-list">
+
+<li id="ece0a382-247d-4936-9744-efb60a8eada6">
+
+<p><label><input type="checkbox" checked={false} disabled /> 전체 대역 &#58; 443 포트 오픈</label></p>
+
+</li>
+
+<li id="988179b9-68d0-48d8-b11d-bffcce534169">
+
+<p><label><input type="checkbox" checked={false} disabled /> 관리망 &#58; 22번 포트 오픈</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="6385faa0-3d9d-46e9-94c0-b05070f94298">
+
+<p>내부망</p>
+
+<ul className="notion-todo-list">
+
+<li id="0bb1d03e-d8d8-48de-9057-32cf70078f33">
+
+<p><label><input type="checkbox" checked={false} disabled /> 외부망 &#58; 3306 포트 오픈</label></p>
+
+</li>
+
+<li id="227bfd4e-6b6d-4212-a1f2-4d85f81673bf">
+
+<p><label><input type="checkbox" checked={false} disabled /> 관리망 &#58; 22번 포트 오픈</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="8e1fbf3a-9e65-4e0c-86a4-3d42903447b9">
+
+<p>관리망</p>
+
+<ul className="notion-todo-list">
+
+<li id="49f23cf6-d596-45d8-ae0e-775345327f55">
+
+<p><label><input type="checkbox" checked={false} disabled /> 자신의 로컬 PC 공인 IP &#58; 22번 포트 오픈</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<hr id="a4e3c289-da93-41b4-98e1-37a83fe254e4" />
+
+<span id="266c344b-f67b-44c0-95f7-6afab8e213a8"></span>
+
+## 2&#46; 서버 구성하기
+
+<figure id="6a8aefd8-4f63-4eb8-92ac-ad95d1438066" className="notion-figure">
+
+<img src="/content/1824fb4e-415b-4a61-8ec4-76e5102ee32f/6a8aefd8-4f63-4eb8-92ac-ad95d1438066.png" alt="" loading="lazy" width="2048" height="981" />
+
+</figure>
+
+<ul className="notion-todo-list">
+
+<li id="dde5a621-2749-4fe7-9d47-bec7b10de765">
+
+<p><label><input type="checkbox" checked={false} disabled /> 외부망에 reverse proxy, WAS 용도의 EC2 생성</label></p>
+
+</li>
+
+<li id="c31c07d0-b60f-43d0-8134-e8460bdf024a">
+
+<p><label><input type="checkbox" checked={false} disabled /> 내부망에 DB 용도의 EC2 생성</label></p>
+
+</li>
+
+<li id="0fb88fb9-5955-4465-bc3d-37b7160e20f8">
+
+<p><label><input type="checkbox" checked={false} disabled /> 관리망에 베스쳔 서버용도의 EC2 생성 혹은 system manager 활용</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="68624712-64e6-4edf-bc0b-aafb7aea37ee">
+
+<p><label><input type="checkbox" checked={false} disabled /> (EC2를 생성했다면) 베스쳔 서버에 Session Timeout 600s 설정</label></p>
+
+</li>
+
+<li id="27f0f144-3168-4844-b8fb-4c5b669f2480">
+
+<p><label><input type="checkbox" checked={false} disabled /> (EC2를 생성했다면) 베스쳔 서버에 Command 감사로그 설정</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="8eb0cf95-f71d-4321-82f2-f1d49cdab138">
+
+<p><label><input type="checkbox" checked={false} disabled /> 외부망에 웹 애플리케이션을 배포</label></p>
+
+</li>
+
+<li id="4ba002fa-ae9b-4998-9622-beee444a7884">
+
+<p><label><input type="checkbox" checked={false} disabled /> DNS 구성</label></p>
+
+</li>
+
+</ul>
+
+<hr id="11785a07-2f49-4e7a-b67d-82b243aa4970" />
+
+<span id="84e23d14-f04a-4a4c-ad47-f5e23efb5804"></span>
+
+## 3&#46; 3tier 구성하기
+
+<figure id="e4c5006a-6b98-4262-91d2-1b109a1277d3" className="notion-figure">
+
+<img src="/content/1824fb4e-415b-4a61-8ec4-76e5102ee32f/e4c5006a-6b98-4262-91d2-1b109a1277d3.webp" alt="" loading="lazy" width="2048" height="1374" />
+
+</figure>
+
+<ul className="notion-todo-list">
+
+<li id="da06865e-3a0f-4a5d-aaf7-c18044bf2232">
+
+<p><label><input type="checkbox" checked={false} disabled /> 운영 환경 구성하기</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="7ef23090-078a-488a-a10f-7c3865c99121">
+
+<p><label><input type="checkbox" checked={false} disabled /> 웹 애플리케이션 앞단에 Reverse Proxy 구성하기</label></p>
+
+</li>
+
+<li id="7eef8679-ae54-428c-9b36-faff13f96284">
+
+<p><label><input type="checkbox" checked={false} disabled /> Reverse Proxy에 TLS 설정하기</label></p>
+
+</li>
+
+<li id="acc15123-1f06-4623-8817-f7ceca00f6fd">
+
+<p><label><input type="checkbox" checked={false} disabled /> 운영 데이터베이스 구성하기</label></p>
+
+</li>
+
+<li id="e753e948-eaee-4b16-a295-18b746568352">
+
+<p><label><input type="checkbox" checked={false} disabled /> 배포 스크립트 작성하기</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="f92bebff-2e8d-4525-ad9f-f70309facea6">
+
+<p><label><input type="checkbox" checked={false} disabled /> 개발 프로세스를 위해 배포 환경 구성하기</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="2303b20b-fb99-4526-903c-a1298773c417">
+
+<p><label><input type="checkbox" checked={false} disabled /> JUnit &#58; h2, Local &#58; docker(mysql), Prod &#58; 운영 DB를 사용하도록 설정</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<hr id="923a0789-3049-443b-b08a-8ec9ef729c81" />
+
+<span id="7c49af91-49bb-48f9-817d-ff7076632061"></span>
+
+## 4&#46;  화면 응답 개선하기
+
+<figure id="e6a41011-208e-46ef-bf97-18b0340da657" className="notion-figure">
+
+<img src="/content/1824fb4e-415b-4a61-8ec4-76e5102ee32f/e6a41011-208e-46ef-bf97-18b0340da657.webp" alt="" loading="lazy" width="1552" height="388" />
+
+</figure>
+
+<ul className="notion-todo-list">
+
+<li id="0754dfbf-0b3e-4d02-8a11-8cff400073e5">
+
+<p><label><input type="checkbox" checked={false} disabled /> 웹 성능 테스트</label></p>
+
+</li>
+
+<li id="027512b2-e588-447d-9831-69170010da61">
+
+<p><label><input type="checkbox" checked={false} disabled /> Reverse Proxy 개선하기</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="2614c041-0738-49ea-94f9-4b7fe2e4a853">
+
+<p><label><input type="checkbox" checked={false} disabled /> gzip 압축 설정</label></p>
+
+</li>
+
+<li id="3012965a-e57b-41f5-b135-64b8ceed467c">
+
+<p><label><input type="checkbox" checked={false} disabled /> cache 설정</label></p>
+
+</li>
+
+<li id="b4e83489-8a94-4eb1-b50d-8282cc292870">
+
+<p><label><input type="checkbox" checked={false} disabled /> TLS 설정</label></p>
+
+</li>
+
+<li id="59a90c77-0b8a-4ed5-9574-2b3e3567a1ab">
+
+<p><label><input type="checkbox" checked={false} disabled /> HTTP/2 설정</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="90e33d7c-4702-4f44-9a44-d8b4d0f76944">
+
+<p><label><input type="checkbox" checked={false} disabled /> Tomcat 개선하기</label></p>
+
+<ul className="notion-todo-list">
+
+<li id="f14d0612-c2a3-4893-85ca-6c71261c4075">
+
+<p><label><input type="checkbox" checked={false} disabled /> gzip 압축 설정</label></p>
+
+</li>
+
+<li id="4282a13b-7a83-4e92-9d57-317fdba664de">
+
+<p><label><input type="checkbox" checked={false} disabled /> cache 설정</label></p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<hr id="d5c1b9d6-e9db-472d-9700-15b0df45c7c3" />

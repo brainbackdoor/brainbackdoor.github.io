@@ -1,0 +1,151 @@
+---
+title: "도커 컨테이너 실행해보기"
+description: "이 포스팅은 도커 컨테이너를 처음 접하는 분들을 대상으로 작성하였습니다."
+pubDate: "2023-11-07"
+category: "guide"
+tags: []
+sourceId: "9fcd92ce-d741-48a9-a0f5-4951c8400bd7"
+sourceUrl: "https://www.brainbackdoor.com/9fcd92ce-d741-48a9-a0f5-4951c8400bd7"
+dateSource: "published"
+icon: "🐳"
+---
+
+<blockquote id="ceb23fc2-91ff-41e4-a042-aec714f4d05e" className="notion-callout">
+
+<p>📌 이 포스팅은 도커 컨테이너를 처음 접하는 분들을 대상으로 작성하였습니다&#46; <br />도커 컨테이너가 무엇인지 간단하게 나마 이해하고 싶으신 분들은,  <span className="notion-color-blue"><strong><a href="/posts/6c414539-eeb5-402c-a18e-3eb02209e487">도커 컨테이너 살펴보기</a></strong></span> 포스팅을 참고 바랍니다&#46;</p>
+
+</blockquote>
+
+<span id="d4214caa-e639-41ea-bf83-834a525ce3b1"></span>
+
+## Step 1&#46; run &amp; port forwarding
+
+<span id="5cdb6ea5-db2e-486a-80af-017c282fdd6d"></span>
+
+```bash
+docker image pull gihyodocker/echo:latest
+docker container run -t -p 9000:8080 gihyodocker/echo:latest
+curl http://localhost:9000
+docker stop $(docker container ls -q)
+```
+
+<span id="a40bfa51-a917-4945-be7c-fe92441a2d52"></span>
+
+## Step 2&#46; image 
+
+<span id="33ac0f6b-9066-4f42-956d-472d48eb1fbf"></span>
+
+```bash
+FROM 인스트럭션: 도커 이미지의 바탕이 될 베이스 이미지를 지정한다.
+RUN 인스트럭션: 도커 이미지를 실행할 때 컨테이너 안에서 실행할 명령을 정의
+COPY 인스트럭션: 도커가 동작중인 호스트머신의 파일이나 디렉터리를 도커 컨테이너 안으로 복사하는 인스트럭션
+CMD 인스트럭션: 도커 컨테이너를 실행할 때 컨테이너 안에서 실행할 프로세스를 지정한다. RUN은 이미지를 빌드할 떄 실행되고 CMD는 컨테이너를 시작할 떄 한번 실행된다.
+```
+
+<span id="0852d597-6ec1-4660-9cf7-74a804e1ec32"></span>
+
+### 실습
+
+<p id="7afb318a-aba5-4235-b629-6ffbca6fe723">Dockerfile과 index&#46;html 생성 후 생성한 위치에서 docker 명령어를 실행해봅니다&#46;</p>
+
+<span id="7d553e96-9ebd-4bfe-a5f4-ecb4324ddd77"></span>
+
+```bash
+# Dockerfile
+FROM nginx
+
+COPY index.html /usr/share/nginx/html
+```
+
+<span id="ee82a6a0-d662-4124-a80f-e3688ef7f28f"></span>
+
+```html
+# index.html
+<html>
+<head>
+    <title>인프라공방</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+    <h1> 도커 컨테이너 실행해보기 </h1>
+</body>
+</html>
+```
+
+<span id="5c500511-28bf-49dc-8e04-c6f6fba88d8f"></span>
+
+```bash
+docker image build -t example/echo:latest .
+docker container run -d -p 9000:80 example/echo:latest
+docker stop $(docker container ls --filter "ancestor=example/echo" -q)
+```
+
+<span id="a647af1a-62c1-48f1-adea-ee6b2ee4b9d3"></span>
+
+### 도커 이미지 관련 명령어
+
+<span id="76265f9e-6875-4838-90ea-4e5c81a33617"></span>
+
+```bash
+- docker image build
+- docker search 
+- docker image pull
+- docker image ls
+- docker image tag
+- docker image push
+
+docker login -u [도커허브 ID] -p
+docker image tag example/echo [도커허브 ID]/echo:latest
+docker image push [도커허브 ID]/echo:latest
+```
+
+<span id="fc1b927c-2eee-411d-a649-fb1771eaffd4"></span>
+
+## Step 3&#46; Docker Container
+
+<span id="302f6077-7973-4d4e-aa57-9410a0b42a4e"></span>
+
+```bash
+docker container run 
+docker container run -it alpine:3.7 uname -a
+docker container run -t -d --name brainbackdoor example/echo:latest
+
+    -i : 컨테이너쪽 표준입력과의 연결을 그대로 유지
+    -t : 유사터미널 기능을 활성화
+    --rm : 컨테이너를 종료할 때 컨테이너를 파기하도록 하는 옵션
+    -v : 호스트와 컨테이너간 디렉터리 혹은 파일을 공유하기 위한 옵션
+
+docker container ls
+# docker ps 와 동일함
+# 원하는 이름과 컨테이너명이 일치하는지 여부 --filter "name=echo1"
+# 생성한 이미지를 기준으로 --filter "ancestor=example/echo"
+
+docker container stop
+# Docker All Container Stop
+# docker stop $(docker ps -a -q)
+
+docker container restart
+
+docker container rm
+# Docker All Container Remove
+# docker rm $(docker ps -a -q)
+
+# Docker All Images Remove
+# docker rmi $(docker images -q)
+
+docker container logs -f $(docker container ls --filter "name=brainbackdoor" -q)
+docker logs <container id>
+
+docker container exec
+# docker exec -it <container id> /bin/bash
+# 컨테이너 내부의 상태를 확인하거나 디버깅하는 용도로 사용
+# 다만, 컨테이너 안에 든 파일을 수정하는 것은 애플리케이션에 의도하지 않은 부작용을 초래할 수 있으므로 운영환경에서는 절대 해서는 안된다.
+
+docker container cp
+# COPY: 이미지를 빌드할 때 호스트에서 복사해온 파일을 정의하기 위한 것
+# docker container cp: 실행 중인 컨테이너와 파일을 주고받기 위한 명령
+
+docker container prune
+# docker image prune
+# docker system prune
+```

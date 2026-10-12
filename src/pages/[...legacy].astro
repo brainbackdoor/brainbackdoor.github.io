@@ -1,0 +1,48 @@
+---
+import inventory from '../../docs/migration-inventory.json';
+import { loadPosts } from '../lib/collection';
+import { legacyRedirects } from '../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await loadPosts('ko');
+  const availableTargets = new Set([
+    ...posts.map(post => post.href),
+    '/', '/about', '/posts', '/curricula', '/tech/infra', '/tags', '/search',
+  ]);
+  return legacyRedirects(inventory.pages, availableTargets).map(({ path, targetPath }) => ({
+    params: { legacy: path.slice(1) },
+    props: { targetPath },
+  }));
+}
+
+interface Props { targetPath: string; }
+const { targetPath } = Astro.props;
+const canonical = new URL(targetPath, Astro.site);
+canonical.hash = '';
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical} />
+    <title>새 주소로 이동</title>
+    <script is:inline data-target={targetPath}>
+      // Fragments never reach the server. Preserve a bookmarked section here;
+      // otherwise keep the collection-row fragment in the verified target.
+      const path = document.currentScript?.getAttribute('data-target');
+      if (path?.startsWith('/') && !path.startsWith('//') && !path.includes('\\')) {
+        const target = new URL(path, location.origin);
+        if (target.origin === location.origin) {
+          if (location.hash) target.hash = location.hash;
+          location.replace(target.href);
+        }
+      }
+    </script>
+    <noscript><meta http-equiv="refresh" content={`0;url=${targetPath}`} /></noscript>
+  </head>
+  <body data-pagefind-ignore>
+    <p><a href={targetPath}>새 주소로 이동</a></p>
+  </body>
+</html>

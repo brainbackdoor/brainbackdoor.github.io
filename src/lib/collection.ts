@@ -16,12 +16,15 @@ export function toSummary(entry: CollectionEntry<'posts'>): PostSummary {
     title: entry.data.title,
     description: entry.data.description,
     pubDate: entry.data.pubDate,
+    dateSource: entry.data.dateSource,
     category: entry.data.category,
     tags: entry.data.tags,
     minutes: readingTime(entry.body ?? ''),
     href: lang === 'ko' ? `/posts/${slug}` : `/${lang}/posts/${slug}`,
     image: entry.data.image,
     icon: entry.data.icon,
+    sourceId: entry.data.sourceId,
+    sourceUrl: entry.data.sourceUrl,
   };
 }
 

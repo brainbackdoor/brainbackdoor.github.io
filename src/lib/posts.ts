@@ -1,4 +1,5 @@
 import type { CategorySlug } from './categories';
+import type { DateSource } from './date';
 
 /**
  * 페이지가 렌더링에만 집중할 수 있도록, 글 목록을 가공하는 로직은 전부
@@ -10,12 +11,15 @@ export interface PostSummary {
   title: string;
   description: string;
   pubDate: Date;
+  dateSource?: DateSource;
   category: CategorySlug;
   tags: string[];
   minutes: number;
   href: string;
   image?: string;
   icon?: string;
+  sourceId?: string;
+  sourceUrl?: string;
 }
 
 /**
@@ -123,4 +127,58 @@ export function collectTags(posts: PostSummary[]): TagCount[] {
 
 export function postsWithTag(posts: PostSummary[], tag: string): PostSummary[] {
   return sortByDateDesc(posts.filter((p) => p.tags.includes(tag)));
+}
+
+/** Public source paths from the migration inventory; original-host operations are separate. */
+export interface LegacySourcePage {
+  sourceId: string;
+  sourceUrl: string;
+  aliases: string[];
+  targetPath: string | null;
+  collectionStatus: string;
+}
+
+const OWNED_ROUTE_ROOTS = new Set([
+  'about', 'posts', 'curricula', 'tech', 'tags', 'search', 'rss', 'rss.xml',
+  'en', 'og', '_astro', 'pagefind', '_pagefind', '404',
+]);
+
+function legacyPath(value: string): string | null {
+  try {
+    const url = new URL(value, 'https://www.brainbackdoor.com');
+    if (!['brainbackdoor.com', 'www.brainbackdoor.com'].includes(url.hostname)) return null;
+    const path = decodeURIComponent(url.pathname).replace(/\/+$/, '') || '/';
+    if (!path.startsWith('/') || path.startsWith('//') || path.includes('\\')) return null;
+    const segments = path.slice(1).split('/');
+    if (segments.some(segment => !segment || segment === '.' || segment === '..')) return null;
+    return path;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Only create aliases for collected content whose new route actually exists.
+ * Existing app route namespaces always win; conflicting source aliases fail the build.
+ */
+export function legacyRedirects(
+  pages: LegacySourcePage[],
+  availableTargets: ReadonlySet<string>,
+): { path: string; targetPath: string }[] {
+  const redirects = new Map<string, string>();
+  for (const page of pages) {
+    const target = page.targetPath;
+    if (page.collectionStatus !== 'collected' || !target) continue;
+    if (!target.startsWith('/') || target.startsWith('//')) continue;
+    const targetPage = target.split(/[?#]/, 1)[0];
+    if (!availableTargets.has(targetPage)) continue;
+    for (const alias of [page.sourceUrl, `/${page.sourceId}`, ...page.aliases]) {
+      const path = legacyPath(alias);
+      if (!path || OWNED_ROUTE_ROOTS.has(path.split('/')[1]) || path === target) continue;
+      const previous = redirects.get(path);
+      if (previous && previous !== target) throw new Error(`Conflicting legacy path ${path}: ${previous} / ${target}`);
+      redirects.set(path, target);
+    }
+  }
+  return [...redirects].map(([path, targetPath]) => ({ path, targetPath })).sort((a, b) => a.path.localeCompare(b.path));
 }

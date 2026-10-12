@@ -1,7 +1,7 @@
 ---
 import CategoryFilter, { type FilterablePost } from './CategoryFilter';
 import { loadPosts } from '../lib/collection';
-import { formatShortDate, getYear } from '../lib/date';
+import { postDate, getYear } from '../lib/date';
 
 interface Props { lang: string; }
 const { lang } = Astro.props;
@@ -13,7 +13,9 @@ const items: FilterablePost[] = posts.map((post) => ({
   category: post.category,
   href: post.href,
   year: getYear(post.pubDate),
-  date: formatShortDate(post.pubDate),
+  date: postDate(post.pubDate, post.dateSource, lang, true).text,
+  dateTitle: postDate(post.pubDate, post.dateSource, lang).title,
+  dateLabel: postDate(post.pubDate, post.dateSource, lang).ariaLabel,
   dateTime: post.pubDate.toISOString(),
   minutes: post.minutes,
 }));
@@ -22,7 +24,7 @@ const items: FilterablePost[] = posts.map((post) => ({
 <div class="archive-page">
   <header class="archive-intro"><h1>{lang === 'en' ? 'Posts' : '글'}</h1></header>
   <CategoryFilter posts={items} lang={lang} client:load />
-  <div class="archive-end"><a href="https://www.brainbackdoor.com/">{lang === 'en' ? 'Earlier posts ↗' : '더 오래된 기록 ↗'}</a></div>
+  <div class="archive-end"><a href="https://www.brainbackdoor.com/">{lang === 'en' ? 'Original blog ↗' : '기존 블로그 ↗'}</a></div>
 </div>
 
 <style>

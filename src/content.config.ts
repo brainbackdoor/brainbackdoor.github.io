@@ -13,10 +13,15 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
+    /** 원문 발행일이 없으면 생성일을 사용하되 지면에서 근거를 구분한다. */
+    dateSource: z.enum(['published', 'created']).optional(),
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     category: z.enum(['retrospect', 'infra', 'guide', 'life']),
     draft: z.boolean().default(false),
+    /** 공개 원문 대조와 이전 주소 연결에 사용하는 출처 메타데이터. */
+    sourceId: z.string().optional(),
+    sourceUrl: z.url().optional(),
     /** 글 대표 이미지(public 기준 경로 또는 절대 URL). OG 이미지로 쓰인다. */
     image: z.string().optional(),
     /** 커버가 없을 때 홈에서 쓰는 이모지 fallback. 없으면 카테고리 기본값. */

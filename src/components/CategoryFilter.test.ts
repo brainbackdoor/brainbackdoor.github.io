@@ -34,3 +34,13 @@ describe('archive search', () => {
     expect(html).toContain('2개의 글');
   });
 });
+
+
+it('preserves date provenance in the hydrated archive markup', () => {
+  const html = renderToStaticMarkup(createElement(CategoryFilter, {
+    posts: [{ ...posts[0], date: '생성일 01.02', dateTitle: '원문 생성일 (발행일 미기재)', dateLabel: '원문 생성일 (발행일 미기재): 2024.01.02' }],
+  }));
+  expect(html).toContain('title="원문 생성일 (발행일 미기재)"');
+  expect(html).toContain('aria-label="원문 생성일 (발행일 미기재): 2024.01.02"');
+  expect(html).toContain('생성일 01.02');
+});

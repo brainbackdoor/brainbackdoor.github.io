@@ -1,0 +1,574 @@
+---
+title: "컨퍼런스 신청 플랫폼 미션 실습환경 구성 가이드"
+description: "VPC, Subnet, Route Table, Security Group 등 망 구성은 앞선 강의 및 미션을 통해 학습한 지식을 바탕으로 직접 진행해보세요!"
+pubDate: "2023-12-18"
+category: "guide"
+tags: []
+sourceId: "b065c018-114e-4897-9a53-98115cd9b382"
+sourceUrl: "https://www.brainbackdoor.com/b065c018-114e-4897-9a53-98115cd9b382"
+dateSource: "published"
+icon: "🛠️"
+---
+
+<blockquote id="7cddd9fe-e08b-48cb-a93e-8bc18661727a" className="notion-callout">
+
+<p>📢 VPC, Subnet, Route Table, Security Group 등 망 구성은 앞선 강의 및 미션을 통해 학습한 지식을 바탕으로 직접 진행해보세요!</p>
+
+</blockquote>
+
+<blockquote id="0f3d1a86-d135-4b5b-839c-9a51fa0c9756" className="notion-callout">
+
+<p>📌 각자의 상황에 따라, <strong><span className="notion-color-yellow_background">캡쳐와는 다른 값을 설정</span></strong>해야 할 수 있습니다!</p>
+
+</blockquote>
+
+<blockquote id="abc72f92-e619-450e-af9f-ba0060f15d22" className="notion-callout">
+
+<p>📌 Amazon Linux 2023 AMI 환경을 기준으로 작성하였습니다&#46;</p>
+
+</blockquote>
+
+<span id="d6f3b9ae-14ca-493e-a535-cc1428522ca4"></span>
+
+## 1&#46; RDS 구성하기
+
+<figure id="cbed981a-9ed3-41d1-b038-b69103fb8d3a" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/cbed981a-9ed3-41d1-b038-b69103fb8d3a.webp" alt="" loading="lazy" width="1700" height="1720" />
+
+</figure>
+
+<ul>
+
+<li id="bcd5f088-0bb5-4d73-9c93-8b541c4ca622">
+
+<p>DB 식별자는 각 모듈을 구분할 수 있게 적절히 지정해주시면 됩니다&#46;</p>
+
+</li>
+
+<li id="62e35e39-fe5f-4d39-bc9f-775d84a66d2b">
+
+<p>마스터 사용자 이름과 암호, 그리고 DB 생성 후 만들어지는 URL 등을 각 애플리케이션 application-prod&#46;properties 혹은 yml 파일에 기입하시면 됩니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="92934949-7094-430d-a01c-addcb6cdacfe"></span>
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://analysis-1.cluster-cvj9m8lve12s.ap-northeast-2.rds.amazonaws.com:3306/analysis?serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8
+    username: root
+    password: password1!
+
+  flyway:
+    enabled: true
+    baseline-version: 1
+    baseline-on-migrate: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+```
+
+<figure id="0a73c822-8270-42d2-ae3e-2b76127068cc" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/0a73c822-8270-42d2-ae3e-2b76127068cc.webp" alt="" loading="lazy" width="1658" height="364" />
+
+</figure>
+
+<ul>
+
+<li id="0d074823-513a-40ff-84b3-3621d3cd8d0e">
+
+<p>깃헙 저장소에 제공하는 DDL 및 초기 데이터를 워크벤치로 추가하기 위해, public access를 허용해줍니다&#46;</p>
+
+</li>
+
+<li id="dd791734-f52d-4c73-9e94-bbcd5549e61d">
+
+<p>DB 사용을 위해 내부망 용도의 서브넷과 보안그룹을 적절히 지정 혹은 생성해줍니다&#46;</p>
+
+</li>
+
+</ul>
+
+<figure id="3c68ec10-eb26-47c7-9d76-31c59adaaa44" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/3c68ec10-eb26-47c7-9d76-31c59adaaa44.webp" alt="" loading="lazy" width="1640" height="360" />
+
+</figure>
+
+<ul>
+
+<li id="a627660e-ad4b-4ab4-bf78-48f16043af8f">
+
+<p>slow query, error log 등 수집하고 싶은 로그도 체크해줍니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="a7296a39-1fdd-4df3-b1aa-81e42229bb55"></span>
+
+## 2&#46; Launch Template 작성하기
+
+<ul>
+
+<li id="70e6de62-efd8-4028-9246-3b72585b6508">
+
+<p>Auto Scaling Group에서 자동으로 생성할 EC2 템플릿을 생성합니다&#46; </p>
+
+</li>
+
+</ul>
+
+<span id="9d24f2cc-2992-4493-85c0-54669bfa9210"></span>
+
+#### 0) VPC DNS 호스트이름 활성화
+
+<figure id="ee3ed77c-ad37-47a7-8d88-c8612fd3c292" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/ee3ed77c-ad37-47a7-8d88-c8612fd3c292.webp" alt="" loading="lazy" width="1812" height="390" />
+
+</figure>
+
+<ul>
+
+<li id="22ccea11-feef-4406-a3f2-bcd86e4739b7">
+
+<p>VPC 설정 편집에서 DNS 호스트 이름 활성화를 체크합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="838b6f4e-bcf0-40d7-a554-317b7eb2d812"></span>
+
+#### 1) Amazom Linux 이미지 선택
+
+<figure id="816601bb-732e-4aa4-8996-976cbc61398d" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/816601bb-732e-4aa4-8996-976cbc61398d.webp" alt="" loading="lazy" width="1754" height="1624" />
+
+</figure>
+
+<ul>
+
+<li id="019f32f6-b121-4095-b187-b74bbab31bf5">
+
+<p>이미지는 최신 버전이 보안상 안전합니다&#46;</p>
+
+</li>
+
+<li id="8591729d-236b-4985-8084-ee4d1e3a4d8b">
+
+<p>Ubuntu 이미지로 진행해도 괜찮습니다&#46; 다만 aws cli를 설치하는 시간을 줄이고자 이번 미션에서는 amazon linux로 가이드합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="a0d32313-ba4e-47fe-a90f-4a7e4ea6e098"></span>
+
+#### 2) 설정
+
+<figure id="27f32df8-40bc-444c-a1b3-040fd1925f01" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/27f32df8-40bc-444c-a1b3-040fd1925f01.webp" alt="" loading="lazy" width="920" height="1536" />
+
+</figure>
+
+<ul>
+
+<li id="88c58a16-d753-4b39-abbe-c0cc757803ce">
+
+<p><span className="notion-color-red"><u><strong>인스턴스 유형, Key pair, 서브넷, 보안그룹, Public IP 자동할당, IAM 권한 설정</strong></u></span> 등 <code><strong>WAS에 적용할 정책</strong></code>을 설정합니다&#46;</p>
+
+</li>
+
+<li id="72cbcff9-b5b0-41ed-b801-27ad04b0a174">
+
+<p>AMI를 활용하신 분들은 필요한 패키지를 미리 받아두었을 경우, Public IP 할당을 하지 않아도 좋습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<figure id="2c1cdd1d-c561-482f-bd48-8b387e62c30a" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/2c1cdd1d-c561-482f-bd48-8b387e62c30a.webp" alt="" loading="lazy" width="1568" height="512" />
+
+</figure>
+
+<ul>
+
+<li id="1354afc2-6dc3-4238-92db-7dda99e79fa8">
+
+<p>S3에서 배포스크립트 혹은 배포본(jar 파일 등)을 받기 위해서는 S3 권한 정책이 추가된 역할을 부여해야 합니다&#46; (AmazonS3FullAccess 등)</p>
+
+</li>
+
+<li id="9330b72c-1b38-4ba4-9682-9c4c1c3fad09">
+
+<p>Cloudwatch agent를 활용하여 정보를 수집하기 위해서는 Cloudwatch 권한 정책이 추가된 역할을 부여해야 합니다&#46; (CloudWatchAgentServerPolicy 등)</p>
+
+</li>
+
+</ul>
+
+<span id="924a0bc7-6dc4-4343-99f4-b427b2a6936a"></span>
+
+#### 3) 시작 명령어 작성
+
+<span id="539acf14-13d7-4f0e-b624-660cbf6e24d8"></span>
+
+```bash
+#!/bin/bash
+
+sudo yum install -y amazon-cloudwatch-agent
+sudo aws s3 cp s3://[S3버킷 경로]/config.json /opt/aws/amazon-cloudwatch-agent/bin/config.json
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+
+sudo yum install -y java-17-amazon-corretto
+aws s3 cp s3://[S3버킷 경로]/conference-0.0.1-SNAPSHOT.jar /home/ec2-user
+java -jar -Dspring.profiles.active=prod /home/ec2-user/conference-0.0.1-SNAPSHOT.jar
+```
+
+<ul>
+
+<li id="1aea7631-c55f-4146-b7d8-63c0d8ae933c">
+
+<p>고급 세부 정보 가장 하단에 위치해 있어요&#46;</p>
+
+</li>
+
+<li id="aedfe4a5-719d-423c-9a6b-6d8b6c15c025">
+
+<p>S3 버킷 경로는 자신의 S3 버킷 및 파일이 위치한 경로를 지정해주시면 됩니다&#46;</p>
+
+</li>
+
+<li id="d266dff3-3c98-4bf7-9f94-d32a131a80a9">
+
+<p>EC2가 정상적으로 실행된 후에 동작해야 할 명령어들을 입력합니다&#46; 배포 상황에 따라 내용은 달라질 수 있습니다&#46; </p>
+
+</li>
+
+<li id="00061484-3fa3-4cb2-a45f-0c9e31a494dc">
+
+<p>jar 파일을 s3에 직접 업로드해주셔도 좋고, github action 등을 통해 main branch 머지 시에 버전을 빌드 후 s3로 업로드하도로 구성하셔도 좋습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="00873c44-1fb5-4163-bae9-47be2d5104a9" />
+
+<span id="67f5e22b-4138-465a-b815-30b5f81e3fae"></span>
+
+## 3&#46; Auto Scaling Group 구성
+
+<span id="f5fd3e3b-130a-4f0d-a9af-f483b5089c21"></span>
+
+#### 1) Launch Template 설정
+
+<figure id="cd5978d1-367d-4a0f-9197-a503392e542a" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/cd5978d1-367d-4a0f-9197-a503392e542a.webp" alt="" loading="lazy" width="1784" height="582" />
+
+</figure>
+
+<ul>
+
+<li id="bd80aecf-bd6a-45ba-a937-eb49b566844e">
+
+<p>Launch Template 보안 패치 등의 이유로 버전이 바뀐다면 추후 Auto Scaling Group 상 템플릿 버전만 바꿔도 보안 패치가 이루어집니다&#46;</p>
+
+</li>
+
+<li id="d45e5098-ff2e-4637-bffa-ee08d1509063">
+
+<p>특정 버전으로 배포할 게 아니라면, Latest로 설정해두어도 좋습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="c880bac8-83a0-46bc-830d-cfa87e568ac4"></span>
+
+#### 2) 네트워크 설정
+
+<figure id="99b66a3e-8ace-4e3a-ac02-52e9513bebce" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/99b66a3e-8ace-4e3a-ac02-52e9513bebce.webp" alt="" loading="lazy" width="1798" height="1270" />
+
+</figure>
+
+<ul>
+
+<li id="433f2ba1-7d61-4852-b261-a3f07e6c33d8">
+
+<p>WAS 용도로 사용할 예정이므로 외부망 2개 서브넷을 설정해줍니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="65a8cade-0d8d-4345-a638-4cc676a46e3d"></span>
+
+#### 3) 로드밸런서 생성
+
+<figure id="2dc4784a-8545-493a-94c3-47f0a86e3322" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/2dc4784a-8545-493a-94c3-47f0a86e3322.webp" alt="" loading="lazy" width="1586" height="1590" />
+
+</figure>
+
+<ul>
+
+<li id="2ce66c5c-b00b-42d5-98c9-a76d393a52d3">
+
+<p>EC2 앞단에 부하분산 용도의 로드밸런서를 생성합니다&#46;</p>
+
+</li>
+
+<li id="1264c49d-c9b2-44ae-b64f-b6f9156c0c14">
+
+<p>Application Load Balancer 로 생성해야 이 후 WAF 등을 추가할 수 있습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="c6333759-8380-49f3-b043-0e12064cd060"></span>
+
+#### 4) 타겟 대상 생성
+
+<figure id="fa757519-282a-4adf-b013-2620ebb11c20" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/fa757519-282a-4adf-b013-2620ebb11c20.webp" alt="" loading="lazy" width="1578" height="404" />
+
+</figure>
+
+<ul>
+
+<li id="aca20bf2-2487-45c7-bcf5-935436f990a1">
+
+<p>로드밸런서의 트래픽을 전달할 대상그룹을 생성합니다&#46;</p>
+
+</li>
+
+<li id="1ba8c22b-ded2-46db-a95b-d06d820ae878">
+
+<p>우리가 앞서 작성해둔 LaunchTemplate을 통해 생성되는 EC2 인스턴스가 타겟 대상 그룹에 속하게 됩니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="6a90b889-6b7e-4ffd-8418-03882b7ee421"></span>
+
+#### 5) 그룹 크기 지정
+
+<figure id="179fd568-d769-477c-a662-24d25d198f00" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/179fd568-d769-477c-a662-24d25d198f00.webp" alt="" loading="lazy" width="1578" height="724" />
+
+</figure>
+
+<figure id="cf793954-009b-4e63-a1b7-0de428b904b4" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/cf793954-009b-4e63-a1b7-0de428b904b4.webp" alt="" loading="lazy" width="1568" height="1810" />
+
+</figure>
+
+<ul>
+
+<li id="52f93815-6ac7-4360-b905-99bf627d4e38">
+
+<p>생성하길 희망하는 EC2 인스턴스 갯수, 최소 갯수, 최대 갯수 등을 설정합니다&#46; EC2 인스턴스를 모두 중지해둘 땐, 원하는 용량을 0으로 지정하면 됩니다&#46;</p>
+
+</li>
+
+<li id="2b94a5ad-a3bd-4801-9f6f-97522cd46bc3">
+
+<p>크기 조정 설정값을 통해 CPU 사용률, 네트워크 트래픽 등 특정 지표가 임계값에 이를 때, 서버를 최대 몇대까지 구성할지 설정해둘 수 있어요&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="3d121544-ce74-45e8-b2b9-e224a3d529db"></span>
+
+#### 6) 종료 정책 구성
+
+<figure id="aaf6aae3-37d8-4abe-855e-dd90644e6f06" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/aaf6aae3-37d8-4abe-855e-dd90644e6f06.webp" alt="" loading="lazy" width="1782" height="1772" />
+
+</figure>
+
+<ul>
+
+<li id="cdc221cd-e870-4fc7-a7bb-22bee184bcea">
+
+<p>이 정책은 Auto Scaling Group 을 생성한 후에 편집을 통해 설정할 수 있어요&#46;</p>
+
+</li>
+
+<li id="34993eec-40dd-42f4-927f-add49170f83a">
+
+<p>기본 정책으로 둔다면, 그룹 크기를 줄일 때 임의로 서버를 종료시킵니다&#46;</p>
+
+</li>
+
+<li id="dcd1b2a6-6a7b-4d0d-ba6c-9ccb23b5d79c">
+
+<p>Launch Template 버전, 오래전에 생성된 인스턴스 순으로 먼저 종료시키도록 종료 정책을 구성해봅니다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="8ee0bf23-ae7f-4f85-b7e0-2cd7f01ceef4" />
+
+<span id="9a71e3c2-6548-492e-b0ff-de3b2788a718"></span>
+
+## 4&#46; DNS
+
+<figure id="073a26b8-655a-43f3-995d-0ed6432b72bc" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/073a26b8-655a-43f3-995d-0ed6432b72bc.webp" alt="" loading="lazy" width="1500" height="912" />
+
+</figure>
+
+<ul>
+
+<li id="6513e6bd-4d90-49cd-ab0b-4d26ed2b532c">
+
+<p>route53에서 생성할 수도 있고, 지하철 노선도 미션과 같이 <strong><span className="notion-color-blue"><a href="https://xn--220b31d95hq8o.xn--3e0b707e/">무료 도메인 사이트</a></span></strong> 등을 활용하여 DNS 설정을 하여도 괜찮습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="ef69c9f2-efa8-4091-884b-71bba83581d7" />
+
+<span id="9010a821-838a-4d8a-ad38-844e9493acfb"></span>
+
+## 5&#46; TLS
+
+<span id="b1659eb5-782d-4275-932d-3c90ef321324"></span>
+
+#### 1-a) 인증서 생성 (ACM)
+
+<figure id="9f9eb555-9e04-4019-a77a-705e23a2b6c4" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/9f9eb555-9e04-4019-a77a-705e23a2b6c4.webp" alt="" loading="lazy" width="2048" height="350" />
+
+</figure>
+
+<figure id="3b72b229-dfc3-4e3a-af51-2c1723bff863" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/3b72b229-dfc3-4e3a-af51-2c1723bff863.webp" alt="" loading="lazy" width="1714" height="80" />
+
+</figure>
+
+<ul>
+
+<li id="978199bd-5f3b-4edd-a172-7a1f3c001b60">
+
+<p>만약 무료 도메인 사이트를 활용한다면, CNAME 정보를 입력하면 잠시 후 검증 상태가 “성공”으로 바뀐 것을 확인할 수 있습니다&#46;</p>
+
+</li>
+
+<li id="4d2c4508-7a44-403b-a857-c4c2408899c1">
+
+<p>route53을 통해 도메인을 구매했다면, “route53에서 레코드 생성” 버튼을 클릭 후 레코드를 생성하면 됩니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="c8a9dd0c-5810-4f48-ab2f-28edcf108e06"></span>
+
+#### 1-b) 인증서 가져오기
+
+<figure id="d28cc80d-ebf9-43a3-81ed-26f1bc2a73c2" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/d28cc80d-ebf9-43a3-81ed-26f1bc2a73c2.webp" alt="" loading="lazy" width="1980" height="1004" />
+
+</figure>
+
+<ul>
+
+<li id="6d56471b-e3a2-4739-b9bb-b9bb1a171b6e">
+
+<p>lets encrypt를 통해 생성한 인증서를 활용할 경우, “가져오기” 버튼을 클릭한 후 기존에 생성한 인증서 정보를 기입합니다&#46;</p>
+
+</li>
+
+<li id="088bed09-0545-46e5-b82d-3a33f2ee8666">
+
+<p>BEGIN CERTIFICATE와 END CERTIFICATE 까지 포함하여야 합니다&#46;</p>
+
+<ul>
+
+<li id="77799ce4-655e-48f9-887a-8a04b070eb06">
+
+<p>인증서 본문 -&gt; cert&#46;pem</p>
+
+</li>
+
+<li id="f1bdd222-3350-4e87-ac13-e9cfaa841fb1">
+
+<p>프라이빗 키 -&gt; privkey&#46;pem</p>
+
+</li>
+
+<li id="59ec2a6d-1135-4808-92f6-867e063be6c3">
+
+<p>체인 -&gt; chain&#46;pem</p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<span id="af3b173a-5328-470b-a539-047031131257"></span>
+
+#### 2) ALB에 인증서 적용하기
+
+<figure id="bf28c1e9-6836-4e26-bd50-b7843928223e" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/bf28c1e9-6836-4e26-bd50-b7843928223e.webp" alt="" loading="lazy" width="1794" height="1180" />
+
+</figure>
+
+<figure id="ed181e8b-3171-408b-a5cc-2cea0a837587" className="notion-figure">
+
+<img src="/content/b065c018-114e-4897-9a53-98115cd9b382/ed181e8b-3171-408b-a5cc-2cea0a837587.webp" alt="" loading="lazy" width="1798" height="982" />
+
+</figure>
+
+<ul>
+
+<li id="b8dff313-4b74-44c9-94b9-3fb76c2c1669">
+
+<p>ALB에서 인터넷구간에서 요청받을 포트를 HTTPS로 변경하고, HTTPS 통신시 사용할 인증서를 지정해줍니다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="8ad46da6-1f53-4a0a-bba4-35cfc9271ffe" />

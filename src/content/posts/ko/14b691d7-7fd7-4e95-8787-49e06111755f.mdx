@@ -1,0 +1,279 @@
+---
+title: "200 vs 404"
+description: "ATDD 강의 코드리뷰 중 이런 질문을 받았다."
+pubDate: "2020-02-12"
+category: "infra"
+tags: []
+sourceId: "14b691d7-7fd7-4e95-8787-49e06111755f"
+sourceUrl: "https://www.brainbackdoor.com/14b691d7-7fd7-4e95-8787-49e06111755f"
+dateSource: "published"
+icon: "🌐"
+---
+
+<div id="f628940f-0374-4c7f-9e60-838c5390c43b" className="notion-columns">
+
+<div id="324ad63b-281d-40b1-b968-4873ebe1efd7" className="notion-column">
+
+<p id="0f79a753-ec9e-4e26-b512-3b7af707a76e"><strong>⬅️ 이전 글 &#58; 없음</strong></p>
+
+</div>
+
+<div id="f91b0795-fa8b-458f-a2ac-fb0432375ab6" className="notion-column">
+
+<p id="34e9c958-2592-40c8-9fba-08e6edb5ab9e"><a href="https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf">원본 페이지 ↗</a> </p>
+
+</div>
+
+<div id="aedefc54-d938-4db7-801e-437e8c444b23" className="notion-column">
+
+<p id="7fa435d5-b3f6-46b5-8d11-ab1ee0bafdb8"><strong>➡️ 다음 글 &#58; 없음</strong></p>
+
+</div>
+
+</div>
+
+<figure id="e377decb-702b-4971-a424-e4ee83344fde" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/e377decb-702b-4971-a424-e4ee83344fde.png" alt="" loading="lazy" width="588" height="548" />
+
+</figure>
+
+<figure id="ec39573f-8aba-4cde-a3a3-35735547dcd8" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/ec39573f-8aba-4cde-a3a3-35735547dcd8.png" alt="" loading="lazy" width="1222" height="314" />
+
+</figure>
+
+<p id="f8bedba1-a392-4c91-8272-859ca54b1628"><strong><span className="notion-color-blue"><a href="https://edu.nextstep.camp/c/R89PYi5H/">ATDD 강의</a></span></strong><strong><span className="notion-color-blue"> </span></strong>코드리뷰 중 이런 질문을 받았다&#46; 질문의 요지는,  <code>/stations/&#123;id&#125;</code>  혹은  <code>/stations?name=&#123;name&#125;</code>  등과 같은 요청에 해당하는 데이터가 없을 경우, 어떤 응답코드가 적절한가이다&#46;</p>
+
+<p id="eaa3c041-cd08-4e03-8095-948df7de52c6">HTTP Status Code에 대해서는 나름대로 <span className="notion-color-blue"><strong><a href="https://brainbackdoor.tistory.com/123">기준</a></strong></span>을 세웠던지라 별다른 고민은 없었는데, 팀원과 이야기 중에 생각이 다른 부분이 있어 다른 리뷰어들과도 이야기를 나누어보았다&#46; 이 내용을 정리하고 공유하고 또 다른 의견들을 듣는 것도 좋을 거 같아 포스팅해본다&#46;</p>
+
+<figure id="63198d28-60af-43fb-a98c-b1c49ffd42dc" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/63198d28-60af-43fb-a98c-b1c49ffd42dc.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<span id="5f5f6ced-013a-43e0-bf5b-4729e2e18334"></span>
+
+## 200이 적절하다는 주장
+
+<p id="12b7d008-a1aa-4145-9ad9-a530f0275f6e">우선, 200이 적절하다는 주장을 살펴보자&#46;</p>
+
+<p id="eb32b543-132f-459f-b736-348c925f07ee">HTTP에서 이야기하는 resource 라는 개념을 서버 데이터와 엮지 않고 온전히 URI 라고 보아야 한다&#46; 즉, <strong>서버의 데이터 없음을 HTTP resource와 엮지 않아야 한다</strong>는 것으로, 위의 경우에는 <strong>빈값의 200 응답</strong>을 해야 한다는 것이다&#46;</p>
+
+<p id="d4d83fce-6ac3-4125-8a7a-2f54a30c0649">다만, <strong>DELETE 메서드에서 없는 데이터를 삭제하려고 했을 때 이 요청은 400 에러로 처리</strong>하여야 하는데, 이는 서버에서 요청이 수용되었으나 클라이언트의 요청이 잘못되었음을 의미하기 때문이다&#46; 이렇게 리소스와 데이터 자원을 분리하는 이유는 <strong>명확함을 강조</strong>하기 위함이다&#46;</p>
+
+<p id="437c48df-1686-4ac0-bb6c-ea3cc739c1d2">그리고 REST를 지향하는 API에서도, 삭제를 실행 했을 때 그 데이터가 삭제 가능한 상황을 단순하게 데이터가 존재한다고 판단하지 않는다&#46; 그 데이터에 얽혀있는 비지니스적인 요소에 따라 요청 클라이언트에게 데이터가 없다고 밝혀야 할 수도 있고, 삭제가 불가능하다고 밝혀야 할 때도 있다&#46;</p>
+
+<p id="a5689c35-ea41-4c8b-a57c-7f7d7a18de00">가령, 주문을 실행한다고 했을 때 주문이 실행 불가능한 여러가지 경우가 있다&#46; 재고가 떨어져서, 혹은 판매자가 폐업한 경우 등의 상황에서 404, 400, 500 에러는 적절치 않다&#46; 리소스 수용이 정상적으로 이루어졌고, 요청한 데이터에도 이상이 없고(클라이언트에게 책임이 없고), 서버에서 비정상적이고 식별 불가한 에러를 발생한 것도 아니므로 200 응답을 주는 것이 적절해 보인다&#46; 다만 클라이언트에서 식별에 대한 응답을 하기 위해 요청은 성공했지만 주문에는 실패했다는 의미로 내부적으로 관리되는 상태 코드를 응답 body 에 명시하도록 한다&#46; 이러한 사용은 실제 서버에 이상이 있는지, 클라이언트가 잘못된 요청을 하는지에 대한 구분을 명확히 함으로써 장애시 트래킹 포인트를 좁히는데에도 큰 역할을 한다&#46;</p>
+
+<p id="d07962de-7b6d-43cc-a4ae-d344f4d034fc">즉, <span className="notion-color-teal"><strong>조회시 없을 때는 200, PUT/DELETE의 경우 상황에 따라 (데이터가 있어야하는데 없는 경우) 4xx, 아니면 200에 응답 body에 별도로 메시지나 정책적으로 만든 상태코드를 담아서 보내는 것이 적절하다</strong></span>는 주장이다&#46;</p>
+
+<p id="6da62b72-fce2-4dba-87fd-26c5bb02bcf5">위의 주장은 현재 국내 몇 군데 규모있는 회사 개발자들의 의견이었고, 나 역시 그렇게 생각하고 있었다&#46; 그래서 확인차 몇군데 둘러보니 실제로 그렇게 운영되고 있다&#46;</p>
+
+<ul>
+
+<li id="3812c5c2-97d8-4716-9139-f45598b3aefb">
+
+<p>쿠팡 404 페이지 &#58; <a href="https://www.coupang.com/vp/productsasdsasd">https&#58;//www&#46;coupang&#46;com/vp/productsasdsasd</a></p>
+
+</li>
+
+<li id="ade8c94b-efbb-4f60-9f17-e34a62d7783f">
+
+<p>쿠팡 200 페이지 &#58; <a href="https://www.coupang.com/vp/products/1229153213123123124124">https&#58;//www&#46;coupang&#46;com/vp/products/1229153213123123124124</a></p>
+
+</li>
+
+</ul>
+
+<figure id="0c49cfff-4050-4ab0-9d57-46f8c13b4bca" className="notion-bookmark">
+
+<img className="notion-bookmark-cover" src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/0c49cfff-4050-4ab0-9d57-46f8c13b4bca-cover.png" alt="" loading="lazy" width="638" height="479" />
+<p><a href="https://luckyyowu.tistory.com/377">HTTP 404 Status Code 에 대한 고찰</a></p><p>위에서 나온 결론을 조금 더 자세히 풀어보면 다음 내용이다&#46; API 개발 시 사용할 법 직한 응답 코드를 정리해보았다&#46; 200&#58; OK (정상, 데이터 있음) 204&#58; No Contents (정상, 데이터 없음) 301&#58; Moved Permanently (리다이렉션) 400&#58; Bad Request (실패, 클라이언트에서 넘어온 파라미터가 이상함) 401&#58; Unauthorized (실패, 클라이언트에서 넘어온 보안 토큰이 이상함) 403&#58; Forbidden (실패, 사용자의 권한으로 리소스를 사용할 수 없음) 404&#58; Not Found (실패, 데이터가 있어야 하나 없음) 410&#58; Gone (실패, 데이터가 있었으나 삭제됨&#46;</p>
+
+</figure>
+
+<figure id="8b6dbd70-bbec-40bb-a4d3-30f8ee69e48f" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/8b6dbd70-bbec-40bb-a4d3-30f8ee69e48f.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<span id="31791dab-7c65-4d41-93b9-0cdf20d37cc7"></span>
+
+## 400이 적절하다는 주장
+
+<p id="bd78594e-5a89-461e-9a45-81d68597ca06">위의 내용만 보면 200이 타당한 듯 보인다&#46; 하지만 404 의견을 듣고 자료를 찾아보니 이거 역시 만만치가 않다&#46;</p>
+
+<p id="950d1f70-676f-4f43-9715-d43e22ac2697">우선, 404 NOT FOUND가 적절하다는 입장은, <span className="notion-color-blue"><strong><a href="https://tools.ietf.org/html/rfc7231">https&#58;//tools&#46;ietf&#46;org/html/rfc7231</a></strong></span> 에 근거를 두었다&#46;</p>
+
+<p id="75fac94a-8be8-4649-a2ec-3cabe14f1d4c"><strong>200 status code</strong></p>
+
+<blockquote id="bacdbd2a-e6cb-463b-8987-b1dd4e4ef45a">
+
+<p>The 200 (OK) status code indicates that the request has succeeded&#46;<br />The payload sent in a 200 response depends on the request method&#46;<br />GET a representation of the target resource;</p>
+
+</blockquote>
+
+<p id="71dd6d33-7100-4afb-a073-a2f6356df137">200은 요청이 성공했음을 나타내며 페이로드로 해당 resouce의 representation이 응답된다&#46;</p>
+
+<blockquote id="c9e9605f-72a8-4d0e-97f2-7838e73932df">
+
+<p>Aside from responses to CONNECT, a 200 response always has a payload, though an origin server MAY generate a payload body of zero length&#46;<br />If no payload is desired, an origin server ought to send 204 (No Content) instead&#46;</p>
+
+</blockquote>
+
+<p id="b2a15889-ccd5-4ddf-9d5d-b0c10ad06a93">200은 항상 payload를 가지고 있어야 하고 응답이 없는 경우 204를 보내주어야 한다&#46;</p>
+
+<p id="8dfe2b8c-b8d9-4c45-a7a2-b89ae3f70e5b"><strong>204 status code</strong></p>
+
+<blockquote id="a2a2b2fe-e43d-4ace-bae9-1c611f0387a0">
+
+<p>The 204 (No Content) status code indicates that the server has successfully fulfilled the request and that there is no additional content to send in the response payload body&#46;</p>
+
+</blockquote>
+
+<p id="2206f717-3fc7-4402-afcd-137eb43f4a14">204는 요청을 성공적으로 이행하고 응답 페이로드에 추가적으로 보낼 컨텐츠가 없는 경우를 나타낸다&#46;</p>
+
+<blockquote id="5b5543d1-5dfa-42f0-aa95-b3f92aef3c4e">
+
+<p>For example, if a 204 status code is received in response to a PUT request and the response contains an ETag header field, then the PUT was successful and the ETag field-value contains the entity-tag for the new representation of that target resource&#46;</p>
+
+</blockquote>
+
+<p id="c1434ad2-b6ea-4cd9-a8b7-d3cf7ad7d97e">예를 들면, 추가적으로 보낼 컨텐츠가 없는 경우란 PUT 요청을 받고, ETag Header 필드를 포함하여 contents에 보낼 필요가 없을 때를 말한다&#46; 즉, 204 응답은 타겟 리소스에 성공적으로 적용되었음을 나타내며, 암시적으로 useragent가 횡단(접근)할 필요가 없음을 나타낸다&#46;</p>
+
+<p id="fcd78cf5-4a29-4912-a043-439ba88dd1ed"><strong>404 status code</strong></p>
+
+<blockquote id="13f1bdfb-cf53-4aed-bd39-daed201924eb">
+
+<p>The 404 (Not Found) status code indicates that the origin server did not find a current representation for the target resource or is not willing to disclose that one exists&#46;</p>
+
+</blockquote>
+
+<p id="6b142a80-69f6-4512-91bb-8aff83e4a610">404 응답은 서버가 타겟 리소스의 representation을 찾지 못하였거나 존재한다는 것을 드러내려고 하지 않음을 나타낸다&#46;</p>
+
+<p id="0df4c14b-cc67-4072-b06e-bcf1871276dd"><strong>즉, </strong>HTTP 요청의 대상이 리소스임을 생각해 본다면</p>
+
+<p id="0c664e2b-734b-47c7-9d4f-a1b28b112cdc"><span className="notion-color-teal"><strong>The target of an HTTP request is called a "resource"</strong></span></p>
+
+<p id="7a008cff-ac20-4a7b-a085-d1e19bb2cc4b">서버가 정상적으로 동작함의 여부가 아니라 요청한 리소스가 정상적으로 응답이 오는가에 따라서 응답 코드를 판단해야 한다고 생각하다는 것으로, rfc7231문서에 정의된 Response Status Code 중 200과 204 두 상태 코드 모두 <strong>uri가 가리키는 resource가 존재하지 않는 경우</strong>의 상태를 나타내기는 어렵다는 주장이며, 404 상태 코드가 보다 명확하다는 입장이었다&#46;</p>
+
+<figure id="6671cb2f-2a49-4c4a-a2e0-4f5772b80743" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/6671cb2f-2a49-4c4a-a2e0-4f5772b80743.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<p id="0dc77bf5-7d06-45e5-9e7d-da5fdb24255c">추가적으로, ResponseEntity 구현체를 보면 Body에 null을 넘겨줄 경우 notFound()를 리턴하도록 정적 팩토리 메서드를 작성했음을 확인할 수 있다&#46;</p>
+
+<span id="58b83f2a-835f-47f1-82f3-59b3685939a0"></span>
+
+```java
+public static <T> ResponseEntity<T> of(Optional<T> body) {
+        Assert.notNull(body, "Body must not be null");
+        return body.map(ResponseEntity::ok).orElse(notFound().build());
+}
+```
+
+<figure id="bba65b5a-204f-4a5a-ba0a-444161d65a4a" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/bba65b5a-204f-4a5a-ba0a-444161d65a4a.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<p id="ac672536-1611-463c-810a-92cbed909bb6">그리고 HTTP 완벽가이드를 보면, Not Found에 대해 이런 설명이 있다&#46;</p>
+
+<p id="60b80bc0-916d-4844-b82e-93bcade957a6"><em><strong>"서버가 요청한 URL을 찾을 수 없음을 알려주기 위해 사용한다&#46; 종종, 클라이언트 애플리케이션이 사용자에게 보여주기 위한 엔터티가 포함된다&#46;"</strong></em></p>
+
+<figure id="e0a54344-5287-435a-acef-2247bf74d0ec" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/e0a54344-5287-435a-acef-2247bf74d0ec.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<p id="3d187344-228a-4944-86ea-217c9c76fd06">그리고 트위터의 status code 정의를 보면, <strong>"The URI requested is invalid or the resource requested, such as a user, does not exist&#46;"</strong> 라고 가이드 하고 있다&#46;</p>
+
+<figure id="ea8effe8-6554-438c-a5c5-26c54cfae6c7" className="notion-bookmark">
+
+<p><a href="https://developer.twitter.com/en/docs/basics/response-codes">Documentation Home</a></p><p>Guides and reference materials to help you get started, integrate, optimize, and troubleshoot your use of the Twitter Developer Platform&#46; Explore now&#46;</p>
+
+</figure>
+
+<figure id="8e5259a2-0f2b-4c43-8faf-3f6b1cf7143b" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/8e5259a2-0f2b-4c43-8faf-3f6b1cf7143b.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<p id="75224f86-f15f-4b24-9e92-85851bff34f0">아래의 링크도 같이 확인해보자&#46;</p>
+
+<figure id="a44ad508-03b1-4544-a356-fa2c8f60043b" className="notion-bookmark">
+
+<img className="notion-bookmark-cover" src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/a44ad508-03b1-4544-a356-fa2c8f60043b-cover.png" alt="" loading="lazy" width="316" height="316" />
+<p><a href="https://softwareengineering.stackexchange.com/questions/203492/when-to-use-http-status-code-404-in-an-api">When to use HTTP status code 404 in an API</a></p><p>I'd say that either a 200 or a 404 response code can be valid, depending on how you look at the situation&#46; The thing is that HTTP response codes are defined in the context of an server, which can deliver various resources based on their URL&#46;</p>
+
+</figure>
+
+<figure id="cefd3e34-1951-45d3-9065-b48dec8f7315" className="notion-bookmark">
+
+<p><a href="https://medium.com/@laeshiny/get-%EC%9A%94%EC%B2%AD-%EC%8B%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EA%B0%80-%EC%97%86%EC%9C%BC%EB%A9%B4-200-or-404-4ab7430084af">Get 요청 시 데이터가 없으면 200 or 404 ?</a></p><p>해당 url path는 서버에 존재하지만 query string에 들어가는 값에 따라서 데이터가 없다면 200 ok와 empy body를 전달하면 될까요? 예전에는 이런식으로 한걸 많이 본거 같습니다&#46; 여기에도 저처럼 그런걸 많이 봐서 고민하는 분이 계십니다&#46; 가장 마음에 드는 대답은 200 Ok를 하고 body에 empty string을 주는 건 해당&#46;&#46;&#46;</p>
+
+</figure>
+
+<p id="994aa583-d703-4cf9-af84-a67366ae64df"><s>(위 포스팅의 저자분은 이제 200으로 보내신다는 이야기를 듣기는 했다만&#46;&#46;)</s></p>
+
+<figure id="5346f7ca-5516-4751-aa6a-de8f5d29cc4d" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/5346f7ca-5516-4751-aa6a-de8f5d29cc4d.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<p id="8f7f8441-9f3f-4783-ac08-98f06ce33e09">사실 우리와 비슷한 논쟁이 stackoverflow에 이미 있었기는 하다&#46;</p>
+
+<figure id="b2df9da0-cbfb-4b90-86f3-eea889f90d93" className="notion-bookmark">
+
+<img className="notion-bookmark-cover" src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/b2df9da0-cbfb-4b90-86f3-eea889f90d93-cover.png" alt="" loading="lazy" width="360" height="360" />
+<p><a href="https://stackoverflow.com/questions/11746894/what-is-the-proper-rest-response-code-for-a-valid-request-but-an-empty-data">What is the proper REST response code for a valid request but an empty data?</a></p><p>I'd say, neither is really appropriate&#46; As has been said - e&#46;g&#46; by &#64;anneb, I, too, think that part of the problems arises from using an HTTP response code to transport a status relating to a RESTful service&#46; Anything the REST service has to say about its own processing should be transported by means of REST specific codes&#46;</p>
+
+</figure>
+
+<p id="60919337-f282-4d7e-b0a2-fc2e67a0aa2c"><s>위의 stackoverflow 답글 중에 query string의 경우 빈 배열로 리턴해야 한다는 의견도 있지만, 나는 query string도 url의 한 파트라고 보기에 이는 반대한다&#46; (</s><a href="https://en.wikipedia.org/wiki/Query_string"><s>https&#58;//en&#46;wikipedia&#46;org/wiki/Query&#95;string</s></a><s>)</s></p>
+
+<figure id="face0bca-d1a2-4461-a28b-1ee7938293fe" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/face0bca-d1a2-4461-a28b-1ee7938293fe.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<p id="8c62599e-572e-49b9-b80b-4829a8d6af0f">이쯤되니 상태코드도 팀 컨벤션처럼 생각해야 하나, 아니면 이것도 글로벌 기준과 국내 실무와의 괴리 정도로 보면 되는 것인가하는 생각도 든다&#46; </p>
+
+<figure id="5f556f52-6315-4685-b6a4-1568c31b7b53" className="notion-figure">
+
+<img src="/content/14b691d7-7fd7-4e95-8787-49e06111755f/5f556f52-6315-4685-b6a4-1568c31b7b53.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<div id="d52546f5-8a74-44c4-be53-052183ec9501" className="notion-columns">
+
+<div id="a5b79385-9e5e-4e34-9f60-d5b7f229d98c" className="notion-column">
+
+<p id="0aada1de-f669-4848-ab16-af0885ba08b0"><strong>⬅️ 이전 글 &#58; 없음</strong></p>
+
+</div>
+
+<div id="a3cb87d8-2af4-4f15-ba47-ebe3b7ef53ca" className="notion-column">
+
+<p id="02920bac-9053-45d9-ad3f-892e6f82d1d6"><a href="https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf">원본 페이지 ↗</a> </p>
+
+</div>
+
+<div id="38418bc4-81d2-4e1f-aa14-5a2da1376390" className="notion-column">
+
+<p id="3216ba4f-24eb-4417-b5e4-022adb9427ea"><strong>➡️ 다음 글 &#58; 없음</strong></p>
+
+</div>
+
+</div>

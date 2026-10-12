@@ -32,11 +32,46 @@
 .post-content pre, .post-content pre.astro-code { overflow: auto; max-width: 100%; padding: 19px 18px; margin: 26px 0; font-family: var(--font-code); font-size: 12px; line-height: 1.95; background: #f2f6fb !important; border-radius: 6px; tab-size: 2; scrollbar-width: thin; white-space: pre; word-break: normal; overflow-wrap: normal; }
 .post-content .code-block pre { margin: 0; border-radius: 0; }
 .post-content pre code { background: none; padding: 0; color: inherit; font-size: inherit; border-radius: 0; white-space: inherit; }
+.post-content .notion-callout { padding: 16px 20px; border-left: 3px solid var(--color-accent); border-radius: 0 6px 6px 0; background: var(--color-sunken); font-size: inherit; line-height: inherit; }
+.post-content .notion-callout > :last-child { margin-bottom: 0; }
+.post-content .notion-columns { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 24px; margin: 24px 0; }
+.post-content .notion-columns > * { min-width: 0; }
+.post-content .notion-toggle { margin: 20px 0; padding-left: 16px; border-left: 1px solid var(--color-border); }
+.post-content .notion-toggle > summary { min-height: 44px; padding: 7px 0; cursor: pointer; font-weight: 600; }
+.post-content .notion-toggle > summary::marker { color: var(--color-accent); }
+.post-content .notion-toggle > :last-child { margin-bottom: 0; }
+.post-content .notion-figure { margin: 28px 0; }
+.post-content .notion-figure img { display: block; margin: 0 auto; }
+.post-content .notion-figure figcaption { margin: 10px 0 0; font-size: 12px; line-height: 1.8; text-align: center; color: var(--color-ink-muted); }
+.post-content .notion-caption { font-size: 12px; line-height: 1.8; color: var(--color-ink-muted); }
+.post-content .notion-bookmark-cover { max-height: 260px; width: 100%; object-fit: contain; }
+.post-content .notion-color-gray { color: #667085; }
+.post-content .notion-color-brown { color: #855937; }
+.post-content .notion-color-orange { color: #9e4a13; }
+.post-content .notion-color-yellow { color: #806000; }
+.post-content .notion-color-green { color: #207051; }
+.post-content .notion-color-teal { color: #207051; }
+.post-content .notion-color-blue { color: var(--color-accent); }
+.post-content .notion-color-purple { color: #7451a0; }
+.post-content .notion-color-pink { color: #a63e78; }
+.post-content .notion-color-red { color: #b13939; }
+.post-content [class*="notion-color-"][class$="_background"] { padding: 1px 3px; border-radius: 2px; background: #f2f5f8; }
+.post-content .notion-color-yellow_background { background: #fff1ba; }
+.post-content .notion-color-red_background, .post-content .notion-color-pink_background { background: #fce6e8; }
+.post-content .notion-color-blue_background, .post-content .notion-color-purple_background { background: #e7edff; }
+.post-content .notion-color-green_background { background: #e0f3e9; }
+.post-content .notion-collection-cover { display: block; width: 120px; height: 150px; object-fit: contain; margin-bottom: 10px; }
+.post-content .notion-todo-list { list-style: none; padding-left: 0; }
+.post-content .notion-todo-list input { margin-right: 9px; accent-color: var(--color-accent); }
+.post-content iframe, .post-content video, .post-content audio { display: block; max-width: 100%; margin: 24px 0; }
+.post-content iframe { width: 100%; border: 1px solid var(--color-border); border-radius: 6px; }
+.post-content .notion-video iframe { aspect-ratio: 16 / 9; height: auto; }
 @media (max-width: 1100px) {
   .post-page .reading-layout { grid-template-columns: minmax(0, 1fr); }
   .post-page .post-article { max-width: 650px; }
 }
 @media (max-width: 600px) {
+  .post-content .notion-columns { grid-auto-flow: row; gap: 12px; }
   .post-content h2 { font-size: 23px; margin-top: 46px; scroll-margin-top: 22px; }
   .post-content blockquote { font-size: 18px; padding-left: 17px; }
   .post-content pre, .post-content pre.astro-code { padding: 16px 14px; font-size: 11px; }

@@ -18,3 +18,20 @@ export function formatShortDate(d: Date): string {
 export function formatDate(d: Date): string {
   return `${getYear(d)}.${formatShortDate(d)}`;
 }
+
+export type DateSource = 'published' | 'created';
+
+/** Creation-time fallbacks remain visibly distinct from authored publication dates. */
+export function postDate(d: Date, source?: DateSource, lang = 'ko', short = false) {
+  const formatted = short ? formatShortDate(d) : formatDate(d);
+  const created = source === 'created';
+  const title = created
+    ? (lang === 'en' ? 'Original creation date (publication date unavailable)' : '원문 생성일 (발행일 미기재)')
+    : undefined;
+  return {
+    dateTime: d.toISOString(),
+    text: created ? `${lang === 'en' ? 'Created' : '생성일'} ${formatted}` : formatted,
+    title,
+    ariaLabel: title ? `${title}: ${formatDate(d)}` : undefined,
+  };
+}

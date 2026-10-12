@@ -1,0 +1,75 @@
+---
+title: "불변객체에 관해서.."
+description: "NEXTSTEP TDD 과정 코드리뷰를 하다보면, 일급컬렉션 피드백에 이어, 많이 하는 피드백이 불변객체를 작성하라는 것이다."
+pubDate: "2020-04-12"
+category: "infra"
+tags: []
+sourceId: "95248237-c6a4-4489-a51e-6c548c0c103c"
+sourceUrl: "https://www.brainbackdoor.com/95248237-c6a4-4489-a51e-6c548c0c103c"
+dateSource: "published"
+icon: "🧐"
+---
+
+<p id="3759cb4b-a0a5-4590-a4e3-378d5f3c127e">NEXTSTEP TDD 과정 코드리뷰를 하다보면, <span className="notion-color-blue"><a href="https://brainbackdoor.tistory.com/140"><strong>일급컬렉션</strong></a></span><strong> </strong>피드백에 이어, 많이 하는 피드백이 불변객체를 작성하라는 것이다&#46;</p>
+
+<p id="f868beb6-ec4f-4c9b-a11a-0a2fb5c8ba71">Effective Java에서는 '<strong>변경 가능성을 최소화하라</strong>'는 챕터를 통해 불변 객체를 소개한다&#46; '<strong>불변 객체'는 인스턴스 생성 이후 내부 인스턴스 변수들을 수정할 수 없어야 한다&#46;</strong> 이에 근본적으로 Thread-safe하므로 동기화 작업을 할 필요 없어 오류 가능성이 적고 <span className="notion-color-blue"><a href="https://madplay.github.io/post/strive-for-failure-atomicity"><strong>실패 원자성</strong></a></span>을 제공한다&#46;</p>
+
+<p id="23e4a7a9-a4ca-455e-8d06-0054fc0d6b6b">불변 객체를 작성하기 위해 Effective Java에서는 아래의 규칙을 소개한다&#46;</p>
+
+<ul>
+
+<li id="f944584f-5fa2-49b4-b97d-ff02e5b29b46">
+
+<p><span className="notion-color-teal"><strong>객체의 상태를 변경하는 메서드를 제공하지 않는다&#46;</strong></span> 즉, setter 메서드 등을 통해 인스턴스 변수의 값을 변경하는 메서드를 작성하지 않아야 한다&#46;</p>
+
+</li>
+
+<li id="1439210d-f8a7-4588-ba5b-837da58b30d0">
+
+<p><span className="notion-color-teal"><strong>클래스를 확장할 수 없도록 한다&#46;</strong></span><strong> </strong>그리하여 하위 클래스에서 의도치 않게 인스턴스 변수를 변경하는 것을 막아야 한다&#46; 정적 팩토리 메서드를 작성한다면 생성자를 private으로 작성하기에 다른 패키지에서 이 클래스를 확장하는 것이 불가능해진다&#46; 그 외에도 final class로 선언하고 모든 멤버 필드를 final로 적옹하여 상속을 막을 수 있다&#46;</p>
+
+</li>
+
+<li id="13303f33-a23a-4281-8c91-cf6f5d85026d">
+
+<p><span className="notion-color-teal"><strong>모든 필드를 final로 선언한다&#46;</strong></span> java에서 final 예약어는 해당 객체를 가리키는 포인터를 바꿀 수 없게하는 의미를 까지지만, 코드 작성자의 의도를 명확히 드러내는 것만으로도 유의미하다&#46;</p>
+
+</li>
+
+<li id="e2ce7552-009e-403d-bac9-267b65b0613c">
+
+<p><span className="notion-color-teal"><strong>모든 필드를 private으로 선언</strong></span>하여 직접 멤버 필드에 접근하는 것을 막을 수 있다&#46;</p>
+
+</li>
+
+<li id="f91738f0-d0f0-46c7-85ea-36b9398bb237">
+
+<p><span className="notion-color-teal"><strong>자신 외에는 내부의 가변 컴포넌트에 접근할 수 없도록 한다&#46;</strong></span> 즉, 외부에 인스턴스 변수를 반환할 경우 (getter 등에서) 방어적 복사본을 만들어야 한다&#46; - <span className="notion-color-blue"><a href="https://madplay.github.io/post/make-defensive-copies-when-needed"><strong>관련 링크</strong></a></span></p>
+
+</li>
+
+</ul>
+
+<p id="d81a6d68-026b-4083-b211-d0d6577110e8">이 포스팅은, <span className="notion-color-teal"><u>Collections 라이브러리의 unmodifiableList API를 어떻게 활용하는 것이 좋을지</u></span> 피드백하다 작성하게 되었다&#46; unmodifiableList 는 List에 read-only 상태로 접근 가능하도록 하며, List에 수정을 가하려고 할 경우 UnsupportedOperationException를 반환하도록 한다&#46; - <span className="notion-color-blue"><a href="https://docs.oracle.com/javase/1.5.0/docs/api/java/util/Collections.html#unmodifiableList(java.util.List)"><strong>관련 링크</strong></a></span></p>
+
+<span id="23b5b3fa-9fb3-48e7-bef6-7838009727f5"></span>
+
+```java
+final class ImmutableCart<T> {
+    private final List<T> items;
+    public ImmutableCart(final List<T> items) {
+        this.items = Collections.unmodifiableList(items);
+    }
+    public List<T> getItems() {
+        return new ArrayList(items);
+    }
+}
+```
+
+<p id="24daf336-b900-455c-b4f1-93406cc8c154"><span className="notion-color-teal"><strong>unmodifiableList를 생성자에서 사용하여 전달받은 값을 방어적 복사하고, getter에서 객체를 생성해서 반환</strong></span>하는 것도 좋은 전략이라고 생각한다&#46; final 예약어를 사용하였으므로 값을 재할당할 수 없으며, unmodifiableList는 값을 수정할 시에 예외를 발생시키므로 Item을 교체하지 못한다는 의미가 분명해질 수 있다&#46; 이에 내부에서 값을 재정의하는 메서드를 작성하는 것을 방지하는 효과를 가져온다&#46;</p>
+
+<p id="031aabb8-1da7-440c-9f0c-636e8fbe34a8">getter에서도 unmodifiableList를 사용할 경우 Deep Copy가 되지 않는다는 점이 <span className="notion-color-blue"><a href="https://os94.tistory.com/153"><strong>우려</strong></a></span>가 있지만, Item이<span className="notion-color-blue"> </span><span className="notion-color-blue"><a href="https://martinfowler.com/bliki/ValueObject.html"><strong>Value Object</strong></a></span>로 작성하여 불변성을 보장할 경우 속성을 변경할 수 없고 Collection에 직접 Item을 교체하는 api를 제공하지 않으므로 불변을 보장할 수는 있다&#46; 다만, 이 경우 외부 사용자 측면에서는 기대하지 않은 예외 (unsupportedoperationexception)에 직면하여 좋지 못한 경험을 준다는 단점이 있으며, unmodifiableList은 비즈니스 로직을 읽어내는데 저해된다는 주장도 있다&#46;</p>
+
+<p id="dc6ab493-e93c-4f03-8ce2-76d8122dda5d">추가적으로, <span className="notion-color-blue"><a href="https://ko.wikipedia.org/wiki/%EB%B6%88%EB%B3%80%EA%B0%9D%EC%B2%B4"><strong>위키</strong></a></span>에서는 불변객체 작성시에 생성자에서는 방어적 복사 후 Collection 요소들의 타입 검사까지 진행하며, getter에서는 내부 필드의 방어적 복사를 수행하도록 가이드 한다&#46;</p>
+
+<p id="6d00ff57-aaae-4fa8-9d45-e05f90aa8be2">결국, 불변객체를 어떻게 작성할 지는 답이 있는 영역이라기보다는, 팀 컨벤션으로 조율해갈 문제라고 생각한다&#46; Effective Java에서 가이드하는 불변성을 보장하는 범위에서 어떻게 구현할지 합당한 논리만 견지하시면 좋다고 생각한다&#46;</p>

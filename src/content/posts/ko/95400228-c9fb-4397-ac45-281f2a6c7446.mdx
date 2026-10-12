@@ -1,0 +1,149 @@
+---
+title: "bufferbloat과 buffer overflow"
+description: "병목구간(bottleneck)이란, 인터넷을 이용하는 Client와 인터넷 Server 사이에 존재하는 네트워크 구간 중 가장 bandwidth가 작은 구간을 말한다."
+pubDate: "2019-02-24"
+category: "infra"
+tags: []
+sourceId: "95400228-c9fb-4397-ac45-281f2a6c7446"
+sourceUrl: "https://www.brainbackdoor.com/95400228-c9fb-4397-ac45-281f2a6c7446"
+dateSource: "published"
+icon: "🌐"
+---
+
+<div id="996ea163-199a-45af-8e08-6ca69a6e401a" className="notion-columns">
+
+<div id="af918831-4d1d-4b09-81fb-6cfa55ae5fdc" className="notion-column">
+
+<p id="d0cfd0fc-71d4-46d9-a43b-1c719f9dca4a"><strong>⬅️ 이전 글 &#58; 없음</strong></p>
+
+</div>
+
+<div id="aa9093d8-003f-401e-80ff-698e8cf7e7f7" className="notion-column">
+
+<p id="910cd62d-0767-4aea-ace2-65832aea5f46"><a href="https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf">원본 페이지 ↗</a> </p>
+
+</div>
+
+<div id="843b349b-a957-4afc-bfd6-9c1f623947aa" className="notion-column">
+
+<p id="1be4f95b-3a9b-4cce-ae1c-044187b1469b"><strong>➡️ 다음 글 &#58; 없음</strong></p>
+
+</div>
+
+</div>
+
+<figure id="38191ed1-26df-4903-8e5c-99a8491ef422" className="notion-figure">
+
+<img src="/content/95400228-c9fb-4397-ac45-281f2a6c7446/38191ed1-26df-4903-8e5c-99a8491ef422.jpg" alt="" loading="lazy" width="640" height="304" />
+
+</figure>
+
+<span id="fdc77663-40de-4398-ab54-229a4d10801f"></span>
+
+## 1&#46; Bufferbloat
+
+<p id="d28073eb-bb52-49c8-826c-b3292897db80"><span className="notion-color-red"><strong>병목구간(bottleneck)</strong></span>이란, 인터넷을 이용하는 Client와 인터넷 Server 사이에 존재하는 네트워크 구간 중 <span className="notion-color-red"><strong>가장 bandwidth가 작은 구간</strong></span>을 말한다&#46;</p>
+
+<p id="f0223258-c67c-4cfc-a674-2ab94bfdfa09">인터넷 초창기엔 서버의 media speed, 스위치나 라우터의 interface/home edge단 link가 모두 100Mbps(Fast Ethernet)이었기에 병목구간이 큰 문제로 부각되지 않았다&#46; 하지만 Gigabit ethernet이 나오면서 상황이 달라졌다&#46; 이전에는 64Kbyte의 window size로 충분히 성능을 낼 수 있었지만, <span className="notion-color-red"><strong>이후 인터넷 속도가 올라감에 따라 window size를 올릴 수 밖에 없었기 때문</strong></span>이다&#46; (<span className="notion-color-blue"><a href="https://tools.ietf.org/html/rfc1323"><strong>RFC 1323</strong></a></span>)</p>
+
+<p id="13ad73cb-0769-45be-9dff-5581bab50f8b">서버의 media speed나 상위 네트워크가 1G로 바뀜에 따라 <strong>WiFi AP/Microwave 장비 등이 병목구간이 되었다&#46; </strong>이에 Speed mismatch에 의한 buffer overflow가 빈번히 발생하면서 Throughput 저하, 잦은 재전송 등 link 효율이 감소하게 되었다&#46; 특히, packet drop의 경우 TCP 통신상의 속도(Throughput)에 치명적일 수 있었다&#46;</p>
+
+<p id="cbb92eef-fe04-4f8b-9e10-c04a236f803f">이에 제조사들은 메모리 가격 하락 등의 외부 요인을 반영하여 Buffer 메모리를 크게 늘리는 형태로 대응하였지만 이는 또다른 문제를 낳았다&#46; <span className="notion-color-red"><strong>여러 명이 동시 접속해서 사용하는 WiFi의 경우 buffer는 큰 데 비해 bandwidth가 작아</strong></span>, 한 유저가 file을 다운로드 받는 경우에 WiFi AP의 buffer가 그 유저의 데이터로 가득 차버리는 등의 문제가 발생하였다&#46; 이에 다른 유저가 동일 WiFi를 사용할 경우 <span className="notion-color-red"><strong>인터넷 접속 Ack가 buffer의 맨 뒤에 쌓여, 최대 buffering delay가 수백 ms에서 수초까지 발생하는 등 지연 현상이 발생</strong></span>하였다&#46; 이런 현상을<span className="notion-color-blue"><strong> </strong></span><span className="notion-color-blue"><strong><a href="https://queue.acm.org/detail.cfm?id=2071893">Bufferbloat</a></strong></span>이라 한다&#46;</p>
+
+<figure id="1716e05b-ebd8-488c-82a2-a7402ce76d17" className="notion-figure">
+
+<img src="/content/95400228-c9fb-4397-ac45-281f2a6c7446/1716e05b-ebd8-488c-82a2-a7402ce76d17.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<figure id="eb937029-c447-4631-ac6c-ead0fd1d874c" className="notion-figure">
+
+<img src="/content/95400228-c9fb-4397-ac45-281f2a6c7446/eb937029-c447-4631-ac6c-ead0fd1d874c.png" alt="" loading="lazy" width="400" height="236" />
+
+</figure>
+
+<span id="d8a19a0c-52d6-47ee-aaab-8c7759049ac7"></span>
+
+## 2&#46; 한번에 얼마나 보낼 수 있을까
+
+<ul>
+
+<li id="fc623799-b710-4396-8ba0-4f5c002b5f53">
+
+<p><strong>처리량 = (한번에 보낼수 있는 양) &#42; (단위시간 / 왕복에 걸리는 시간)</strong></p>
+
+</li>
+
+<li id="9ffd757b-3bc7-49c2-be35-c39da8b4eb65">
+
+<p><strong>Throughput = Window Size / RTT</strong></p>
+
+</li>
+
+</ul>
+
+<p id="be53f3d9-5a2f-41e0-bd67-9d724020f65d">예를 들어 병목구간이 100Mbps Ethernet이고, Client와 서버의 RTT는 40ms 상황을 가정해보면,</p>
+
+<p id="262a5f0f-5540-4755-91fc-303af59bdfcf">100Mbps(bandwidth, 처리량) &#42; 40ms(delay, RTT) = 10000000 &#42; 0&#46;04 = 4000000 bits = 500Kbytes</p>
+
+<p id="c4082dd3-f9f8-4be3-9723-06e2e8d8abe4">즉, 이 경우 100Mbps 속도로 40ms 동안 보낼 수 있는 데이터가 500Kbytes이기 때문에 Window size가 500Kbytes로 끊김없이 서버에서 계속 데이터를 보낼 경우, 병목구간 100Mbps를 하나의 세션이 모두 사용하게 된다&#46; 이와 같이 병목구간의 bandwidth를 최대한 다 사용할 수 있는 window size를 BDP(Bandwidth Delay Product)라 한다&#46;</p>
+
+<figure id="29454604-ee2b-4df8-89fd-9c146a4875a2" className="notion-figure">
+
+<img src="/content/95400228-c9fb-4397-ac45-281f2a6c7446/29454604-ee2b-4df8-89fd-9c146a4875a2.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<span id="dc4e788f-281c-4e79-b587-fab3b6a2ccd2"></span>
+
+## 3&#46; Buffer overflow
+
+<ul>
+
+<li id="1d513d2d-a5cf-4206-b870-14b7d627fe63">
+
+<p><strong>처리량 = (한번에 보낼수 있는 양) &#42; (단위시간 / 왕복에 걸리는 시간)</strong></p>
+
+</li>
+
+<li id="0f3f0466-6386-4dfe-8fcb-2ae541ceb9c6">
+
+<p><strong>Throughput = Window Size / RTT</strong></p>
+
+</li>
+
+</ul>
+
+<p id="9f5fbbe4-4d78-4822-a532-51768046e58a">반면, buffer가 매우 작은 경우, 가령 위의 예에서 병목구간의 buffer가 64KBytes인 경우 buffer overflow가 발생한다&#46;</p>
+
+<p id="69416f73-e001-4841-83e1-db54f41feaef">Throughput = 64KB / 0&#46;04(sec) = 12&#46;8Mbps 이므로, 100Mbps link를 최대한 활용하지 않을 뿐더러 서버의 media bandwidth가 1G 일 경우 <span className="notion-color-red"><strong>speed mismatch에 의한 buffer overflow가 발생</strong></span>한다&#46;  (구글의 BBR은 buffer가 작을 경우를 고려하진 않았다고 보인다&#46;)</p>
+
+<p id="5591a460-70bb-40b7-8f96-54ca9d8755cb">앞으로 상이한 네트워크 환경(IoT vs 100G 이상)이 공존하게 될 것을 고려해보면, 해당 이슈들에 대한 논의도 많이 다루게 되지 않을까 싶다&#46;</p>
+
+<figure id="b7b3f76a-be4b-4dbe-b661-e391d2deffb3" className="notion-figure">
+
+<img src="/content/95400228-c9fb-4397-ac45-281f2a6c7446/b7b3f76a-be4b-4dbe-b661-e391d2deffb3.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<div id="4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924" className="notion-columns">
+
+<div id="190e2a61-5bb9-4520-af97-3b24e5b0476c" className="notion-column">
+
+<p id="edaa02a7-4182-413f-8073-ae89965acc2d"><strong>⬅️ 이전 글 &#58; 없음</strong></p>
+
+</div>
+
+<div id="abe1a197-cc8e-461b-b418-2e30be513186" className="notion-column">
+
+<p id="f70504e8-a1ed-41d2-a81e-cf237ecb5158"><a href="https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf">원본 페이지 ↗</a> </p>
+
+</div>
+
+<div id="4a883bf0-42a0-4919-8ace-82f4f37e3be1" className="notion-column">
+
+<p id="e5ee2ea2-3468-445c-93ee-4caa03d91bac"><strong>➡️ 다음 글 &#58; 없음</strong></p>
+
+</div>
+
+</div>

@@ -1,0 +1,485 @@
+---
+title: "서비스 운영하기 미션 가이드"
+description: "IAM role로 CloudWatchAgentServerPolicy 권한을 가진 역할을 생성해두고 시작합니다."
+pubDate: "2023-11-28"
+category: "guide"
+tags: []
+sourceId: "6660b3f1-de92-4053-b3e0-08a84ea34432"
+sourceUrl: "https://www.brainbackdoor.com/6660b3f1-de92-4053-b3e0-08a84ea34432"
+dateSource: "published"
+icon: "📈"
+---
+
+<span id="e5f4c214-663b-47c5-8ccd-a2aa82e6acf7"></span>
+
+## 1&#46; Cloudwatch로 수집하기
+
+<span id="a6a46e37-fd46-4d40-904a-6b0753cee41c"></span>
+
+#### A&#46; EC2에 IAM role 설정
+
+<figure id="eed210c1-ef35-48fe-81b7-407d646430d6" className="notion-figure">
+
+<img src="/content/6660b3f1-de92-4053-b3e0-08a84ea34432/eed210c1-ef35-48fe-81b7-407d646430d6.png" alt="" loading="lazy" width="826" height="628" />
+
+</figure>
+
+<ul>
+
+<li id="4b15a0b3-217b-4f77-91e3-cfb1b6a6e190">
+
+<p>IAM role로 CloudWatchAgentServerPolicy 권한을 가진 역할을 생성해두고 시작합니다&#46; EC2 서버에 IAM role 권한을 부여합니다&#46; </p>
+
+</li>
+
+</ul>
+
+<span id="f842eb49-a90c-4e6f-a556-d66d53122f74"></span>
+
+#### B&#46; Cloudwatch agent 설정
+
+<span id="11472ca2-e60c-4827-9e9a-e3316273d4c8"></span>
+
+```bash
+$ wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+$ sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+```
+
+<span id="c3eb8f68-0ae4-44ac-a3a0-ddebecb28095"></span>
+
+```bash
+# /opt/aws/amazon-cloudwatch-agent/bin/config.json
+# 아래는 예시입니다. 필요한 지표를 추가해서 수집하세요~ 
+{
+        "agent": {
+                "metrics_collection_interval": 60,
+                "run_as_user": "root"
+        },
+        "logs": {
+                "logs_collected": {
+                        "files": {
+                                "collect_list": [
+                                        {
+                                                "file_path": "/var/log/syslog",
+                                                "log_group_name": "syslog",
+                                                "log_stream_name": "{instance_id}",
+																		            "timezone": "Local"
+                                        }
+                                ]
+                        }
+                }
+        },
+        "metrics": {
+                "metrics_collected": {
+                        "disk": {
+                                "measurement": [
+                                        "used_percent",
+                                        "used",
+                                        "total"
+                                ],
+                                "metrics_collection_interval": 60,
+                                "resources": [
+                                        "*"
+                                ]
+                        },
+                        "mem": {
+                                "measurement": [
+                                        "mem_available"
+                                ],
+                                "metrics_collection_interval": 60
+                        },
+                        "netstat": {
+                                "measurement": [
+                                        "tcp_syn_sent",
+                                        "tcp_syn_recv"
+                                ],
+                                "metrics_collection_interval": 60
+                        },
+                }
+        }
+}
+```
+
+<span id="96286a5d-f404-411b-98d7-0f6b15a01e7f"></span>
+
+```bash
+$ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+$ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a status
+{
+  "status": "running",
+  "starttime": "2023-11-27T22:01:10+00:00",
+  "configstatus": "configured",
+  "version": "1.300031.0b313"
+}
+```
+
+<hr id="7a5357fd-b6ca-4068-8d67-d7620a50ae9b" />
+
+<span id="d77ee96c-f4bc-4828-a60a-98a7deb3ff63"></span>
+
+## 2&#46; 지표
+
+<figure id="5d1d3737-b9c8-4d0c-a93b-f36594385598" className="notion-figure">
+
+<img src="/content/6660b3f1-de92-4053-b3e0-08a84ea34432/5d1d3737-b9c8-4d0c-a93b-f36594385598.png" alt="" loading="lazy" width="2048" height="931" />
+
+</figure>
+
+<ul>
+
+<li id="6e449230-8e43-4499-9a89-45c4fa57a257">
+
+<p>위젯 추가 &gt; 유형으로 행 선택 &gt; 원본데이터로 지표 선택 &gt; CPU Utilization, Network In / Out, mem&#95;used&#95;percent, disk&#95;used&#95;percent 등 대시보드 추가</p>
+
+</li>
+
+<li id="b60948d5-2a8f-448d-ade7-6c55229805ca">
+
+<p>메트릭 지표는 <strong><span className="notion-color-blue"><a href="https://docs.aws.amazon.com/ko_kr/AmazonCloudWatch/latest/monitoring/metrics-collected-by-CloudWatch-agent.html#linux-metrics-enabled-by-CloudWatch-agent">링크</a></span></strong>를 참고해보세요&#46; USE 방법론에 맞춰 대시보드를 구성하려면 어떤 지표들을 수집해야 할까요?</p>
+
+</li>
+
+<li id="0e4e1588-b688-4d81-b0b6-00047faeb276">
+
+<p>위의 캡쳐는 예시일 뿐이에요&#46; 추가로 수집할만한 시스템 메트릭들도 있고, was, nginx, mysql 지표들과 로그 등도 표현 가능합니다&#46; 물론 용도에 맞게 대시보드를 나눠서 구성해도 좋구요&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="6e2d5c41-85b8-431e-8679-9dd93ee9995b" />
+
+<span id="e503bcf1-2489-4f87-a5dd-91a70469c38c"></span>
+
+## 3&#46; 애플리케이션 로그
+
+<p id="7844bd7a-0b14-4ede-8ec5-447058f52fc8">애플리케이션의 상태를 확인하기 위해서는 로그를 남기는 것이 중요합니다&#46; <strong>무엇을 로그로 남겨야 할지, 로그를 어떻게 관리해야 할지</strong> 고민해보며 학습해보세요&#46;</p>
+
+<blockquote id="b9c28bc3-aefe-4bae-984c-4c62c8ee315a">
+
+<p><span className="notion-color-blue"><strong><a href="https://github.com/woowacourse/java-deploy/tree/feat/logging">예제 코드</a></strong></span><br /><span className="notion-color-blue"><strong><a href="https://docs.spring.io/spring-boot/docs/2.2.7.RELEASE/reference/html/spring-boot-features.html#boot-features-logging">스프링 Docs</a></strong></span></p>
+
+<p id="5f079776-962f-4c25-8b5e-9893916fc4b3"><span className="notion-color-blue"><strong><a href="http://logback.qos.ch/documentation.html">logback 공식 사이트</a></strong></span></p>
+
+<p id="116a9ae9-7fbe-4115-a704-5fffc6963235"><span className="notion-color-blue"><strong><a href="https://meetup.toast.com/posts/149">함께보면 좋을 자료</a></strong></span></p>
+
+</blockquote>
+
+<span id="0908a9e0-bbe2-41e8-a9d2-586dc08ab0e5"></span>
+
+#### a&#46; logback&#46;xml을 작성
+
+<ul>
+
+<li id="4be334c5-de4e-4e0d-b1e4-6836a5cf89dc">
+
+<p>logback의 기본 설정 파일은 logback&#46;xml 입니다&#46; logback 라이브러리는 classpath 아래에 위치하는 logback&#46;xml을 기본으로 찾아봅니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="926680c9-4b24-48fd-9989-281d622dd183"></span>
+
+```xml
+<configuration debug="false">
+
+    <!--spring boot의 기본 logback base.xml은 그대로 가져간다.-->
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <include resource="file-appender.xml" />
+
+    <!--    logger name이 file일때 적용할 appender를 등록한다.-->
+    <logger name="file" level="INFO" >
+        <appender-ref ref="file" />
+    </logger>
+</configuration>
+```
+
+<span id="59139e0b-2b08-474b-87dd-58c85ce47b6c"></span>
+
+```xml
+    <property name="home" value="log/" />
+
+    <!--  appender이름이 file인 consoleAppender를 선언  -->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--로깅이 기록될 위치-->
+        <file>${home}file.log</file>
+        <!--로깅 파일이 특정 조건을 넘어가면 다른 파일로 만들어 준다.-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${home}file-%d{yyyyMMdd}-%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>15MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <!--   해당 로깅의 패턴을 설정   -->
+        <encoder>
+            <charset>utf8</charset>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %thread %-5level %logger - %m%n
+            </Pattern>
+        </encoder>
+    </appender>
+```
+
+<ul>
+
+<li id="4334c6e0-43fa-40d6-9fd5-d9d94330932d">
+
+<p>logger&#58; 실제 로그 기능을 수행하는 객체로 각 Logger마다 Name을 부여하여 사용합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="ba6f7852-c759-45c0-8759-fe9e61285bd9"></span>
+
+#### <br />b&#46; logback을 이용하여 logging
+
+<span id="724b9315-7686-4c08-b27a-ea99fd3c8da0"></span>
+
+```java
+    private static final Logger log = LoggerFactory.getLogger(Controller.class);
+    private static final Logger fileLogger = LoggerFactory.getLogger("file");
+
+    ...
+    log.error("An ERROR Message");
+    fileLogger.info("파일 로깅 입니다.");
+```
+
+<span id="48ed1169-73ce-41bb-ab9d-a3d2814efe3f"></span>
+
+#### <br />c&#46; JSON 로그를 사용한 이벤트 로그 수집
+
+<ul>
+
+<li id="15a76783-958d-4efc-9950-3c902e648702">
+
+<p>src/main/resources/logback&#46;xml</p>
+
+</li>
+
+</ul>
+
+<span id="97708db2-fe38-4192-bbb0-e03403531f21"></span>
+
+```xml
+<encoder class="net.logstash.logback.encoder.LogstashEncoder" >
+    <includeContext>true</includeContext>
+    <includeCallerData>true</includeCallerData>
+    <timestampPattern>yyyy-MM-dd HH:mm:ss.SSS</timestampPattern>
+    <fieldNames>
+        <timestamp>timestamp</timestamp>
+        <thread>thread</thread>
+        <message>message</message>
+        <stackTrace>exception</stackTrace>
+        <mdc>context</mdc>
+    </fieldNames>
+</encoder>
+```
+
+<span id="5b973dbf-f809-47a1-a8d9-8990ddbf0959"></span>
+
+```java
+dependencies {
+    implementation("net.logstash.logback:logstash-logback-encoder:6.1")
+}
+```
+
+<span id="69437f41-d808-4871-9f31-86b7817daa70"></span>
+
+```java
+// static import net.logstash.logback.argument.StructuredArguments.kv
+        log.info("{}, {}",
+            kv("출발지", source.getName()),
+            kv("도착지", target.getName())
+        );
+);
+```
+
+<hr id="6de7727b-b781-46ce-84a4-65000a49c0c7" />
+
+<span id="119fe501-5304-4364-a5e8-169c912111dd"></span>
+
+## 4&#46; <strong>Nginx Log</strong>
+
+<ul>
+
+<li id="1b4f5067-cf65-43f3-8df8-4d3d1798ded3">
+
+<p>volume 옵션을 활용하여 호스트의 경로와 도커의 경로를 마운트합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="8ddd0052-1170-4513-9a38-da60721dec74"></span>
+
+```bash
+$ docker run -d -p 80:80 -v /var/log/nginx:/var/log/nginx nextstep/reverse-proxy
+```
+
+<hr id="4ee4c36d-55c3-442f-a34f-08fc34fee73e" />
+
+<span id="de5d627f-0bdd-4fb8-949e-a9e48b3f4bed"></span>
+
+## 5&#46; Spring Actuator 
+
+<span id="8def50df-ca6a-4f5f-bf13-ccfc7224c244"></span>
+
+```java
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE")
+    implementation("io.micrometer:micrometer-registry-cloudwatch")
+}
+```
+
+<span id="531f79cb-2ec6-457a-b123-96a7146c5757"></span>
+
+```yaml
+cloud:
+  aws:
+    stack:
+      auto: false # 실행시 AWS stack autoconfiguration 수행과정에서 발생하는 에러 방지
+    region:
+      static: ap-northeast-2
+
+management:
+  metrics: 
+    export:
+      cloudwatch:
+        namespace: brainbackdoor
+        batch-size: 20
+  server:
+    port: 8182
+  endpoints:
+    jmx:
+      exposure:
+        exclude: "*"
+    web:
+      exposure:
+        include: info, health
+      base-path: /management
+  endpoint:
+    health:
+      showDetails: never
+    metrics:
+      enabled: true
+```
+
+<hr id="9db59d7f-f43e-40c5-92c6-fa9de8d432ce" />
+
+<span id="649f4de4-52f7-4deb-bbfb-e55984d6a5bd"></span>
+
+## 6&#46; Pinpoint 구성하기
+
+<span id="3397c87c-f674-4e3a-bd38-8342794dd80a"></span>
+
+### A&#46; Collector 구성하기
+
+<span id="ebb8c0b0-c3f9-483b-99ac-266adf0a2def"></span>
+
+```bash
+git clone https://github.com/pinpoint-apm/pinpoint-docker.git
+cd pinpoint-docker
+git checkout 2.5.3
+docker-compose pull && docker-compose up -d
+```
+
+<ul>
+
+<li id="2fba5866-eda4-4a63-ba07-4e0abb48dd92">
+
+<p>Collector로 사용할 EC2 생성 후, 위의 명령어로 collector, web, hbase 등을 구성합니다&#46; </p>
+
+</li>
+
+<li id="9b955ce0-f7f7-4fac-9e10-194fbd09cae0">
+
+<p>web의 포트번호 default는 8080 입니다&#46;</p>
+
+</li>
+
+<li id="09d07e8f-3287-4d0e-b523-ecac57f10189">
+
+<p>docker-compose에서 pinpoint-agent, pinpoint-agent-attach-example, pinpoint-quickstart 등의 의존은 제거해도 됩니다&#46; </p>
+
+</li>
+
+</ul>
+
+<span id="4d2b5f3c-69b4-496e-b304-b0f5fcfafe05"></span>
+
+### B&#46; Agent 구성하기
+
+<figure id="0fa02414-d628-4b44-82f0-b2322ba82a9b" className="notion-figure">
+
+<img src="/content/6660b3f1-de92-4053-b3e0-08a84ea34432/0fa02414-d628-4b44-82f0-b2322ba82a9b.webp" alt="" loading="lazy" width="2048" height="1044" />
+
+</figure>
+
+<span id="a1c87b60-b606-43d9-8876-750477d6f2d4"></span>
+
+```bash
+# infra-workshop/pinpoint-agent-2.5.3/pinpoint-root.config
+
+profiler.transport.grpc.collector.ip=[Collector IP]
+
+...
+
+# 부하테스트 등 환경을 고려해서 샘플링을 고려
+# eg. 1: 100%     20: 5%     50: 2%      100: 1%
+profiler.sampling.counting.sampling-rate=1
+```
+
+<span id="d785278f-d95b-42bf-8144-775b2578e091"></span>
+
+```bash
+# front 모듈을 가정할 때, 아래와 같이 옵션을 추가하면 됩니다.
+# 프로젝트의 최상위 경로에서 자바 명령어로 프로세스를 실행하거나, 
+# IntelliJ의 Configurations 화면에서 VM Options에 추가해서 진행해보세요.
+
+-javaagent:pinpoint-agent-2.5.3/pinpoint-bootstrap-2.5.3.jar 
+-Dpinpoint.agentId=front-api 
+-Dpinpoint.applicationName=front-api
+```
+
+<span id="47248533-d2a1-44d8-9b3a-070e38202da0"></span>
+
+### C&#46; Pinpoint 웹 콘솔 살펴보기
+
+<span id="66a2a4b9-f7c3-45d4-8520-a7206f7f08f3"></span>
+
+#### a&#46; Servermap
+
+<figure id="b3feccfb-c312-4abf-b4b4-6b1c3f6471aa" className="notion-figure">
+
+<img src="/content/6660b3f1-de92-4053-b3e0-08a84ea34432/b3feccfb-c312-4abf-b4b4-6b1c3f6471aa.png" alt="" loading="lazy" width="2048" height="1151" />
+
+</figure>
+
+<p id="636503f5-99ca-41bf-b154-0d29385e468a">서버간 관계 및 트래픽 평균 응답시간, 응답 분포 등을 확인할 수 있습니다&#46; 우측 상단의 응답시간 분포 영역을 마우스 드래그를 통해 특정 콜에 대한 추적이 가능합니다&#46;</p>
+
+<span id="414b07c4-6125-4d5d-b31b-57e90b0c7981"></span>
+
+#### b&#46; Callstack Trace
+
+<figure id="4f5fc14a-f04f-4a26-a3ad-f4a101b59dc6" className="notion-figure">
+
+<img src="/content/6660b3f1-de92-4053-b3e0-08a84ea34432/4f5fc14a-f04f-4a26-a3ad-f4a101b59dc6.png" alt="mixed view" loading="lazy" width="2048" height="1228" /><figcaption>mixed view</figcaption>
+
+</figure>
+
+<p id="2974caa2-6c47-4341-8bb7-64cc2dd8ff4c">요청에 대한 소스레벨의 Trace View를 제공합니다&#46; SQL 쿼리, 에러 로그 및 병목지점 등을 확인할 수 있고, 이를 Call Tree, Server Map 및 Mixed View 등으로 확인해 볼 수 있습니다&#46;</p>
+
+<span id="9575c93d-46f4-490f-9490-8e0402ba25e8"></span>
+
+#### c&#46; Inspector
+
+<figure id="d53f9481-45e6-46a5-8ff9-3fdf0f046852" className="notion-figure">
+
+<img src="/content/6660b3f1-de92-4053-b3e0-08a84ea34432/d53f9481-45e6-46a5-8ff9-3fdf0f046852.png" alt="" loading="lazy" width="1794" height="1012" />
+
+</figure>
+
+<p id="9308a18e-81b5-455a-b68f-837919ddeaf8">CPU, memory, tps, datasource connection count 등 agent 들의 리소스 지표를 확인할 수 있습니다&#46; </p>

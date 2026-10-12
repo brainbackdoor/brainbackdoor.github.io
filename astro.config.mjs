@@ -5,6 +5,17 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import pagefind from 'astro-pagefind';
+import { readFileSync } from 'node:fs';
+import { legacyRedirects } from './src/lib/posts.ts';
+
+// Loading errors must stop the build instead of publishing aliases in the sitemap.
+/** @type {import('./src/lib/posts').LegacySourcePage[]} */
+const migrationPages = JSON.parse(readFileSync(new URL('./docs/migration-inventory.json', import.meta.url), 'utf8')).pages;
+const canonicalPaths = new Set(migrationPages.flatMap(page =>
+  page.collectionStatus === 'collected' && page.targetPath ? [page.targetPath.split(/[?#]/, 1)[0]] : []));
+const legacyPaths = new Set(legacyRedirects(migrationPages, canonicalPaths)
+  .map(({ path }) => path)
+  .filter(path => !canonicalPaths.has(path)));
 
 // 사용자 사이트(brainbackdoor.github.io)라 base path가 없다.
 // 프로젝트 사이트로 옮기게 되면 base: '/blog' 를 추가해야 한다.
@@ -12,8 +23,11 @@ export default defineConfig({
   site: 'https://brainbackdoor.github.io',
   integrations: [
     react(),
-    mdx(),
-    sitemap(),
+    // 원문 이전 시 따옴표·대시 등 문장 부호를 자동 치환하지 않는다.
+    mdx({ smartypants: false }),
+    sitemap({
+      filter: page => !legacyPaths.has(decodeURIComponent(new URL(page).pathname).replace(/\/+$/, '') || '/'),
+    }),
     pagefind(),
     {
       name: 'separate-vite-caches',

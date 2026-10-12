@@ -1,0 +1,123 @@
+---
+title: "미션 진행방법"
+description: "강의를 먼저 듣고 실습을 진행하여도 좋고,\n실습을 일단 해보고 강의를 수강하셔도 좋습니다."
+pubDate: "2023-11-05"
+category: "guide"
+tags: []
+sourceId: "179d8510-f605-4420-9eaa-80410079e077"
+sourceUrl: "https://www.brainbackdoor.com/179d8510-f605-4420-9eaa-80410079e077"
+dateSource: "published"
+icon: "🧑🏻‍🚀"
+---
+
+<blockquote id="fb7c0057-5101-4933-8e18-c76f4bc66d4b" className="notion-callout">
+
+<p>💡 강의를 먼저 듣고 실습을 진행하여도 좋고,<br />실습을 일단 해보고 강의를 수강하셔도 좋습니다&#46;</p>
+
+</blockquote>
+
+<span id="e9ddff50-3ce8-4dbf-8495-c405ac6b0064"></span>
+
+## 1&#46; 미션 진행환경이 궁금해요
+
+<ul>
+
+<li id="fc9beb40-9d8b-4ffd-89df-9a47adc69c39">
+
+<p>AWS를 활용합니다&#46; 미션은 AWS를 고려하여 설계하였습니다&#46;</p>
+
+</li>
+
+<li id="be188e37-885e-46dc-befa-cd73529067bc">
+
+<p>예제 서비스는 “지하철 노선도”와 “컨퍼런스 신청 플랫폼” 입니다&#46;</p>
+
+</li>
+
+<li id="bf31d33f-6f5f-4280-9114-1729265bc532">
+
+<p>xxx미션가이드 혹은 포스팅을 참고하여, <span className="notion-color-blue"><strong>요구사항</strong></span><span className="notion-color-default">을 수행합니다&#46; 예제서비스 코드는 </span><span className="notion-color-blue"><strong>저장소</strong></span><span className="notion-color-default">를 참고해주세요&#46; </span></p>
+
+</li>
+
+<li id="f54a87c7-cf32-4cd9-aa56-ca077a1940e4">
+
+<p><span className="notion-color-default">인프런 등 강의자료와 추가자료를 통해 더 깊이있는 학습을 할 수 있어요&#46;</span></p>
+
+</li>
+
+</ul>
+
+<hr id="dba49dd7-3690-43ad-896d-1bde2e551a5c" />
+
+<span id="354125ff-f5b3-44f9-8692-301e717b4b6b"></span>
+
+## 2&#46; 지하철 노선도
+
+<figure id="5cd9590a-588e-4006-b522-5237f4acc199" className="notion-figure">
+
+<img src="/content/179d8510-f605-4420-9eaa-80410079e077/5cd9590a-588e-4006-b522-5237f4acc199.webp" alt="" loading="lazy" width="2048" height="777" />
+
+</figure>
+
+<ul>
+
+<li id="e59383ef-db41-4ffd-bf3f-f8383569243b">
+
+<p>지하철 노선도 서비스에는 역 관리, 노선 관리, 구간 관리, 경로 검색 등의 <u>지하철 노선 관리 기능</u>과 로그인, 회원 정보 수정, 즐겨찾기 등의 <u>회원 관리 기능</u>이 있어요&#46;</p>
+
+</li>
+
+<li id="2f41e4c0-51dc-4184-94d7-3c490b4e7cee">
+
+<p>프론트엔드는 Vue&#46;js, 백엔드는 Java, Spring Boot 기반입니다&#46;</p>
+
+</li>
+
+<li id="ef1f10a8-925f-46e2-a268-ae8c66276c60">
+
+<p>예제 데이터는 docker로 제공되어요&#46;</p>
+
+<span id="c42e9ee2-2b82-4e3a-bf48-78b096ec2fbd"></span>
+
+```bash
+$ docker run -d -p 13306:3306 brainbackdoor/data-subway:0.0.1
+```
+
+</li>
+
+</ul>
+
+<hr id="063dee9a-7775-4544-9006-54c5d2d3cb2c" />
+
+<span id="fb3f353c-b140-4b48-b9ee-5f251455ace5"></span>
+
+## 3&#46; 컨퍼런스 신청 플랫폼
+
+<figure id="5130f7ec-31eb-48de-8da2-9eae9d5d7954" className="notion-figure">
+
+<img src="/content/179d8510-f605-4420-9eaa-80410079e077/5130f7ec-31eb-48de-8da2-9eae9d5d7954.webp" alt="" loading="lazy" width="2048" height="1266" />
+
+</figure>
+
+<ul>
+
+<li id="5ca0a32b-c8e4-42bb-9a4b-d1df34d74dac">
+
+<p>컨퍼런스 신청 플랫폼은 컨퍼런스와 이벤트 도메인을 관리하는 conference, 회원 정보를 관리하는 member, 설문 정보를 관리하는 analysis 등 5개의 모듈로 이루어져 있어요&#46;</p>
+
+</li>
+
+<li id="50dc371d-2f7b-474a-95e8-13806ee9c000">
+
+<p>백엔드는 Kotlin, Spring Boot 기반입니다&#46;</p>
+
+</li>
+
+<li id="c37e9338-7136-4dfd-87ea-b778279aa63e">
+
+<p>예제 데이터는 RDS 스냅샷으로 제공되어요&#46;</p>
+
+</li>
+
+</ul>

@@ -1,0 +1,143 @@
+---
+title: "TCP keep-alive"
+description: "이번 포스팅에서는 HTTP 완벽가이드, 네트워킹과 웹 성능 최적화 기법, 리눅스 커널 이야기, 와이어샤크를 활용한 실전 패킷 분석 책을 활용하였습니다."
+pubDate: "2019-09-16"
+category: "infra"
+tags: []
+sourceId: "beae0ed2-e020-4681-abac-fdb9e5f12c5f"
+sourceUrl: "https://www.brainbackdoor.com/beae0ed2-e020-4681-abac-fdb9e5f12c5f"
+dateSource: "published"
+icon: "🌐"
+---
+
+<div id="ef959f16-5060-437a-95ef-660df191d7c4" className="notion-columns">
+
+<div id="ed459642-58f5-4ba6-b55c-6ea1fbead560" className="notion-column">
+
+<p id="bf9bafea-e80c-48d5-9fe7-7af6922ff44a"><strong>⬅️ 이전 글 &#58; </strong><strong><a href="/posts/02773af9-5c93-43b5-89b4-bbab94536195">TCP 성능</a></strong><strong> </strong></p>
+
+</div>
+
+<div id="78c3b58e-3260-482a-b230-ddc89ecea478" className="notion-column">
+
+<p id="eac48ba7-7f5a-479e-acfc-112d53bf7255"><a href="https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf">원본 페이지 ↗</a> </p>
+
+</div>
+
+<div id="7e215550-f122-499c-ba5d-8c1cc6326959" className="notion-column">
+
+<p id="97800d22-6a35-4c25-8963-c7996a8baaeb"><strong>➡️ 다음 글 &#58; 없음</strong></p>
+
+</div>
+
+</div>
+
+<figure id="0ee68211-0d0c-497b-8988-5e519a6c4182" className="notion-figure">
+
+<img src="/content/beae0ed2-e020-4681-abac-fdb9e5f12c5f/0ee68211-0d0c-497b-8988-5e519a6c4182.jpg" alt="" loading="lazy" width="198" height="253" />
+
+</figure>
+
+<blockquote id="5b988e34-39b9-4f8a-bdd1-2e36ef202b83">
+
+<p>이번 포스팅에서는 <strong><span className="notion-color-blue"><a href="http://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&amp;ejkGb=KOR&amp;barcode=9788966261208">HTTP 완벽가이드</a></span></strong><strong><span className="notion-color-blue">, </span></strong><strong><span className="notion-color-blue"><a href="http://www.insightbook.co.kr/book/programming-insight/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9%EA%B3%BC-%EC%9B%B9-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94-%EA%B8%B0%EB%B2%95">네트워킹과 웹 성능 최적화 기법,</a></span></strong><strong><span className="notion-color-blue"> </span></strong><strong><span className="notion-color-blue"><a href="http://www.yes24.com/Product/Goods/44376723">리눅스 커널 이야기</a></span></strong><strong><span className="notion-color-blue">, </span></strong><strong><span className="notion-color-blue"><a href="http://www.acornpub.co.kr/book/wireshark-packet-analysis">와이어샤크를 활용한 실전 패킷 분석 </a></span></strong>책을 활용하였습니다&#46;</p>
+
+</blockquote>
+
+<span id="4300aedd-cd5f-41a1-a8be-3ac5840fc6da"></span>
+
+## 1&#46; TIME&#95;WAIT 소켓의 문제점과 대안
+
+<p id="9ea25906-0297-4e0a-9e1b-97c9b92126ea">패킷 유실에 따른 비정상적인 통신흐름이 발생할 수 있다&#46; 가령, 아래 그림과 같이 마지막 ACK가 중간에 유실될 경우 FIN에 대한 ACK를 받지 못했기에 LAST-ACK상태이고, SYN 요청에 대해 RST를 보낸다&#46;</p>
+
+<figure id="6e7daef2-df79-41a4-86a6-505e570686a4" className="notion-figure">
+
+<img src="/content/beae0ed2-e020-4681-abac-fdb9e5f12c5f/6e7daef2-df79-41a4-86a6-505e570686a4.png" alt="" loading="lazy" width="500" height="336" />
+
+</figure>
+
+<p id="8b7b566b-fc57-4ed6-88f6-0212a263ac5b">반면, TIME&#95;WAIT이 있을 경우에는 이상을 감지하여 한번 더 FIN 패킷을 요청한다&#46;</p>
+
+<p id="f59d4dd9-f211-4f87-8e2a-7dc13cbb9fa4">active closer(먼저 연결을 끊는) 쪽에서 TIME&#95;WAIT 소켓이 생성된다&#46; </p>
+
+<figure id="65350709-7bf6-4b84-94ea-e4e6d71f2d6e" className="notion-bookmark">
+
+<p><a href="https://docs.likejazz.com/time-wait/">TIME&#95;WAIT 상태란 무엇인가</a></p><p>TIME&#95;WAIT 상태가 늘어나면 서버의 소켓이 고갈되어 커넥션 타임아웃이 발생한다는 얘기를 한다&#46; 이 말이 올바른 얘기인지, TIME&#95;WAIT은 어떠한 경우에 발생하고 어떤 특징이 있는지 살펴본다&#46; TIME&#95;WAIT 이란 TCP 상태의 가장 마지막 단계이여, 이미 지난 CLOSE&#95;WAIT 문서에서도 살펴본바 있다&#46; Active Close 즉, 먼저 close() 를 요청한 곳에서 최종적으로 남게되며, 2 MSL 동안 유지된다&#46;</p>
+
+</figure>
+
+<p id="886b6003-27fd-4157-bb1b-90a55181caee">TIME&#95;WAIT 소켓이 많아지면, <span className="notion-color-red"><strong>로컬의 포트 고갈에 따른 애플리케이션 타임아웃, 잦은 TCP connection 생성/해제로 인해 서비스의 응답속도가 낮아진다</strong></span><span className="notion-color-red">&#46;</span> (TIME&#95;WAIT 소켓의 기본 타임아웃은 1분이다&#46;)</p>
+
+<span id="b6bac585-02db-4b5b-b14c-0e2272c64aec"></span>
+
+### 1) <strong>클라이언트 입장</strong> 
+
+<p id="944c09a6-d86b-4dc1-9dbd-031e3f10c227">커널 파라미터(<code>tcp&#95;tw&#95;reuse</code>)를 사용하여 TIME&#95;WAIT 소켓을 재사용할 수 있다&#46; 하지만 불필요한 TCP 3way handshake가  일어날 수 있으므로 요청할 때마다 소켓을 새로 연결하는 방식(Connectionless)가 아닌, 미리 <strong>소켓을 열어놓고 처리하는 방식(</strong><span className="notion-color-red"><strong>Connection Pool</strong></span><strong>)</strong>으로 해결할 수 있다&#46;</p>
+
+<span id="76297c88-8a95-4a69-a4fc-ec70251932f4"></span>
+
+### 2) 서버 입장 
+
+<p id="0a0f2e6b-e55f-489d-83e6-426dafe34802">keep alive 기능을 켬으로써 불필요한 3 way handshake를 줄이고 TIME&#95;WAIT 소켓도 줄일 수 있다&#46; keep alive란, 한번 맺은 세션을 요청이 끝나더라도 유지해주는 기능이다&#46; 보다 구체적으로는, keepalive timeout 시간이 지나면(<code>tcp&#95;keepalive&#95;time</code> 설정값) 서버에서 <strong>Keepalive 확인 패킷</strong>을 보낸다&#46; 이 패킷에 대한 응답을 받으면 타이머는 원래 값으로 돌아가 다시 카운트를 진행한다&#46; 반면  응답을 받지 못한 경우 <code>tcp&#95;keepalive&#95;intvl</code>에 정의된 시간만큼 경과한 후 요청을 다시 보내게 되고, <code>tcp&#95;keepalive&#95;probes</code>에 정의된 횟수만큼 보낸다&#46; 이 후로도 응답이 없을 경우 클라이언트는 연결이 끊어졌다고 인지하고 서버에 RST 패킷을 보낸 다음 자신의 소켓을 닫는다&#46; (그리하여 Keepalive를 사용할 경우 연결이 끊어졌음에도 FIN 패킷을 받지 못해 정리되지 않고 남아있던 좀비 커넥션을 없애는 효과도 발생한다&#46;)</p>
+
+<hr id="99cb80f0-9ad6-43db-8bd6-2bcc3977a7a6" />
+
+<span id="879b120c-ba89-401b-afa8-707be26cb02e"></span>
+
+## 2&#46; HTTP Keepalive
+
+<p id="834b2b5c-bd14-4654-bbe0-af165587310c">HTTP Keepalive는 설정된 기간까지만 Connection을 유지하다 <strong>FIN</strong>을 서버에서 먼저 날린다&#46; Connection을 유지하기 위해서 클라이언트는 요청에 <code>Connection&#58;Keep-Alive</code> 헤더를 포함시킨다&#46;(HTTP/1&#46;0) HTTP/1&#46;1에서는 해당 설정이 빠졌고, 기본적으로 활성화되어 있다&#46; Connection 종료시에 <code>Connection&#58; close</code>헤더를 명시해야 한다&#46;</p>
+
+<p id="15f31b20-1a74-48ee-8d01-ef6458d86cb6">즉, <span className="notion-color-red"><strong>TCP keepalive는 서버간에 ACK 패킷을 보내 세션 테이블이 지워지지 않고 계속 세션 정보를 유지하는데 반해, HTTP Keepalive는 일정시간이 지나면 능동적으로 연결을 끊는다</strong></span><span className="notion-color-red">&#46;</span> 이에 TCP Keepalive는 mq, kafka 등 TCP 기반의 서비스들을 대상으로 지속적 연결을 유지해야 하는 경우 사용되고, HTTP Keepalive는 Apache, Nginx 등 웹 애플리케이션에서 설정된 기간까지 최대한 연결을 유지하기 위해 사용된다&#46; (두 설정을 모두 적용했을 경우 HTTP Keepalive가 능동적으로 FIN 패킷을 보내기에 이 설정대로 동작한다&#46;)</p>
+
+<hr id="f4a1e602-12e8-4930-a4ae-07fe66aec0e7" />
+
+<span id="092c2baf-0a0e-4a6c-9a0c-275b1dbe0557"></span>
+
+## 3&#46; keep-alive 제한과 규칙
+
+<ul>
+
+<li id="f273648e-dac7-4e0e-8dad-1270330e8939">
+
+<p>클라이언트가 요청에 <code>Connection&#58; close</code> 헤더를 포함해 보냈으면, 그 커넥션으로 추가적인 요청을 보낼 수 없다&#46;</p>
+
+</li>
+
+<li id="52a253c1-bae5-41b7-9add-553bbc357e1a">
+
+<p>메시지가 자신의 길이 정보를 정확히 가지고 있을 때에만 Connection을 지속시킬 수 있다&#46; 예를 들어 Entity body는 Content-Length를 가지거나 chunked transfer encoding으로 인코드되어 있어야 한다&#46;</p>
+
+</li>
+
+<li id="b1bf0681-e153-41f2-8e19-d0a9c1706a47">
+
+<p>HTTP/1&#46;1 프락시는 클라이언트와 서버 각각에 대해 별도의 keepalive connection을 맺고 관리해야 한다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="05e18905-6e6c-4d3d-8ac2-1274041741a1" />
+
+<div id="088708c9-35d4-4907-a9ba-a3551d17e07a" className="notion-columns">
+
+<div id="762fedb5-3bdc-4a4e-96ed-17e72ffced24" className="notion-column">
+
+<p id="48c3e18e-77db-45be-8a8f-f10ecec29c73"><strong>⬅️ 이전 글 &#58; </strong><strong><a href="/posts/02773af9-5c93-43b5-89b4-bbab94536195">TCP 성능</a></strong><strong> </strong></p>
+
+</div>
+
+<div id="bab8f25a-3e24-4f2f-a743-035fd5e1c90b" className="notion-column">
+
+<p id="cd1f3f71-d24c-43a5-9cf3-6be28db70218"><a href="https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf">원본 페이지 ↗</a> </p>
+
+</div>
+
+<div id="41492032-718e-4f6b-8e64-6f55e7f5651e" className="notion-column">
+
+<p id="fcae89e9-3f49-43a2-a33d-1c0c6c3fa970"><strong>➡️ 다음 글 &#58; 없음</strong></p>
+
+</div>
+
+</div>

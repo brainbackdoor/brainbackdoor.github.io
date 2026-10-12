@@ -1,0 +1,581 @@
+---
+title: "조회 성능 개선하기 미션 가이드"
+description: "이 포스팅에서 SQL 쿼리를 튜닝하는 방법을 모두 다룰 수는 없습니다."
+pubDate: "2023-11-09"
+category: "guide"
+tags: []
+sourceId: "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708"
+sourceUrl: "https://www.brainbackdoor.com/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708"
+dateSource: "published"
+icon: "🔧"
+---
+
+<blockquote id="b1829f37-0b9c-463c-9b89-552b042bc1a7" className="notion-callout">
+
+<p>📌 이 포스팅에서 SQL 쿼리를 튜닝하는 방법을 모두 다룰 수는 없습니다&#46; 자주 가이드하는 격언을 실습을 통해 확인할 수 있도록 작성해보았습니다&#46; <br />이 포스팅을 작성하는데, <span className="notion-color-blue"><strong><a href="https://product.kyobobook.co.kr/detail/S000001766482">Real MySQL</a></strong></span><span className="notion-color-blue"><strong>, </strong></span><span className="notion-color-blue"><strong><a href="https://product.kyobobook.co.kr/detail/S000001810409">업무에 바로 쓰는 SQL 튜닝</a></strong></span><span className="notion-color-blue"><strong>, </strong></span><span className="notion-color-blue"><strong><a href="https://product.kyobobook.co.kr/detail/S000001975837">친절한 SQL 튜닝</a></strong></span><span className="notion-color-blue"><strong>, </strong></span><span className="notion-color-blue"><strong><a href="https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005406033">SQL 튜닝의 시작</a></strong></span><span className="notion-color-blue"><strong> </strong></span>등의 책을 참고하였습니다&#46; </p>
+
+</blockquote>
+
+<span id="5ed7f863-acea-478f-b128-bcdaab6b33d8"></span>
+
+## 0&#46; 실습환경 세팅
+
+<span id="3d0b6e17-8a4a-443c-b51d-526b228ca818"></span>
+
+```bash
+$ docker run -d -p 23306:3306 brainbackdoor/data-tuning:0.0.3
+```
+
+<ul>
+
+<li id="6c64c2a0-fb60-436a-a34c-85cf413e320b">
+
+<p><span className="notion-color-blue"><strong><a href="https://www.mysql.com/products/workbench/">workbench</a></strong></span>를 설치한 후 localhost&#58;23306 (ID &#58; user, PW &#58; password) 로 접속합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="6eb5a35b-3018-4f10-8c03-59db5a92f709" />
+
+<span id="9abae195-65b2-4e17-8b17-3d807121d081"></span>
+
+## 1&#46; 인덱스
+
+<span id="64f6df63-97c2-477c-a36b-024bfd5ce9ab"></span>
+
+### A&#46; 인덱스 컬럼을 가공하지 마세요&#46;
+
+<span id="a48e9770-2033-4c0e-9ccd-9c43dc40a95a"></span>
+
+```sql
+EXPLAIN
+SELECT *
+	FROM tuning.employee
+WHERE SUBSTRING(id, 1, 4) = 1100
+	AND LENGTH(id) = 5
+```
+
+<span id="ca56aec3-a244-4589-9b68-5bd5d011fdd8"></span>
+
+```sql
+EXPLAIN
+SELECT *
+	FROM tuning.employee
+WHERE id BETWEEN 11000 AND 11009
+```
+
+<ul>
+
+<li id="d7bb06f0-8796-4a20-8902-2e8d5a5a612b">
+
+<p><strong>인덱스 컬럼을 가공하지 않아야</strong>, 리프블록에서 스캔 시작점을 찾아 거기서부터 스캔하다가 중간에 멈출 수 있습니다&#46;</p>
+
+<ul>
+
+<li id="3a2d995b-af66-4fbc-b435-cc0629e6ad4d">
+
+<p>&lt;&gt;, NOT IN, NOT BETWEEN과 같은 NOT-EQUAL로 비교된 경우</p>
+
+</li>
+
+<li id="c941c3de-ebee-45d9-8fb8-830fd3bbed29">
+
+<p>LIKE '%??'</p>
+
+</li>
+
+<li id="df109bd4-6c97-4a12-8612-44d480fed72f">
+
+<p>SUBSTRING(column, 1, 1), DAYOFMONTH(coulmn)과 같이 인덱스 칼럼이 변형된 경우</p>
+
+</li>
+
+<li id="b5a19238-4a30-4a9a-8052-341148d04aa5">
+
+<p>WHERE char&#95;column = 10 과 같이 데이터 타입이 다른 비교</p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<span id="02f4e281-cf73-4bc8-9a84-5db01b3d45e0"></span>
+
+### B&#46; 인덱스 순서를 고려하세요&#46;
+
+<span id="672eaf25-5356-4f7c-8416-d8e62ce9ab67"></span>
+
+```sql
+EXPLAIN
+SELECT first_name, sex, COUNT(1) AS 카운트
+	FROM tuning.employee
+GROUP BY first_name, sex
+```
+
+<span id="e6f998f1-4366-4572-af58-5013a8289925"></span>
+
+```sql
+EXPLAIN
+SELECT first_name, sex, COUNT(1) AS 카운트
+	FROM tuning.employee
+GROUP BY sex, first_name
+```
+
+<ul>
+
+<li id="b7942ec1-4196-414b-8687-3584957432a1">
+
+<p><strong>인덱스는 항상 정렬 상태를 유지하므로 인덱스 순서에 따라</strong> <code><strong>ORDER BY</strong></code>, <code><strong>GROUP BY</strong></code>를 위한 <strong>소트 연산을 생략</strong>할 수 있습니다&#46;</p>
+
+</li>
+
+<li id="d27ba9f5-ecb1-4d24-a839-44dd68fccb8b">
+
+<p>조건절에 항상 사용하거나, 자주 사용하는 컬럼을 인덱스로 선정합니다&#46;</p>
+
+</li>
+
+<li id="aee972bd-efa7-488b-8863-64fe47b77df1">
+
+<p>'=' 조건으로 자주 조회하는 컬럼을 앞쪽에 둡니다&#46;</p>
+
+</li>
+
+<li id="df501222-cc27-44b5-8970-a667a11f2b7a">
+
+<p>추가적으로, 아래 세 인덱스는 중복입니다&#46; 마지막 인덱스를 남기고 모두 삭제해주세요&#46;</p>
+
+<ul>
+
+<li id="b3096d14-2b42-46dc-8006-c4132e5f9cf0">
+
+<p>과세코드</p>
+
+</li>
+
+<li id="6c47d6d8-594f-488f-b916-899772d84947">
+
+<p>과세코드 + 이름</p>
+
+</li>
+
+<li id="9c4a29f1-5933-4c97-a7a5-2fc2f7f900ed">
+
+<p>과세코드 + 이름 + 연령</p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<span id="1e0aadc0-1f25-4102-a5ee-e2da4e774998"></span>
+
+### C&#46; 인덱스를 제대로 사용하는지 확인하세요&#46;
+
+<span id="5e9c576a-be46-42a6-acee-1a0c2ca61782"></span>
+
+```sql
+EXPLAIN
+SELECT id
+	FROM tuning.employee
+	WHERE join_date LIKE '1989%'
+	AND id > 100000;
+```
+
+<span id="0836a8ef-021a-4e60-bddf-9c0868cabce3"></span>
+
+```sql
+SELECT
+	(SELECT COUNT(1) FROM tuning.employee WHERE join_date LIKE '1989%') AS '입사일자 필터',
+	(SELECT COUNT(1) FROM tuning.employee WHERE id > 100000) AS '사원번호 필터';
+```
+
+<span id="0be71f9e-f414-45a3-aa40-19b837e1aaba"></span>
+
+```sql
+EXPLAIN
+SELECT id
+	FROM tuning.employee
+	WHERE join_date >= '1989-01-01' AND join_date < '1990-01-01'
+	AND id > 100000;
+```
+
+<span id="2f807402-4604-4f93-89a2-89488919d009"></span>
+
+#### Covered Index
+
+<p id="2096a345-cf2d-4bef-b6e7-7782cdb855ac">인덱스 스캔과정에서 얻은 정보만으로 처리할 수 있어 테이블 액세스가 발생하지 않는 쿼리를 의미합니다&#46;</p>
+
+<span id="43a78cec-bb5e-4f53-813f-02f584353fa0"></span>
+
+```sql
+EXPLAIN SELECT a.*
+FROM (
+-- 서브쿼리에서 커버링 인덱스로만 데이터 조건과 select column을 지정하여 조인SELECT id
+    FROM subway.member
+    WHERE age BETWEEN 30 AND 39
+) AS b JOIN programmer a ON b.id = a.id
+```
+
+<span id="ec368cbf-2c93-4f8a-824e-9b7f4d27c6f9"></span>
+
+### D&#46; 복합 인덱스시 범위 검색컬럼을 뒤에 둬야 해요&#46;
+
+<figure id="842a3914-5191-4916-9ab9-2502141b1dc2" className="notion-figure">
+
+<img src="/content/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708/842a3914-5191-4916-9ab9-2502141b1dc2.png" alt="" loading="lazy" width="1310" height="510" />
+
+</figure>
+
+<span id="76b50e96-21bd-4c0f-86b5-121729752cfd"></span>
+
+```sql
+CREATE INDEX `idx_employee_id_time`  ON `tuning`.`record` (employee_id,time);
+DROP INDEX `idx_employee_id_time` ON `tuning`.`record`;
+
+CREATE INDEX `idx_time_employee_id`  ON `tuning`.`record` (time,employee_id);
+DROP INDEX `idx_time_employee_id` ON `tuning`.`record`;
+```
+
+<span id="c6c4ead0-ae09-4be8-8050-d0893eba2d42"></span>
+
+```sql
+EXPLAIN SELECT * FROM tuning.record WHERE employee_id = 110183 AND time BETWEEN '2020-01-01' AND '2020-08-30';
+```
+
+<span id="533a947f-cd97-45d8-994a-ed97c73547ba"></span>
+
+### E&#46; 인덱스 구성 확인하기
+
+<span id="675525e6-9173-4cb7-a95b-13e5da0d7849"></span>
+
+```sql
+## 테이블 / 인덱스 크기 확인SELECT
+    table_name,
+    table_rows,
+    round(data_length/(1024*1024),2) as 'DATA_SIZE(MB)',
+    round(index_length/(1024*1024),2) as 'INDEX_SIZE(MB)'
+FROM information_schema.TABLES
+where table_schema = 'subway';
+
+## 미사용 인덱스 확인
+SELECT * FROM sys.schema_unused_indexes;
+
+## 중복 인덱스 확인
+SELECT * FROM sys.schema_redundant_indexes;
+```
+
+<hr id="19483114-63fc-4406-a92a-869004d8f37c" />
+
+<span id="ba2e4812-7a6f-4248-a119-fe2dee5666c5"></span>
+
+## 2&#46; 조인문
+
+<span id="dafd918e-d75d-482d-9961-781d944c4476"></span>
+
+### A&#46; 조인 연결 key 들은 양쪽 다 인덱스를 가지고 있는 것이 좋아요&#46;
+
+<figure id="24df4219-edca-4d7d-b064-aacdf65ca355" className="notion-figure">
+
+<img src="/content/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708/24df4219-edca-4d7d-b064-aacdf65ca355.png" alt="" loading="lazy" width="2214" height="606" />
+
+</figure>
+
+<p id="d98ab477-a7da-4bdf-ac00-4f00ac263fdd">한쪽에만 인덱스가 있을 경우, Join Buffer를 사용하여 성능 개선을 하나 일반적인 중첩 루프 조인에 비해 효율이 떨어집니다&#46;</p>
+
+<p id="429db3e3-ade7-4ff5-b135-0b44e45d456d">또한 테이블 크기와 상관없이 인덱스가 있는 테이블이 드라이빙 테이블이 되므로 주의해야 합니다&#46;</p>
+
+<span id="ddc278d7-c133-4958-bf52-811efafd41f9"></span>
+
+### B&#46; 데이터가 적은 테이블을 랜덤액세스해야 해요&#46;
+
+<span id="5dd36858-72c3-4dfe-8f81-1e5974933710"></span>
+
+```sql
+EXPLAIN
+SELECT
+	mapping.employee_id,
+	department.id
+    FROM tuning.employee_department mapping,
+		department
+	WHERE mapping.department_id = department.id
+```
+
+<span id="22dae9ed-1749-411a-815a-9a10e8ae5abe"></span>
+
+```sql
+EXPLAIN
+SELECT STRAIGHT_JOIN
+	mapping.employee_id,
+	department.id
+    FROM tuning.employee_department mapping,
+		department
+	WHERE mapping.department_id = department.id
+```
+
+<p id="e6b22ad7-2650-4076-9cd4-c6d0faaa4b9a">드라이빙 테이블의 데이터가 적을 경우, 중첩 루프 조인을 수행하며 드리븐 테이블의 많은 양의 데이터에 인덱스 스캔을 합니다&#46; 다만, 드리븐 테이블의 Primary Key를 사용하지 않을 경우 많은 양의 데이터에 랜덤 액세스로 테이블에 접근하므로 비효율적일 수 있어요&#46; 드라이빙, 드리븐 테이블 관계는 대체로 드라이빙 테이블의 모수가 적은 것이 선호되나, 확인을 해볼 필요는 있어요&#46;</p>
+
+<span id="2189a2a9-bd63-45d8-9f98-e1034a913c67"></span>
+
+### C&#46; 모수 테이블 크기를 줄이세요
+
+<span id="14588c1f-513c-46f7-81b2-02394ecbcd65"></span>
+
+```sql
+EXPLAIN
+SELECT employee.id, employee.last_name, employee.first_name, employee.join_date
+	FROM tuning.employee, tuning.salary
+    WHERE employee.id = salary.id
+    AND employee.id BETWEEN 10001 AND 50000
+    GROUP BY employee.id
+    ORDER BY SUM(salary.annual_income) DESC
+    LIMIT 150,10;
+```
+
+<span id="e15af25e-95e5-4a2c-ae00-4fb1bbc61d7d"></span>
+
+```sql
+EXPLAIN
+SELECT employee.id, employee.last_name, employee.first_name, employee.join_date
+	FROM (
+		SELECT id
+			FROM tuning.salary
+            WHERE id BETWEEN 10001 AND 50000
+            GROUP BY id
+            ORDER BY SUM(salary.annual_income) DESC
+            LIMIT 150,10
+	) salary,
+	employee
+WHERE employee.id = salary.id;
+```
+
+<span id="e25c74af-d288-4f7d-9d67-6d241e17c3a5"></span>
+
+### D&#46; 서브쿼리보단 조인문을 활용하세요&#46;
+
+<ul>
+
+<li id="65ff1bf4-dd78-44fc-80ac-8a269a608ddc">
+
+<p>대부분의 경우 조인문이 서브쿼리 보다 성능이 좋습니다&#46; -<span className="notion-color-blue"><strong> </strong></span><span className="notion-color-blue"><strong><a href="https://stackoverflow.com/questions/2577174/join-vs-sub-query">관련링크 1</a></strong></span><span className="notion-color-blue"><strong>, </strong></span><span className="notion-color-blue"><strong><a href="https://dev.mysql.com/doc/refman/5.7/en/rewriting-subqueries.html">관련링크 2</a></strong></span></p>
+
+</li>
+
+</ul>
+
+<figure id="37f1e7f8-06ec-4937-8d28-fc8e04bd1ba9" className="notion-figure">
+
+<img src="/content/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708/37f1e7f8-06ec-4937-8d28-fc8e04bd1ba9.png" alt="" loading="lazy" width="1606" height="262" />
+
+</figure>
+
+<ul>
+
+<li id="c7c17ce4-9651-493c-a502-458267d8c4c0">
+
+<p>MySQL 5&#46;6 이후로<span className="notion-color-blue"><strong> </strong></span><span className="notion-color-blue"><strong><a href="https://dev.mysql.com/doc/refman/5.6/en/subquery-optimization.html">서브쿼리 최적화</a></strong></span>가 이루어집니다&#46; (SEMI JOIN, MATERIALIZED 등) 다만, 8&#46;0까지도 UPDATE, DELETE 등는 서브쿼리 최적화가 지원되지 않아요&#46; 가능하면 JOIN 을 사용합시다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="879f1cfd-cbe8-4d3b-bedb-dbdd0585145b"></span>
+
+```sql
+EXPLAIN EXTENDED
+SELECT *
+	FROM tuning.employee
+    WHERE id IN (SELECT id FROM salary);
+SHOW WARNINGS;
+```
+
+<hr id="a61d6989-c110-435f-87d5-d4523aa7ab90" />
+
+<span id="6f6fa2c5-725b-4f24-af7b-ff45da66edaa"></span>
+
+## 3&#46; MySQL 서버 성능 개선대상 식별하기
+
+<span id="d4bc0a68-90e3-4ae6-9e82-7359e27fbc67"></span>
+
+```sql
+## 프로세스 목록
+SHOW PROCESSLIST;
+
+## 슬로우 쿼리 확인
+SELECT query, exec_count, sys.format_time(avg_latency) AS "avg latency", rows_sent_avg, rows_examined_avg, last_seen
+FROM sys.x$statement_analysis
+ORDER BY avg_latency DESC;
+
+## 성능 개선 대상 식별
+SELECT DIGEST_TEXT AS query,
+             IF(SUM_NO_GOOD_INDEX_USED > 0 OR SUM_NO_INDEX_USED > 0, '*', '') AS full_scan,
+             COUNT_STAR AS exec_count,
+             SUM_ERRORS AS err_count,
+             SUM_WARNINGS AS warn_count,
+             SEC_TO_TIME(SUM_TIMER_WAIT/1000000000000) AS exec_time_total, 
+             SEC_TO_TIME(MAX_TIMER_WAIT/1000000000000) AS exec_time_max, 
+             SEC_TO_TIME(AVG_TIMER_WAIT/1000000000000) AS exec_time_avg_ms, SUM_ROWS_SENT AS rows_sent,
+             ROUND(SUM_ROWS_SENT / COUNT_STAR) AS rows_sent_avg, SUM_ROWS_EXAMINED AS rows_scanned,
+             DIGEST AS digest
+   FROM performance_schema.events_statements_summary_by_digest ORDER BY SUM_TIMER_WAIT DESC
+
+##  I/O 요청이 많은 테이블 목록
+SELECT * FROM sys.io_global_by_file_by_bytes WHERE file LIKE '%ibd';
+
+## 테이블별 작업량 통계 
+SELECT table_schema, table_name, rows_fetched, rows_inserted, rows_updated, rows_deleted, io_read, io_write
+FROM sys.schema_table_statistics
+WHERE table_schema NOT IN ('mysql', 'performance_schema', 'sys');
+
+
+## 총 메모리 사용량 확인
+SELECT * FROM sys.memory_global_total;
+
+## 스레드별 메모리 사용량 확인
+SELECT thread_id, user, current_allocated 
+FROM sys.memory_by_thread_by_current_bytes
+LIMIT 10;
+
+## 최근 실행된 쿼리 이력 기능 활성화
+UPDATE performance_schema.setup_consumers SET ENABLED = 'yes' WHERE NAME = 'events_statements_history'
+UPDATE performance_schema.setup_consumers SET ENABLED = 'yes' WHERE NAME = 'events_statements_history_long'
+
+## 최근 실행된 쿼리 이력 확인
+SELECT * FROM performance_schema.events_statements_history
+```
+
+<hr id="1d1b6634-2349-4393-9a0d-766504ccd96c" />
+
+<span id="b836e39e-c085-44fe-8fc8-b69f6a95371e"></span>
+
+## 4&#46; MySQL 서버 튜닝
+
+<ul>
+
+<li id="f51f7646-706e-414a-981a-4138859cd62d">
+
+<p>각 설정값이 어떤 의미를 가지는지 확인해봅니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="48962a64-ad36-4859-bb19-8dc6ef775792"></span>
+
+### A&#46; 메모리 튜닝
+
+<span id="9e9a8486-9101-4a62-8a6a-bd533f0e58a8"></span>
+
+#### a&#46; Thread
+
+<p id="525934c3-0091-4492-bde4-117773cf571a">MySQL은 커넥션마다 하나의 Thread를 생성하여 요청을 처리합니다&#46; Thread를 메모리에 할당하고 해제하는데 비용이 크므로 이를 줄일 필요가 있습니다&#46;</p>
+
+<span id="4bfaae2f-b702-436b-8848-1feb4e61e5ee"></span>
+
+```sql
+## 현재 쓰레드(연결) 개수 확인
+mysql> SELECT * FROM performance_schema.threads
+
+mysql> SHOW STATUS LIKE '%THREAD%';
+```
+
+<ul>
+
+<li id="12162506-8c69-47c6-8c44-66d9ecf26220">
+
+<p>thread&#95;cache&#95;size는 지나치게 높여둘 필요는 없으며 일반적으로 threads&#95;connected의 피크 치보다 약간 낮은 수치 정도를 설정하는 것이 좋습니다&#46; 이를 통해 쓰레드가 생성되고 소멸되면서 겪게 되는 메모리, 각종 자원, 시간 등의 낭비를 줄일 수 있습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="89ee3483-c184-420f-83f0-875e251a1c0f"></span>
+
+#### b&#46; Caching
+
+<p id="832a5ee5-b95d-45f9-b0d4-9aeab9022968">버퍼는 mysqld에서 내부적으로 하나만 확보되는 Global Buffer와 Thread(Connection)별로 확보되는 Thread Buffer가 있습니다&#46; Thread Buffer에 많은 메모리를 할당하면 성능이 올라가지만, 설정값 &#42; Connection 수만큼 확보하므로 Connection이 갑자기 늘어나면 메모리가 부족해져 swap이 발생할 수도 있습니다&#46;</p>
+
+<ul>
+
+<li id="737f33b4-8fa5-4527-a868-a7ab79d06e48">
+
+<p>innodb&#95;buffer&#95;pool&#95;size &#58; InnoDB의 데이터나 인덱스를 캐시하기 위한 메모리상의 영역, 글로벌 버퍼이므로 크게 할당할 것을 권합니다&#46; 보통 시스템 전체 메모리의 80% 수준으로 설정합니다&#46;(최대 512MB)</p>
+
+</li>
+
+</ul>
+
+<span id="b802fb7b-eacd-49d2-9b36-7fa3b101aa01"></span>
+
+```sql
+mysql> SHOW STATUS LIKE '%key%';
+```
+
+<ul>
+
+<li id="70efe780-465b-4a20-8fd4-33122b775ffd">
+
+<p>key&#95;buffer&#95;size &#58; 인덱스를 메모리에 저장하는 버퍼 크기를 의미하며, 보통 총 메모리 크기의 25% 정도로 설정합니다&#46;</p>
+
+</li>
+
+<li id="2cb42e7b-aabd-418a-9537-673c587e046f">
+
+<p>Key Buffer 사용률은 <code><strong>1 - ((Key&#95;reads/Key&#95;read&#95;requests) &#42; 100)</strong></code>입니다&#46; 90% 이상일 경우 key&#95;buffer&#95;size가 효율적으로 설정되어 있다고 판단할 수 있습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="77571735-ee42-49d8-829a-eb634e4269d2"></span>
+
+### B&#46; 커넥션 튜닝
+
+<span id="9770f611-6a26-42c3-8f52-c3ea955a6c25"></span>
+
+```sql
+mysql> SHOW VARIABLES LIKE '%max_connection%';
+mysql> SHOW STATUS LIKE '%CONNECT%';
+mysql> SHOW STATUS LIKE '%CLIENT%';
+```
+
+<ul>
+
+<li id="7db044ad-31e4-4307-beab-f90af8f07e95">
+
+<p>connect&#95;timeoutMySQL이 클라이언트로부터 접속 요청을 받는 경우 몇 초까지 기다릴지를 설정하는 변수로, 기본 값은 5초이며 일반적으로 수정할 필요는 없습니다&#46;</p>
+
+</li>
+
+<li id="46f415cc-2b67-4645-952f-7c5f0daa1fae">
+
+<p>Interactive&#95;timeout‘mysql&gt;’과 같은 콘솔이나 터미널 상에서의 클라이언트 접속을 의미하며, 기본 값으로 8시간이 잡혀 있으나 1시간 정도로 낮추는 것이 좋습니다&#46;</p>
+
+</li>
+
+<li id="fd563e0d-8332-4fa7-8406-0c753abe5377">
+
+<p>wait&#95;timeout접속한 후 쿼리가 들어올 때까지 기다리는 시간으로, 접속이 많은 DBMS에서는 이 값을 낮춰 sleep 상태의 Connection들을 정리하여 전체 성능을 향상시킬 수 있습니다&#46; 하지만 값을 너무 낮추게 되면 지나치게 잦은 커넥션이 발생할 수 있으므로, 보통 15&#126;20 사이의 값을 설정합니다&#46; Aborted client는 2% 아래인 것이 바람직한 상태입니다&#46;</p>
+
+</li>
+
+<li id="699e88a1-35fe-4c67-904f-589bb2f2dd1e">
+
+<p>max&#95;connections서버가 허용하는 최대한의 커넥션 수입니다&#46; 서버의 사양에 따라 달라질 수 있으며 일반적으로 120&#126;250개 정도로 설정합니다&#46; 하지만 접속이 많고 고용량 서버의 경우 1000개 정도의 높은 값을 설정하는 것도 가능하니, Too many connection 에러가 발생하지 않도록 적절한 값을 설정하는 것이 중요합니다&#46;</p>
+
+</li>
+
+<li id="1ed777fa-3fa4-4d0a-a51a-0a524f6e8502">
+
+<p>back&#95;logmax&#95;connection 설정값 이상의 접속이 발생할 때 얼마만큼의 커넥션을 큐에 보관할지에 대한 설정 값으로, 기본 값은 50이며 접속이 많은 서버의 경우 이 값을 늘릴 필요가 있습니다&#46;</p>
+
+</li>
+
+</ul>

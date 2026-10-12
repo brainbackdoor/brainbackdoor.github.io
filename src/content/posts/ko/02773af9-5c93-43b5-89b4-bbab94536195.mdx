@@ -1,0 +1,167 @@
+---
+title: "TCP 성능"
+description: "이번 포스팅에서는 HTTP 완벽가이드, 네트워킹과 웹 성능 최적화 기법, 리눅스 커널 이야기, 와이어샤크를 활용한 실전 패킷 분석 책을 활용하였습니다."
+pubDate: "2019-08-25"
+category: "infra"
+tags: []
+sourceId: "02773af9-5c93-43b5-89b4-bbab94536195"
+sourceUrl: "https://www.brainbackdoor.com/02773af9-5c93-43b5-89b4-bbab94536195"
+dateSource: "published"
+icon: "🌐"
+---
+
+<div id="0c775597-f4a1-4dae-bdae-dbd2998c7aac" className="notion-columns">
+
+<div id="812a1866-0445-4afc-8553-7e97e2146389" className="notion-column">
+
+<p id="273e5cb3-7534-4951-8c26-75030c7808ef"><strong>⬅️ 이전 글 &#58; </strong><strong><a href="/posts/tcp-error-recovery">TCP 오류복구</a></strong><strong> </strong></p>
+
+</div>
+
+<div id="07c80b16-8bdc-4564-92c6-dc257c9e17b4" className="notion-column">
+
+<p id="1610399a-62d5-4f1b-b8ab-8766653c1e13"><a href="https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf">원본 페이지 ↗</a> </p>
+
+</div>
+
+<div id="42e344e5-520f-48a4-82fd-274bc9ad89f8" className="notion-column">
+
+<p id="83019ed4-4efc-40fb-82e9-aff3fd35a13d"><strong>➡️ 다음 글 &#58; </strong><strong><a href="/posts/beae0ed2-e020-4681-abac-fdb9e5f12c5f">TCP keep-alive</a></strong><strong> </strong></p>
+
+</div>
+
+</div>
+
+<figure id="44aeb8f2-e9bd-400b-b804-b419a520c5f0" className="notion-figure">
+
+<img src="/content/02773af9-5c93-43b5-89b4-bbab94536195/44aeb8f2-e9bd-400b-b804-b419a520c5f0.jpg" alt="" loading="lazy" width="198" height="253" />
+
+</figure>
+
+<blockquote id="ec8e75f3-723e-463e-842c-69f0473085d3">
+
+<p>이번 포스팅에서는 <strong><span className="notion-color-blue"><a href="http://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&amp;ejkGb=KOR&amp;barcode=9788966261208">HTTP 완벽가이드</a></span></strong><strong><span className="notion-color-blue">, </span></strong><strong><span className="notion-color-blue"><a href="http://www.insightbook.co.kr/book/programming-insight/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9%EA%B3%BC-%EC%9B%B9-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94-%EA%B8%B0%EB%B2%95">네트워킹과 웹 성능 최적화 기법,</a></span></strong><strong><span className="notion-color-blue"> </span></strong><strong><span className="notion-color-blue"><a href="http://www.yes24.com/Product/Goods/44376723">리눅스 커널 이야기</a></span></strong><strong><span className="notion-color-blue">, </span></strong><strong><span className="notion-color-blue"><a href="http://www.acornpub.co.kr/book/wireshark-packet-analysis">와이어샤크를 활용한 실전 패킷 분석 </a></span></strong>책을 활용하였습니다&#46;</p>
+
+</blockquote>
+
+<figure id="797687ae-6f0e-4841-927e-e9d8ea3d48d2" className="notion-figure">
+
+<img src="/content/02773af9-5c93-43b5-89b4-bbab94536195/797687ae-6f0e-4841-927e-e9d8ea3d48d2.png" alt="Latency가 높은 곳을 찾아보자" loading="lazy" width="1768" height="684" /><figcaption>Latency가 높은 곳을 찾아보자</figcaption>
+
+</figure>
+
+<p id="16a88bc7-3294-47ca-ac8c-23065aca7002">TCP의 신뢰성을 보장하기 위한 <a href="https://www.brainbackdoor.com/backend/tcp-error-recovery"><span className="notion-color-blue"><strong>기능들</strong></span></a>이 성능과 Trade off되기도 한다&#46; 이에 이번 포스팅에서는 성능을 보완하기 위한 몇가지 조언을 정리해본다&#46;</p>
+
+<p id="4f20e6a9-58e6-40cf-88c6-ddae7381351e">TCP 네트워크 지연은 <span className="notion-color-red"><strong>하드웨어의 성능, 네트워크와 서버간의 전송속도, 요청과 응답 메시지의 크기, 클라이언트와 서버간의 거리</strong></span>에 따라 달라진다&#46;</p>
+
+<span id="6692da44-0a68-4d60-84a5-a15d95b1f566"></span>
+
+## 1&#46; <strong>TCP Connection handshake 지연</strong>
+
+<p id="512d6dc3-1e57-41b8-889c-b0a131de1297">어떤 데이터를 전송하든 새로운 TCP connection을 열 때면, TCP 소프트웨어는 connection을 맺기 위한 조건을 맞추기 위해 연속으로 IP packet을 교환한다&#46; 작은 크기의 데이터 전송에 이런 connection이 사용된다면 HTTP 성능을 저하시킬 수 있다&#46;</p>
+
+<hr id="db948253-811c-444d-9a75-129ae45b6834" />
+
+<span id="8d557e15-26ed-4bd5-b0ba-78ae67d736be"></span>
+
+## 2&#46; <strong>ACK 지연</strong>
+
+<p id="aa5c6a01-a182-4370-8c6c-11f7e3b000af">각 TCP 세그먼트는 순번과 데이터 무결성 체크섬을 가진다&#46; 각 세그먼트의 수신자는 세그먼트를 온전히 받으면 작은 ACK 패킷을 송신자에게 반환한다&#46; 만약 송신자가 특정 시간 안에 ACK 메시지를 받지 못하면 패킷이 파기되었거나 오류가 있는 것으로 판단하고 데이터를 다시 전송한다&#46; ACK는 그 크기가 작기 때문에, TCP는 같은 방향으로 송출되는 데이터 패킷에 ACK를 편승(piggyback)시킨다&#46; (TCP는 송출데이터 패킷과 ACK를 하나로 묶음으로써 네트워크를 좀 더 효율적으로 사용한다&#46;)</p>
+
+<p id="47996ff2-6b4a-4703-9333-dcd9f38b6778">ACK 지연은 송출할 ACK를 특정 시간동안 (보통 0&#46;1&#126;0&#46;2초) 버퍼에 저장해두고, ACK를 편승시키기 위한 송출 데이터 패킷을 찾는다&#46; 만약 일정 시간 안에 송출 데이터 패킷을 찾지 못하면 ACK는 별도 패킷을 만들어 전송된다&#46; (HTTP는 오히려 지연의 원인이 되기도 함)</p>
+
+<hr id="56d896e0-aabc-446e-b877-de04f8b137c2" />
+
+<span id="7485fa8a-7d26-4f77-b89a-009790d3282f"></span>
+
+## 3&#46; <strong>Slow start</strong>
+
+<p id="2600ccad-3f29-4158-90a2-4c50c9689374">TCP의 Slow start는 TCP가 한번에 전송할 수 있는 패킷의 수를 제한한다&#46; 이에 Slow start는 최대로 사용할 수 있는 대역폭에 제한을 둠으로써 <span className="notion-color-red"><strong>용량이 작은 데이터를 전송하는 데에는 부작용</strong></span>으로 다가온다&#46; 따라서 새로운 Connection을 생성하기 보다 이미 어느정도 데이터를 주고받은 '튜닝'된 Connection이 빠르기에 HTTP에는 이미 존재하는 Connection을 재사용하는 기능이 있다&#46;</p>
+
+<hr id="2b9ffcc2-f289-4b98-ad00-bd9f950c2d8a" />
+
+<span id="b0ddf762-64ad-4251-84a3-c5344eb76c95"></span>
+
+## 4&#46; <strong>Nagle 알고리즘과 TCP&#95;NODELAY</strong>
+
+<p id="eddb70fa-c407-45eb-8ee8-5b840a850b67">TCP 세그먼트는 40바이트 상당의 플래그와 헤더를 포함하여 전송하기 때문에, TCP가 작은 크기의 데이터를 포함한 많은 수의 패킷을 전송한다면 네트워크 성능은 크게 떨어진다&#46; Nagle 알고리즘은 세그먼트가 최대 크기(LAN상 1500, WAN상 수백 바이트)가 되지 않으면 전송을 하지 않는다&#46; 다만 다른 모든 패킷이 확인응답을 받았을 경우에는 최대 크기보다 작은 패킷의 전송을 허락한다&#46; 전송하기 충분할 만큼의 패킷이 쌓였을 때 버퍼에 저장되어 있던 데이터가 전송된다&#46; 이 경우 크기가 작은 HTTP 메시지는 지연된다&#46; ACK 지연과 함께 고려하면 지연 시간은 더욱 늘어난다&#46; 이에 TCP&#95;NODELAY 설정을 비활성화하기도 한다&#46;</p>
+
+<hr id="017f1a4f-56e2-48dc-9df8-fe367e4b201a" />
+
+<span id="a5f92703-8d3b-4df0-9d4d-a4c7f07f52c2"></span>
+
+## 5&#46; <strong>TIME&#95;WAIT의 누적과 포트 고갈</strong>
+
+<p id="ba94eae0-f8cd-4cec-9c28-1cc248e370d7">TIME&#95;WAIT 포트 고갈은 성능 측정시에 심각한 성능 저하를 발생시키지만, 보통 실제 상황에서는 문제를 발생시키지 않는다&#46; TCP 커넥션을 끊으면 종단에서는 커넥션의 IP 주소와 포트번호를 메모리의 작은 제어영역에 기록해 놓는다&#46; 이 정보는 같은 주소와 포트번호를 사용하는 새로운 TCP 커넥션이 일정시간 동안에는 생성되지 않게 하기 위한 것으로, 보통 세그먼트의 최대 생명주기에 두 배정도(2MSL)의 시간동안만 유지된다&#46; 가령, 발신지 포트의 수를 60,000개정도라 가정하고 2MSL(120초라 가정)동안 커넥션이 재사용될 수 없으므로 초당 500개(60,000 / 120 = 500)로 커넥션이 제한된다&#46; 서버가 초당 500개 이상의 트랜잭션을 처리할만큼 빠르지 않다면 TIME&#95;WAIT 포트고갈은 일어나지 않는다&#46; <span className="notion-color-red"><strong>포트고갈 문제를 겪지 않더라도 커넥션을 너무 많이 맺거나 대기 상태로 있는 제어 블록이 너무 많아지는 상황은 주의해야 한다&#46;</strong></span></p>
+
+<figure id="09498ce5-537b-413f-baed-153dd69e5509" className="notion-bookmark">
+
+<p><a href="http://tech.kakao.com/2016/04/21/closewait-timewait/">CLOSE&#95;WAIT &amp; TIME&#95;WAIT 최종 분석</a></p><p>트래픽이 많은 웹 서비스를 운영하다보면 CPU는 여유가 있지만 웹서버가 응답을 제대로 처리하지 못하고 먹통이 되는 경우를 종종 보게 됩니다&#46; 여러가지 이유가 있겠지만, 이 글에서는 가장 대표적인 경우인 CLOSE&#95;WAIT 상태를 재현하고 원인과 문제점 그리고 해결책을 알아봅니다&#46; 나아가 TIME&#95;WAIT의 동작 과정을 직접 만든 예제와 리눅스 커널 소스를 통해 확인하고, 인터넷에 퍼진 낡은 그래서 더이상 유효하지 않은 정보들을 바로 잡습니다&#46;</p>
+
+</figure>
+
+<hr id="e635d5c1-6ab1-4a26-ba5f-14ded10e18e9" />
+
+<span id="6d604db2-de28-4d1a-8c9b-eeb8e380b103"></span>
+
+## 6&#46; <strong>Head-of-Line (HOL) 블로킹</strong>
+
+<p id="f7f4c5a3-e176-40dc-91ee-9547c8c9dd9c">TCP는 고유의 시퀀스 번호를 가지며 수신자에게 주어진 순서대로 전달되어야 한다&#46; 이에 패킷 하나가 소실되면 다른 모든 패킷들은 소실된 패킷이 재전송될 때까지 수신자 쪽 TCP 버퍼에서 대기해야만 한다&#46; 이를 TCP HOL 블로킹이라 한다&#46; HOL 블로킹의 장점은, 애플리케이션이 패킷의 재배치나 재조합에 관여할 필요가 없어 애플리케이션의 코드 자체가 훨씬 간단해진다는 것이다&#46; 하지만 단점은 도착시간이 들쭉날쭉해서 latency를 예측하기 어렵다는 것이다(jitter) latency나 jitter에 예민한 애플리케이션의 경우 UDP를 사용하는 것이 더 좋다&#46;</p>
+
+<hr id="af86324b-843e-4ac2-acfb-9720264ffdc8" />
+
+<span id="69c413d1-c3ef-4340-9b30-2f7970ff4b98"></span>
+
+## 7&#46; 추가적으로&#46;&#46;
+
+<ul>
+
+<li id="51feef28-924f-479a-b1da-4f41ea00a9f7">
+
+<p>서버 커널을 최신버전으로 업그레이드하라</p>
+
+</li>
+
+<li id="6aacf8fa-547c-4ef7-821c-8f71e3037009">
+
+<p>cwnd size는 10으로 설정하라</p>
+
+</li>
+
+<li id="2a0db975-f61f-404b-8f3f-97dfb999005b">
+
+<p>유휴 상태(idle) 후 slow start를 비활성화하면 수명이 길고 한번에 데이터 전송이 많은 TCP 커넥션의 성능을 높일 수 있다&#46;</p>
+
+</li>
+
+<li id="3ac06342-84e5-4dde-96e7-ebdcb6660c82">
+
+<p><span className="notion-color-blue"><strong><a href="https://brainbackdoor.tistory.com/125?category=711396">window scaling</a></strong></span>을 활성화하라</p>
+
+</li>
+
+</ul>
+
+<hr id="626cd4be-d624-467c-9a93-c8ad7449187c" />
+
+<div id="7ad315b2-466f-4eba-a715-896fb2af9f85" className="notion-columns">
+
+<div id="f21e0d7c-5956-48a7-a2f5-785ae93852ae" className="notion-column">
+
+<p id="75e003a9-c2c6-4378-9d46-4df2569e8013"><strong>⬅️ 이전 글 &#58; </strong><strong><a href="/posts/tcp-error-recovery">TCP 오류복구</a></strong><strong> </strong></p>
+
+</div>
+
+<div id="b684a022-13af-4b27-958c-4fe4b954e66d" className="notion-column">
+
+<p id="232aae6f-120a-44d1-b4e9-adeb447049f4"><a href="https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf">원본 페이지 ↗</a> </p>
+
+</div>
+
+<div id="a33d7240-1ccf-4223-8d68-f0c173f34ade" className="notion-column">
+
+<p id="ee275ad1-23a4-4f37-ab85-bdb2e445ad00"><strong>➡️ 다음 글 &#58; </strong><strong><a href="/posts/beae0ed2-e020-4681-abac-fdb9e5f12c5f">TCP keep-alive</a></strong><strong> </strong></p>
+
+</div>
+
+</div>

@@ -1,0 +1,622 @@
+---
+title: "도커 컨테이너 살펴보기"
+description: "이 포스팅은 도커 컨테이너가 무엇인지, 명령어를 직접 입력해가며 살펴보는데 초점을 두고 있습니다."
+pubDate: "2023-11-07"
+category: "infra"
+tags: []
+sourceId: "6c414539-eeb5-402c-a18e-3eb02209e487"
+sourceUrl: "https://www.brainbackdoor.com/6c414539-eeb5-402c-a18e-3eb02209e487"
+dateSource: "published"
+icon: "🐳"
+---
+
+<blockquote id="22fdc05f-b1a1-493b-8ee4-51da7accaedb" className="notion-callout">
+
+<p>📌 이 포스팅은 도커 컨테이너가 무엇인지, 명령어를 직접 입력해가며 살펴보는데 초점을 두고 있습니다&#46;<br />간단한 실습을 원하신다면, <span className="notion-color-blue"><strong><a href="/posts/9fcd92ce-d741-48a9-a0f5-4951c8400bd7">도커 컨테이너 실행해보기</a></strong></span> 포스팅을 참고 바랍니다&#46;</p>
+
+</blockquote>
+
+<span id="99546c87-68e4-42e5-99b1-5de62e957464"></span>
+
+## 0&#46; 왜 도커 컨테이너를 학습해야 할까요?
+
+<div id="3700a1c6-9c5f-4755-8fd9-cf0c14721d2d" className="notion-columns">
+
+<div id="855399db-5682-4158-a431-258bf6b4ee41" className="notion-column">
+
+<figure id="1a3f7e5b-7f4d-45f7-b91e-c42b01feafe2" className="notion-figure">
+
+<img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/1a3f7e5b-7f4d-45f7-b91e-c42b01feafe2.webp" alt="" loading="lazy" width="2048" height="623" />
+
+</figure>
+
+</div>
+
+<div id="debf6d54-8afb-4cde-9fa9-7d7be1bdf7a1" className="notion-column">
+
+<figure id="4ee9dce3-0c0c-450c-abe5-fde207d6ef68" className="notion-figure">
+
+<img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/4ee9dce3-0c0c-450c-abe5-fde207d6ef68.gif" alt="" loading="lazy" width="420" height="271" />
+
+</figure>
+
+</div>
+
+</div>
+
+<p id="d0af64a5-ddd0-46b4-854e-7ad4e3ccdd48">애플리케이션이 배포되는 환경을 서버에 직접 설치하여 구성할 경우, <span className="notion-color-blue"><strong><a href="https://bcho.tistory.com/1224">snowflake server 이슈</a></strong></span>에 직면합니다&#46; 서비스가 점차 확장되면서 기존에 사용하던 서버와 새로 구축한 서버간에 설정의 차이가 발생하고, 관리자의 인적요소에도 영향을 받을 수 있습니다&#46; 그리하여 기존에는 스크립트를 활용한 자동화 방식부터, kickstart 등을 거쳐 OS를 가상화 방식까지 다양한 형태로 서버를 관리해왔습니다&#46;</p>
+
+<span id="23bb1ccb-c924-4367-8fba-48418bf342e0"></span>
+
+#### 기존의 OS 가상화 방식
+
+<figure id="d5686ba0-2435-4d37-bae6-16be2d38774d" className="notion-figure">
+
+<img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/d5686ba0-2435-4d37-bae6-16be2d38774d.webp" alt="" loading="lazy" width="1046" height="502" />
+
+</figure>
+
+<p id="a65567b9-b0b2-4236-a06c-f2699b0d72b0">기존의 가상화 기술은 <strong>하이퍼바이저</strong>를 이용해 여러 개의 운영체제를 하나의 호스트에서 생성해 사용하는 방식입니다&#46; 하이퍼바이저는 호스트 컴퓨터에서 다수의 운영체제를 동시에 실행하기 위한 논리적 플랫폼 정도로 이해해도 충분하다고 생각합니다&#46;</p>
+
+<p id="cfb789fc-63ca-4974-a307-97e8ab9fc2d9">중요한 점은, <u>각 종 시스템 자원을 가상화하고 독립된 공간을 생성하는 작업은 반드시 하이퍼바이저를 거치기 때문에 일반 Host에 비해 성능의 손실이 발생한다는 것</u>입니다&#46;</p>
+
+<p id="3a9ec2cb-bff6-4c0c-ba25-f210f79ef17a">뿐만 아니라, 가상머신은 GuestOS를 사용하기 위한 라이브러리, 커널 등을 전부 포함하기에 가상 머신을 배포하기 위한 이미지로 만들었을 때 <strong>이미지 크기가 커져 </strong>가상머신 이미지를 애플리케이션으로 배포하기는 부담스럽습니다&#46; (기존의 가상화는 <span className="notion-color-blue"><strong><a href="https://m.blog.naver.com/PostView.nhn?blogId=complusblog&amp;logNo=220990379931">전가상화, 반가상화</a></strong></span> 등의 방식으로 분류됩니다&#46;)</p>
+
+<p id="3c241487-4cf7-4e60-af85-f72cf05a01e0">우리가 원하는건 특정 환경에 종속되지 않은 상태로 어플리케이션을 띄우는 것입니다&#46;</p>
+
+<p id="d11684d6-f8c4-433e-a25d-9ab7aaa20f71">단순히 <span className="notion-color-orange_background"><strong>어플리케이션만을 띄우고 싶을 뿐인데 OS까지 띄우는것은 엄청난 낭비</strong></span>입니다&#46;</p>
+
+<blockquote id="684f25ac-8484-429f-a478-106dc2727282">
+
+<p>"격리된 CPU, 메모리, 디스크, 네트워크를 가진 공간을 만들고 이 공간에서 프로세스를 실행해서 유저에게 서비스" 하려면 어떻게 해야 할까?</p>
+
+</blockquote>
+
+<ul>
+
+<li id="eadcbcf4-a3c9-4ed9-b186-d565d6eade0f">
+
+<p>chroot로 <strong>특정 자원만 사용</strong>하도록 제한</p>
+
+</li>
+
+<li id="7120d99a-4389-45c5-8309-929719328bb3">
+
+<p>cgroup을 사용하여 <strong>자원의 사용량을 제한</strong></p>
+
+</li>
+
+<li id="c9fe041f-6a09-43e9-8a6e-954d48152305">
+
+<p>namespace로 <strong>특정 유저만 자원을 볼 수 있도록</strong> 제한</p>
+
+</li>
+
+<li id="bd1c290e-31bc-4790-bf4f-67e5e1fec025">
+
+<p>overlay network 등 <strong>네트워크 가상화</strong> 기술 활용</p>
+
+</li>
+
+<li id="0191c8a8-2a43-44cf-a27a-53bc10cc9ce7">
+
+<p>union file system (AUFS, overlay2)로 <strong>이식성, 비용절감</strong></p>
+
+</li>
+
+</ul>
+
+<p id="47af5ae3-7a5c-4ec1-b15a-e935f8b820fe">컨테이너에 필요한 커널은 호스트의 커널을 공유해 사용하고 컨테이너 안에는 애플리케이션을 구동하는데 필요한 라이브러리 및 실행 파일만 존재하기 때문에 컨테이너를 이미지로 만들었을 때 이미지의 용량 또한 가상 머신에 비해 대폭 줄어듭니다&#46;</p>
+
+<p id="c9230359-dbe4-4660-b2cb-8528eee3b0e3">무엇보다 컨테이너의 내용을 수정해도 호스트 OS에 영향을 끼치지 않습니다&#46;</p>
+
+<p id="72c3f26f-3985-46ed-a079-b5c2cd9bb268">이에 <span className="notion-color-orange_background"><strong>애플리케이션의 개발과 배포가 편해지며, 여러 애플리케이션의 독립성과 확장성이 높아집니다&#46;</strong></span></p>
+
+<span id="288595b9-29f5-4a79-9405-713e34f84764"></span>
+
+## 1&#46; 도커 컨테이너 설치
+
+<span id="3f3d6780-88ad-4757-ae87-ca2c233c9b2f"></span>
+
+```bash
+$ sudo apt-get update && \
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common && \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
+sudo apt-key fingerprint 0EBFCD88 && \
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+sudo apt-get update && \
+sudo apt-get install -y docker-ce && \
+sudo usermod -aG docker ubuntu && \
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+sudo chmod +x /usr/local/bin/docker-compose && \
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+```
+
+<figure id="0999e034-1688-44fe-8155-616b2e1ec3e7" className="notion-figure">
+
+<img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/0999e034-1688-44fe-8155-616b2e1ec3e7.webp" alt="" loading="lazy" width="1986" height="1798" />
+
+</figure>
+
+<span id="4c0b5a3e-5f5d-404d-8805-e71ded4fef0f"></span>
+
+## 2&#46; Docker daemon
+
+<figure id="7f1bf63f-1281-4066-8973-4c185d8ccfa5" className="notion-figure">
+
+<img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/7f1bf63f-1281-4066-8973-4c185d8ccfa5.webp" alt="" loading="lazy" width="752" height="383" />
+
+</figure>
+
+<span id="f145d565-ed9e-4326-9550-6523bbcfcb95"></span>
+
+```bash
+## docker 명령어가 dockerd라는 도커 데몬과 docker.sock을 참조하고 있음을 확인할 수 있습니다.
+$ sudo lsof -c docker
+dockerd     880 root  txt       REG              202,1 102066512      55737 /usr/bin/dockerd
+dockerd     880 root    6u     unix 0xffff953085804400       0t0      18324 /var/run/docker.sock type=STREAM
+
+$ sudo docker run -it ubuntu:latest bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+3ff22d22a855: Pull complete
+e7cb79d19722: Pull complete
+323d0d660b6a: Pull complete
+b7f616834fd0: Pull complete
+Digest: sha256:5d1d5407f353843ecf8b16524bc5565aa332e9e6a1297c73a92d3e754b8a636d
+Status: Downloaded newer image for ubuntu:latest
+root@b7345bbb0ec1:/#
+
+$ sudo docker events
+2020-08-16T05:47:10.885807752Z image pull ubuntu:latest (name=ubuntu)
+2020-08-16T05:47:11.247030355Z container create b7345bbb0ec1fae4b183c0fe1947a70a3045ba8d75f74876a812a37c40921707 (image=ubuntu:latest, name=awesome_ishizaka)
+2020-08-16T05:47:11.249065810Z container attach b7345bbb0ec1fae4b183c0fe1947a70a3045ba8d75f74876a812a37c40921707 (image=ubuntu:latest, name=awesome_ishizaka)
+2020-08-16T05:47:11.278151263Z network connect 6b6ce553a425c9392c5a65b8dcd2a57e1665289354b97f430758b745b1dc86a7 (container=b7345bbb0ec1fae4b183c0fe1947a70a3045ba8d75f74876a812a37c40921707, name=bridge, type=bridge)
+2020-08-16T05:47:11.529841638Z container start b7345bbb0ec1fae4b183c0fe1947a70a3045ba8d75f74876a812a37c40921707 (image=ubuntu:latest, name=awesome_ishizaka)
+2020-08-16T05:47:11.531931004Z container resize b7345bbb0ec1fae4b183c0fe1947a70a3045ba8d75f74876a812a37c40921707 (height=25, image=ubuntu:latest, name=awesome_ishizaka, width=167)
+```
+
+<ul>
+
+<li id="26fbf832-c82f-408a-81ce-9346e92fbb15">
+
+<p>사용자가 명령어를 입력하면 docker&#46;sock 을 통해 도커 데몬의 API를 호출합니다&#46; 도커 데몬에서 발생하는 이벤트는 <code><strong>docker events</strong></code>를 통해 확인할 수 있습니다&#46;</p>
+
+</li>
+
+<li id="bd89b7fe-8893-454b-8c6e-b46b8ccbc53d">
+
+<p>추가적으로, <code><strong>docker stats</strong></code>와 <code><strong>docker system df</strong></code> 명령어를 통해 도커가 현재 Host의 자원을 얼마나 사용하고 있는지 확인할 수 있습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="598b1a9c-6712-4c63-be25-36527dea08a8"></span>
+
+## 3&#46; Docker Container
+
+<span id="da85f568-a719-470e-9290-26340499be56"></span>
+
+```bash
+$ docker run -it ubuntu:latest bash
+root@03d7ffae4c3c:/# uname -a
+Linux 03d7ffae4c3c 5.3.0-1032-aws #34~18.04.2-Ubuntu SMP Fri Jul 24 10:06:28 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+$ docker run -it centos:latest bash
+[root@6ec49524540c /]# uname -a
+Linux 6ec49524540c 5.3.0-1032-aws #34~18.04.2-Ubuntu SMP Fri Jul 24 10:06:28 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+# 맥OS는 리눅스가 아니므로 네이티브하게 도커를 사용할 수 없어, linuxkit 기반 경량 가상머신 위에서 도커를 실행합니다.
+# 이후의 실습은 리눅스에서 실행하길 권장합니다.
+❯ docker run -it centos:latest bash
+[root@c3fdb0cda9ac /]# uname -a
+Linux c3fdb0cda9ac 4.19.76-linuxkit #1 SMP Tue May 26 11:42:35 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+```
+
+<ul>
+
+<li id="7f15f5d1-53fc-435a-98c5-9757c19ea810">
+
+<p>컨테이너는 호스트 시스템의 커널을 사용합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<figure id="aeeb0b89-15cb-4947-b679-28443204701c" className="notion-figure">
+
+<img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/aeeb0b89-15cb-4947-b679-28443204701c.webp" alt="" loading="lazy" width="1254" height="1210" />
+
+</figure>
+
+<ul>
+
+<li id="9f0eb59d-abc3-4bb3-95ef-8cafb08349d1">
+
+<p>컨테이너는 이미지에 따라서 실행되는 환경(파일 시스템)이 달라집니다&#46; 컨테이너가 서로 다른 파일 시스템을 가질 수 있는 이유는 <strong>chroot</strong>(change root!)를 활용하여 이미지(파일의 집합)를 루트 파일 시스템으로 강제로 인식시켜 프로세스를 실행하기 때문입니다&#46;</p>
+
+<span id="b0bf2a51-3351-478f-9365-1d128e0224fb"></span>
+
+```bash
+$ docker run -it ubuntu:latest bash
+root@03d7ffae4c3c:/# cat /etc/*-release
+DISTRIB_ID=Ubuntu
+
+$ docker run -it centos:latest bash
+[root@6ec49524540c /]# cat /etc/*-release
+CentOS Linux release 8.2.2004 (Core)
+```
+
+</li>
+
+</ul>
+
+<ul>
+
+<li id="ad27d675-19bb-440a-9399-eb87bb2755c3">
+
+<p>컨테이너도 결국 프로세스입니다&#46;</p>
+
+<span id="9ad0c343-55fc-4662-a6b1-7c5a328758de"></span>
+
+```bash
+## 우선, 터미널의 PID를 확인해봅니다.
+$ echo $$
+3441
+$ sudo ps -ef | grep 3441
+ubuntu    3441  3440  0 05:46 pts/2    00:00:00 -bash
+
+## 그럼, PID 1의 Command를 확인해봅니다.
+$ cat /proc/1/comm
+systemd
+$ pstree -p
+systemd(1)─┬─accounts-daemon(849)─┬─{accounts-daemon}(859)
+...
+
+## 이제 nginx 컨테이너를 실행해봅니다.
+$ docker run --name nginx -d -p 80:80 nginx:latest
+$ docker exec -it nginx bash
+root@acaf67af191e:/# echo $$
+324
+
+## nginx 컨테이너의 PID 1 의 Command는 nginx임을 확인할 수 있습니다. 
+$ sudo docker exec -it acaf67af191e cat /proc/1/comm
+nginx
+root@acaf67af191e:/# apt-get update
+root@acaf67af191e:/# apt-get install psmisc
+root@acaf67af191e:/# pstree -p
+nginx(1)--nginx(28)
+
+## 하지만 사실은 PID 4453 프로세스임을 확인할 수 있습니다. 
+## 서버에선 그저 nginx 프로세스가 하나 띄워져있다고 생각합니다.
+$ cat /var/run/docker/runtime-runc/moby/acaf67af191e5165b98b427b851f9b29a1450d20abd4e2e5287463ccc02c24a0/state.json | jq '.init_process_pid'
+4453
+
+$ cat /var/run/docker/runtime-runc/moby/acaf67af191e5165b98b427b851f9b29a1450d20abd4e2e5287463ccc02c24a0/state.json | jq '.namespace_paths'
+{
+  "NEWCGROUP": "/proc/4453/ns/cgroup",
+  "NEWIPC": "/proc/4453/ns/ipc",
+  "NEWNET": "/proc/4453/ns/net",
+  "NEWNS": "/proc/4453/ns/mnt",
+  "NEWPID": "/proc/4453/ns/pid",
+  "NEWUSER": "/proc/4453/ns/user",
+  "NEWUTS": "/proc/4453/ns/uts"
+}
+
+$ ls -Al /proc/1/ns | awk '{ print $9 $10 $11 }'
+$ ps -ef | grep 4453
+$ ps -auxfg
+```
+
+</li>
+
+</ul>
+
+<ul>
+
+<li id="a2dcca4c-2ecc-44ed-bcad-00d86592d095">
+
+<p>컨테이너 실행환경을 이해하면 옵션을 사용하기 수월합니다&#46;<br />가령, <code><strong>i 옵션</strong></code>은 표준 입력을 받도록 설정하는 것으로 파이프라이닝이나 키보드 입력 등이 이에 해당되며, <code><strong>t 옵션</strong></code>은 가상 터미널 설정입니다&#46;<br />따라서, -i와 -t가 조합되면, <strong>가상 터미널로 표준 입력을 입력</strong>할 수 있으며, -t 하나만 쓰여서는 아무런 의미가 없습니다&#46; (터미널은 있는데 입력은 안되는 상황이므로)<br />반면, -i는 홀로 쓰여도 의미가 있습니다&#46; 파이프라이닝 등으로 터미널 없이 입력하는 기능이 존재하기 때문입니다&#46;<br />한편, <code><strong>d 옵션</strong></code>은 -i, -t와 함께 쓰일 수 없습니다&#46; background에서 돌아가기 때문에, -i로 입력을 대기할수도, -t로 가상 터미널을 제공할수도 없기 때문입니다&#46;</p>
+
+</li>
+
+</ul>
+
+<p id="d41286fc-0cbc-4e02-9ffb-5a1c7026e0bc">⁉️ 도커 데몬은 크게, 컨테이너 이미지 빌드, 관리, 공유, 실행 및 컨테이너 인스턴스 관리 등의 기능을 하며, 앞에서 살펴봤듯 모든 컨테이너를 자식 프로세스로 소유합니다&#46; 이에 따른 문제점은 없을까요?</p>
+
+<blockquote id="d31e40d2-5b37-4de9-8c79-d99de488401c">
+
+<p><strong><span className="notion-color-blue"><a href="https://www.samsungsds.com/kr/insights/docker.html">흔들리는 도커(Docker)의 위상&#58; OCI와 CRI 중심으로 재편되는 컨테이너 생태계</a></span></strong></p>
+
+</blockquote>
+
+<span id="6d424e90-f705-4780-9bf9-8249d5bc6524"></span>
+
+## 4&#46; Docker Images
+
+<blockquote id="dbb12aee-3221-4fe7-abfd-f051ed22d2f2">
+
+<p>이미지는 파일들의 집합이고, 컨테이너는 이 파일들의 집합 위에서 실행된 특별한 프로세스</p>
+
+</blockquote>
+
+<p id="60dc4147-dba0-489b-af10-715dce137cef">프로세스의 데이터가 변경되더라도 원본 프로그램 이미지를 변경할 수 없듯,</p>
+
+<p id="7aa6f393-9836-469a-850d-7b42c00a1e86">컨테이너의 데이터가 변경되더라도 컨테이너 이미지의 내용을 변경할 수 없다는 걸 기억합니다&#46;</p>
+
+<span id="c530ff87-7ec2-415d-8d6b-cf199aabdd8d"></span>
+
+```bash
+## Official 이미지는 [저장소 이름]을 붙여주지 않아도 됩니다.
+$ docker pull ubuntu:latest
+```
+
+<ul>
+
+<li id="984e6a2e-9446-4daa-a836-cf85439fc52b">
+
+<p>도커의 이미지는 <span className="notion-color-orange_background"><strong>&#91;저장소 이름&#93;/&#91;이미지 이름&#93;&#58;&#91;태그&#93;</strong></span>의 형태로 구성됩니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="98f27044-f814-4ef4-ada0-92410762b624"></span>
+
+```bash
+## ubuntu 컨테이너를 생성할 때, 어떤 순서로 진행했는지 확인해봅니다.
+$ docker history ubuntu
+
+## ubuntu 이미지를 활용하여 commit_test라는 태그를 붙인 컨테이너를 생성합니다.
+$ docker run -i -t --name commit_test ubuntu:latest
+
+## 컨테이너 내부에 파일을 하나 생성합니다.
+root@d7c8c6bf4aa4:/# echo test_first! >> first
+
+## 컨테이너의 변경사항을 커밋합니다.
+$ docker commit \
+ -a "brainbackdoor" -m "my first commit " \
+ commit_test \
+ commit_test:first
+
+## 커밋한 컨테이너 이미지가 추가되었음을 확인할 수 있습니다.
+$ docker images
+
+## 변경사항을 하나더 추가한 후 커밋합니다
+$ docker run -i -t --name commit_test2 commit_test:first
+ root@07640650696a:/# echo test_second! >> second
+
+$ docker commit \
+ -a "brainbackdoor" -m "my second commit " \
+ commit_test2 \
+ commit_test:second
+
+## 각 이미지들사이에 추가된 Layer를 확인합니다.
+$ docker inspect ubuntu:latest | jq '.[].RootFS.Layers'
+$ docker inspect commit_test:first | jq '.[].RootFS.Layers'
+$ docker inspect commit_test:second | jq '.[].RootFS.Layers'
+
+$ docker inspect commit_test:first | jq '.[].GraphDriver'
+$ docker inspect commit_test:second | jq '.[].GraphDriver'
+
+## 커밋 변경사항을 확인해봅니다.
+$ cat /var/lib/docker/overlay2/[컨테이너ID]/diff/second
+```
+
+<ul>
+
+<li id="224a2a29-88fd-439b-8d8b-a35116c5048f">
+
+<p>도커는 여러 레이어를 합쳐(Union) 파일시스템을 이룹니다&#46;</p>
+
+</li>
+
+<li id="c5011fb5-3905-4bdf-8e3e-7574e41b2ead">
+
+<p>도커가 명령어로 <code><strong>commit</strong></code>, <code><strong>pull</strong></code>, <code><strong>push</strong></code> 등을 사용하는 이유를 한번 생각해봅니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="a779e292-5e21-4861-b950-defa84c88a6e"></span>
+
+## 5&#46; Docker Network
+
+<span id="9e07c178-bdcc-41bb-81e9-84feb6d31bb3"></span>
+
+### 들어가기에 앞서
+
+<span id="7024307b-2349-49b2-85aa-6e103014f626"></span>
+
+#### a&#46; veth interface
+
+<p id="521e7d57-fba1-49ce-b3b9-816ce376af3a">랜카드에 연결된 실제 네트워크 인터페이스가 아닌, 가상으로 생성한 네트워크 인터페이스입니다&#46;</p>
+
+<p id="580d9433-0d5e-4a95-935e-659296e82b54">일반적인 네트워크 인터페이스와는 달리 패킷을 전달받으면, 자신에게 연결된 다른 네트워크 인터페이스로 패킷을 보내주기 때문에 항상 쌍(pair)으로 생성해야 합니다&#46;</p>
+
+<span id="aa210d1c-bb59-418d-bfea-6680a2df42cd"></span>
+
+#### b&#46; NET namespace
+
+<p id="06a75703-13a9-4608-9525-9b28fa4c2792">리눅스 격리 기술인 namespace 중 네트워크와 관련된 부분을 말합니다&#46;</p>
+
+<p id="288bc3ec-2e8c-4e08-a6db-79a3ae78a865">네트워크 인터페이스를 각각 다른 namespace에 할당함으로써 서로가 서로를 모르게끔 설정할 수 있습니다&#46;</p>
+
+<span id="b5472d6d-b1de-4841-8288-7b419b77a3f6"></span>
+
+### 도커 네트워크 구조
+
+<p id="c282ec63-aff9-49f5-a6bb-04aea5e01c39">도커는 위에서 언급한 veth interface와 NET namespace를 사용해 네트워크를 구성합니다&#46;</p>
+
+<p id="1c699095-3968-4134-abf2-0ec17854fb4f">참고로 mac이나 window는 veth interface가 VM안에 감쳐져 있어 확인하기 어렵습니다&#46;</p>
+
+<figure id="865f6a09-fc58-488c-b1cf-6cf13918cb42" className="notion-figure">
+
+<img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/865f6a09-fc58-488c-b1cf-6cf13918cb42.webp" alt="" loading="lazy" width="2048" height="1420" />
+
+</figure>
+
+<span id="b8c77bfd-1129-4445-89c8-ae6a073f4c04"></span>
+
+```bash
+## 도커를 생성하면 3가지 형태의 network가 생김을 확인할 수 있습니다.
+$ sudo docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+6b6ce553a425        bridge              bridge              local
+81a18bc9cc40        host                host                local
+576b0223f9cf        none                null                local
+
+## bridge 네트워크를 확인해보면 172.17.0.0/16 대역을 할당했음을 확인할 수 있습니다.
+$ docker network inspect bridge
+[
+    {
+        "Name": "bridge",
+        "Id": "6b6ce553a425c9392c5a65b8dcd2a57e1665289354b97f430758b745b1dc86a7",
+        ...
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+
+## 그리고 172.17.0.0/16 대역은 docker0로 매핑되어 있습니다.
+$ ip route
+default via 192.168.0.193 dev eth0 proto dhcp src 192.168.0.207 metric 100
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1
+
+## docker0는 veth interface와 매핑된 브릿지임을 확인할 수 있습니다.
+$ brctl show docker0
+bridge name	bridge id		STP enabled	interfaces
+docker0		8000.024238d4b0f5	no		vethc8e309f
+
+$ ip link ls
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+66: vethc8e309f@if65: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT group default
+```
+
+<ol>
+
+<li id="354ed321-1488-4e55-83b4-fcaa98f7ed08">
+
+<p>컨테이너는 namespace 로 격리되고, 통신을 위한 네트워크 인터페이스(eth0)를 할당받습니다&#46;</p>
+
+</li>
+
+<li id="8f45926c-8650-468c-80db-700e23ff773a">
+
+<p>host의 veth interface가 생성되고 컨테이너 내의 eth0과 연결됩니다&#46;</p>
+
+</li>
+
+<li id="d8504ae7-cb85-40b1-bf8c-96bbed346d14">
+
+<p>host의 veth interface는 docker0이라는 다른 veth interface와 연결됩니다&#46;</p>
+
+</li>
+
+</ol>
+
+<span id="a321619f-dd82-497e-b840-12ab0bbdeffe"></span>
+
+```text
+$ git clone https://github.com/woowacourse/service-practice.git
+$ cd lb
+$ docker build -t node-server .
+$ docker-compose -p practice up -d
+
+$ sudo docker container inspect practice_lb_1 | jq '.[].NetworkSettings.Networks.practice_default.Gateway'
+"172.18.0.1"
+
+$ ip route
+172.18.0.0/16 dev br-754310d33f5c proto kernel scope link src 172.18.0.1
+
+$ ip link ls
+4: br-754310d33f5c: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default
+   link/ether 02:42:cd:76:d1:f1 brd ff:ff:ff:ff:ff:ff
+```
+
+<ul>
+
+<li id="f8950c22-cd58-4a86-86a7-19bd9068d743">
+
+<p>docker-compose 로 띄우면 다른 네트워크 대역을 가집니다&#46; docker-compose 로 컨테이너를 띄우면 compose 로 묶은 범위에 맞춰 브릿지를 하나 더 생성하기 때문입니다&#46; 따라서 서로 경유하는 브릿지가 다르므로 docker-compose로 띄운 컨테이너와 일반 컨테이너간의 통신은 불가능합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="b095090f-4340-40a9-a2a1-e4dedf054e7a"></span>
+
+```bash
+# 포트포워딩 설정과 함께 컨테이너를 생성합니다.
+$ docker container run -d -p 8081:80 nginx
+16cd67c48e5721a6b666192b8960875c720168bf6c5e3ed2138fb04c492447c6
+
+$ sudo docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
+16cd67c48e57        nginx               "/docker-entrypoint.…"   4 seconds ago       Up 3 seconds        0.0.0.0:8081->80/tcp   trusting_bhabha
+
+# Host의 8081포트가 listen 임을 확인합니다.
+$ sudo netstat -nlp | grep 8081
+tcp6       0      0 :::8081                 :::*                    LISTEN      10009/docker-proxy
+
+# docker-proxy 라는 프로세스가 해당 포트를 listen 하고 있음을 볼 수 있습니다.
+# docker-proxy는 들어온 요청을 해당하는 컨테이너로 넘기는 역할만을 수행하는 프로세스입니다.
+# 컨테이너에 포트포워딩이나 expose를 설정했을 경우 같이 생성됩니다.
+
+$ iptables -t nat -L -n
+Chain DOCKER (2 references)
+target     prot opt source               destination
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:8081 to:172.17.0.2:80
+
+# 보시다시피 모든 요청을 DOCKER Chain 으로 넘기고, DOCKER Chain 에서는 DNAT를 통해 포트포워딩을 해주고 있음을 볼 수 있습니다.
+# 이 iptables 룰은 docker daemon이 자동으로 설정합니다.
+
+```
+
+<ul>
+
+<li id="944e3796-e4bb-41d7-8f37-f6b706a2dec1">
+
+<p>기본적으로 컨테이너는 외부와 통신이 불가능합니다&#46; 포트포워딩을 설정하여 외부에 컨테이너를 공개할 수 있습니다&#46; docker container의 네트워크 모드는 bridge, host, container, none 등 총 4개가 존재합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="fe506180-3c99-4cdf-bc3a-60d584e68842"></span>
+
+## 6&#46; Docker Volume
+
+<p id="e5d47f6c-6166-49d8-9fa4-b93f2ea1f502">도커 이미지로 컨테이너를 생성하면 이미지는 <span className="notion-color-orange_background"><strong>읽기 전용</strong></span>이 되며, 컨테이너의 변경 사항만 별도로 저장해서 각 컨테이너의 정보를 보존한다고 앞에서 설명한 바 있습니다&#46;</p>
+
+<p id="a1826478-ba85-428b-8c72-6d6e8df45599">하지만 mysql과 같이 컨테이너 계층에 저장돼 있던 데이터베이스의 정보를 삭제해서는 안되는 경우도 있습니다&#46; 컨테이너 데이터를 영속적인 데이터로 활용하기 위한 방법 중 볼륨을 활용하는 방안이 있습니다&#46;</p>
+
+<p id="731eb847-fa6b-427b-8d2d-c187ffe03a11"><code>-</code><code><strong>v 옵션</strong></code>은 호스트의 디렉터리를 컨테이너의 디렉터리에 마운트합니다&#46; 따라서 컨테이너의 해당 경로에 파일이 있었다면 호스트의 볼륨으로 덮어씌워집니다&#46;</p>
+
+<span id="6d842aaf-9c89-4447-b2c9-269e8a55586f"></span>
+
+```bash
+$ docker run -d \
+--name wordpressdb_hostvolume \
+-e MYSQL_ROOT_PASSWORD=password \
+-e MYSQL_DATABAS=wordpress \
+-v /home/wordpress_db:/var/lib/mysql \
+mysql:5.7
+
+$ docker run -d \
+--name wordpress_hostvolume \
+-e MYSQL_ROOT_PASSWORD=password \
+--link wordpressdb_hostvolume:mysql \
+-p 80 \
+wordpress
+
+$ ls /home/wordpress_db
+$ docker stop wordpressdb_hostvolume wordpress_hostvolume
+$ docker rm wordpressdb_hostvolume wordpress_hostvolume
+```
+
+<p id="96edc25e-5e05-4605-b65a-9db74503ea9b">이처럼 컨테이너가 아닌 외부에 데이터를 저장하고 컨테이너는 그 데이터로 동작하도록 설계(stateless)하여야 합니다&#46; <span className="notion-color-orange_background"><strong>컨테이너 자체는 상태가 없고 상태를 결정하는 데이터는 외부로부터 제공받도록 구성</strong></span>하도록 합니다&#46;</p>

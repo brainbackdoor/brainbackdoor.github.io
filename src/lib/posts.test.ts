@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import type { PostSummary } from './posts';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
+import type { PostSummary, LegacySourcePage } from './posts';
 import {
   adjacentPosts,
+  legacyRedirects,
   collectTags,
   groupByKey,
   parseEntryId,
@@ -219,5 +222,79 @@ describe('postsWithTag', () => {
     expect(postsWithTag([post({ slug: 'a', pubDate: '2024-01-01', tags: ['TCP'] })], 'DB')).toEqual(
       [],
     );
+  });
+});
+
+describe('legacyRedirects', () => {
+  const source = (over: Partial<LegacySourcePage> = {}): LegacySourcePage => ({
+    sourceId: '12345678-1234-1234-1234-123456789abc',
+    sourceUrl: 'https://www.brainbackdoor.com/12345678-1234-1234-1234-123456789abc',
+    aliases: ['/old-post/'], targetPath: '/posts/original', collectionStatus: 'collected', ...over,
+  });
+  const available = new Set(['/posts/original', '/tech/infra', '/posts/another']);
+
+  it('maps original UUID and friendly paths to the existing target without duplicate redirects', () => {
+    expect(legacyRedirects([source({ aliases: ['/old-post/', '/old-post'] })], available)).toEqual([
+      { path: '/12345678-1234-1234-1234-123456789abc', targetPath: '/posts/original' },
+      { path: '/old-post', targetPath: '/posts/original' },
+    ]);
+  });
+
+  it('does not shadow application routes or accept external aliases', () => {
+    const redirects = legacyRedirects([source({ aliases: ['/posts', '/posts/sample', '/about/', '/tech/infra', '/rss.xml', '/en/posts', 'https://example.com/outside', '/infra'] })], available);
+    expect(redirects.map(item => item.path)).toEqual(['/12345678-1234-1234-1234-123456789abc', '/infra']);
+  });
+
+  it('preserves collection-row anchors while checking that the parent page exists', () => {
+    const redirects = legacyRedirects([source({ targetPath: '/posts/original#row-uuid' })], available);
+    expect(redirects).toHaveLength(2);
+    expect(redirects.every(item => item.targetPath === '/posts/original#row-uuid')).toBe(true);
+    expect(legacyRedirects([source({ targetPath: '/posts/missing#row-uuid' })], available)).toEqual([]);
+  });
+
+  it('omits uncollected pages, drafts and targets with no generated page', () => {
+    expect(legacyRedirects([
+      source({ collectionStatus: 'not_found' }),
+      source({ targetPath: '/posts/draft' }),
+      source({ targetPath: null }),
+    ], available)).toEqual([]);
+  });
+
+  it('fails on an ambiguous source alias instead of silently directing readers to a different post', () => {
+    expect(() => legacyRedirects([source(), source({ sourceId: 'another-id', targetPath: '/posts/another' })], available)).toThrow('Conflicting legacy path');
+  });
+});
+
+describe('static legacy redirect script', () => {
+  const page = readFileSync(new URL('../pages/[...legacy].astro', import.meta.url), 'utf8');
+  const script = page.match(/<script is:inline[^>]*>([\s\S]*?)<\/script>/)?.[1];
+  if (!script) throw new Error('Legacy redirect inline script is missing');
+
+  function redirect(path: string, hash = '') {
+    const destinations: string[] = [];
+    runInNewContext(script!, {
+      document: { currentScript: { getAttribute: () => path } },
+      location: { origin: 'https://blog.example', hash, replace: (to: string) => destinations.push(to) },
+      URL,
+    });
+    return destinations;
+  }
+
+  it('preserves an encoded incoming section bookmark', () => {
+    expect(redirect('/posts/tcp-error-recovery', '#3-%ED%98%BC%EC%9E%A1%EC%A0%9C%EC%96%B4'))
+      .toEqual(['https://blog.example/posts/tcp-error-recovery#3-%ED%98%BC%EC%9E%A1%EC%A0%9C%EC%96%B4']);
+  });
+
+  it('keeps a default collection-row anchor unless a child bookmark is supplied', () => {
+    expect(redirect('/posts/diary#row-uuid')).toEqual(['https://blog.example/posts/diary#row-uuid']);
+    expect(redirect('/posts/diary#row-uuid', '#child-uuid')).toEqual(['https://blog.example/posts/diary#child-uuid']);
+  });
+
+  it('never treats a fragment as another origin and rejects external targets', () => {
+    expect(redirect('/posts/original', '#https://outside.example'))
+      .toEqual(['https://blog.example/posts/original#https://outside.example']);
+    for (const path of ['//outside.example', '/\\outside.example', 'https://outside.example']) {
+      expect(redirect(path)).toEqual([]);
+    }
   });
 });

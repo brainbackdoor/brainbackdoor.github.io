@@ -1,6 +1,6 @@
 ---
 import { categoryLabel } from '../lib/categories';
-import { formatDate } from '../lib/date';
+import { postDate } from '../lib/date';
 import type { PostSummary } from '../lib/posts';
 interface Props { posts: PostSummary[]; lang?: string; }
 const { posts, lang = 'ko' } = Astro.props;
@@ -12,7 +12,7 @@ const en = lang === 'en';
     <h2 id="related-title">{en ? 'Read next' : '이어서 읽기'}</h2>
     {posts.map((post) => (
       <a class="related-post" href={post.href}>
-        <span>{en ? post.category : categoryLabel(post.category)} · {formatDate(post.pubDate)}</span>
+        <span>{en ? post.category : categoryLabel(post.category)} · <time datetime={post.pubDate.toISOString()} title={postDate(post.pubDate, post.dateSource, lang).title} aria-label={postDate(post.pubDate, post.dateSource, lang).ariaLabel}>{postDate(post.pubDate, post.dateSource, lang).text}</time></span>
         <strong>{post.title}</strong>
       </a>
     ))}

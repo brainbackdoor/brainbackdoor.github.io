@@ -1,0 +1,53 @@
+---
+title: "일급컬렉션에 대해서.."
+description: "TDD, 클린코드 코드리뷰를 하다보면 '원시값과 문자열을 포장하라', '일급콜렉션을 쓴다'와 같은 피드백을 주곤한다."
+pubDate: "2020-03-30"
+category: "infra"
+tags: []
+sourceId: "1c3f7881-71c5-4855-85d1-a4c7e895a66b"
+sourceUrl: "https://www.brainbackdoor.com/1c3f7881-71c5-4855-85d1-a4c7e895a66b"
+dateSource: "published"
+icon: "🧐"
+---
+
+<p id="a3fd10db-7c06-4c9d-99d8-e97b88b82d27">TDD, 클린코드 코드리뷰를 하다보면 <span className="notion-color-teal"><strong>'원시값과 문자열을 포장하라', '일급콜렉션을 쓴다'</strong></span>와 같은 피드백을 주곤한다&#46; Wrapper Class를 작성하는 데에는 어려움이 없지만, 일급콜렉션을 학습하는 과정에서 보통 <span className="notion-color-blue"><a href="https://jojoldu.tistory.com/412"><strong>동욱님의 블로그</strong></a></span>를 접하는데 두번째 특징인 <span className="notion-color-teal"><strong>'불변성'</strong></span>으로 인해 혼란을 겪는다&#46;</p>
+
+<p id="cb5c6b65-2ed8-4d2b-87f2-f308ac3a5c65"><span className="notion-color-blue"><a href="https://developerfarm.wordpress.com/2012/02/01/object_calisthenics_/"><strong>객체지향 생활체조에 제시된 일급콜렉션(First Class Collection)</strong></a></span>은 일급 시민(First Class Citizen)을 연상시킨다&#46; 그리고 일급시민은 함수형 프로그래밍과 더불어 불변객체를 연상시킨다&#46; 우선 일급시민은 무엇이고, 불변객체는 무엇일까?</p>
+
+<p id="f032e28a-7cf4-482b-934b-c809da7448a0"><span className="notion-color-teal"><strong>일급시민</strong></span><span className="notion-color-teal">은</span><span className="notion-color-teal"><strong> 1) 변수나 데이타에 할당 할 수 있고, 2) 객체의 인자로 넘길 수 있으며, 3) 객체의 리턴값으로 리턴 할수 있어야 한다&#46;</strong></span> 자바는 1&#46;8부터 동작을 파라미터화하여 전달할 수 있게 되었다&#46;</p>
+
+<span id="4cfef548-6d69-487b-93a5-857ab3df8f9c"></span>
+
+```java
+getNumber(elm);
+Function result = getResult();
+List list = Arrays.asList(elm, result);
+```
+
+<span id="5cb7d4a7-1fb0-45de-9785-6a815ad009ed"></span>
+
+## 그렇다면, <span className="notion-color-teal"><strong>불변객체</strong></span>는 무엇일까?
+
+<p id="4b9c4c35-9d66-40d9-b0da-ddbf5c51217d">1) 객체를 변경하는 메소드를 제공하지 않는다&#46;</p>
+
+<p id="05943332-aad9-4f1b-9718-61fb0766a1d0">2) 재정의할 수 있는 메소드를 제공하지 않는다&#46;</p>
+
+<p id="ad9430b7-c73a-4a60-ad11-cc68ab0fa56a">3) 모든 필드를 final로 만든다&#46;</p>
+
+<p id="1d3f78ab-c566-4e4e-a685-180940c22825">4) 모든 필드를 private으로 만든다&#46;</p>
+
+<p id="d662338e-e491-4571-a178-864a319de1e1">5) 가변 객체를 참조하는 필드는 배타적으로 접근해야 한다</p>
+
+<p id="1ca41154-678f-4746-8d55-9d880251f011">즉, <span className="notion-color-teal"><strong>객체의 상태를 바꿀 수는 없으므로 새로운 상태로 변경해야 할 경우 새로운 불변 객체를 만들어 기존의 불변 객체를 대체 시켜야 한다&#46;</strong></span> 이를 통해 불변객체는 Side-effect 및 동시성 이슈에 노출되지 않는다&#46; 따라서 함수형 프로그래밍에서 Side-effect를 발생시키지 않기 위해 불변객체를 사용하는 것이지, <u><strong>일급시민의 특징이 불변성을 보장하는 것은 아니다&#46;</strong></u></p>
+
+<span id="8dab319f-fc60-4a39-b4d5-c582cfe0e965"></span>
+
+## 그렇다면, <strong>일급콜렉션</strong>은 무엇일까?
+
+<p id="cab3cce8-a4ec-4b8e-a833-25014263428b"><span className="notion-color-blue"><a href="https://developerfarm.wordpress.com/2012/02/01/object_calisthenics_/"><strong>소트웍스 앤솔리지</strong></a></span> 설명을 토대로 보면, 우선 동욱님 블로그에서 설명하듯 <span className="notion-color-teal"><strong>'비지니스에 종속적인 자료구조', '상태와 행위를 한 곳에서 관리', '이름이 있는 컬렉션'</strong></span>의 특성을 가지고 있다&#46; 이에 '원시값과 문자열을 포장하라'의 연장선상에서 자신만의 자료구조를 만들라는 의미에서 가이드를 한다고 이해하고 있다&#46; 따라서 <span className="notion-color-teal"><strong>불변성을 반드시 보장해야 하는지는 알 수 없다&#46;</strong></span> 물론 불변성을 지향할 경우 Side-effect는 발생하지 않겠지만, <span className="notion-color-red">Collection 요소가 추가될 때마다 Collection을 새로 생성하는 등의 비효율성이 발생</span>한다&#46;</p>
+
+<p id="30a413cd-cb07-4d5d-8d6c-4c02cf37648e">추가적으로, Collection이 불변성을 가질 수 있기 위해서는 어떻게 구현해야할까?</p>
+
+<p id="155ad9aa-d131-49ad-9e61-5043b4aa59d8">java에서 final 예약어는 <span className="notion-color-red"><strong>해당 객체를 가리키는 포인터를 바꿀 수 없게하는 의미</strong></span>이다&#46; 따라서 1) primitive type의 경우 불변이다&#46; 2) reference type의 경우 값의 재할당은 안되지만, 속성을 변경하는 것은 가능하다&#46; 이에 reference type을 불변으로 구현하기 위해서는 새로운 객체를 생성하여 반환하여야 한다&#46; - <span className="notion-color-blue"><a href="http://aeternum.egloos.com/v/1111257"><strong>&#91;참고링크&#93;</strong></a></span></p>
+
+<p id="b01b5e82-90b4-4208-87b0-a7727fbf44e7">보통 일급컬렉션을 구현할 때 Collections&#46;unmodifiableList를 활용한다&#46; 이 경우 일급컬렉션이 속성으로 가지고 있는 Collection 값이 외부에 노출될 경우 값의 변경/추가/삭제는 불가하기에 불변성을 띄는 것으로 오해할 수 있다&#46; 하지만 <strong>Collection에 담겨있는 Item의 속성은 변경이 가능</strong>하다&#46; 따라서 <u><strong>Collections&#46;unmodifiableList(new ArrayList&lt;&gt;(값))으로 한번 더 감싸 불변객체를 작성하거나, 값&#46;stream()&#46;map(값의아이템&#58;&#58;Clone)&#46;collect(toList()) 등과 같이 깊은 복사를 하여야 한다&#46;</strong></u></p>

@@ -1,0 +1,192 @@
+---
+title: "MySQL Replication 간단히 구성해보기"
+description: "MySQL Replication 동작 방식 등 상세한 내용은 포스팅을 참고바랍니다."
+pubDate: "2023-11-09"
+category: "infra"
+tags: []
+sourceId: "1101a2b0-66bf-4b74-a95d-c2c98492093b"
+sourceUrl: "https://www.brainbackdoor.com/1101a2b0-66bf-4b74-a95d-c2c98492093b"
+dateSource: "published"
+icon: "🪞"
+---
+
+<span id="982ac1ed-4a84-4f24-8a3f-3149089f87da"></span>
+
+## 1&#46; MySQL Replication
+
+<ul>
+
+<li id="85bfdcd3-e1a1-484d-b7e0-c7088bf09447">
+
+<p>MySQL Replication 동작 방식 등 상세한 내용은 <span className="notion-color-blue"><strong><a href="https://ssup2.github.io/theory_analysis/MySQL_Replication/">포스팅</a></strong></span>을 참고바랍니다&#46; </p>
+
+</li>
+
+<li id="74d5d457-f374-4790-aad4-0eb12bbde92a">
+
+<p>MySQL Replication의 master/slave는 1&#58;n관계입니다&#46; master는 갱신쿼리를 바이너리 로그파일로 기록하고, 이 로그파일의 내용이 slave로 전송되어 순차적으로 실행함으로써 복제됩니다&#46; 따라서 MySQL Replication은 준동시성입니다&#46; I/O 스레드가 비동기로 동작하기에 마스터에서 생성한 바이너리 로그가 슬레이브에 수신되기 전에 장애가 날 경우 손실이 발생할 수 있습니다&#46;</p>
+
+</li>
+
+<li id="fa00f95c-f894-4737-a8bb-8b8d38b97692">
+
+<p>데이터조작쿼리(INSERT, UPDATE, DELETE)는 마스터로, 데이터조회쿼리(SELECT)는 슬레이브로 받아서 부하를 분산할 수 있습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="417cafe9-62e2-463f-85f9-ce0c73f5df98"></span>
+
+## 2&#46; 실습
+
+<span id="e91dd327-0887-43d3-b6ef-e494c2365c06"></span>
+
+### A&#46; 애플리케이션 설정
+
+<span id="7d89870a-fa40-46f4-a0b8-fae4125cefd2"></span>
+
+```yaml
+spring.datasource.hikari.master.username=root
+spring.datasource.hikari.master.password=masterpw
+spring.datasource.hikari.master.jdbc-url=jdbc:mysql://[Master DB IP:Port]/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#spring.datasource.hikari.master.jdbc-url=jdbc:mysql://localhost:13306/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+
+
+spring.datasource.hikari.slave.username=root
+spring.datasource.hikari.slave.password=slavepw
+spring.datasource.hikari.slave.jdbc-url=jdbc:mysql://[Slave DB IP:Port]/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#spring.datasource.hikari.slave.jdbc-url=jdbc:mysql://localhost:13307/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+```
+
+<span id="239f467e-bc6e-429e-9ef3-83ce66540d05"></span>
+
+```java
+public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
+    public static final String DATASOURCE_KEY_MASTER = "master";
+    public static final String DATASOURCE_KEY_SLAVE = "slave";
+
+    @Override
+    protected Object determineCurrentLookupKey() {
+        boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
+        return (isReadOnly)
+            ? DATASOURCE_KEY_SLAVE
+            : DATASOURCE_KEY_MASTER;
+    }
+}
+```
+
+<span id="c4870651-8537-4a78-af85-fd74a7be1a72"></span>
+
+```java
+@Configuration
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = {"com.brainbackdoor.subwaymap"})
+class DataBaseConfig {
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.hikari.master")
+    public DataSource masterDataSource() {
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.hikari.slave")
+    public DataSource slaveDataSource() {
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+    }
+
+    @Bean
+    public DataSource routingDataSource(@Qualifier("masterDataSource") DataSource master,
+                                        @Qualifier("slaveDataSource") DataSource slave) {
+        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
+
+        HashMap<Object, Object> sources = new HashMap<>();
+        sources.put(DATASOURCE_KEY_MASTER, master);
+        sources.put(DATASOURCE_KEY_SLAVE, slave);
+
+        routingDataSource.setTargetDataSources(sources);
+        routingDataSource.setDefaultTargetDataSource(master);
+
+        return routingDataSource;
+    }
+
+    @Primary
+    @Bean
+    public DataSource dataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
+        return new LazyConnectionDataSourceProxy(routingDataSource);
+    }
+}
+```
+
+<span id="a2136eab-7891-42fe-81be-e3034ac82a43"></span>
+
+```java
+    public List<Line> findLines() {
+    ...
+
+    @Transactional(readOnly = true)
+    public List<StationResponse> findAllStations() {
+```
+
+<ul>
+
+<li id="7c88c52e-6252-40e1-a848-3c3c291ffc3a">
+
+<p><code><strong>findLines()</strong></code> 메서드는 master에서, <code><strong>findAllStations()</strong></code> 메서드는 slave에서 조회합니다&#46; <code><strong>&#64;Transactional(readOnly = true)</strong></code>를 사용할 경우 slave를 활용합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="c26333a2-bcea-4b85-b260-589b45ddc36d"></span>
+
+### 2&#46; Docker로 간단히 구성해보기
+
+<span id="3ce367aa-9eed-4edd-ab3d-89132903434e"></span>
+
+#### master 서버 설정
+
+<span id="9b51e173-9a8b-4102-9d14-6c174aa3d494"></span>
+
+```bash
+$ docker run --name mysql-master -p 13306:3306 -v ~/mysql/master:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=masterpw -d mysql
+
+$ docker exec -it mysql-master /bin/bash
+$ mysql -u root -p
+mysql> CREATE USER 'replication_user'@'%' IDENTIFIED WITH mysql_native_password by 'replication_pw';
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%';
+
+mysql> SHOW MASTER STATUS\G
+*************************** 1. row ***************************
+             File: binlog.000002
+         Position: 683
+     Binlog_Do_DB:
+ Binlog_Ignore_DB:
+Executed_Gtid_Set:
+1 row in set (0.00 sec)
+
+```
+
+<span id="8eb95b84-6dbd-44fc-81b2-d0b22b45c160"></span>
+
+#### slave 서버 설정
+
+<span id="54b94015-de68-4fe1-af47-b345f2dbc933"></span>
+
+```bash
+$ docker run --name mysql-slave -p 13307:3306 -v ~/mysql/slave:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d mysql
+
+$ docker exec -it mysql-slave /bin/bash
+$ mysql -u root -p
+
+mysql> SET GLOBAL server_id = 2;
+mysql> CHANGE MASTER TO MASTER_HOST='172.17.0.1', MASTER_PORT = 13306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000002', MASTER_LOG_POS=683;
+
+mysql> START SLAVE;
+mysql> SHOW SLAVE STATUS\G
+...
+            Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+```

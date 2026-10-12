@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatShortDate, getYear } from './date';
+import { formatDate, formatShortDate, getYear, postDate } from './date';
 
 describe('date', () => {
   it('연.월.일을 두 자리로 채워 낸다', () => {
@@ -24,5 +24,23 @@ describe('date', () => {
     const newYear = new Date('2024-01-01T00:00:00Z');
     expect(getYear(newYear)).toBe('2024');
     expect(formatDate(newYear)).toBe('2024.01.01');
+  });
+});
+
+describe('post date provenance', () => {
+  it('keeps ordinary publication dates unchanged and labels creation fallback dates', () => {
+    const d = new Date('2026-06-16T06:30:50.474Z');
+    expect(postDate(d).text).toBe('2026.06.16');
+    expect(postDate(d, 'published').title).toBeUndefined();
+    const created = postDate(d, 'created', 'ko', true);
+    expect(created.text).toBe('생성일 06.16');
+    expect(created.ariaLabel).toBe('원문 생성일 (발행일 미기재): 2026.06.16');
+    expect(created.dateTime).toBe(d.toISOString());
+  });
+
+  it('uses the same date meaning on English pages', () => {
+    const created = postDate(new Date('2021-05-05T13:23:00Z'), 'created', 'en');
+    expect(created.text).toBe('Created 2021.05.05');
+    expect(created.ariaLabel).toContain('publication date unavailable');
   });
 });

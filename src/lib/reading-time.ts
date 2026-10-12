@@ -27,9 +27,12 @@ const LATIN_WORD = /[A-Za-z][A-Za-z'-]*/g;
 /** 읽는 대상이 아닌 마크다운 문법 기호를 걷어낸다. */
 function stripMarkdown(src: string): string {
   return src
+    .replace(/^import\s+(?:[\w{}\s,*]+\s+from\s+)?['"][^'"]+['"];?\s*$/gm, '') // MDX 모듈
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')       // 이미지
     .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')    // 링크 → 텍스트만
     .replace(/`[^`]*`/g, '')                    // 인라인 코드
+    .replace(/<\/?[A-Za-z][^>]*>/g, '')        // HTML·MDX 태그, 속성 → 본문만
+    .replace(/&(?:#[0-9]+|#x[0-9a-f]+|[a-z]+);/gi, ' ') // 이스케이프된 문법 기호
     .replace(/^\s{0,3}#{1,6}\s+/gm, '')         // 제목 기호
     .replace(/^\s{0,3}>\s?/gm, '')              // 인용
     .replace(/[*_~]/g, '');                     // 강조

@@ -1,0 +1,497 @@
+---
+title: "리눅스 명령어 zip"
+description: "리눅스가 처음인 분들을 대상으로 작성한 포스팅입니다."
+pubDate: "2023-11-08"
+category: "infra"
+tags: []
+sourceId: "b47f2941-5949-4368-890b-ca7825b419b9"
+sourceUrl: "https://www.brainbackdoor.com/b47f2941-5949-4368-890b-ca7825b419b9"
+dateSource: "published"
+icon: "💻"
+---
+
+<blockquote id="3d7a5a0b-1ec9-4800-b714-149468406824" className="notion-callout">
+
+<p>📌 리눅스가 처음인 분들을 대상으로 작성한 포스팅입니다&#46; <span className="notion-color-blue"><strong><a href="https://devhints.io/bash">cheatsheet</a></strong></span>을 함께 활용해주셔도 좋고,<span className="notion-color-blue"><strong><a href="https://wiki.kldp.org/HOWTO/html/Adv-Bash-Scr-HOWTO/"> Bash 쉘스크립팅 가이드</a></strong></span>를 따라가보시는 것도 좋습니다&#46; <br />리눅스가 프로그램의 명령을 수행하는 과정이나, 서버의 각 메트릭의 의미는 강의를 통해 확인할 수 있어요&#46;</p>
+
+</blockquote>
+
+<span id="15e82411-8d44-42fe-84d6-bcac71d86d90"></span>
+
+## 1&#46; 서버 살펴보기
+
+<span id="39985184-f92b-4c45-a898-726d9f83a499"></span>
+
+```bash
+# 현재 위치를 확인합니다.
+$ pwd
+
+# 명령어의 메뉴얼을 확인
+$ man pwd
+
+# 파일시스템별 가용공간을 확인합니다.
+$ df -h
+
+# 각 디렉토리별로 디스크 사용량을 확인합니다.
+$ sudo du -shc /*
+# https://ko.wikipedia.org/wiki/Sudo
+# du -h : 하위디렉토리까지 표현
+# du -sh : 해당 디렉토리만 표현
+# du -ah : 파일에 대한 정보도 표현
+
+# 현재 경로의 파일들(숨김파일 포함)의 정보를 확인합니다.
+$ ls -al
+
+## 서버의 공인 IP 확인해봅니다.
+$ curl wgetip.com
+
+# git 명령어의 위치를 확인해봅니다.
+$ which git 
+
+# 스크립트를 활용하여 서버 상세 정보를 확인해봅니다.
+## 물리 Storage 정보 조회
+## 메모리 갯수 조회
+## NIC 정보 조회
+## 프로세스별 메모리 사용량 조회
+## Routing table 조회
+## cron 스케줄 정보 조회
+## 방화벽 정보 조회
+$ git clone https://github.com/woowacourse/script-practice
+$ cd script-practice/script/
+$ sudo chmod 755 ./*
+$ sudo ./server_resource.sh all
+
+
+# 소스코드를 관리할 디렉토리를 생성하고 이동합니다.
+$ mkdir brainbackdoor && cd brainbackdoor
+```
+
+<hr id="1e22461d-cab6-477e-ab64-02cc77d5ed92" />
+
+<span id="d9f18c70-9239-4d38-b072-3b31ccd213d7"></span>
+
+## 2&#46; 파일 다루기
+
+<span id="0814ff5a-fc94-4171-9ef6-f38c04031a0c"></span>
+
+```bash
+# GitHub 저장소를 clone해봅니다.
+$ git clone https://github.com/brainbackdoor/infra-workshop
+
+# 하위경로까지 복제합니다.
+$ cp -R [원본디렉토리] [목적지디렉토리]
+$ cp -R ./infra-workshop ../
+$ ls -al ../infra-workshop
+
+# 디렉토리의 이름을 변경합니다.
+$ mv [원본디렉토리] [목적지디렉토리]
+$ mv ../infra-workshop ./infra-bak
+
+# 파일 및 디렉토리를 삭제합니다.
+$ rm -rf ./infra-bak 
+
+# 파일 내용을 표준출력해봅니다.
+$ cat ./infra-workshop/README.md
+
+# 파일 이름으로 파일을 찾아봅니다. 
+$ sudo apt install mlocate
+$ sudo updatedb
+$ locate build.gradle*
+# find ./* -name "*java"
+# find . -type f -user root \( -perm 4000 -o -perm -2000 \) -exec ls -al {} \;
+# find . -type f -mtime -2 -exec ls -al {} \;
+# find . -type f -size 3M -exec ls -al {} \;
+```
+
+<hr id="eecb0fb3-96d2-4c7b-8c1e-f287b37e7286" />
+
+<span id="8d64e699-30c7-4589-945b-8ed9f81cfd1d"></span>
+
+## 3&#46; 자바 프로세스 실행해보기
+
+<p id="1542a8d9-541a-44fd-af02-8b5db98ae030"><strong>A&#46; 자바 설치</strong></p>
+
+<span id="beaa6857-387b-4f27-a323-888fe534b0d7"></span>
+
+```bash
+$ which java
+$ sudo apt update
+$ sudo apt install default-jre
+$ sudo apt install default-jdk
+```
+
+<p id="efab7e1c-d587-402c-b974-398b1e336526"><strong>B&#46; 빌드</strong></p>
+
+<span id="bcf2c872-c20a-4e8b-b0a9-d9213d68ecdc"></span>
+
+```bash
+$ git clone [저장소]
+$ cd [저장소]
+$ ./gradlew clean build
+
+# jar파일을 찾아본다.
+$ find ./* -name "*jar"
+
+# 프로세스를 정기 스케줄에 등록하고 관리할 수 있습니다.
+# crontab -l : list crontab 
+# crontab -e : edit crontab
+# vi /etc/crontab : 특정 사용자 권한으로 실행이 가능
+```
+
+<p id="f1d4f9e5-d93a-4245-b20e-3f9e54138d0d"><strong>C&#46; 실행</strong></p>
+
+<span id="69376f8b-d35d-47e7-9881-73544421604d"></span>
+
+```bash
+$ java -jar [jar파일명] & 
+  
+# Application을 실행 후 정상적으로 동작하는지 확인해봅니다.
+# 브라우저에서도 http://{서버 ip}:{port}로 접근해보세요.
+$ curl http://localhost:8080
+```
+
+<ul>
+
+<li id="56a64e20-b200-439c-98a7-02f0cfb55319">
+
+<p>-<strong>Dserver&#46;port=8000</strong> 옵션을 활용하여 port를 변경할 수 있어요&#46;</p>
+
+</li>
+
+<li id="6ffb4cda-b904-4750-9d47-ef32e3887908">
+
+<p>서버를 시작 시간이 너무 오래 걸리는 경우 -<strong>Djava&#46;security&#46;egd</strong> 옵션을 적용해보세요&#46;</p>
+
+<span id="6cf82772-a4ef-4b51-b122-246a7add2c68"></span>
+
+```bash
+$ java -Djava.security.egd=file:/dev/./urandom -jar [jar파일명] &
+```
+
+<ul>
+
+<li id="6af115d5-f893-469a-9a1e-5d05a645a536">
+
+<p><span className="notion-color-blue"><a href="https://lng1982.tistory.com/261">tomcat 구동 시 /dev/random 블로킹 이슈</a></span></p>
+
+</li>
+
+</ul>
+
+</li>
+
+<li id="e74ba729-392d-48c9-875a-c2f2c8fc2871">
+
+<p>터미널 세션이 끊어질 경우, background로 돌던 프로세스에 hang-up signal이 발생해 죽는 경우가 있는데요&#46; 이 경우 <span className="notion-color-blue"><a href="https://youngclown.github.io/2018/10/noup"><code><strong>nohup</strong></code></a></span>명령어를 활용합니다&#46;</p>
+
+<span id="33cd38f0-b1f5-4f91-a44c-b448ee7e060b"></span>
+
+```bash
+$  nohup java -jar [jar파일명] 1> [로그파일명] 2>&1  &
+```
+
+</li>
+
+</ul>
+
+<p id="79643ed2-5027-4e89-b2ac-5a19db48c2da"><strong>D&#46; 로그 확인</strong></p>
+
+<span id="faaaf78f-976a-470e-a13c-f67740e584f4"></span>
+
+```bash
+# java applicaion이 남기는 로그를 확인합니다.
+$ tail -f [로그파일명]
+$ tail -f /var/log/syslog
+
+# 파일을 압축하고 파일 소유자와 모드를 변경해봅니다.
+$ tar -cvf [파일명] [압축할파일 또는 디렉터리]
+$ sudo chown [소유자계정명]:[소유그룹명] [file이름] 
+$ chmod [옵션] [파일명]
+
+> https://ko.wikipedia.org/wiki/Chmod
+```
+
+<p id="fc0beb61-c7ab-437d-9013-b12733ee45ff"><strong>E&#46; 종료</strong></p>
+
+<span id="e8c645e9-4d3d-4c23-ab45-166c8aac9949"></span>
+
+```bash
+# 프로세스 pid를 찾아봅니다.
+$ ps -ef | grep java
+$ pgrep -f java
+
+# 프로세스를 종료합니다. 
+## why not use SIGKILL
+## https://stackoverflow.com/questions/2541475/capture-sigint-in-java
+$ kill -2 [PID]
+```
+
+<p id="b4f46028-70c6-4454-a102-8544eb631398"><strong>F&#46; 명령어 이력 확인</strong></p>
+
+<span id="ee359feb-1e0b-4a7f-982f-b54d1aa4909b"></span>
+
+```bash
+$ history
+```
+
+<hr id="776c02ea-a2b9-450d-980d-85149f68ee2e" />
+
+<span id="55831b10-fc15-453b-a9bc-b071aeb67db3"></span>
+
+## 4&#46; 문제 상황 진단시 자주 사용하는 명령어
+
+<span id="ea2cb27b-88fb-47ab-bbdc-27758ab8b43f"></span>
+
+```bash
+# 리눅스 방화벽 정책 확인
+$ iptables -nL
+$ sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+## 리눅스 방화벽 정책 삭제 
+$ sudo iptables -t nat -L --line-numbers
+$ sudo iptables -t nat -D PREROUTING [라인 넘버]
+
+# Ping 테스트
+$ ping -c 5 -s 128 www.google.com  (c : 패킷 수, s : 패킷 사이즈)
+$ traceroute google.com
+
+# curl 테스트
+$ curl -I google.com
+
+# tcp dump 확인
+$ tcpdump host 192.168.0.207
+$ tcpdump port 80
+$ tcpdump net 192.168
+
+# 서버 리소스 및 프로세스 상태 확인
+$ top
+
+# 포트 상태 확인
+$ netstat -antp | grep 8080
+
+# 프로세스 확인
+$ ps -auxfg
+$ ps -ef 
+# 메모리 사용량순 프로세스 보기
+$ ps -eo user,pid,ppid,rss,size,vsize,pmem,pcpu,time,cmd --sort -rss | head -n 11
+
+# 라우팅 테이블 확인
+$ ip route
+
+# DNS 정보 확인
+$ nslookup brainbackdoor.com
+
+# 포트 상태 확인
+$ telnet brainbackdoor.com 443
+
+# 부하 상태 및 서버장비 uptime 시간 확인
+$ uptime
+
+# 메모리 상태 확인
+$ free -m
+```
+
+<hr id="ec2df6b9-15d8-41dc-9a5c-2502928e8aaa" />
+
+<span id="c985dfa9-dc5c-41fa-91ab-5093230e9edd"></span>
+
+## 5&#46; 리눅스 서버 상태 1분안에 파악하기
+
+<figure id="7b793821-364d-4e4c-b99d-c372263dabbf" className="notion-figure">
+
+<img src="/content/b47f2941-5949-4368-890b-ca7825b419b9/7b793821-364d-4e4c-b99d-c372263dabbf.webp" alt="" loading="lazy" width="1634" height="718" />
+
+</figure>
+
+<p id="686d5b3a-3df9-4dd9-ba7a-e46285c7c117">주로 <span className="notion-color-orange_background"><strong>CPU utilization, Available memory, RX / TX 패킷량, Disk 사용률, IOPS 등을 확인</strong></span>합니다&#46;</p>
+
+<p id="8080982e-cd94-4df2-9509-84e63b2b1d08">0&#46;  서버 상태를 파악하는데 필요한 도구를 설치해봅니다&#46;</p>
+
+<span id="a662806c-6a3d-4de0-9aaa-60c37af3c9f0"></span>
+
+```bash
+https://b.luavis.kr/server/linux-performance-analysis
+$ sudo apt install sysstat
+```
+
+<ol>
+
+<li id="a39b70e6-88c6-4412-8d5a-b8b909e16752">
+
+<p>우선, <span className="notion-color-blue"><strong><a href="https://brainbackdoor.tistory.com/117">Load average</a></strong></span>를 확인합니다&#46; 부하가 클 경우, 영향을 주는 프로세스를 확인합니다&#46;</p>
+
+</li>
+
+</ol>
+
+<ol>
+
+<li id="61212adb-5df7-46b8-873e-7d2027721fdd">
+
+<p>oom-killer 등 시스템 메시지가 발생한다면 dmesg 혹은 /var/log/syslog를 통해 확인할 수 있어요</p>
+
+</li>
+
+</ol>
+
+<ol>
+
+<li id="a1e41a8a-9168-4d92-a257-f276c94b7109">
+
+<p>vmstat를 통해 OS 커널에서 취득할 수 있는 정보를 확인해봅니다&#46;</p>
+
+<span id="39a03ee9-5b42-44fe-9f62-3a8628568e68"></span>
+
+```bash
+$ vmstat 5 5
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 0  0      0 20774188 124872 10659336    0    0     0     9    3    3  0  0 100  0  0
+ 0  0      0 20771628 124872 10659576    0    0     0     0 1143 1041  0  0 99  0  0
+
+```
+
+<ul>
+
+<li id="cd3259c6-2397-4823-93a4-083aaf8526ca">
+
+<p>si, so &#58; swap-in과 swap-out에 대한 값으로, 0이 아니라면 현재 시스템에 메모리가 부족하다는 의미입니다&#46;</p>
+
+</li>
+
+<li id="26bfdaac-f1a3-439d-882c-de33e74e431d">
+
+<p>us, sy, id, wa, st &#58; 각각 user time, 커널에서 사용되는 system time, idle, wait I/O 그리고 stolen time 을 의미합니다&#46; stolen time은 hypervisor가 가상 CPU를 서비스 하는 동안 실제 CPU를 차지한 시간을 의미합니다&#46;</p>
+
+</li>
+
+<li id="d2cc12f5-a555-426e-ae3d-32aba262d72e">
+
+<p>I/O 대기와 관련해서는 wa 가 아닌, b 열을 참고합니다&#46;</p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ol>
+
+<p id="9704dd76-5ca6-4745-a85c-f6c268b5aa87">6&#46;  iostat을 통해 OS 커널에서 취득한 디스크 사용률을 알 수 있어요</p>
+
+<span id="c08096a2-55df-4899-9477-49a7826050dd"></span>
+
+```bash
+$ iostat -xt
+Linux 5.4.0-1038-aws (ip-192-168-0-146.ap-northeast-2.compute.internal) 	03/19/21 	_x86_64_	(8 CPU)
+
+03/19/21 14:59:35
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           0.15    0.00    0.08    0.00    0.04   99.73
+
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz  aqu-sz  %util
+loop0            0.01      0.01     0.00   0.00    0.30     1.04    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+loop1            0.00      0.00     0.00   0.00    2.27     1.25    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+
+```
+
+<ul>
+
+<li id="63ddd7e5-6d1e-4199-b7a8-de98662db5d6">
+
+<p>r/s, w/s rkB/s, wkB/s&#58; read 요청과 write 요청, read kB/s, write kB/s를 의미합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<ol>
+
+<li id="14b15980-0579-4ce5-949f-2b715ee4e059">
+
+<p>free 명령어로 메모리 사용량을 확인할 수 있어요</p>
+
+<span id="e595bde1-304b-4e4a-b1f2-c3563b036d6c"></span>
+
+```bash
+$ free -wh
+              total        used        free      shared     buffers       cache   available
+Mem:           31Gi       1.3Gi        19Gi       0.0Ki       122Mi        10Gi        29Gi
+Swap:            0B          0B          0B
+
+```
+
+</li>
+
+</ol>
+
+<ul>
+
+<li id="3b68de6e-b8fd-4f53-af33-509f453b946a">
+
+<p>available &#58; swapping 없이 새로운 프로세스에서 할당 가능한 메모리의 예상 크기</p>
+
+</li>
+
+</ul>
+
+<p id="14d25601-263c-4428-a4a5-e0979b16e0d6">8,9&#46;  sar 명령어로 Network I/O, TCP Stats 등을 확인할 수 있어요</p>
+
+<span id="e4e7afc4-03d8-4157-a57d-c53206d8d9c9"></span>
+
+```bash
+$ sar -n DEV,TCP,ETCP 5
+Linux 5.3.0-1032-aws (ip-192-168-0-207) 	08/13/20 	_x86_64_	(2 CPU)
+
+23:17:08        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+23:17:13         eth0      0.60      0.20      0.03      0.01      0.00      0.00      0.00      0.00
+
+23:17:08     active/s passive/s    iseg/s    oseg/s
+23:17:13         0.00      0.00      0.40      0.00
+
+23:17:08     atmptf/s  estres/s retrans/s isegerr/s   orsts/s
+
+```
+
+<ul>
+
+<li id="2c3ad5cd-ea72-41b7-8c95-f06dc403b59a">
+
+<p>rxkB/s &#58; Total number of kilobytes received per second</p>
+
+</li>
+
+<li id="ae843199-2835-4633-b6c4-8ac3e7280bb8">
+
+<p>txkB/s &#58; Total number of kilobytes transmitted per second</p>
+
+</li>
+
+<li id="b0954506-d469-425b-ba6a-99c1b498a95d">
+
+<p>active/s &#58; TCP 연결이 CLOSED 상태에서 SYN-SENT 상태로 직접 전환 된 초당 횟수 즉, 서버에서 다른 외부 장비로 TCP 연결한 횟수</p>
+
+</li>
+
+<li id="14886afa-45d8-4cc2-a494-75675579d978">
+
+<p>passive/s &#58; TCP 연결이 초당 LISTEN 상태에서 SYN-RCVD 상태로 직접 전환 한 횟수 즉, 서버에 새롭게 접근한 클라이언트 수</p>
+
+</li>
+
+<li id="5253c98b-afde-4873-9de3-603d3b2fe282">
+
+<p>retrans/s &#58; 초당 재전송 된 총 세그먼트 수</p>
+
+<ul>
+
+<li id="57c58f07-6401-4f8c-8075-056b49201e69">
+
+<p>재전송은 통신 품질을 판단할 수 있는 기준입니다&#46; 네트워크 장비 불량이나 설정에 이상이 있는 경우 재전송 현상이 나타나는 경우가 많습니다&#46; 로컬 네트워크인 경우 재전송 비율은 0&#46;01% 이하로 거의 없어야 하고, 원거리 네트워크에서도 0&#46;5% 이하가 일반적입니다&#46; 재전송이 빈번히 발생한다면 네트워크 구간별 응답시간을 조사해봅니다&#46;</p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>

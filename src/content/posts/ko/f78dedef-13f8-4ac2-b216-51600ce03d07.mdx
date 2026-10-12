@@ -1,0 +1,240 @@
+---
+title: "Thread 상태 분석하기"
+description: "Tomcat이 무엇인지, WAS를 진단할 때 어떤 부분들을 확인해야 하는지 등은 강의를 통해 확인할 수 있어요."
+pubDate: "2023-11-08"
+category: "infra"
+tags: []
+sourceId: "f78dedef-13f8-4ac2-b216-51600ce03d07"
+sourceUrl: "https://www.brainbackdoor.com/f78dedef-13f8-4ac2-b216-51600ce03d07"
+dateSource: "published"
+icon: "🕵🏻‍♂️"
+---
+
+<blockquote id="c2d05fdc-9ae8-4d11-add7-6ab4efcc3004" className="notion-callout">
+
+<p>📌 Tomcat이 무엇인지, WAS를 진단할 때 어떤 부분들을 확인해야 하는지 등은 강의를 통해 확인할 수 있어요&#46;<br />이 포스팅에서는 Thread dump에 대해 이야기할게요</p>
+
+</blockquote>
+
+<span id="cca0bce2-8cfd-4167-a270-122bad68f6c9"></span>
+
+## 1&#46; Thread dump
+
+<p id="e39be2d1-bf2e-47e7-9aee-e4315653bcf3">Thread dump를 통해 Thread가 무슨 일을 하는지 알 수 있어요&#46; </p>
+
+<span id="5571a7d3-c32d-4b10-b39d-03096d73e895"></span>
+
+#### A&#46; Thread 덤프 생성
+
+<span id="922a22a7-6090-4553-8bfa-2289f33f60f5"></span>
+
+```bash
+$ ps -ef | pgrep java
+$ jstack [pid] > thread.dump
+```
+
+<span id="f031fa4c-9937-4583-85a3-8d303d88ea74"></span>
+
+#### B&#46; Thread 덤프 내용
+
+<span id="1b6dd7a9-f4f0-47c6-8ecd-39518703962c"></span>
+
+```bash
+# 생성 시간 정보
+2021-03-27 23:55:32
+
+# JVM에 대한 정보
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.251-b08 mixed mode):
+
+# DeadLock에 대한 정보
+Found one Java-level deadlock:
+=============================
+"http-nio-8080-exec-6":
+  waiting to lock monitor 0x00007faa62973608 (object 0x00000005c0c4b1e8, a java.lang.Object),
+  which is held by "http-nio-8080-exec-5"
+"http-nio-8080-exec-5":
+  waiting to lock monitor 0x00007faa60025508 (object 0x00000005c0c4b1f8, a java.lang.Object),
+  which is held by "http-nio-8080-exec-6"
+
+Java stack information for the threads listed above:
+===================================================
+"http-nio-8080-exec-6":
+	at nextstep.subway.line.ui.LineController.findLockLeft(LineController.java:78)
+	- waiting to lock <0x00000005c0c4b1e8> (a java.lang.Object)
+
+# Thread stack 정보
+"http-nio-8080-exec-6" #47 daemon prio=5 os_prio=31 tid=0x00007faa6132c000 nid=0x7f03 waiting for monitor entry [0x0000700009bce000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at nextstep.subway.line.ui.LineController.findLockLeft(LineController.java:78)
+	- waiting to lock <0x00000005c0c4b1e8> (a java.lang.Object)
+	- locked <0x00000005c0c4b1f8> (a java.lang.Object)
+```
+
+<ul>
+
+<li id="4687e495-039f-47eb-98d2-0426b81613a6">
+
+<p>Thread 이름, 식별자, 우선순위(prio), Thread가 점유하는 메모리 주소를 의미하는 Thread ID(tid), OS에서 관리하는 Thread ID (nid), Thread 상태 (NEW | RUNNABLE | BLOCKED | WAITING | TIMED&#95;WAITING | TERMINATED) 등의 정보를 확인할 수 있어요&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="6eac8027-5a5f-4513-88a3-c931ee1de9d6"></span>
+
+#### C&#46; 실습
+
+<ul>
+
+<li id="ce1a16fa-5a60-45b3-9e17-2ffb1b0935c6">
+
+<p><span className="notion-color-blue"><strong><a href="https://github.com/next-step/infra-subway-monitoring">저장소</a></strong></span>를 clone 받습니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="22c9c0e9-bb62-48fe-8d32-f6352a546184"></span>
+
+```bash
+$ cd docker && docker-compose up -d
+```
+
+<p id="9f4e0136-41e9-4d48-a267-96289b7b5072">a&#46; <strong>테스트</strong></p>
+
+<span id="4a4b6362-df6c-4b3b-920a-dc2fb2d4c63b"></span>
+
+```bash
+# 상황 1
+$ curl localhost:8080/lines
+
+# 상황 2
+$ curl localhost:8080/lines/lock-left
+$ curl localhost:8080/lines/lock-right
+
+# 상황 3
+여러 브라우저 혹은 터미널로 요청해본다.
+$ curl localhost:8080/lines/tan
+$ curl localhost:8080/lines/tan
+...
+```
+
+<p id="d1113fe3-8c35-4a44-b6c6-ab6dcc78201d">b&#46; <strong>Thread dump 로컬로 download</strong></p>
+
+<span id="d1dfe239-47cb-4385-9617-cb73e7fa98df"></span>
+
+```bash
+# 운영서버에서 Bastion으로 파일 옮기기
+$ rsync -avzh [원격대상경로] [받을경로]
+# 예)
+$ rsync -avzh ubuntu@2.2.2.2:/home/ubuntu/log/ ./log/
+
+# Bastion 서버에서 파일 다운로드
+$ scp -i [pem키] ubuntu@1.1.1.1:/home/ubuntu/log/thread.dump .
+```
+
+<span id="1220b2a8-bad4-4360-8d36-c6b2eb73bc5f"></span>
+
+## 2&#46; Arthas 활용하기
+
+<span id="893fe47c-ade8-43cf-9537-8bfe3ac689a1"></span>
+
+#### A&#46; Arthas 설치 및 실행
+
+<ul>
+
+<li id="4aed9020-4921-4de7-8f8a-8b54f4f4e7c3">
+
+<p>VisualVM을 사용해주셔도 좋습니다&#46;</p>
+
+<span id="89ea13d3-8a7b-49c9-8610-5e87036c64db"></span>
+
+```bash
+$ curl -O https://arthas.aliyun.com/arthas-boot.jar
+$ java -jar arthas-boot.jar
+```
+
+</li>
+
+</ul>
+
+<span id="09af3b41-ae8c-4c36-83dd-57986fbe60e0"></span>
+
+#### B&#46; dashboard
+
+<figure id="ed6698ac-c4d9-4f6f-8c51-54e6d1b975e0" className="notion-figure">
+
+<img src="/content/f78dedef-13f8-4ac2-b216-51600ce03d07/ed6698ac-c4d9-4f6f-8c51-54e6d1b975e0.webp" alt="" loading="lazy" width="2048" height="1126" />
+
+</figure>
+
+<ul>
+
+<li id="48ed0cdf-366a-4da2-8b19-c31f82aa2b2d">
+
+<p>쓰레드 상태, 메모리 그리고 시스템의 전반적인 상황을 확인할 수 있어요&#46;</p>
+
+</li>
+
+<li id="b5c4ad30-1928-46a4-b443-5c76aa1e8c40">
+
+<p>우선 CPU 사용량, 누적 시간이 많은 쓰레드를 확인해보세요</p>
+
+</li>
+
+<li id="f4777c0b-97e3-4375-9791-f2166fda0cf6">
+
+<p>새로운 쓰레드를 계속 생성할 경우엔 쓰레드 풀을 사용해야 합니다</p>
+
+</li>
+
+</ul>
+
+<span id="37139bd6-499a-4c0c-ac01-37de938f2954"></span>
+
+#### C&#46; thread
+
+<figure id="9d73754b-6ff7-4c68-a8cb-39630bdd2ca1" className="notion-figure">
+
+<img src="/content/f78dedef-13f8-4ac2-b216-51600ce03d07/9d73754b-6ff7-4c68-a8cb-39630bdd2ca1.webp" alt="" loading="lazy" width="2048" height="1106" />
+
+</figure>
+
+<span id="da53bf1d-460d-4c0d-b08e-46a97c05ed7a"></span>
+
+```bash
+$ thread --all
+$ thread -b
+```
+
+<ul>
+
+<li id="5f9f76e3-7af5-4990-8be4-d0b0dd714fed">
+
+<p>RUNNABLE이 높을 경우 &#58; 정상적인 상태이나, CPU 사용량이 비정상적으로 높을 경우 확인해봐야 합니다&#46;</p>
+
+</li>
+
+<li id="29d14586-24d5-410b-a6f2-81d7268eb765">
+
+<p>BLOCKED가 높을 경우 &#58; Lock 상태의 쓰레드이므로 원인을 파악해봅니다&#46;</p>
+
+</li>
+
+<li id="e6927bea-c36f-4321-9dd9-afea15a57653">
+
+<p>WAITING / TIMED&#95;WAITING &#58; 문제되지 않아요&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="0489bacb-b9a0-474a-b257-9fcc902e10b3"></span>
+
+#### D&#46; trace
+
+<figure id="82f1ab46-69d7-4757-adc8-80fe67bf84f4" className="notion-figure">
+
+<img src="/content/f78dedef-13f8-4ac2-b216-51600ce03d07/82f1ab46-69d7-4757-adc8-80fe67bf84f4.webp" alt="" loading="lazy" width="2048" height="469" />
+
+</figure>

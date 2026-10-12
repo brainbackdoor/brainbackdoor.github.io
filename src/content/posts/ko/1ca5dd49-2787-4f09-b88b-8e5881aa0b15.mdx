@@ -1,0 +1,119 @@
+---
+title: "Pinpoint 구성하기"
+description: "Collector로 사용할 EC2 생성 후, 위의 명령어로 collector, web, hbase 등을 구성합니다."
+pubDate: "2023-12-02"
+category: "guide"
+tags: []
+sourceId: "1ca5dd49-2787-4f09-b88b-8e5881aa0b15"
+sourceUrl: "https://www.brainbackdoor.com/1ca5dd49-2787-4f09-b88b-8e5881aa0b15"
+dateSource: "published"
+icon: "🚥"
+---
+
+<span id="8d250f64-7172-4574-a3ef-7e312bb595a6"></span>
+
+## 1&#46; Collector 구성하기
+
+<span id="6433233e-4710-4196-80bd-cbee5a0ac93e"></span>
+
+```bash
+git clone https://github.com/pinpoint-apm/pinpoint-docker.git
+cd pinpoint-docker
+git checkout 2.5.3
+docker-compose pull && docker-compose up -d
+```
+
+<ul>
+
+<li id="ba62b624-40c1-4335-8d89-6b9a0aa0a076">
+
+<p>Collector로 사용할 EC2 생성 후, 위의 명령어로 collector, web, hbase 등을 구성합니다&#46; </p>
+
+</li>
+
+<li id="9f4c2b5f-d9ec-431d-9f17-d1e41cd56c50">
+
+<p>web의 포트번호 default는 8080 입니다&#46;</p>
+
+</li>
+
+<li id="8a6de73d-1542-4342-962e-4cb77d970f7b">
+
+<p>docker-compose에서 pinpoint-agent, pinpoint-agent-attach-example, pinpoint-quickstart 등의 의존은 제거해도 됩니다&#46; </p>
+
+</li>
+
+</ul>
+
+<span id="3b5d7eec-e89b-4fee-8ac0-651a415cb72b"></span>
+
+## 2&#46; Agent 구성하기
+
+<figure id="333235b6-b80d-4460-b848-7a5b5881ac76" className="notion-figure">
+
+<img src="/content/1ca5dd49-2787-4f09-b88b-8e5881aa0b15/333235b6-b80d-4460-b848-7a5b5881ac76.webp" alt="" loading="lazy" width="2048" height="1044" />
+
+</figure>
+
+<span id="371be117-a1dd-4b42-b6d7-d32c919baa99"></span>
+
+```bash
+# infra-workshop/pinpoint-agent-2.5.3/pinpoint-root.config
+
+profiler.transport.grpc.collector.ip=[Collector IP]
+
+...
+
+# 부하테스트 등 환경을 고려해서 샘플링을 고려
+# eg. 1: 100%     20: 5%     50: 2%      100: 1%
+profiler.sampling.counting.sampling-rate=1
+```
+
+<span id="922830fa-fbd9-4a88-a490-30733cbfee4c"></span>
+
+```bash
+# front 모듈 구동시 아래 옵션을 추가
+-javaagent:pinpoint-agent-2.5.3/pinpoint-bootstrap-2.5.3.jar 
+-Dpinpoint.agentId=front-api 
+-Dpinpoint.applicationName=front-api
+```
+
+<span id="6059054b-6a31-414f-b516-0e3fbb1ae256"></span>
+
+## 3&#46; Pinpoint 웹 콘솔 살펴보기
+
+<span id="d6490a24-933b-4191-957a-7cd2e1a03331"></span>
+
+#### A&#46; Servermap
+
+<figure id="11614ff9-c513-422e-af9e-6cf575f5c54b" className="notion-figure">
+
+<img src="/content/1ca5dd49-2787-4f09-b88b-8e5881aa0b15/11614ff9-c513-422e-af9e-6cf575f5c54b.png" alt="" loading="lazy" width="2048" height="1151" />
+
+</figure>
+
+<p id="778784f7-782c-4705-80ae-a4d79ba9f050">서버간 관계 및 트래픽 평균 응답시간, 응답 분포 등을 확인할 수 있습니다&#46; 우측 상단의 응답시간 분포 영역을 마우스 드래그를 통해 특정 콜에 대한 추적이 가능합니다&#46;</p>
+
+<span id="da737f91-a6e1-4845-a602-50f19e6a3855"></span>
+
+#### B&#46; Callstack Trace
+
+<figure id="fb91499f-5d89-438f-bc21-8a798b41fee5" className="notion-figure">
+
+<img src="/content/1ca5dd49-2787-4f09-b88b-8e5881aa0b15/fb91499f-5d89-438f-bc21-8a798b41fee5.png" alt="mixed view" loading="lazy" width="2048" height="1228" /><figcaption>mixed view</figcaption>
+
+</figure>
+
+<p id="99f43ed6-9f80-47fe-baa7-a09330e59f4a">요청에 대한 소스레벨의 Trace View를 제공합니다&#46; SQL 쿼리, 에러 로그 및 병목지점 등을 확인할 수 있고, 이를 Call Tree, Server Map 및 Mixed View 등으로 확인해 볼 수 있습니다&#46;</p>
+
+<span id="497de884-2a37-4795-bbdd-3fc8fed520d9"></span>
+
+#### C&#46; Inspector
+
+<figure id="dbda4088-bdf4-44c8-b1b9-253f3436276e" className="notion-figure">
+
+<img src="/content/1ca5dd49-2787-4f09-b88b-8e5881aa0b15/dbda4088-bdf4-44c8-b1b9-253f3436276e.webp" alt="" loading="lazy" width="1794" height="1012" />
+
+</figure>
+
+<p id="30b7575c-9afe-48a1-8f3e-24bf4e9ab2fb">CPU, memory, tps, datasource connection count 등 agent 들의 리소스 지표를 확인할 수 있습니다&#46; </p>

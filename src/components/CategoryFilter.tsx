@@ -12,6 +12,8 @@ export interface FilterablePost {
   year: string;
   date: string;
   dateTime: string;
+  dateTitle?: string;
+  dateLabel?: string;
   minutes: number;
 }
 
@@ -62,7 +64,7 @@ export default function CategoryFilter({ posts, lang = 'ko' }: Props) {
       <section aria-label={en ? 'Posts' : '글 목록'}>
         <div className="archive-result">
           <span role="status" aria-live="polite" aria-atomic="true">{en ? `${visible.length} ${visible.length === 1 ? 'post' : 'posts'}` : `${visible.length}개의 글`}{query.trim() ? en ? ' · Search results' : ' · 검색 결과' : ''}</span>
-          <div className="archive-result-meta">{filtered && <button className="archive-reset" type="button" onClick={reset}>{en ? 'Reset' : '초기화'}</button>}<span>{en ? 'Newest first' : '최근에 쓴 글부터'}</span></div>
+          <div className="archive-result-meta">{filtered && <button className="archive-reset" type="button" onClick={reset}>{en ? 'Reset' : '초기화'}</button>}<span>{en ? 'Newest first' : '최근 날짜순'}</span></div>
         </div>
         {groups.map(({ key: year, items }) => (
           <section className="archive-year" key={year} aria-labelledby={`archive-year-${year}`}>
@@ -70,7 +72,7 @@ export default function CategoryFilter({ posts, lang = 'ko' }: Props) {
             <ul>{items.map((post) => (
               <li className="archive-post" key={post.href}>
                 <div className="archive-category">{label(post.category)}</div>
-                <div className="archive-post-heading"><h3><a href={post.href}>{post.title}</a></h3><time dateTime={post.dateTime}>{post.date}</time></div>
+                <div className="archive-post-heading"><h3><a href={post.href}>{post.title}</a></h3><time dateTime={post.dateTime} title={post.dateTitle} aria-label={post.dateLabel}>{post.date}</time></div>
                 <p>{post.description}</p>
                 <span className="archive-reading-time">{en ? `${post.minutes} min read` : `${post.minutes}분 읽기`}</span>
               </li>

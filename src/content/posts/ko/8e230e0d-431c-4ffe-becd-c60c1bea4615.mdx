@@ -1,0 +1,207 @@
+---
+title: "HTTP Cache, gzip, Servlet, Thread 등 학습 테스트"
+description: "HTTP Cache, gzip, Servlet, Thread 등의 개념을 학습 테스트를 통해 실습해봅니다."
+pubDate: "2023-11-09"
+category: "guide"
+tags: []
+sourceId: "8e230e0d-431c-4ffe-becd-c60c1bea4615"
+sourceUrl: "https://www.brainbackdoor.com/8e230e0d-431c-4ffe-becd-c60c1bea4615"
+dateSource: "published"
+icon: "🌱"
+---
+
+<blockquote id="ca2843e5-af44-4f9c-8f26-da3c4b36e563" className="notion-callout">
+
+<p>📌 HTTP Cache, gzip, Servlet, Thread 등의 개념을 학습 테스트를 통해 실습해봅니다&#46;<br />HTTP, Servlet, Thread, Tomcat 등의 이론적인 부분은 강의를 통해 확인할 수 있어요&#46;</p>
+
+</blockquote>
+
+<figure id="2f7b736b-fc62-4b90-ae8e-fe2c83e10fb9" className="notion-bookmark"><p><a href="https://github.com/brainbackdoor/study">study</a></p><dl><dt>Owner</dt><dd>https&#58;//github&#46;com/brainbackdoor</dd><dt>Updated At</dt><dd>2023-11-08 19&#58;23 UTC</dd></dl></figure>
+
+<span id="9cfe8da0-0f21-4043-a0b9-c085d33295ac"></span>
+
+## 1&#46; HTTP Cache, gzip 실습
+
+<p id="2c2c8913-8713-4e5c-9bde-fe4155c2ebab"><span className="notion-color-blue"><strong><a href="https://github.com/brainbackdoor/study/blob/main/cache/src/test/java/com/brainbackdoor/HomeControllerTest.java">HomeControllerTest</a></strong></span> 테스트 메소드를 모두 통과시켜 본다&#46;</p>
+
+<ul>
+
+<li id="f9ec139d-baf4-4061-a1e9-238144f32415">
+
+<p>미션1&#58; Cache-Control&#58; no-cache, private 설정을 해본다&#46;</p>
+
+</li>
+
+<li id="f145c91a-0f76-4a46-903d-ad574ac684ae">
+
+<p>미션2&#58; gzip 설정을 해본다&#46;</p>
+
+</li>
+
+<li id="d1d97e99-96f7-4887-9063-c5649f2eea9a">
+
+<p>미션3&#58; ETag 설정을 해본다&#46;</p>
+
+</li>
+
+<li id="958814e5-7d31-4cf3-bbc0-df88543c56a0">
+
+<p>미션4&#58; 캐시 무효화 설정을 해본다&#46;</p>
+
+</li>
+
+<li id="8f3361e7-7a13-4159-ab73-caa86bab4b41">
+
+<p>미션5&#58; Cache-Control&#58; no-store, no-cache, must-revalidate 설정을 해본다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="9d923fd9-87c8-4d13-8254-1e4a0f12b8fa" />
+
+<span id="de44a2a5-6ffa-4b6f-a141-c897163fbbd5"></span>
+
+## 2&#46; Servlet 실습
+
+<p id="099a0f64-1a57-49ec-88a3-14c4e1e61f0f"><span className="notion-color-blue"><strong><a href="https://github.com/brainbackdoor/study/blob/main/servlet/src/test/java/com/brainbackdoor/ServletTest.java">ServletTest</a></strong></span>와 <span className="notion-color-blue"><strong><a href="https://github.com/brainbackdoor/study/blob/main/servlet/src/test/java/com/brainbackdoor/FilterTest.java">FilterTest</a></strong></span> 클래스의 모든 테스트를 통과시킨다&#46;</p>
+
+<span id="12058206-3ab5-404e-999a-946f5e9c1106"></span>
+
+### A&#46; 서블릿 학습 테스트
+
+<ul>
+
+<li id="8f4ac769-6136-4fed-b302-e9961778b432">
+
+<p>SharedCounterServlet, LocalCounterServlet 클래스를 열어보고 어떤 차이점이 있는지 확인한다&#46;</p>
+
+</li>
+
+<li id="fc603eb6-2d78-472c-9eb6-11492b9afea9">
+
+<p>init, service, destroy 메서드가 각각 언제 실행되는지 콘솔 로그에서 확인한다&#46;</p>
+
+</li>
+
+<li id="5a49faea-f8ff-4f99-bc8b-5f10e07f9ad0">
+
+<p>직접 톰캣 서버를 띄워보고 싶다면 ServletApp 클래스의 main 메서드를 실행한다&#46;</p>
+
+<ul>
+
+<li id="18adf8c6-8974-4e15-9d5e-291954c8d3d0">
+
+<p>웹 브라우저에서 localhost&#58;8080/shared-counter 경로에 접근 가능한지 확인한다&#46;</p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<span id="08177c14-7cd9-430e-b763-852c9a7c5f41"></span>
+
+### B&#46; 필터 학습 테스트
+
+<ul>
+
+<li id="0c5563a7-2e71-4913-8b10-617607c9c037">
+
+<p>doFilter 메서드는 어느 시점에 실행될까? 콘솔 로그에서 확인한다&#46;</p>
+
+</li>
+
+<li id="70857147-289b-4ffd-9478-bdf372e0ebb9">
+
+<p>왜 인코딩을 따로 설정해줘야 할까?</p>
+
+<ul>
+
+<li id="df594c59-137f-4ec5-be77-6af81e9ca467">
+
+<p><span className="notion-color-blue"><strong><a href="https://docs.oracle.com/javaee/7/api/javax/servlet/ServletResponse.html">ServletResponse</a></strong></span></p>
+
+</li>
+
+<li id="6e1e4b22-2315-43d0-92dc-860b102dc2ab">
+
+<p>위 링크에서 character encoding에 대한 설명을 참고한다&#46;</p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<hr id="9e460d5b-ad49-4653-8faf-5355e997f386" />
+
+<span id="5ac5bce9-ccf5-4fa7-9fb5-197b6b8e0c9d"></span>
+
+## 3&#46; Thread 실습
+
+<p id="79a3bd03-434b-43ab-b675-f1d325faa91a"><span className="notion-color-blue"><strong><a href="https://github.com/brainbackdoor/study/blob/main/thread/src/test/java/com/brainbackdoor/ThreadTest.java">ThreadTest</a></strong></span>와 <span className="notion-color-blue"><strong><a href="https://github.com/brainbackdoor/study/blob/main/thread/src/test/java/com/brainbackdoor/ThreadPoolsTest.java">ThreadPoolsTest </a></strong></span>클래스의 모든 테스트를 통과시킨다&#46;</p>
+
+<ul>
+
+<li id="a6c918b2-c85c-4aad-92b1-1022106e98ad">
+
+<p>미션1&#58; 동기화를 이용해서 쓰레드 간섭을 해결한다&#46;</p>
+
+</li>
+
+<li id="3cec24de-aac0-4bd4-974c-ffa35d503b28">
+
+<p>미션2&#58; synchronized 예약어를 사용하지 않고 Thread safe하게 구성한다&#46;</p>
+
+</li>
+
+<li id="f2504f37-9fcc-4238-ba6e-730ad62d802e">
+
+<p>미션3&#58; newFixedThreadPool와 newCachedThreadPool의 차이를 구분하고 테스트를 통과시킨다&#46;</p>
+
+</li>
+
+</ul>
+
+<p id="98f57219-25ab-4644-bf90-c479ea976b63"><span className="notion-color-blue"><strong><a href="https://github.com/brainbackdoor/study/blob/main/thread/src/test/java/com/brainbackdoor/ThreadAppTest.java">ThreadAppTest</a></strong></span> 클래스를 활용하여 Tomcat 설정이 의미하는 바를 확인해봅니다&#46;</p>
+
+<ol>
+
+<li id="1a2f9270-8842-4181-b57d-c7b1cf219de9">
+
+<p>ThreadApp 클래스의 애플리케이션을 실행시켜 서버를 띄운다&#46;</p>
+
+</li>
+
+<li id="373a6bbd-dcb4-4b31-bec5-63bbb1e284c0">
+
+<p>ThreadAppTest를 실행시킨다&#46;</p>
+
+</li>
+
+<li id="7b835ecb-ac76-4282-b7c6-6d8133451b71">
+
+<p>ThreadAppTest가 아닌, ThreadApp의 콘솔에서 SampleController가 생성한 http call count 로그를 확인한다&#46;</p>
+
+</li>
+
+<li id="c4c34753-6700-44a0-9623-d311b7fd19be">
+
+<p>application&#46;yml에서 설정값을 변경해보면서 어떤 차이점이 있는지 분석해본다&#46;</p>
+
+</li>
+
+<li id="b08f3e2e-d5cd-4681-aacc-db300c2b3cdb">
+
+<p><span className="notion-color-blue"><strong><a href="/posts/f78dedef-13f8-4ac2-b216-51600ce03d07">Thread 분석하기</a></strong></span> 포스팅을 활용하여 Thread 상태도 확인해본다&#46;</p>
+
+</li>
+
+</ol>
+
+<hr id="2225e7dc-fa13-4265-a06c-356832de8e3c" />

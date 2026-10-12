@@ -1,0 +1,606 @@
+---
+title: "테스트 작성 기준"
+description: "이 포스팅은 컨퍼런스 신청 플랫폼 테스트 코드를 작성할 때 세웠던 기준을 다루고 있어요."
+pubDate: "2023-11-09"
+category: "retrospect"
+tags: []
+sourceId: "9178ac06-ae33-4a96-a4cd-49c96ea28351"
+sourceUrl: "https://www.brainbackdoor.com/9178ac06-ae33-4a96-a4cd-49c96ea28351"
+dateSource: "published"
+icon: "📝"
+---
+
+<blockquote id="ffb3bfd0-0c2a-45d9-b76b-f83a6d15a201" className="notion-callout">
+
+<p>📌 이 포스팅은 <span className="notion-color-blue"><strong><a href="https://github.com/brainbackdoor/infra-workshop">컨퍼런스 신청 플랫폼</a></strong></span> 테스트 코드를 작성할 때 세웠던 기준을 다루고 있어요&#46;</p>
+
+</blockquote>
+
+<figure id="9b4aaa68-872e-45ef-a101-d0c9f37a1401" className="notion-figure">
+
+<img src="/content/9178ac06-ae33-4a96-a4cd-49c96ea28351/9b4aaa68-872e-45ef-a101-d0c9f37a1401.webp" alt="" loading="lazy" width="1074" height="840" />
+
+</figure>
+
+<span id="bbe2a352-b64b-4923-b843-ce47396de56a"></span>
+
+## 1&#46; 인수테스트(Acceptance Test)
+
+<ul>
+
+<li id="1ab3bd0d-a978-4cdd-832c-57526e6c68e4">
+
+<p>사용자의 관점에서 올바르게 작동하는지 테스트하는 것으로, 인수 요건이 모두 충족되었는지 확인하는 테스트입니다&#46;</p>
+
+</li>
+
+<li id="314d4a56-73e6-4491-a9ae-4990aeda55ce">
+
+<p>여기서 이야기하는 인수테스트란 백엔드 API 전구간 테스트를 의미합니다&#46; 실제 데이터베이스에 값을 저장하고 조회하는 것까지 테스트 범위입니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="dd6feacb-55b9-4918-abfa-a4ee1d0d9a57"></span>
+
+### A&#46; 인수조건을 테스트로 옮기기
+
+<span id="cd9c2b8c-5d7a-49c5-8e40-f6577ad4c969"></span>
+
+```text
+Feature: 간략한 기능 서술
+Scenario: 시나리오(예시) 제목
+Given: 사전조건
+When: 발생해야하는 이벤트
+Then: 사후조건
+
+--
+
+And: 앞선 내용에 추가적인 내용 기술
+
+```
+
+<span id="17242d89-99f2-417e-8f9a-38b7c48a5ee6"></span>
+
+```text
+Feature: Access Token 갱신 기능
+  Scenario: Access Token 만료일을 연장한다.
+    Given 만료된 Access Token을 생성한다.
+    When Access Token의 만료일을 갱신한다.
+    Then 유효한 Access Token이 조회된다.
+
+```
+
+<ul>
+
+<li id="83766101-07ab-4445-b6a0-761410974aa0">
+
+<p>구체적인 행위를 검증하기보다는 비즈니스 규칙을 검증해야 합니다&#46;</p>
+
+</li>
+
+<li id="1dbbd496-57ec-4826-925b-ab71dd2ddd9b">
+
+<p>비즈니스 규칙이 명확히 드러나도록 테스트 시나리오를 작성하면, 구현과 관련 기술이 변경되어도 테스트 시나리오를 변경하지 않아도 됩니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="b903a707-ce09-412f-9709-c31891704f29"></span>
+
+```java
+public class BusinessAcceptanceTest extends AcceptanceTest {
+    @Test
+    @DisplayName("Access Token 만료일을 연장한다")
+    public void renew() {
+        // given
+        final var client = 토큰_생성("NEXTSTEP", LocalDateTime.now());
+
+        // when
+        final var clientName = "다른이름";
+        final var response = 토큰_갱신(
+                client.getAccessToken(),
+                clientName,
+                LocalDateTime.now().plus(12, ChronoUnit.MONTHS)
+        );
+
+        // then
+        final Boolean status = 토큰_상태_확인(client.getAccessToken());
+        assertThat(status).isTrue();
+        assertThat(response.getAccessToken()).isEqualTo(client.getAccessToken());
+        assertThat(response.getClientName()).isEqualTo(clientName);
+        assertThat(response.getExpiredAt().isAfter(client.getExpiredAt())).isTrue();
+    }
+}
+
+
+```
+
+<hr id="f170ba3c-b933-4e1c-8b08-ab59c28fa98d" />
+
+<span id="15d5038b-d09d-4f54-a1da-6ba066628388"></span>
+
+### B&#46; 인수테스트 환경
+
+<span id="80180343-b83c-42f6-a389-7ed28c8ef531"></span>
+
+#### a&#46; 인수테스트 클래스 설정
+
+<span id="3f891916-1cd0-4465-a5c8-727ed5427e58"></span>
+
+```java
+@ActiveProfiles(value = "test")
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class AcceptanceTest extends AbstractContainerBase {
+    protected AcceptanceTest() {
+
+    }
+
+    @LocalServerPort
+    private int serverPort = 0;
+
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+
+    @Autowired
+    private BusinessRepositoryImpl businessRepository;
+
+    public static BusinessDto ADMIN;
+
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = serverPort;
+        RestAssured.config = RestAssuredConfig.config()
+                .objectMapperConfig(getObjectMapperConfig());
+
+        databaseCleanup.execute();
+    }
+}
+
+```
+
+<ul>
+
+<li id="21ec120f-26d5-40c0-bef8-d8bfcdcfc9c1">
+
+<p>실제 서버가 아닌 테스트를 위한 서버를 띄우기 위한 설정으로, 실제 요청이 아닌 인수테스트의 요청을 받기 위한 구성입니다&#46;</p>
+
+</li>
+
+<li id="2d287a96-3d93-4fa9-ad37-4601035b097e">
+
+<p>&#64;SpringBootTest 를 추가하여 테스트를 위한 웹 서버를 이용합니다&#46; (모든 Bean 등록)</p>
+
+</li>
+
+</ul>
+
+<span id="3caeed85-593d-4b1b-9a25-9da2ae7a9a7b"></span>
+
+```java
+@Slf4j
+public class AbstractContainerBase {
+    private static final DockerImageName MYSQL_DOCKER_IMAGE = DockerImageName
+            .parse("mysql:5.7")
+            .asCompatibleSubstituteFor("mysql:5.7");
+
+    static final MySQLContainer<?> MYSQL_CONTAINER;
+
+    static {
+        MYSQL_CONTAINER = new MySQLContainer<>(MYSQL_DOCKER_IMAGE)
+                .withDatabaseName("nextstep")
+                .withUsername("nextstep-local")
+                .withPassword("nextstep-local")
+                .withCommand("mysqld", "--character-set-server=utf8mb4");
+
+        MYSQL_CONTAINER.start();
+        log.info("mysql container: {}", MYSQL_CONTAINER);
+    }
+
+    @DynamicPropertySource
+    static void properties(DynamicPropertyRegistry registry) {
+        if (MYSQL_CONTAINER.isRunning()) {
+            registry.add("spring.datasource.hikari.driver-class-name", MYSQL_CONTAINER::getDriverClassName);
+            registry.add("spring.datasource.hikari.jdbc-url", MYSQL_CONTAINER::getJdbcUrl);
+            registry.add("spring.datasource.hikari.username", MYSQL_CONTAINER::getUsername);
+            registry.add("spring.datasource.hikari.password", MYSQL_CONTAINER::getPassword);
+        }
+    }
+}
+
+
+```
+
+<ul>
+
+<li id="f272f18f-cbc2-47a6-b66c-c17f635d30af">
+
+<p><s>Database는 h2를 사용해도 되나, 운영과 최대한 유사한 환경 구성을 위해 TestContainer를 활용하여 MySQL 컨테이너를 활용합니다&#46;</s> (사용자의 로컬 환경에 따라 비정상 동작되는 부분이 있어 제거)</p>
+
+</li>
+
+</ul>
+
+<span id="f99c3216-5f8b-4d2b-a3e3-cc25819a2bf3"></span>
+
+```java
+@Service
+public class DatabaseCleanup implements InitializingBean {
+
+    @Autowired
+    private EntityManager entityManager;
+
+    private List<String> tableNames;
+
+    @Override
+    public void afterPropertiesSet() {
+        tableNames = entityManager.getMetamodel().getEntities().stream()
+                .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
+                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void execute() {
+        entityManager.flush();
+        entityManager.createNativeQuery("SET foreign_key_checks = 0").executeUpdate();
+
+        for (String tableName : tableNames) {
+            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+        }
+
+        entityManager.createNativeQuery("SET foreign_key_checks = 1").executeUpdate();
+    }
+}
+
+```
+
+<ul>
+
+<li id="de2efb42-2a51-49be-8309-8b44bd28c6f2">
+
+<p><span className="notion-color-blue"><strong><a href="http://agileinaflash.blogspot.com/2009/02/first.html">F&#46;I&#46;R&#46;S&#46;T 원칙</a></strong></span>를 준수하기 위해 각 테스트는 격리되어야 합니다&#46; 인수테스트 시나리오에 따라 DB의 값이 변경되면 다른 테스트에 영향을 줄 수 있습니다&#46; 이에 각 시나리오마다 모든 테이블을 TRUNCATE 합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="a3276b25-59e2-4fd7-afb0-91b96c2ea842" />
+
+<span id="6c599354-682f-4037-b237-9069580dd3d6"></span>
+
+#### b&#46; 인수테스트 객체 설정
+
+<span id="4038824d-2bd5-4df0-88fa-4dc49b60f4a7"></span>
+
+```java
+@UtilityClass
+public class RestAssuredTemplate {
+    public static RequestSpecification givenAnonymous() {
+        return RestAssured.given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .log().all();
+    }
+
+    public static Response createResourceByAdmin(
+            String url,
+            Object body
+    ) {
+        return createResourceWithToken(
+                givenAnonymous(),
+                url,
+                body,
+                ADMIN.getAccessToken()
+        ).extract().response();
+    }
+
+```
+
+<ul>
+
+<li id="cb9e154c-33cc-4a1f-87ff-a60c3170e3e2">
+
+<p>테스트를 위한 서버에 요청을 보내는 클라이언트 객체를 설정해야 합니다&#46; (MockMvc, RestAssured, WebTestClient 중 여기서는 RestAssured 를 선택)</p>
+
+</li>
+
+</ul>
+
+<span id="0d55b9e6-a28a-449d-a14c-13298aa8ad9b"></span>
+
+```java
+public class BusinessSteps {
+    public static void 토큰_만료(String accessToken) {
+        updateResourceByAdmin("/v1/auth/expire", accessToken);
+    }
+
+    public static BusinessDto 토큰_갱신(String accessToken, String clientName, LocalDateTime expiredAt) {
+        final var request = BusinessUpdateRequest.of(clientName, accessToken, expiredAt);
+
+        return updateResourceByAdmin("/v1/auth/renew", request).getBody().as(BusinessDto.class);
+    }
+
+```
+
+<ul>
+
+<li id="cd76fa38-87f3-41e3-9241-f70d044f1129">
+
+<p>테스트의 문서화 기능, 메소드 재사용 등의 목적으로 인수테스트 메소드는 한글로 표기하는 것도 좋은 대안입니다&#46;</p>
+
+</li>
+
+</ul>
+
+<hr id="4f2b7874-7025-496c-88c7-19aa93b1edde" />
+
+<span id="846f13aa-7ec1-4286-a12c-e246d217821a"></span>
+
+## 2&#46; Slice Test
+
+<span id="e1c825fe-ed96-493d-8c1d-d772458da757"></span>
+
+### A&#46; Controller Test
+
+<ul>
+
+<li id="85f5c309-c672-49b2-b095-220168855d5e">
+
+<p>Interceptor, HandlerArgumentResolver, 요청 파라미터 검증 등의 역할을 합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="67da4ff3-1d31-479c-b0a7-5d79a80afc4a"></span>
+
+```java
+@DisplayName("Access Token 생성시, ClientName이 필요하다")
+@Test
+public void clientNameValid() throws Exception {
+    postByAdmin("/v1/auth/sign-up",
+            BusinessCreateRequest.of(
+                    null,
+                    List.of(NO_AUTHORITY))
+    ).andExpect(status().is4xxClientError());
+
+    postByAdmin("/v1/auth/sign-up",
+            BusinessCreateRequest.of(
+                    "이름",
+                    List.of(NO_AUTHORITY))
+    ).andExpect(status().isOk());
+}
+
+```
+
+<span id="1ba1af6c-a28d-42e1-b5e7-4f79598836fc"></span>
+
+```java
+@ActiveProfiles("test")
+public class ControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    protected ResultActions postByAdmin(String url, Object request) throws Exception {
+        return this.mockMvc.perform(postRequest(url, request)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + admin().getAccessToken()));
+    }
+
+    protected ResultActions post(String url, Object request) throws Exception {
+        return this.mockMvc.perform(postRequest(url, request));
+    }
+
+    protected MockHttpServletRequestBuilder postRequest(String url, Object request) throws Exception {
+        return RestDocumentationRequestBuilders.post(url)
+                .content(objectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON);
+    }
+
+```
+
+<ul>
+
+<li id="ba0b863a-2b2b-4196-95e3-d566b2795cb3">
+
+<p>Controller 테스트는 MockMvc 기반으로도 작성할 수 있어요&#46; MockBean 을 주입하여 필요한 요청에 대해서만 테스트하도록 작성해봅니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="9023d2af-d871-4025-8c2a-5055a9874d52"></span>
+
+```java
+@WebMvcTest(BusinessController.class)
+class BusinessControllerTest extends ControllerTest {
+
+    @MockBean
+    private BusinessController businessController;
+
+    @MockBean
+    private BusinessRepository businessRepository;
+
+```
+
+<hr id="e12056fe-b637-4c5b-82d9-d5afdb27daca" />
+
+<span id="2a8ef34e-4f2a-4b67-8b89-c8bd8f943619"></span>
+
+### B&#46; Service Test
+
+<ul>
+
+<li id="0efcc578-0f04-4c01-8b2d-bdde6f7bfe95">
+
+<p>Service Layer는 목적에 따라 형태가 달라질 수 있습니다&#46;</p>
+
+<ul>
+
+<li id="70cf6a7e-5f56-4a66-8329-fe19a710ffb8">
+
+<p>트랜잭션 확인을 위한 테스트</p>
+
+</li>
+
+<li id="8da987a4-c043-4018-9df8-e7d0dda78381">
+
+<p>행위 검증 (BDD 패턴으로, 행위를 목킹한 후 예상한 결과가 나오는지 happy case)</p>
+
+</li>
+
+<li id="0e285cbc-00bb-409d-a7fa-82ddbb6f1718">
+
+<p>필요한 Bean 만 주입하여 테스트합니다&#46;</p>
+
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+
+<span id="70ff3d61-ddae-405d-ae58-07853dd16a22"></span>
+
+```java
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+        classes = {
+                CacheConfig.class,
+                BusinessService.class
+        })
+class BusinessServiceTest {
+
+    @Autowired
+    private BusinessService businessService;
+
+    @MockBean
+    private BusinessRepository businessRepository;
+
+
+    @DisplayName("Access Token 조회시 캐싱 적용 여부 확인")
+    @Test
+    public void cacheable() {
+        given(businessRepository.findByAccessToken(any())).willReturn(businessDto());
+
+        // when
+        IntStream.range(0, 10)
+                .forEach(i -> businessService.findByAccessToken(token));
+
+        then(businessRepository).should().findByAccessToken(token);
+    }
+
+```
+
+<hr id="4bfc472e-123f-40f2-b9c8-74f9184a43af" />
+
+<span id="288af120-95e2-431b-953a-47e529e89986"></span>
+
+### C&#46; Repository Test
+
+<ul>
+
+<li id="76acb040-f60e-46bc-b470-bbbd9febb9c4">
+
+<p>&#64;DataJpaTest 를 사용하여 Repository를 테스트합니다&#46;</p>
+
+</li>
+
+<li id="c44eeb3c-11ce-4863-b09e-cd081399dc24">
+
+<p>QueryDSL을 사용하는 경우, outter join, group by 등 검증이 필요한 경우, entity 설계 중 cascade 설정 시 전파 정도를 확인해야 하는 경우 등에 테스트를 합니다&#46;</p>
+
+</li>
+
+<li id="fb9fc5ea-2a9f-45b6-983d-f5ea2186b43c">
+
+<p>현재 h2 를 띄워 테스트를 진행합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="4e7f08fe-63c5-4076-b424-858661c20dee"></span>
+
+```java
+class BusinessRepositoryTest extends RepositoryTest {
+
+    @Autowired
+    private BusinessJpaRepository businessJpaRepository;
+
+    @Autowired
+    private BusinessAuthorityJpaRepository businessAuthorityJpaRepository;
+
+    private BusinesstRepository businessRepository;
+
+    @BeforeEach
+    void setUp() {
+        businessRepository = new BusinesstRepository(businessJpaRepository, businessAuthorityJpaRepository);
+
+        for (AuthorityCode code : AuthorityCode.values()) {
+            businessAuthorityJpaRepository.save(AuthorityCode.of(code, true));
+        }
+    }
+
+    @DisplayName("Access Token을 조회할 수 있다.")
+    @Test
+    public void authenticate() {
+        final var client = signUp();
+        final var accessToken = findBusinessDtoByAccessToken(client.getAccessToken());
+
+        assertThat(accessToken.getAccessToken()).matches(UUID_PATTERN);
+    }
+
+```
+
+<span id="fe8fdf8c-7b4b-44e1-80c5-eb8b689d59e7"></span>
+
+```java
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+public class RepositoryTest {}
+
+```
+
+<hr id="53cc82d1-db32-4bd5-a384-2241c318c938" />
+
+<span id="6afa73ba-292f-4105-913c-6c6a1db6bf86"></span>
+
+## 3&#46; 단위 테스트
+
+<ul>
+
+<li id="1237dcc8-63bc-44de-9e74-6d7a0b3cbe60">
+
+<p>도메인 모델의 비즈니스 로직을 테스트합니다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="350f0be5-4253-4a2e-8982-cf0ce868ced1"></span>
+
+```java
+class BusinessTest {
+
+    @DisplayName("Access Token을 만료시킬 수 있다.")
+    @Test
+    public void expire() {
+        final var token = Business.of("nextstep");
+        token.expire();
+
+        assertThat(token.isExpired()).isTrue();
+    }
+```

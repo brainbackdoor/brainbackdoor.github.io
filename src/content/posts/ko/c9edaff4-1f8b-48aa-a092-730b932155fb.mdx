@@ -1,0 +1,328 @@
+---
+title: "Spark는 어떤 컨셉인가?"
+description: "Spark는 데이터를 테이블 형태로 다룰 수 있도록 API를 제공한다."
+pubDate: "2021-11-18T21:14:00+00:00"
+category: "infra"
+tags: []
+sourceId: "c9edaff4-1f8b-48aa-a092-730b932155fb"
+sourceUrl: "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb"
+dateSource: "created"
+icon: "📊"
+---
+
+<span id="3b3259f1-ce7f-43fb-a28d-51cdbaea4f23"></span>
+
+## 1&#46; DataFrame
+
+<figure id="64e71090-1181-4464-80b0-9fee862e6ff1" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/64e71090-1181-4464-80b0-9fee862e6ff1.webp" alt="" loading="lazy" width="1724" height="1094" />
+
+</figure>
+
+<p id="e5ff6281-f106-4db3-b5cc-b9002c3373a2">Spark는 데이터를 테이블 형태로 다룰 수 있도록 API를 제공한다&#46; 물리적으로는 여러 머신의 메모리에 분산되어 있더라도, 사용자가 데이터를 마치 하나의 테이블처럼 다룰 수 있다&#46;</p>
+
+<span id="76c0484f-452b-47dd-a57e-e30574c7d737"></span>
+
+```kotlin
+df = spark.read.load("[파일경로]",
+                     format="csv", 
+                     sep="\t", 
+                     inferSchema="true", // * 타입 추론
+                     header="true")
+
+dfSelected = df.select(
+    col("ID").alias("id"),
+    col("Year_Birth").alias("year_birth")
+)
+
+dfSelected.printSchema()
+root
+ |-- id: integer (nullable = true)
+ |-- year_birth: integer (nullable = true)
+```
+
+<ul>
+
+<li id="4c08f87a-1051-434e-8332-e565477a5eab">
+
+<p>위의 예시에서 df, dfSelected 는 각각 다른 DataFrame으로 불변이다&#46; 이 때, 물리적으로 실제 데이터가 복사되는 것은 아니다&#46; 물리적인 데이터는 여전히 Disk에 CSV파일로 존재하고 count() 등의 RDD 액션을 수행할 때, 데이터를 메모리로 읽어 처리한다&#46;</p>
+
+</li>
+
+</ul>
+
+<figure id="4d98df0c-4158-4972-8c25-e251989431d8" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/4d98df0c-4158-4972-8c25-e251989431d8.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<span id="ab4e18f8-f64d-482b-917a-cdce51c96fc0"></span>
+
+## 2&#46; <span className="notion-color-blue"><a href="https://phoenixnap.com/kb/rdd-vs-dataframe-vs-dataset">DataFrame vs DataSet vs SQL vs RDD</a></span>
+
+<figure id="b663f399-faf5-4304-afc9-160629ba0a55" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/b663f399-faf5-4304-afc9-160629ba0a55.webp" alt="" loading="lazy" width="1662" height="742" />
+
+</figure>
+
+<ul>
+
+<li id="2e11db04-91fe-45e6-ab08-92c2ab04d721">
+
+<p>데이터를 탐색하거나, 빠르게 가공하고 싶다면 <strong>SQL API</strong>를 사용한다&#46;</p>
+
+</li>
+
+<li id="cafa446e-a2e0-42d3-9194-d7ed1c87c51b">
+
+<p><strong>DataFrame</strong>은 untyped API로, SQL과 1&#58;1로 매핑된다&#46; DataFrame은 Dataset&#91;Row&#93; 즉, Row라는 타입의 Dataset이다&#46; </p>
+
+</li>
+
+<li id="d50f0e74-6754-4f01-b09f-69c7a5dfb2d4">
+
+<p><strong>DataSet</strong>은 type-safe하며, lambda 등이 가능하다&#46; map, flatmap, filter 등 함수형 Collection API 일부를 사용할 수 있다&#46; <strong><span className="notion-color-blue">Encoder</span></strong>를 이용해 DataFrame을 Dataset&#91;T&#93;로 변경한다&#46; DataSet은 각 언어 구조에 따른 타입을 알 수 있다&#46; </p>
+
+<span id="8fc3e6e6-340a-451f-8b38-3a63293a1d06"></span>
+
+```kotlin
+case class MarketingUser(userId: Int, 
+                         yearBirth: Int)
+
+# Encoder는 Serialization / Deserialization을 한다.
+val dsMarketingUser = dfSelected.as[MarketingUser]
+
+# dfSelected
+org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] = [id: int, yearBirth: int]
+
+# dsMaretingUser
+org.apache.spark.sql.Dataset[MarketingUser] = [userId: int, yearBirth: int]
+```
+
+</li>
+
+</ul>
+
+<ul>
+
+<li id="f74b802c-af77-4d46-88b4-988cbbd6aab2">
+
+<p>고도의 최적화 등 특별한 경우가 아니라면 낮은 수준의 API인 RDD를 사용하지 않는다&#46; 일정 규모에서는 머신에 비용을 투자하는 것이 고도의 최적화를 유지보수하는 것보다 저렴하다&#46; Public Cloud 환경에선 머신이 사람보다 구하기 쉽기 때문이다&#46;</p>
+
+</li>
+
+</ul>
+
+<figure id="66bfdbcb-cd27-4700-b8fe-d4e5bf6c478e" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/66bfdbcb-cd27-4700-b8fe-d4e5bf6c478e.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<span id="7042648e-5c06-40c2-9eb5-10d298123949"></span>
+
+## 3&#46; 실행계획과 최적화
+
+<figure id="0e464a38-bdd0-43dd-bad7-bef752018406" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/0e464a38-bdd0-43dd-bad7-bef752018406.webp" alt="" loading="lazy" width="1276" height="412" />
+
+</figure>
+
+<ul>
+
+<li id="020bad46-36e1-4983-809b-5d964c251b8a">
+
+<p>DataFrame, SQL, DataSet API를 이용할 경우 Catalyst Optimizer를 이용하여 최적화한 후, RDD로 코드가 생성되어 실행된다&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="26187f45-705a-4139-a33d-76934e0c71e3"></span>
+
+#### explain()
+
+<figure id="afd6a78e-6c41-4085-8831-8521a14c2ba0" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/afd6a78e-6c41-4085-8831-8521a14c2ba0.webp" alt="" loading="lazy" width="750" height="252" />
+
+</figure>
+
+<span id="006ba6b8-8c78-4194-848d-83a0107aac77"></span>
+
+```bash
+
+# xx.select("education").limit(5).explain("extended")
+
+...
+== Analyzed Logical Plan ==
+education: string
+GlobalLimit 5
++- LocalLimit 5
+   +- Project [education#238]
+      +- Project [id#236, year_birth#237, education#238, count_kid#239, count_teen#240, date_customer#241, days_last_login#242, add_months(to_date('date_customer, Some(d-M-yyyy)), 72) AS date_joined#257]
+         +- Project [ID#16 AS id#236, Year_Birth#17 AS year_birth#237, Education#18 AS education#238, Kidhome#21 AS count_kid#239, Teenhome#22 AS count_teen#240, Dt_Customer#23 AS date_customer#241, Recency#24 AS days_last_login#242]
+            +- Relation[ID#16,Year_Birth#17,Education#18,Marital_Status#19,Income#20,Kidhome#21,Teenhome#22,Dt_Customer#23,Recency#24,MntWines#25,MntFruits#26,MntMeatProducts#27,MntFishProducts#28,MntSweetProducts#29,MntGoldProds#30,NumDealsPurchases#31,NumWebPurchases#32,NumCatalogPurchases#33,NumStorePurchases#34,NumWebVisitsMonth#35,AcceptedCmp3#36,AcceptedCmp4#37,AcceptedCmp5#38,AcceptedCmp1#39,... 5 more fields] csv
+
+== Optimized Logical Plan ==
+GlobalLimit 5
++- LocalLimit 5
+   +- Project [Education#18 AS education#238]
+      +- Relation[ID#16,Year_Birth#17,Education#18,Marital_Status#19,Income#20,Kidhome#21,Teenhome#22,Dt_Customer#23,Recency#24,MntWines#25,MntFruits#26,MntMeatProducts#27,MntFishProducts#28,MntSweetProducts#29,MntGoldProds#30,NumDealsPurchases#31,NumWebPurchases#32,NumCatalogPurchases#33,NumStorePurchases#34,NumWebVisitsMonth#35,AcceptedCmp3#36,AcceptedCmp4#37,AcceptedCmp5#38,AcceptedCmp1#39,... 5 more fields] csv
+
+== Physical Plan ==
+```
+
+<ul>
+
+<li id="9715a697-ca9e-4c43-80ff-70ee0bc6a092">
+
+<p>explain() 함수를 통해 Spark DataFrame의 실행 계획을 볼 수 있다&#46; 실행 계획으로 확인해보면, Analyzed Logical Plan 과 Optimized Logical Plan 이 조금 다른것을 볼 수 있다&#46; 가령 위의 예시에선 select() 를 여러 컬럼에 대해 수행했으나, 최적화 시점에서 education 컬럼만 Projection 하였다&#46;</p>
+
+</li>
+
+<li id="8439921f-0830-4d61-bb82-0b89a26c66b2">
+
+<p>Spark 3 에서는 explain() 함수가 "simple", "extended", "codegen", "cost", "formatted" 등 다양한 기능을 지원한다&#46; </p>
+
+</li>
+
+<li id="49849a18-c293-423c-99d1-9ea6bce73b29">
+
+<p>다만, 병목 등의 상황은 <strong>Spark UI</strong>를 활용하여 파악하는 것이 용이하다&#46;</p>
+
+</li>
+
+</ul>
+
+<figure id="53246134-9042-4fa5-9aca-0f35c6fbd5aa" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/53246134-9042-4fa5-9aca-0f35c6fbd5aa.webp" alt="" loading="lazy" width="1450" height="566" />
+
+</figure>
+
+<ul>
+
+<li id="fb506d7d-94f5-4ac8-8636-657e694fa695">
+
+<p>데이터 전체를 가져온 '후' 필터링하는 것이 아니라, <strong>저장소에서 데이터를 필터링 '</strong><span className="notion-color-red"><strong>된</strong></span><strong>' 결과물만 가져와</strong> 네트워크 및 가공 비용을 줄일 수 있다&#46; 이를 <strong>Predicate Push Down</strong> 라고 한다&#46; </p>
+
+</li>
+
+</ul>
+
+<figure id="f47d9eca-490f-48a2-a760-6e6f5a1d8324" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/f47d9eca-490f-48a2-a760-6e6f5a1d8324.webp" alt="" loading="lazy" width="2016" height="764" />
+
+</figure>
+
+<ul>
+
+<li id="6d5c8d34-b9fd-490d-868b-3f007a033634">
+
+<p>Logical Plan이 최적화 단계를 거쳐 Physical Plan이 생성되는데, 구체적으로 어떤 알고리즘을 수행해야 하는지 등의 정보를 담고 있다&#46; 가령 위의 예시에서 Logical Plan에서는 Join이라고 표시되지만 Physical Plan 에서는 Sort-merge Join을 사용한다고 표시된다&#46;</p>
+
+</li>
+
+</ul>
+
+<figure id="5cd5d268-52dd-4d88-b27a-d934af8e9705" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/5cd5d268-52dd-4d88-b27a-d934af8e9705.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<span id="2d161b30-97ee-46ca-a040-bdac74d3df08"></span>
+
+## 4&#46; Transformation과 Action
+
+<figure id="4b8dbb7f-b227-4a7f-a6ec-fc4b95093468" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/4b8dbb7f-b227-4a7f-a6ec-fc4b95093468.webp" alt="" loading="lazy" width="1360" height="624" />
+
+</figure>
+
+<p id="f35113bb-3ee0-4fd7-8ac2-02bb2af31ce2">RDD의 실제 동작은 Transformation과 Action으로 이루어져 있다&#46; filter, map 등 다양한 <strong>Tranformation</strong> 을 적용하는 것을 반복하다가 최종적으로는 count()와 같은 <strong>Action</strong> 을 호출해 결과를 만들어낸다&#46; 이 때, Action 시점까지 Transformation 요청을 미루는 것을 <strong>Lazy Evaluation</strong>이라 한다&#46;</p>
+
+<ul>
+
+<li id="30446cf9-5228-4e88-966d-48ed73a1d075">
+
+<p><a href="https://spark.apache.org/docs/latest/rdd-programming-guide.html#actions">Spark Docs - RDD Transformation</a></p>
+
+</li>
+
+<li id="7de189bc-cc18-44ec-b6dc-6b287ce8ad08">
+
+<p><a href="https://spark.apache.org/docs/latest/rdd-programming-guide.html#transformations">Spark Docs - RDD Action</a></p>
+
+</li>
+
+<li id="45d3a3d9-2876-4f83-b53a-c29ba81e1d5e">
+
+<p><a href="https://jaceklaskowski.gitbooks.io/mastering-spark-sql/content/spark-sql-Dataset-basic-actions.html">Spark Internal - Dataset Basic Actions</a></p>
+
+</li>
+
+<li id="40cf863f-9583-4f9e-9ccd-c973dcaa00f1">
+
+<p><a href="https://jaceklaskowski.gitbooks.io/mastering-spark-sql/content/spark-sql-Dataset-actions.html">Spark Internal - Dataset Actions</a></p>
+
+</li>
+
+<li id="85145773-9711-438a-93aa-9b2b7dfa1dbb">
+
+<p><a href="https://jaceklaskowski.gitbooks.io/mastering-spark-sql/content/spark-sql-Dataset-typed-transformations.html">Spark Internal - Typed Transformation</a></p>
+
+</li>
+
+<li id="46fd3b71-27eb-4754-971f-eb0e2009de33">
+
+<p><a href="https://jaceklaskowski.gitbooks.io/mastering-spark-sql/content/spark-sql-Dataset-untyped-transformations.html">Spark Internal - Untyped Transformation</a></p>
+
+</li>
+
+</ul>
+
+<span id="8683865a-280f-47f6-aa9d-0217511c56c7"></span>
+
+#### Lazy Evaluation 장점
+
+<ul>
+
+<li id="30569171-0103-478e-b620-0fe38078fcb6">
+
+<p>많은 데이터를 다룰 때, map(withColumn), filter(where)과 같은 함수를 호출할 때마다 즉시 연산된다면 데이터 로딩이 잦아져 네트워크 비용이 증가한다&#46;</p>
+
+</li>
+
+<li id="6d0ff87d-c215-4a65-b752-6e89c34ccf5f">
+
+<p>map, filter 등을 통해 최적화가 가능한 로직이 존재할 경우 지연로딩함으로써 불필요한 연산을 피할 수 있다&#46;</p>
+
+</li>
+
+</ul>
+
+<figure id="81435dbb-4941-49b6-99a0-e272e8017b02" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/81435dbb-4941-49b6-99a0-e272e8017b02.webp" alt="" loading="lazy" width="1399" height="30" />
+
+</figure>
+
+<span id="dc644db8-e86d-4030-a127-00ef59605dd6"></span>
+
+## 5&#46; Partition
+
+<figure id="b043b716-4565-4a19-baee-a25741bbb440" className="notion-figure">
+
+<img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/b043b716-4565-4a19-baee-a25741bbb440.webp" alt="" loading="lazy" width="1532" height="758" />
+
+</figure>
+
+<p id="dc1ee999-d9bc-47f8-afe6-39f77b6b27fd">데이터 시스템에서 Partition이란, 전체에서 나누어진 부분을 말한다&#46; 데이터가 수천억 건일 경우, 단일 머신에서 처리하기 어렵다&#46; 따라서 사용자는 DataFrame이라는 추상화된 API를 통해 데이터를 '하나'처럼 다루지만, Spark는 데이터를 분할해 Partition 단위로 데이터를 처리한다&#46;</p>

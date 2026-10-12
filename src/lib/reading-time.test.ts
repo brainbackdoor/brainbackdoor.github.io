@@ -62,4 +62,12 @@ describe('readingTime', () => {
     // URL까지 세면 1097자가 되어 3분으로 부푼다.
     expect(readingTime(marked)).toBe(1);
   });
+
+  it('이전한 MDX의 태그·에셋 주소·import는 빼고 본문과 캡션은 센다', () => {
+    const body = `<p id="source-block">${'가'.repeat(495)}</p>`;
+    const imported = `import Diagram from './${'module-'.repeat(200)}.tsx';`;
+    const figure = `<figure><img src="/content/${'image-'.repeat(200)}.png" alt="${'나'.repeat(600)}" /><figcaption>그림 설명</figcaption></figure>`;
+    expect(readingTime(`${imported}\n\n${body}\n${figure}\n<Diagram client:visible />`)).toBe(1);
+    expect(readingTime(`${body}\n<details><summary>참고</summary>${'다'.repeat(500)}</details>`)).toBe(2);
+  });
 });

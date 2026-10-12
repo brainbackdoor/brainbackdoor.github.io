@@ -1,11 +1,12 @@
 ---
 import { categoryLabel } from '../lib/categories';
-import { formatDate } from '../lib/date';
+import { postDate } from '../lib/date';
 import type { PostSummary } from '../lib/posts';
 
 interface Props { post: PostSummary; }
 const { post } = Astro.props;
 const en = post.lang === 'en';
+const date = postDate(post.pubDate, post.dateSource, post.lang);
 const categories = { retrospect: 'Reflections', infra: 'Infrastructure', guide: 'Guides', life: 'Life' };
 ---
 
@@ -19,7 +20,7 @@ const categories = { retrospect: 'Reflections', infra: 'Infrastructure', guide: 
   <p class="post-description">{post.description}</p>
   <div class="post-meta">
     <a class="post-author" href="/about"><img src="/me.webp" width="25" height="25" alt="" />{en ? 'Donggyu Lee' : '이동규'}</a>
-    <time datetime={post.pubDate.toISOString()}>{formatDate(post.pubDate)}</time>
+    <time datetime={date.dateTime} title={date.title} aria-label={date.ariaLabel}>{date.text}</time>
     <span>{en ? `${post.minutes} min read` : `약 ${post.minutes}분`}</span>
   </div>
   {post.tags.length > 0 && (

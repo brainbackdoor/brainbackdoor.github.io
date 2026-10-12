@@ -1,0 +1,192 @@
+---
+title: "화면 응답 개선하기 미션 가이드"
+description: "webpagetest, pagespeed 등으로 테스트하여, 인터넷 구간에서 성능에 영향을 주는 요소를 이해해봅니다."
+pubDate: "2023-10-21"
+category: "guide"
+tags: []
+sourceId: "80dbc9d7-ba32-4220-9b39-b536172264f2"
+sourceUrl: "https://www.brainbackdoor.com/80dbc9d7-ba32-4220-9b39-b536172264f2"
+dateSource: "published"
+icon: "📈"
+---
+
+<blockquote id="3935cb99-496f-4814-a27b-953afe50b005" className="notion-callout">
+
+<p>📌 webpagetest, pagespeed 등으로 테스트하여, 인터넷 구간에서 성능에 영향을 주는 요소를 이해해봅니다&#46;<br />HTTP를 활용하여 서비스의 성능을 개선해봅니다&#46;</p>
+
+</blockquote>
+
+<span id="61e22bc8-0d68-41cd-8922-ecadb1e5013d"></span>
+
+## 1&#46; 웹 성능 테스트
+
+<figure id="ca9b5445-2486-42ae-bec6-9db55564a7f9" className="notion-figure">
+
+<img src="/content/80dbc9d7-ba32-4220-9b39-b536172264f2/ca9b5445-2486-42ae-bec6-9db55564a7f9.webp" alt="" loading="lazy" width="1552" height="388" />
+
+</figure>
+
+<ul>
+
+<li id="cab04fda-fff8-4c9e-9c74-fca706883284">
+
+<p><strong><span className="notion-color-blue"><a href="https://www.webpagetest.org/">WebPageTest</a></span></strong><strong><span className="notion-color-blue">, </span></strong><strong><span className="notion-color-blue"><a href="https://developers.google.com/speed/pagespeed/insights/">PageSpeed</a></span></strong> 등에서 테스트를 진행해봅니다&#46; </p>
+
+</li>
+
+</ul>
+
+<figure id="79a78b75-ca51-4cf9-8ec0-029370b43364" className="notion-figure">
+
+<img src="/content/80dbc9d7-ba32-4220-9b39-b536172264f2/79a78b75-ca51-4cf9-8ec0-029370b43364.webp" alt="" loading="lazy" width="2048" height="1127" />
+
+</figure>
+
+<ul>
+
+<li id="6060fa63-75db-4d56-b4f9-6beace5ac457">
+
+<p>크롬 브라우저 도구를 활용하면, 퍼포먼스 탭에서 각 api별 요청 응답시간을 확인할 수 있어요&#46;</p>
+
+</li>
+
+</ul>
+
+<span id="81c11ded-9da0-4339-8d5d-030a915a1c5f"></span>
+
+## 2&#46; Reverse Proxy 개선하기
+
+<figure id="485a6b15-2857-4a31-98ab-0c24494f7c9b" className="notion-figure">
+
+<img src="/content/80dbc9d7-ba32-4220-9b39-b536172264f2/485a6b15-2857-4a31-98ab-0c24494f7c9b.webp" alt="" loading="lazy" width="618" height="720" />
+
+</figure>
+
+<ul>
+
+<li id="5a6de90f-33a5-4dc2-8865-ddfb145c2e3f">
+
+<p>gzip 압축</p>
+
+<span id="33597716-dcbe-4465-9d7c-17942d44e113"></span>
+
+```bash
+http {
+  gzip on; ## http 블록 수준에서 gzip 압축 활성화
+  gzip_comp_level 9;
+  gzip_vary on;
+  gzip_types text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype;
+}
+```
+
+</li>
+
+</ul>
+
+<ul>
+
+<li id="3f453ec9-96e1-41f6-8844-c108261f49fe">
+
+<p>cache</p>
+
+<span id="817b722b-e1b2-4c33-a51a-9c2011a836ef"></span>
+
+```bash
+http {
+  ## Proxy 캐시 파일 경로, 메모리상 점유할 크기, 캐시 유지기간, 전체 캐시의 최대 크기 등 설정
+  proxy_cache_path /tmp/nginx levels=1:2 keys_zone=mycache:10m inactive=10m max_size=200M;
+
+  ## 캐시를 구분하기 위한 Key 규칙
+  proxy_cache_key "$scheme$host$request_uri $cookie_user";
+  
+    server {
+        location ~* \.(?:css|js|gif|png|jpg|jpeg)$ {
+            proxy_pass http://app;
+      
+            ## 캐시 설정 적용 및 헤더에 추가
+            # 캐시 존을 설정 (캐시 이름)
+            proxy_cache mycache;
+            # X-Proxy-Cache 헤더에 HIT, MISS, BYPASS와 같은 캐시 적중 상태정보가 설정
+            add_header X-Proxy-Cache $upstream_cache_status;
+            # 200 302 코드는 20분간 캐싱
+            proxy_cache_valid 200 302 10m;    
+            # 만료기간을 1 달로 설정
+            expires 1M;
+            # access log 를 찍지 않는다.
+            access_log off;
+        }
+    }
+}
+```
+
+</li>
+
+</ul>
+
+<ul>
+
+<li id="3a00437b-ae4b-404e-b895-e8554e76488a">
+
+<p>TLS, HTTP/2 (HTTP2&#46;0은 SSL 계층 위에서만 동작합니다&#46;)</p>
+
+<span id="9f1a42ad-decf-4146-ad64-a69bb1abf5a0"></span>
+
+```bash
+http {
+  server {
+    listen 80;
+    return 301 https://$host$request_uri;
+  }
+  server {  
+  listen 443 ssl http2;
+    
+    ssl_certificate /etc/letsencrypt/live/[도메인주소]/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/[도메인주소]/privkey.pem;
+
+    # Disable SSL
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    # 통신과정에서 사용할 암호화 알고리즘
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+
+    # Enable HSTS
+    # client의 browser에게 http로 어떠한 것도 load 하지 말라고 규제합니다.
+    # 이를 통해 http에서 https로 redirect 되는 request를 minimize 할 수 있습니다.
+    add_header Strict-Transport-Security "max-age=31536000" always;
+    
+    # SSL sessions
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m; 
+  }
+}
+```
+
+</li>
+
+</ul>
+
+<span id="a9ad3165-d62c-49a1-b26b-52e94b698f5f"></span>
+
+## 3&#46; Tomcat 개선하기
+
+<p id="ed005b8c-cdd8-4901-b266-f937cab4f9df"><span className="notion-color-blue"><strong><a href="/posts/8e230e0d-431c-4ffe-becd-c60c1bea4615">HTTP Cache, gzip 등 학습 테스트</a></strong></span>를 통해 학습한 후, 운영 코드에 반영해보세요&#46;</p>
+
+<ul>
+
+<li id="d7c7adea-c030-42ab-ae0e-bdbdad95b248">
+
+<p>gzip 압축</p>
+
+<span id="a6a89a57-b7a5-4694-a319-a9480e99fc54"></span>
+
+```bash
+# application.properties
+server.compression.enabled: true
+server.compression.mime-types: text/html,text/plain,text/css,application/javascript,application/json
+server.compression.min-response-size: 500
+```
+
+</li>
+
+</ul>

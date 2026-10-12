@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { loadPosts } from '../lib/collection';
 import { categoryLabel } from '../lib/categories';
-import { formatDate } from '../lib/date';
+import { postDate } from '../lib/date';
 import { curricula } from '../data/curricula';
 import { missions } from '../data/infra';
 import TcpRecoveryFigure from '../components/figures/TcpRecoveryFigure';
@@ -38,7 +38,7 @@ const curriculum = curricula.find((course) => course.id === 'infra');
         <ul class="home-posts">
           {recent.map((post) => (
             <li><a class="home-entry" href={post.href}>
-              <div class="home-entry-meta">{categoryLabel(post.category)} <time datetime={post.pubDate.toISOString()}>{formatDate(post.pubDate)}</time></div>
+              <div class="home-entry-meta">{categoryLabel(post.category)} <time datetime={post.pubDate.toISOString()} title={postDate(post.pubDate, post.dateSource).title} aria-label={postDate(post.pubDate, post.dateSource).ariaLabel}>{postDate(post.pubDate, post.dateSource).text}</time></div>
               <h3>{post.title}</h3><p>{post.description}</p>
             </a></li>
           ))}

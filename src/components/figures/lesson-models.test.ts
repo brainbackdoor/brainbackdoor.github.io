@@ -1,0 +1,68 @@
+import assert from 'node:assert/strict';
+import { test } from 'vitest';
+import * as a from './lesson-models';
+// Catches vanished packets, queue overflow and different input in comparison.
+test('burst overflow conserves packets; large FIFO delays the last request',()=>{
+ assert.equal(a.queueState(3200,2).arrived,6);
+ assert.deepEqual(a.queueState(3200,2).dropped,[3,4,5,6]);
+ assert.deepEqual(a.queueState(3200,6).queued,[1,2,3,4,5,6]);
+ assert.deepEqual(a.queueState(9599,6).processed,[1,2,3,4,5]);
+ assert.deepEqual(a.queueState(9600,6).processed,[1,2,3,4,5,6]);
+ for(let t=0;t<=12600;t+=50)for(const cap of [2,6]){const s=a.queueState(t,cap);assert.ok(s.queued.length<=cap);assert.equal(s.arrived,s.queued.length+s.processed.length+s.dropped.length);}
+});
+// Catches receive-before-arrival and resume-before-window-update-arrival.
+test('zero-window sender waits for advertised space even after application reads',()=>{
+ assert.equal(a.flowState(1699).buffer,0);assert.equal(a.flowState(1700).buffer,2920);
+ assert.equal(a.flowState(4100).buffer,8760);assert.equal(a.flowState(4700).advertised,0);
+ assert.equal(a.flowState(7000).buffer,0);assert.equal(a.flowState(8199).advertised,0);
+ assert.equal(a.flowState(8199).resumed,false);assert.equal(a.flowState(8800).resumed,true);
+ for(let t=0;t<13800;t+=50){const s=a.flowState(t);assert.ok(s.buffer>=0&&s.buffer<=8760);if(t>=4700&&t<8200)assert.equal(s.advertised,0);}
+});
+// Catches caching headers before a complete body, or contacting origin on HIT.
+test('cache fills after complete response and fresh HIT does not contact origin',()=>{
+ assert.equal(a.cacheState(3799).stored,false);assert.equal(a.cacheState(3800).stored,true);
+ assert.equal(a.cacheState(6399).hit,false);assert.equal(a.cacheState(6400).hit,true);
+ assert.equal(a.cacheState(6400).originRequests,1);assert.equal(a.cacheState(6400).clientRequests,2);
+});
+// Catches a falsely released lock or misassigned original dump IDs.
+test('deadlock keeps both original lock owners while the wait cycle stays closed',()=>{
+ assert.deepEqual(a.lockState(2600).owners,{L1:'exec-5',L2:'exec-6'});
+ assert.equal(a.lockState(4599).deadlock,false);
+ assert.deepEqual(a.lockState(4600).waits,{'exec-5':'L2','exec-6':'L1'});
+ assert.equal(a.lockState(4600).deadlock,true);assert.equal(a.lockState(9000).deadlock,true);
+});
+// Catches wrong result/order or reading unrelated rows in the prefix scan.
+test('two index orders return the same two original rows through different scans',()=>{
+ assert.deepEqual(a.indexState(7500,'employee').matches,['2021-01-13','2021-10-04']);
+ assert.deepEqual(a.indexState(7500,'time').matches,['2021-01-13','2021-10-04']);
+ assert.equal(a.indexState(7500,'employee').read,2);assert.equal(a.indexState(7500,'time').read,5);
+});
+// Catches a transformation being presented as executed before an action.
+test('RDD transformations stay unevaluated until action then yield count three',()=>{
+ assert.equal(a.sparkState(4199).executed,false);assert.equal(a.sparkState(4199).result,null);
+ assert.equal(a.sparkState(4200).executed,true);assert.equal(a.sparkState(8399).result,null);
+ assert.equal(a.sparkState(8400).result,3);
+ assert.deepEqual(a.sparkState(8400).filtered,[[],[8,10,12]]);
+});
+
+
+// Catches packet label colors that become unreadable on the white plot.
+import { lessonRenderers } from './lessonCanvas';
+function luminance(hex: string) {
+ if(hex.length===4)hex='#'+hex.slice(1).split('').map(c=>c+c).join('');
+ const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);
+ return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];
+}
+test('small drawing labels maintain readable contrast throughout each scenario',()=>{
+ for(const draw of Object.values(lessonRenderers))for(const time of [0,1700,3500,4700,6500,9400]) {
+  const rectangles: Extract<ReturnType<typeof draw>['ops'][number],{type:'rect'}>[]=[];
+  for(const op of draw(235,time).ops) {
+   if(op.type==='rect')rectangles.push(op);
+   if(op.type==='text') {
+    const bg=rectangles.findLast(r=>op.x>=r.x&&op.x<=r.x+r.w&&op.y-2>=r.y&&op.y-2<=r.y+r.h)?.fill??'#ffffff';
+    const l1=luminance(op.color),l2=luminance(bg);
+    assert.ok((Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05)>=4.5,`Unreadable label: ${op.text} (${op.color} on ${bg})`);
+   }
+  }
+ }
+});

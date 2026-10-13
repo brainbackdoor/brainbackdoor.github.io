@@ -147,4 +147,65 @@ class ConversionTests(unittest.TestCase):
         self.assertIn('href="https://www.youtube.com/watch?v=uuP_LWnYF9A"',out)
         self.assertIn('dateSource: "created"',out)
 
+
+verify_spec = importlib.util.spec_from_file_location('verify', Path(__file__).with_name('verify.py'))
+verify = importlib.util.module_from_spec(verify_spec)
+verify_spec.loader.exec_module(verify)
+
+class FigureTests(unittest.TestCase):
+    def spec(self, mode='replace', typ='image'):
+        return {'figureId':'N01','sourceId':ROOT,'sourceBlockId':'one','sourceType':typ,'mode':mode,'requiredText':['FIFO','손실 4'],'evidenceBlockIds':['one']}
+
+    def test_reconversion_inserts_one_figure_and_preserves_original_evidence_caption_and_anchor(self):
+        c=converter({'one':{'type':'image','properties':{'source':[['https://example.com/image.png']],'caption':[['원본 캡션']]}},'two':{'type':'text','properties':{'title':[['본문 보존']]}}})
+        c.figure_specs=[self.spec()]
+        out=c.convert()
+        self.assertEqual(out.count('<LessonFigure'),1)
+        self.assertEqual(out.count('import LessonFigure'),1)
+        self.assertEqual(out.count('id="one"'),1)
+        self.assertIn('<details',out); self.assertIn('/one.png',out)
+        self.assertIn('원본 캡션',out); self.assertIn('본문 보존',out)
+        self.assertEqual(len(c.report.get('figures',[])),1)
+
+    def test_repeated_source_block_keeps_distinct_existing_anchors(self):
+        c=converter({'one':{'type':'image','properties':{'source':[['https://example.com/image.png']]}},'two':{'type':'text'}})
+        c.root['content']=['one','one'];c.figure_specs=[self.spec()]
+        out=c.convert();doc=self.document(out)
+        self.assertEqual(len(doc.ids),len(set(doc.ids)))
+        self.assertIn('one',doc.ids);self.assertIn('one-copy-2',doc.ids)
+        self.assertEqual(out.count('<LessonFigure'),2)
+
+    def test_code_can_only_receive_a_supplement_and_is_never_replaced(self):
+        blocks={'one':{'type':'code','properties':{'title':[['a  b\n  c']],'language':[['Java']]}},'two':{'type':'text'}}
+        c=converter(blocks);c.figure_specs=[self.spec('after','code')]
+        out=c.convert();self.assertIn('a  b\n  c',out);self.assertEqual(out.count('<LessonFigure'),1)
+        c=converter(blocks);c.figure_specs=[self.spec('replace','code')]
+        with self.assertRaises(ValueError):c.convert()
+
+    def document(self, content):
+        d=verify.ReadingPage();d.feed('<article class="post-content">'+content+'</article>');return d
+
+    def check(self, content, report=None, blocks=None):
+        return verify.figure_issues(report or {'sourceId':ROOT,'figures':[self.spec()]},self.document(content),blocks or {'one':{'type':'image'}},[self.spec()])
+
+    def test_registered_figure_without_actual_static_information_fails(self):
+        issues=self.check('<span id="one"></span><figure data-figure-id="N01" data-source-block-id="one">title only</figure>')
+        self.assertIn('figure-information-missing',[i['type'] for i in issues])
+
+    def test_source_anchor_missing_fails_even_with_correct_figure(self):
+        issues=self.check('<figure data-figure-id="N01" data-source-block-id="one">FIFO 손실 4</figure>')
+        self.assertIn('figure-anchor-missing',[i['type'] for i in issues])
+
+    def test_missing_figure_and_source_type_mismatch_are_not_exemptions(self):
+        self.assertIn('figure-not-rendered',[i['type'] for i in self.check('<span id="one"></span>')])
+        issues=self.check('<span id="one"></span><figure data-figure-id="N01" data-source-block-id="one">FIFO 손실 4</figure>',blocks={'one':{'type':'code'}})
+        self.assertIn('figure-source-type-mismatch',[i['type'] for i in issues])
+
+    def test_reconversion_report_cannot_silently_drop_an_approved_figure(self):
+        issues=self.check('<span id="one"></span><figure data-figure-id="N01" data-source-block-id="one">FIFO 손실 4</figure>',report={'sourceId':ROOT,'figures':[]})
+        self.assertIn('figure-not-traced',[i['type'] for i in issues])
+
+    def test_valid_static_figure_with_anchor_passes(self):
+        self.assertEqual(self.check('<span id="one"></span><figure data-figure-id="N01" data-source-block-id="one"><svg><text>FIFO</text></svg><p>손실 4</p></figure>'),[])
+
 if __name__=='__main__': unittest.main()

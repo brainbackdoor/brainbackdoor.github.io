@@ -953,6 +953,25 @@
           "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         }
       ],
+      "figures": [
+        {
+          "figureId": "N03",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "079ea1c3-ea90-44f9-af87-ccfe47f9954a",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Zero Window Probe",
+            "Window Update",
+            "8,760",
+            "2,920"
+          ],
+          "evidenceBlockIds": [
+            "079ea1c3-ea90-44f9-af87-ccfe47f9954a",
+            "b460478a-8aa1-4152-8850-4d9414defdec"
+          ]
+        }
+      ],
       "title": "TCP 오류복구",
       "pubDate": "2019-08-25",
       "pubDateEvidence": {
@@ -2553,6 +2572,23 @@
           "type": "text",
           "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
           "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "N01",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "eb937029-c447-4631-ac6c-ead0fd1d874c",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "FIFO",
+            "손실",
+            "6번"
+          ],
+          "evidenceBlockIds": [
+            "eb937029-c447-4631-ac6c-ead0fd1d874c"
+          ]
         }
       ],
       "title": "bufferbloat과 buffer overflow",
@@ -11912,6 +11948,26 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         }
       ],
+      "figures": [
+        {
+          "figureId": "S03",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "4b8dbb7f-b227-4a7f-a6ec-fc4b95093468",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Parent RDD",
+            "map(x × 2)",
+            "filter(x ≥ 8)",
+            "count()",
+            "Driver 결과",
+            "collect"
+          ],
+          "evidenceBlockIds": [
+            "4b8dbb7f-b227-4a7f-a6ec-fc4b95093468"
+          ]
+        }
+      ],
       "title": "Spark는 어떤 컨셉인가?",
       "pubDate": "2021-11-18T21:14:00+00:00",
       "pubDateEvidence": {
@@ -19166,12 +19222,29 @@
         {
           "sourceBlockId": "9a40e4d4-4752-484b-a42c-b982905f11ee",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "db4609eb-b0c4-40de-b2a9-0da9fc07a256",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "W03",
+          "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+          "sourceBlockId": "485a6b15-2857-4a31-98ab-0c24494f7c9b",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Proxy cache",
+            "X-Proxy-Cache: HIT",
+            "max-age=600"
+          ],
+          "evidenceBlockIds": [
+            "485a6b15-2857-4a31-98ab-0c24494f7c9b"
+          ]
         }
       ],
       "title": "화면 응답 개선하기 미션 가이드",
@@ -22391,12 +22464,29 @@
         {
           "sourceBlockId": "35480bde-ea1c-4341-ba5f-36d54ac20cb3",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "fb7464e2-09d2-439e-90e2-911eca29382d",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "T01",
+          "sourceId": "f78dedef-13f8-4ac2-b216-51600ce03d07",
+          "sourceBlockId": "1b6dd7a9-f4f0-47c6-8ecd-39518703962c",
+          "sourceType": "code",
+          "mode": "after",
+          "requiredText": [
+            "exec-5",
+            "exec-6",
+            "BLOCKED",
+            "0x00000005c0c4b1e8",
+            "0x00000005c0c4b1f8"
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "Thread 상태 분석하기",
@@ -23862,12 +23952,33 @@
         {
           "sourceBlockId": "dbdda8c2-a712-4b33-b69b-5f341e6dfb08",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "5fbfd910-40b4-4782-8cbd-84311ce986ee",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "D03",
+          "sourceId": "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
+          "sourceBlockId": "842a3914-5191-4916-9ab9-2502141b1dc2",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "employee_id = 2",
+            "2021-01-13",
+            "2021-10-04",
+            "2021-08-01",
+            "2021-04-05",
+            "2021-09-28",
+            "읽은 행 5"
+          ],
+          "evidenceBlockIds": [
+            "842a3914-5191-4916-9ab9-2502141b1dc2"
+          ]
         }
       ],
       "title": "조회 성능 개선하기 미션 가이드",

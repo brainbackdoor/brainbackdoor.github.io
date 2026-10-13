@@ -6,6 +6,7 @@
       "targetPath": "/posts/c6550c6d-0773-43bc-84a9-311a3de97b00",
       "checkedTextFields": 84,
       "renderedImages": 7,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "269e468b-64a0-4e1d-a54b-cc6a5128606e",
         "8d8499cc-9903-41ba-9f3b-5525dd411c78",
@@ -32,6 +33,7 @@
       "targetPath": "/posts/95400228-c9fb-4397-ac45-281f2a6c7446",
       "checkedTextFields": 17,
       "renderedImages": 5,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "9b4b4bc2-0738-4c27-8dd8-32170f24ebf6",
         "dae42312-7b2f-4f01-8934-2544d6af7152",
@@ -58,6 +60,7 @@
       "targetPath": "/posts/d6132043-4fd1-4960-974c-26946e0224ce",
       "checkedTextFields": 30,
       "renderedImages": 8,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "d916cd2b-d817-41d1-a0b5-93af30ce1b13",
         "655f0155-651f-421d-8c3f-e3fe9016d86e",
@@ -84,6 +87,7 @@
       "targetPath": "/posts/32fc3a46-6aed-4c92-9896-c40abd86ef06",
       "checkedTextFields": 13,
       "renderedImages": 6,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "a70f649e-2aae-4449-87ed-561de60089ef",
         "39d32248-294d-4cf3-b403-edee97800949",
@@ -110,6 +114,7 @@
       "targetPath": "/posts/02773af9-5c93-43b5-89b4-bbab94536195",
       "checkedTextFields": 23,
       "renderedImages": 2,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "8e0a7aa9-749a-4f2d-b445-2b9e5ffb5cd8",
         "afd80657-4da0-4067-894a-47d40a3c4fa2",
@@ -137,6 +142,7 @@
       "targetPath": "/posts/tcp-error-recovery",
       "checkedTextFields": 44,
       "renderedImages": 13,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "07c2eb4f-c67f-41e4-9fd2-a0d48d4aa8aa",
         "c02efe3d-406a-4997-8fdb-84f9bfb5aeba",
@@ -165,6 +171,7 @@
       "targetPath": "/posts/beae0ed2-e020-4681-abac-fdb9e5f12c5f",
       "checkedTextFields": 18,
       "renderedImages": 2,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "5e16b956-53a2-40c5-b968-bcf67a25d75b",
         "01988de3-57a7-4896-8653-6e8e98a928a5",
@@ -191,6 +198,7 @@
       "targetPath": "/posts/04555c7c-eb81-4283-905e-b8f9c3f8b75c",
       "checkedTextFields": 24,
       "renderedImages": 15,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "d9c7620b-7f69-4577-8ca4-eb892e422ce9",
         "7cd3cc7a-25dd-413a-aa83-a53a9592acf7",
@@ -217,6 +225,7 @@
       "targetPath": "/posts/14b691d7-7fd7-4e95-8787-49e06111755f",
       "checkedTextFields": 46,
       "renderedImages": 14,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "dc093830-f645-4642-bf85-dfcbfe7e0f64",
         "ee631289-d075-4484-b32b-c6eb7c964d16",
@@ -243,6 +252,7 @@
       "targetPath": "/posts/1c3f7881-71c5-4855-85d1-a4c7e895a66b",
       "checkedTextFields": 16,
       "renderedImages": 0,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -252,6 +262,7 @@
       "targetPath": "/posts/95248237-c6a4-4489-a51e-6c548c0c103c",
       "checkedTextFields": 14,
       "renderedImages": 0,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -261,6 +272,7 @@
       "targetPath": "/posts/5d9c4e59-60bf-41d0-9d2a-b8125636a9c3",
       "checkedTextFields": 19,
       "renderedImages": 10,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "9dde2021-6840-446d-8c02-5595812e89c6",
         "f230c590-f3ac-4a68-99ed-1dba36720dea",
@@ -287,6 +299,7 @@
       "targetPath": "/posts/8c882a84-05d4-4058-8ebb-40b5dafe433f",
       "checkedTextFields": 19,
       "renderedImages": 7,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "86e1490b-3f97-407f-8530-cf10521ba051",
         "4926d07b-1e41-4015-ab63-d1843f2d2c29",
@@ -313,6 +326,7 @@
       "targetPath": "/posts/d1b5e57f-715e-433e-a5bb-a3ca8bd1f216",
       "checkedTextFields": 120,
       "renderedImages": 16,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "e290e788-b031-48aa-a910-7d41ca9cba58",
         "4ea5758c-ca75-488b-b7ed-e538501519ef",
@@ -339,6 +353,7 @@
       "targetPath": "/posts/a1094dc5-8f5c-4725-be7c-8247fc273c44",
       "checkedTextFields": 31,
       "renderedImages": 7,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "1ddf702a-4e19-4a6d-8114-f2ba32a55ebb",
         "5aaab3fc-28e1-4c77-b0fe-474be58429f4",
@@ -365,6 +380,7 @@
       "targetPath": "/posts/0f9f8b63-17c1-4475-bfa8-75f0ef0ebcad",
       "checkedTextFields": 30,
       "renderedImages": 14,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "dbaf2e05-0874-465d-ba8c-37fad1ccce8a",
         "36ffe128-62b5-43c7-95c3-b3c7a22f69ef",
@@ -391,6 +407,7 @@
       "targetPath": "/posts/c9edaff4-1f8b-48aa-a092-730b932155fb",
       "checkedTextFields": 32,
       "renderedImages": 12,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "177e0dc0-1a78-46a4-a1d1-05b9b91e00cc"
       ],
@@ -402,6 +419,7 @@
       "targetPath": "/posts/833771f4-d722-4c80-8967-2f0024885bff",
       "checkedTextFields": 16,
       "renderedImages": 10,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "ac264110-59cb-47d5-a366-658949bf4835",
         "1f893836-041f-44bc-943e-520cb5690abf",
@@ -433,6 +451,7 @@
       "targetPath": "/posts/623ea5b7-3623-4843-9926-8b29e76b9b71",
       "checkedTextFields": 36,
       "renderedImages": 19,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "6e3cbb2e-05c4-47c5-be82-ad8f82910c4e",
         "14fd7711-dfa4-4084-aa3e-f41e8649ee39",
@@ -458,6 +477,7 @@
       "targetPath": "/posts/142925bd-2a5a-4813-8d6b-c64ffc040535",
       "checkedTextFields": 0,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -467,6 +487,7 @@
       "targetPath": "/posts/b36fad77-048a-4657-b8f9-21c73b6ff257",
       "checkedTextFields": 0,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -476,6 +497,7 @@
       "targetPath": "/posts/0a7765e4-92de-4182-bc0e-0d55dfb13ab0",
       "checkedTextFields": 10,
       "renderedImages": 7,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "e87cbf1e-5433-4a34-b33b-ee0318ebd905"
       ],
@@ -487,6 +509,7 @@
       "targetPath": "/posts/9a393b4d-ea51-45d2-8823-50eb9e522ff9",
       "checkedTextFields": 52,
       "renderedImages": 48,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "16a6557a-fa3f-44d9-a215-ef3f4831e1db"
       ],
@@ -498,6 +521,7 @@
       "targetPath": "/posts/0e0e57f6-8286-4aac-b32e-c9b28e5e6830",
       "checkedTextFields": 0,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -507,6 +531,7 @@
       "targetPath": "/posts/100baf78-adbc-4c10-8ad0-f497437a1984",
       "checkedTextFields": 0,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -516,6 +541,7 @@
       "targetPath": "/posts/c2b1634c-9248-4dc9-804e-bea085b3f4b4",
       "checkedTextFields": 0,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -525,6 +551,7 @@
       "targetPath": "/posts/d913f5b7-bfb1-4294-8ea0-59ca4d849c22",
       "checkedTextFields": 0,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -534,6 +561,7 @@
       "targetPath": "/posts/b0fcd797-d327-4708-835b-e64079b05d39",
       "checkedTextFields": 7,
       "renderedImages": 7,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -543,6 +571,7 @@
       "targetPath": "/posts/182f7833-51f6-4a0a-9332-dee1745eb629",
       "checkedTextFields": 51,
       "renderedImages": 0,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -552,6 +581,7 @@
       "targetPath": "/posts/510a4baf-f32e-4be7-94dd-b69b39b67963",
       "checkedTextFields": 0,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -561,6 +591,7 @@
       "targetPath": "/posts/456db3cc-c4e1-4028-a820-45eca7a00002",
       "checkedTextFields": 12,
       "renderedImages": 27,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "61b04c87-34dd-4dba-8aa9-b97ad05c69cc",
         "2694eaa6-88d5-4cce-83d1-b5354d8928f5",
@@ -574,6 +605,7 @@
       "targetPath": "/posts/1824fb4e-415b-4a61-8ec4-76e5102ee32f",
       "checkedTextFields": 45,
       "renderedImages": 4,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "014b204e-ecf0-4650-b4e4-8f959863274b"
       ],
@@ -585,6 +617,7 @@
       "targetPath": "/posts/0798ec80-70e7-441d-a238-2dc640122bce",
       "checkedTextFields": 66,
       "renderedImages": 6,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "48530334-4bdc-4303-8dc3-a1b790742b33"
       ],
@@ -596,6 +629,7 @@
       "targetPath": "/posts/0af0d94d-8533-4416-b444-d5850f745a91",
       "checkedTextFields": 55,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "f572fc00-ed72-4cb5-be74-1bc31131aa80"
       ],
@@ -607,6 +641,7 @@
       "targetPath": "/posts/80dbc9d7-ba32-4220-9b39-b536172264f2",
       "checkedTextFields": 15,
       "renderedImages": 3,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "9a40e4d4-4752-484b-a42c-b982905f11ee"
       ],
@@ -618,6 +653,7 @@
       "targetPath": "/posts/dfe2e77f-066e-46e9-a575-ed1e65157321",
       "checkedTextFields": 73,
       "renderedImages": 4,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "0ce5a93a-7f20-4b45-8163-2927cd88a219"
       ],
@@ -629,6 +665,7 @@
       "targetPath": "/posts/179d8510-f605-4420-9eaa-80410079e077",
       "checkedTextFields": 15,
       "renderedImages": 2,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -638,6 +675,7 @@
       "targetPath": "/posts/c9941281-9ebf-4a58-b295-3638c22117b1",
       "checkedTextFields": 10,
       "renderedImages": 0,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -647,6 +685,7 @@
       "targetPath": "/posts/6c414539-eeb5-402c-a18e-3eb02209e487",
       "checkedTextFields": 68,
       "renderedImages": 7,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "a192d76a-bb58-4789-ac02-7ccffe41c874"
       ],
@@ -658,6 +697,7 @@
       "targetPath": "/posts/9fcd92ce-d741-48a9-a0f5-4951c8400bd7",
       "checkedTextFields": 14,
       "renderedImages": 0,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "3958de12-80ca-47b4-ab28-fbc95afa56db"
       ],
@@ -669,6 +709,7 @@
       "targetPath": "/posts/b47f2941-5949-4368-890b-ca7825b419b9",
       "checkedTextFields": 51,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "40621498-0f99-4e09-bbbb-99073ea9d114"
       ],
@@ -680,6 +721,7 @@
       "targetPath": "/posts/f78dedef-13f8-4ac2-b216-51600ce03d07",
       "checkedTextFields": 29,
       "renderedImages": 3,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "35480bde-ea1c-4341-ba5f-36d54ac20cb3"
       ],
@@ -691,6 +733,7 @@
       "targetPath": "/posts/1101a2b0-66bf-4b74-a95d-c2c98492093b",
       "checkedTextFields": 16,
       "renderedImages": 0,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "e269ee70-cb46-4274-9f03-1141c39616a5"
       ],
@@ -702,6 +745,7 @@
       "targetPath": "/posts/6ad28373-149c-4d45-b835-8dfb853db638",
       "checkedTextFields": 12,
       "renderedImages": 4,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -711,6 +755,7 @@
       "targetPath": "/posts/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
       "checkedTextFields": 72,
       "renderedImages": 3,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "dbdda8c2-a712-4b33-b69b-5f341e6dfb08"
       ],
@@ -722,6 +767,7 @@
       "targetPath": "/posts/8e230e0d-431c-4ffe-becd-c60c1bea4615",
       "checkedTextFields": 31,
       "renderedImages": 0,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     },
@@ -731,6 +777,7 @@
       "targetPath": "/posts/9178ac06-ae33-4a96-a4cd-49c96ea28351",
       "checkedTextFields": 46,
       "renderedImages": 1,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "86c886d0-a724-44e2-bd6a-5ae67f5a0740"
       ],
@@ -742,6 +789,7 @@
       "targetPath": "/posts/c78ba22a-b64d-4016-9f09-c9de5f94e612",
       "checkedTextFields": 44,
       "renderedImages": 9,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "8d22849f-6dd9-4b20-9978-1ca10ad5ae20"
       ],
@@ -753,6 +801,7 @@
       "targetPath": "/posts/f67aa01c-218b-4ada-8dcd-82ab9cce4b9c",
       "checkedTextFields": 44,
       "renderedImages": 2,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "c4831278-44e9-47d1-8483-b9d2a5e09dfe"
       ],
@@ -764,6 +813,7 @@
       "targetPath": "/posts/ad9d2017-f854-4a97-bddb-6a8981dc14c1",
       "checkedTextFields": 64,
       "renderedImages": 5,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "b7b276d5-10a8-49e8-a0e2-78895de0e620"
       ],
@@ -775,6 +825,7 @@
       "targetPath": "/posts/6660b3f1-de92-4053-b3e0-08a84ea34432",
       "checkedTextFields": 51,
       "renderedImages": 6,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "10f3bd4d-fc24-436f-a6df-6b8a3fb3d586"
       ],
@@ -786,6 +837,7 @@
       "targetPath": "/posts/1ca5dd49-2787-4f09-b88b-8e5881aa0b15",
       "checkedTextFields": 16,
       "renderedImages": 4,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "cb7aa6fd-4655-48ab-9d75-ec766b36f5cd"
       ],
@@ -797,6 +849,7 @@
       "targetPath": "/posts/b065c018-114e-4897-9a53-98115cd9b382",
       "checkedTextFields": 61,
       "renderedImages": 20,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "a5aecea0-54fd-42b3-bbdd-0ded75cf970a"
       ],
@@ -808,6 +861,7 @@
       "targetPath": "/posts/ae92f407-2d97-4dbe-99b1-3b972ca8d4a7",
       "checkedTextFields": 22,
       "renderedImages": 2,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "14efe5c0-5b20-4572-a84e-83ead6435031"
       ],
@@ -819,6 +873,7 @@
       "targetPath": "/posts/11690d37-083f-80a9-b30b-c5def37b8e4f",
       "checkedTextFields": 42,
       "renderedImages": 13,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "11690d37-083f-8046-8ea4-cf72db7658c0"
       ],
@@ -830,6 +885,7 @@
       "targetPath": "/posts/2024-retrospect",
       "checkedTextFields": 20,
       "renderedImages": 4,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "16c90d37-083f-800e-869f-e4e05a599473"
       ],
@@ -841,6 +897,7 @@
       "targetPath": "/posts/1ac90d37-083f-8066-a151-e89a5a47a46b",
       "checkedTextFields": 16,
       "renderedImages": 5,
+      "renderedFigures": 0,
       "excludedBlocks": [
         "1ac90d37-083f-80d1-98eb-d65b669666a2"
       ],
@@ -852,6 +909,7 @@
       "targetPath": "/posts/springcamp-2026",
       "checkedTextFields": 44,
       "renderedImages": 6,
+      "renderedFigures": 0,
       "excludedBlocks": [],
       "issues": []
     }
@@ -950,6 +1008,7 @@
   "summary": {
     "pages": 58,
     "textFields": 1806,
+    "figures": 6,
     "pagesWithIssues": 0,
     "brokenInternalLinks": 0,
     "unavailableSourcePages": 6,

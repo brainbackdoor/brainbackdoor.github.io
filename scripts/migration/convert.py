@@ -165,6 +165,7 @@ class Converter:
         self.output_root = Path(output_root)
         self.report = {'sourceId': self.page_id, 'sourceUrl': entry.get('sourceUrl'), 'targetPath': entry.get('targetPath'), 'blocks': [], 'assets': [], 'unresolvedLinks': [], 'warnings': [], 'excluded': []}
         self.assets = {}
+        self.figure_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text())["figures"] if item["sourceId"] == self.page_id]
         self.used_ids = Counter()
         self.block_records = {}
         self.heading_min = 3
@@ -397,6 +398,29 @@ class Converter:
         return url
 
     def block(self, block_id, ancestors=()):
+        block_id = canonical_id(block_id)
+        spec = next((item for item in self.figure_specs if item['sourceBlockId'] == block_id), None)
+        if spec:
+            typ = self.blocks.get(block_id, {}).get('type')
+            if typ != spec['sourceType'] or spec['mode'] not in {'replace', 'after'} or (spec['mode'] == 'replace' and typ != 'image'):
+                raise ValueError(f'Unsafe figure replacement: {block_id}')
+        original = self.source_block(block_id, ancestors)
+        if spec:
+            if not original:
+                raise ValueError(f'Figure source was not rendered: {block_id}')
+            self.report.setdefault('figures', []).append(dict(spec))
+            component = f'<LessonFigure figureId="{spec["figureId"]}" sourceBlockId="{block_id}" client:visible />\n\n'
+            if spec['mode'] == 'after':
+                return original + component
+            source_anchor = re.match(r'<figure id="([^"]+)"', original).group(1)
+            evidence = original.replace(f' id="{source_anchor}"', '', 1)
+            return f'<div id="{source_anchor}">\n\n' + component + '<details className="figure-source">\n\n<summary>원본 도해</summary>\n\n' + evidence + '</details>\n\n</div>\n\n'
+        evidence_ids = {key for item in self.figure_specs for key in item.get('evidenceBlockIds', [])}
+        if block_id in evidence_ids and self.blocks.get(block_id, {}).get('type') == 'image':
+            return '<details className="figure-source">\n\n<summary>원본 패킷 캡처</summary>\n\n' + original + '</details>\n\n'
+        return original
+
+    def source_block(self, block_id, ancestors=()):
         block_id = canonical_id(block_id)
         if block_id in ancestors:
             self.issue('cyclic-block', block_id); return ''
@@ -667,6 +691,8 @@ class Converter:
         body=self.group(self.root.get('content',[]),(self.page_id,))
         if self.entry.get('slug')=='tcp-error-recovery':
             body='import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";\n\n<TcpRecoveryFigure client:visible />\n\n'+body
+        if self.report.get('figures'):
+            body='import LessonFigure from "../../../components/figures/LessonFigure";\n\n'+body
         front='---\n' + '\n'.join(f'{key}: {json.dumps(value,ensure_ascii=False)}' for key,value in metadata.items()) + '\n---\n\n'
         self.report['title']=title; self.report['pubDate']=date; self.report['pubDateEvidence']=self.entry.get('pubDateEvidence') or source_date(self.root)[1]
         self.report['summary']={'blockCount':len(self.report['blocks']),'typeCounts':dict(Counter(b['type'] for b in self.report['blocks'])),'assetCount':len(self.report['assets']),'failedAssets':sum(a['status']=='failed' for a in self.report['assets']),'warningCount':len(self.report['warnings']),'unresolvedLinkCount':len(self.report['unresolvedLinks'])}

@@ -10,6 +10,8 @@ dateSource: "created"
 icon: "📊"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <span id="3b3259f1-ce7f-43fb-a28d-51cdbaea4f23"></span>
 
 ## 1&#46; DataFrame
@@ -241,11 +243,23 @@ GlobalLimit 5
 
 ## 4&#46; Transformation과 Action
 
-<figure id="4b8dbb7f-b227-4a7f-a6ec-fc4b95093468" className="notion-figure">
+<div id="4b8dbb7f-b227-4a7f-a6ec-fc4b95093468">
+
+<LessonFigure figureId="S03" sourceBlockId="4b8dbb7f-b227-4a7f-a6ec-fc4b95093468" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/c9edaff4-1f8b-48aa-a092-730b932155fb/4b8dbb7f-b227-4a7f-a6ec-fc4b95093468.webp" alt="" loading="lazy" width="1360" height="624" />
 
 </figure>
+
+</details>
+
+</div>
 
 <p id="f35113bb-3ee0-4fd7-8ac2-02bb2af31ce2">RDD의 실제 동작은 Transformation과 Action으로 이루어져 있다&#46; filter, map 등 다양한 <strong>Tranformation</strong> 을 적용하는 것을 반복하다가 최종적으로는 count()와 같은 <strong>Action</strong> 을 호출해 결과를 만들어낸다&#46; 이 때, Action 시점까지 Transformation 요청을 미루는 것을 <strong>Lazy Evaluation</strong>이라 한다&#46;</p>
 

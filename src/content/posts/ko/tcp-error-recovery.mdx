@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "🌐"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <TcpRecoveryFigure client:visible />
@@ -86,11 +88,23 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 ### <strong>1) zero window 전송을 통한 데이터 흐름 중지</strong>
 
-<figure id="079ea1c3-ea90-44f9-af87-ccfe47f9954a" className="notion-figure">
+<div id="079ea1c3-ea90-44f9-af87-ccfe47f9954a">
+
+<LessonFigure figureId="N03" sourceBlockId="079ea1c3-ea90-44f9-af87-ccfe47f9954a" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/079ea1c3-ea90-44f9-af87-ccfe47f9954a.png" alt="" loading="lazy" width="1820" height="860" />
 
 </figure>
+
+</details>
+
+</div>
 
 <p id="3915897f-b4a3-420c-b6c0-f71c001e9d42">메모리 부족, 처리능력의 부족 또는 다른 문제로 인해 서버가 클라이언트로부터 보내온 데이터를 처리할 수  없는 경우 서버는 크기가 0인 window를 보낼 수 있다&#46; 클라이언트가 이 패킷을 수신하면 데이터 전송은 중지되지만, keep-alive 패킷의 전송을 통해 서버와의 연결은 유지되며, 서버 측 receive window의 상태를 점검하기 위해 일정 간격으로 패킷을  보낸다&#46;</p>
 
@@ -100,11 +114,17 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 ### <strong>2) TCP Sliding  window</strong>
 
+<details className="figure-source">
+
+<summary>원본 패킷 캡처</summary>
+
 <figure id="b460478a-8aa1-4152-8850-4d9414defdec" className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/b460478a-8aa1-4152-8850-4d9414defdec.png" alt="" loading="lazy" width="1568" height="764" />
 
 </figure>
+
+</details>
 
 <p id="bea371a8-ebaf-462d-9fd7-cfd75f049d93">위의 캡쳐를 보면 window  size가 8760 -&gt; 5840 -&gt; 2920 바이트로 감소되다 0이 된다&#46; 이 후 Window Update 패킷이 수신되면 다시 데이터를 수신할 수 있게 된다&#46;</p>
 

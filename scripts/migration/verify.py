@@ -26,6 +26,8 @@ class ReadingPage(HTMLParser):
         self.unreserved_images = []
         self.pre = []
         self.current_pre = None
+        self.figures = []
+        self.figure_stack = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -42,6 +44,10 @@ class ReadingPage(HTMLParser):
             self.depth += 1
         if tag in {'script', 'style'}:
             self.ignored += 1
+        if attrs.get('data-figure-id'):
+            record = {'figureId': attrs['data-figure-id'], 'sourceBlockId': attrs.get('data-source-block-id'), 'text': [], 'depth': self.depth}
+            self.figures.append(record)
+            self.figure_stack.append(record)
         if tag == 'pre':
             self.current_pre = []
         if tag == 'img':
@@ -57,11 +63,14 @@ class ReadingPage(HTMLParser):
             self.current_pre = None
         if tag in {'script', 'style'}:
             self.ignored = max(0, self.ignored - 1)
+        self.figure_stack = [record for record in self.figure_stack if record["depth"] != self.depth]
         self.depth -= 1
 
     def handle_data(self, text):
         if self.depth and not self.ignored:
             self.text.append(text)
+            for record in self.figure_stack:
+                record["text"].append(text)
             if self.current_pre is not None:
                 self.current_pre.append(text)
 
@@ -74,6 +83,31 @@ def normalized(text):
     return re.sub(r'\s+', '', unicodedata.normalize('NFKC', text)).replace('‣', '').replace('\u200b', '')
 
 
+def figure_issues(report, document, source_blocks, specs):
+    issues = []
+    for spec in specs:
+        if spec['sourceId'] != report.get('sourceId'):
+            continue
+        def issue(kind, **extra):
+            issues.append({'type': kind, 'figureId': spec['figureId'], 'blockId': spec['sourceBlockId'], **extra})
+        block = source_blocks.get(spec['sourceBlockId'], {})
+        if block.get('type') != spec['sourceType'] or (spec['mode'] == 'replace' and block.get('type') != 'image'):
+            issue('figure-source-type-mismatch')
+        if not any(all(item.get(key) == spec[key] for key in ['figureId', 'sourceBlockId', 'sourceType', 'mode']) for item in report.get('figures', [])):
+            issue('figure-not-traced')
+        if spec['sourceBlockId'] not in document.ids:
+            issue('figure-anchor-missing')
+        figures = [item for item in document.figures if item['figureId'] == spec['figureId'] and item['sourceBlockId'] == spec['sourceBlockId']]
+        if not figures:
+            issue('figure-not-rendered')
+        for figure in figures:
+            text = normalized(''.join(figure['text']))
+            for expected in spec['requiredText']:
+                if normalized(expected) not in text:
+                    issue('figure-information-missing', missingText=expected)
+    return issues
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--inventory', type=Path, default=ROOT / 'docs/migration-inventory.json')
@@ -82,6 +116,7 @@ def main():
     parser.add_argument('--report', type=Path, default=ROOT / 'docs/migration-verification.json')
     parser.add_argument('--only', help='Verify one source UUID while checking all built internal links')
     args = parser.parse_args()
+    figure_specs = json.loads((ROOT / 'docs/migration-figures.json').read_text())['figures']
     inventory_data = json.loads(args.inventory.read_text())
     inventory = inventory_data['pages']
     source_blocks = {}
@@ -110,6 +145,7 @@ def main():
             results.append({'sourceId': entry['sourceId'], 'title': entry['title'], 'issues': ['not-built-or-converted']})
             continue
         document = built[output]
+        issues.extend(figure_issues(report, document, source_blocks, figure_specs))
         body = normalized(''.join(document.text))
         checked = 0
         excluded = []
@@ -177,7 +213,7 @@ def main():
             issues.append({'type': 'duplicate-id', 'ids': duplicates})
         for source in document.unreserved_images:
             issues.append({'type': 'image-dimensions-missing', 'src': source})
-        results.append({'sourceId': entry['sourceId'], 'title': entry['title'], 'targetPath': entry['targetPath'], 'checkedTextFields': checked, 'renderedImages': len(document.images), 'excludedBlocks': excluded, 'issues': issues})
+        results.append({'sourceId': entry['sourceId'], 'title': entry['title'], 'targetPath': entry['targetPath'], 'checkedTextFields': checked, 'renderedImages': len(document.images), 'renderedFigures': len(document.figures), 'excludedBlocks': excluded, 'issues': issues})
     for file, document in built.items():
         for ref in document.links:
             url = urlsplit(ref)
@@ -194,7 +230,7 @@ def main():
             elif url.fragment and target in built and unquote(url.fragment) not in built[target].ids:
                 broken_links.append({'page': str(file.relative_to(args.dist)), 'href': ref, 'reason': 'missing-anchor'})
     unavailable_previews = [{'sourceId': page['sourceId'], 'blockId': asset['blockId'], 'sourceUrl': asset['sourceUrl']} for page in converted.values() for asset in page.get('assets', []) if asset.get('status') == 'failed']
-    result = {'pages': results, 'brokenInternalLinks': broken_links, 'knownSourceLimitations': {'unavailablePages': inventory_data.get('failures', []), 'unavailableAssets': unavailable_previews}, 'summary': {'pages': len(results), 'textFields': sum(p.get('checkedTextFields', 0) for p in results), 'pagesWithIssues': sum(bool(p['issues']) for p in results), 'brokenInternalLinks': len(broken_links), 'unavailableSourcePages': len(inventory_data.get('failures', [])), 'unavailableAssets': len(unavailable_previews)}}
+    result = {'pages': results, 'brokenInternalLinks': broken_links, 'knownSourceLimitations': {'unavailablePages': inventory_data.get('failures', []), 'unavailableAssets': unavailable_previews}, 'summary': {'pages': len(results), 'textFields': sum(p.get('checkedTextFields', 0) for p in results), 'figures': sum(p.get('renderedFigures', 0) for p in results), 'pagesWithIssues': sum(bool(p['issues']) for p in results), 'brokenInternalLinks': len(broken_links), 'unavailableSourcePages': len(inventory_data.get('failures', [])), 'unavailableAssets': len(unavailable_previews)}}
     args.report.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(result['summary'], ensure_ascii=False))
     return int(bool(result['summary']['pagesWithIssues'] or broken_links))

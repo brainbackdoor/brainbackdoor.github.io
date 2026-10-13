@@ -141,6 +141,10 @@ src/components/figures/
   AnimatedFigure.tsx       공통 프레임, 제목, 캡션
   useFigurePlayback.ts     시간, 가시성, reduced motion, 정리
   playback.ts              순수 시간 진행·재생 가능 여부 계산
+  LessonFigure.tsx         승인된 6종의 Canvas 준비·SVG 대체·접근성·단계 장면
+  lesson-models.ts         N01/N03/W03/T01/D03/S03의 사건·값·캡션
+  lessonCanvas.ts          주제별 좌표와 공통 그리기 명령, Canvas/SVG 공유
+  lesson-models.test.ts    사건 경계·합계·검색 결과·라벨 대비 검사
   TcpRecoveryFigure.tsx    TCP 패널 조합, SSR SVG, Canvas 준비·크기·실패 처리
   tcp.ts                   사건 시간표, 순수 상태 계산, 한국어·영어 라벨
   tcpCanvas.ts             Canvas 렌더러, CSS 토큰 읽기, 공통 TCP 좌표
@@ -465,8 +469,8 @@ reduced motion 전환, 탭 숨김 복귀, 다중 인스턴스의 독립 재생�
 - [x] 공개 58편의 본문·이미지 검토와 글별 판단 기록
 - [x] 전체 도해 제작 범위·파일 책임·묶음·검수·재수집 보존 계획 작성
 - [ ] ID별 원본 대응·상세 사건표·자료와 사실 검증 — 첫 6개 완료, 후속 67개 대기
-- [ ] 대표 6종 목업 검토와 디자인 결정 — 제작·브라우저 검수 완료, 사용자 결정 대기
-- [ ] 묶음별 구현·본문 대조·실제 브라우저 검수
+- [x] 대표 6종 목업 검토와 디자인 결정 — 사용자 승인 완료
+- [ ] 묶음별 구현·본문 대조·실제 브라우저 검수 — 첫 6종 완료, 후속 67개 대기
 - [ ] 묶음별 커밋·배포와 공개 주소 확인
 - [ ] 전체 포스팅 최종 확인과 상태 마감
 
@@ -528,3 +532,24 @@ reduced motion 전환, 탭 숨김 복귀, 다중 인스턴스의 독립 재생�
 - 브라우저 검수: 데스크톱·390px·320px에서 6종의 배치와 가로 넘침을 확인했다. 320px의 열린 정적 장면 18개에서 텍스트가 프레임을 벗어나지 않았다. 화면 밖에서 경과 시간이 정지했고 콘솔 오류·경고는 없었다. 실제 DPR 2에서 CSS 678px / Canvas 1,356px로 분리됐다.
 - 화면 기록: [데스크톱](http://127.0.0.1:4817/animation-review-desktop.png), [390px](http://127.0.0.1:4817/animation-review-mobile-390.png), [320px](http://127.0.0.1:4817/animation-review-mobile-320.png).
 - 디자인 결정은 실행 계획의 B01 상태에서 추적한다. 목업은 저장소 밖 산출물이며 B02에서 별도 TypeScript/React 구현·SSR·수명주기·원문 대조 검증이 필요하다.
+
+
+## 12. 첫 6종 본문 적용 기록
+
+2026-10-13: 사용자 승인한 시안으로 N01·N03·W03·T01·D03·S03을 해당 6편에 연결했다. Canvas/정적 SVG/단계 장면은 같은 사건·그리기 데이터를 사용한다. 공통 구조가 실제 6종에서 확인되어 `LessonFigure.tsx`, `lesson-models.ts`, `lessonCanvas.ts`로 공유하며, 다른 주제의 모델과 좌표는 독립 함수로 유지한다.
+
+N03은 흐름 제어 절의 Zero Window 캡처(`079ea1c3...`) 자리에 배치한다. 앞의 handshake/rwnd 통지 그림은 N04의 별도 정보여서 그대로 유지했다. 개념 이미지와 실제 근거 캡처는 `원본 도해` / `원본 패킷 캡처`에 접어 보존하고 파일·해시·캡션·원래 앵커 검사를 계속 수행한다. T01의 thread dump는 수정하지 않고 뒤에 도해를 추가했다. 같은 원본 블록을 반복 변환할 때도 기존 `-copy-2` 형식을 이어받는다.
+
+새 도해를 본문에 연결할 때는 다음 형식을 사용한다. 원본 이전 글은 `docs/migration-figures.json`에서 sourceId/sourceBlockId/sourceType/mode/requiredText/evidenceBlockIds를 등록하고, 변환기가 삽입과 원본 보존을 수행하도록 한다. registry 등록만으로 본문 검사를 면제하지 않는다. 실제 figure marker·핵심 SSR 텍스트·원본 타입·앵커를 함께 검사한다.
+
+```mdx
+import LessonFigure from '../../../components/figures/LessonFigure';
+
+<LessonFigure figureId="S03" sourceBlockId="4b8dbb7f-b227-4a7f-a6ec-fc4b95093468" client:visible />
+```
+
+후속 에셋은 `lessonInfo`에 ID/시간표/캡션/3단계 설명을 추가하고, 별도의 순수 상태 함수와 `lessonRenderers`의 좌표 함수를 작성한다. 상태는 사건 도착 시점에서 확정하며, Canvas와 SVG가 다른 값을 갖지 않게 한다. sourceBlockId는 원본 연결용이고 SVG/접근성 인스턴스 ID는 React useId로 따로 만든다.
+
+검수 기록: 순수 사건·SSR·기존 테스트, Python 변환/검증 테스트, 타입 검사, production 빌드, 공개 58편/1,806개 본문 항목/내부 링크/원본 해시 대조를 수행했다. 실제 390px·320px에서 Canvas 준비 후 SVG가 겹치지 않도록 CSS 중첩 문제를 수정했다. 작은 라벨은 선/점 색과 진한 글자색을 분리하고 [WCAG 최소 대비 기준](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)에 맞춰 배경별 대비를 검사한다.
+
+브라우저 검수에서 실제 DPR 2와 별도 조건을 주입한 DPR 1을 확인했다. JS를 제거한 빌드 응답, Canvas getContext 실패, reduced-motion, motion 변경, 폭 0→복원, visibility 숨김→재개, Astro unmount 조건은 저장소 밖 배포가 없는 로컬 검수 fixture로 확인했다. 숨김 중 경과 시간은 1,583ms로 유지됐고 재개 첫 프레임은 1,599ms였다. unmount 후 예약 RAF는 0개였다. 운영에는 검수 fixture를 포함하지 않는다.

@@ -44,3 +44,39 @@
 .animated-figure--preview .tcp-figure__plot,
 .animated-figure--preview .tcp-figure__plot canvas,
 .animated-figure--preview .tcp-figure__fallback { height: 246px; }
+
+/* Shared by the six approved lesson drawings; coordinates remain topic-specific. */
+.lesson-plot,.lesson-step-plot{position:relative;width:100%;height:var(--lesson-wide-height);min-width:0}
+.lesson-plot canvas,.lesson-static{position:absolute;inset:0;width:100%;height:100%}
+.lesson-plot canvas{visibility:hidden;display:block;margin:0;border:0}
+.lesson-static svg{display:block;width:100%;height:100%;max-width:100%;margin:0;border:0;font-family:inherit}
+.lesson-static--narrow{display:none}
+.lesson-plot[data-ready="true"] canvas{visibility:visible}
+.animated-figure .lesson-plot[data-ready="true"]>.lesson-static{display:none}
+.animated-figure .lesson-status{min-height:44px;margin:16px 0 0;color:var(--color-figure-muted);font-size:12px;line-height:1.8;word-break:keep-all;overflow-wrap:anywhere}
+.animated-figure .lesson-lock-ids{font-size:11px;line-height:1.9;color:var(--color-figure-muted);overflow-wrap:anywhere;margin:12px 0}
+.animated-figure .lesson-steps{margin:18px 0 0;border-top:1px solid var(--color-figure-grid);font-size:12px}
+.animated-figure .lesson-steps summary{cursor:pointer;padding:14px 0;color:var(--color-figure-muted)}
+.animated-figure .lesson-step{margin:0 0 24px;padding-top:12px}
+.animated-figure .lesson-step>p{font-size:12px;line-height:1.8;color:var(--color-figure-muted);margin:0 0 18px;overflow-wrap:anywhere}
+.figure-source{margin:16px 0 24px;border-top:1px solid var(--color-figure-grid);font-size:12px}
+.figure-source>summary{cursor:pointer;padding:12px 0;color:var(--color-figure-muted)}
+.figure-source .notion-figure{margin:10px 0 16px}
+@container(max-width:559px){
+  .lesson-plot:not(.lesson-layout--W03),.lesson-steps:not(.lesson-layout--W03) .lesson-step-plot{height:var(--lesson-narrow-height)}
+  .lesson-plot:not(.lesson-layout--W03)>.lesson-static--wide,.lesson-steps:not(.lesson-layout--W03) .lesson-static--wide{display:none}
+  .lesson-plot:not(.lesson-layout--W03)>.lesson-static--narrow,.lesson-steps:not(.lesson-layout--W03) .lesson-static--narrow{display:block}
+}
+@container(max-width:479px){
+  .lesson-layout--W03.lesson-plot,.lesson-layout--W03 .lesson-step-plot{height:var(--lesson-narrow-height)}
+  .lesson-layout--W03 .lesson-static--wide{display:none}
+  .lesson-layout--W03 .lesson-static--narrow{display:block}
+}
+@media print{
+  .lesson-plot canvas{display:none}
+  .lesson-plot[data-ready="true"] .lesson-static--wide{display:block}
+  .lesson-steps{display:none}
+  .lesson-plot{height:var(--lesson-wide-height)}
+  .lesson-plot .lesson-static--narrow{display:none!important}
+  .lesson-plot .lesson-static--wide{display:block!important}
+}

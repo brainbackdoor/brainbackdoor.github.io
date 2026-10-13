@@ -108,25 +108,23 @@ SEQ 1000부터 100바이트를 보내고 ACK 1100을 받는다. 손실 예제에
 
 ## 4. 공통 재생 동작
 
-재생 여부는 가시성·문서 숨김·사용자 정지·동작 줄이기 설정과 Canvas 준비 상태로 결정한다.
+재생 여부는 가시성·문서 숨김·동작 줄이기 설정과 Canvas 준비 상태로 결정한다.
 
 ```ts
 const shouldRun =
-  enabled && inViewport && !document.hidden && !userPaused && !reducedMotion;
+  enabled && inViewport && !document.hidden && !reducedMotion;
 ```
 
 | 상황 | 동작 |
 | --- | --- |
 | 처음 화면에 들어옴 | 동작 줄이기 미설정 시 처음부터 자동 재생 |
-| 사용자가 일시정지 | 경과 시간과 그림을 그대로 유지 |
-| 사용자가 계속 재생 | 멈춘 위치에서 이어서 진행 |
 | 화면 밖 또는 브라우저 탭 숨김 | 시간 누적과 프레임 요청 중단 |
-| 다시 보임 | 사용자가 직접 정지하지 않았을 때만 이어서 재생 |
+| 다시 보임 | 멈춘 위치에서 이어서 재생 |
 | 동작 줄이기 설정 | 움직임 없이 핵심 사건이 드러나는 완성 도해 표시 |
-| 동작 줄이기 해제 | 시간을 처음으로 되돌림. 화면에 보이고 수동 정지 상태가 아닐 때만 재생 |
+| 동작 줄이기 해제 | 시간을 처음으로 되돌림. 화면에 보이면 재생 |
 | 창 크기·배율 변경 | 같은 시점의 그림을 새 크기로 다시 그림 |
 
-기본 조작은 작은 **일시정지 / 계속 재생 버튼 하나**다. 단계 슬라이더·속도·시나리오 탭은 독자가 값을 바꾸는 것이 학습에 필요할 때만 추가한다.
+홈과 본문의 도해는 별도 조작 버튼 없이 자동 재생한다. 새 에셋에도 일시정지·계속 재생·속도 등의 조작 버튼을 기본으로 추가하지 않는다.
 
 `requestAnimationFrame`의 timestamp 차이로 경과 시간을 계산하고, 정지 시 마지막 timestamp도 비운다. 숨겨진 동안의 시간을 재개 후 한꺼번에 더하지 않는다. 공통 재생기는 250ms 이상의 프레임 간격도 건너뛰어 사건이 갑자기 넘어가는 것을 막는다. 이는 예제의 정지 정책이며, 실제 시간 기반 데이터 재생과 혼용하지 않는다.
 
@@ -138,8 +136,8 @@ const shouldRun =
 
 ```text
 src/components/figures/
-  AnimatedFigure.tsx       공통 프레임, 제목, 버튼, 캡션
-  useFigurePlayback.ts     시간, 가시성, 사용자 정지, reduced motion, 정리
+  AnimatedFigure.tsx       공통 프레임, 제목, 캡션
+  useFigurePlayback.ts     시간, 가시성, reduced motion, 정리
   playback.ts              순수 시간 진행·재생 가능 여부 계산
   TcpRecoveryFigure.tsx    TCP 패널 조합, SSR SVG, Canvas 준비·크기·실패 처리
   tcp.ts                   사건 시간표, 순수 상태 계산, 한국어·영어 라벨
@@ -174,7 +172,7 @@ import TcpRecoveryFigure from '../components/figures/TcpRecoveryFigure';
 </div>
 ```
 
-위 상대 경로는 `src/pages/index.astro` 기준이다. 정지 버튼이 있으므로 도해 전체를 링크로 감싸지 않는다. 글 제목과 “글 읽기” 링크를 별도로 둔다. 홈 플롯은 높이 246px로 시간 좌표만 조정하고 Canvas 라벨의 글자 크기는 유지한다. 자동 재생·화면 밖 정지·동작 줄이기·정적 SVG 대체는 본문과 같은 공통 재생기를 사용한다.
+위 상대 경로는 `src/pages/index.astro` 기준이다. 글 제목과 “글 읽기” 링크를 별도로 둔다. 홈 플롯은 높이 246px로 시간 좌표만 조정하고 Canvas 라벨의 글자 크기는 유지한다. 자동 재생·화면 밖 정지·동작 줄이기·정적 SVG 대체는 본문과 같은 공통 재생기를 사용한다.
 
 `client:visible`은 최초 React 로드를 지연하는 역할이며, 로드 이후 화면 밖 정지는 공통 재생기의 `IntersectionObserver`가 처리한다. 서버는 완성된 SVG 두 장과 제목·캡션·완료 설명을 먼저 출력한다. Canvas 두 개가 모두 준비되고 실제 너비가 생기면 같은 306px 공간에서 Canvas로 교체한다. JavaScript 비활성화, hydration 전, Canvas 초기화·렌더링 실패 시에는 정적 SVG를 보여준다. reduced motion에서는 완성 시점의 정적 Canvas를 표시한다.
 
@@ -190,25 +188,20 @@ const playback = useFigurePlayback({
   enabled: ready,        // 렌더러와 실제 크기가 준비됐는지 여부
   onFrame: renderFrame,  // (elapsedMs: number) => void, 에셋별 상태 계산과 그리기
 });
-// playback.userPaused / reducedMotion / running: 현재 상태
-// playback.toggle(): 사용자 정지·계속 재생
+// playback.reducedMotion / running: 현재 상태
 // playback.redraw(): 시간을 바꾸지 않고 현재 장면 다시 그리기
 ```
 
 `onFrame`은 매 프레임 호출되므로 Canvas를 그리되, React 상태는 사건 단계가 바뀔 때만 갱신한다. 크기·DPR·폰트가 바뀌면 에셋이 `redraw()`를 호출한다. 공통 재생기는 Canvas·TCP 사건을 알지 않으며, Canvas 준비와 실패 판단은 에셋 컴포넌트가 맡는다.
 
-`AnimatedFigure`에는 `containerRef`, `title`, `caption`, `lang`, `children`과 아래 재생 속성을 전달한다.
+`AnimatedFigure`에는 `containerRef`, `title`, `caption`, `children`과 아래 재생 속성을 전달한다. 언어에 따른 제목·캡션은 에셋에서 준비한다.
 
 ```tsx
 <AnimatedFigure
   containerRef={containerRef}
   title={title}
   caption={caption}
-  lang={lang}
-  showControl={ready && !playback.reducedMotion}
-  paused={playback.userPaused}
   running={playback.running}
-  toggle={playback.toggle}
 >
   {/* 에셋별 정적 대체 도해, Canvas, 짧은 설명 */}
 </AnimatedFigure>
@@ -234,7 +227,7 @@ const playback = useFigurePlayback({
 
 - Canvas에 `role="img"`와 의미 있는 이름·설명을 제공한다. “애니메이션”이라고만 쓰지 않고 주요 사건과 결론을 설명한다.
 - 접근성 트리에 같은 설명이 중복되지 않게 연결한다. 매 프레임 변하는 수치를 `aria-live`로 읽게 하지 않는다.
-- 키보드로 재생 버튼에 접근하고 조작할 수 있어야 한다. 버튼의 현재 동작과 정지 상태를 구분해 제공한다.
+- 조작 버튼을 제거해도 도해 제목·캡션·정적 대체의 접근성 설명을 유지한다. OS의 동작 줄이기 설정에서는 완성된 정적 장면을 제공한다.
 - 색만으로 정상·오류를 구별하지 않는다. 텍스트·표식·선 형태를 함께 사용한다.
 - 정상 동작과 reduced motion 모두 본문에서 필요한 정보를 전달한다. 마지막 장면만으로 설명이 안 되면 정적인 여러 장면을 제공한다.
 - 캡션은 단위·시간 방향·데이터 출처·연출 가정 중 필요한 내용만 담는다. 구현 기술명과 제작 설명은 독자용 지면에 넣지 않는다.
@@ -274,7 +267,7 @@ const playback = useFigurePlayback({
 - [ ] 비교 패널의 척도와 시간 기준이 같다. 다른 경우 차이를 명시했다.
 - [ ] 완료 상태를 충분히 읽을 수 있고, 반복 경계에서 이전 주석·타이머가 남지 않는다.
 - [ ] 이동 중 정지 후 재개해도 점·선·타이머가 시작점으로 되돌아가지 않는다.
-- [ ] 화면 밖·숨긴 탭에서 프레임이 멈추고, 사용자의 수동 정지가 재진입 후에도 유지된다.
+- [ ] 화면 밖·숨긴 탭에서 프레임이 멈추고, 다시 보이면 멈춘 시점부터 재생된다.
 - [ ] reduced motion에서 사건과 결론을 이해할 수 있다.
 - [ ] 좁은 화면에서 열이 재배치되고, 가로 넘침·라벨 겹침·설명 변경에 따른 레이아웃 이동이 없다. 현재 비교 기준은 모바일 390px이며 더 좁은 지원 폭도 확인한다.
 - [ ] DPR 1·2에서 선과 글자가 선명하고, 크기 변경 중 재생 위치가 유지된다.
@@ -308,13 +301,13 @@ pnpm exec vitest run src/components/figures
 도해 관련 자동 테스트는 3개 파일, 8개 항목이다.
 
 - TCP 데이터 도착 전후의 수신 상태, ACK 도착 시점, 손실 시 중복 ACK 미발생, 재전송 타이머 재시작·정지, 완료 상태 유지·초기화
-- 반복 경계의 시간 나머지, 250ms 이상 중단 간격 제외, 숨김·화면 밖·수동 정지·동작 줄이기·준비 실패 시 재생 금지
+- 반복 경계의 시간 나머지, 250ms 이상 중단 간격 제외, 숨김·화면 밖·동작 줄이기·준비 실패 시 재생 금지
 - 브라우저 API 없이 완성된 SVG·설명을 출력하는 SSR, 한국어·영어 다중 인스턴스의 ID 충돌 방지
 
 실제 빌드 결과를 로컬 브라우저에서 확인한 범위:
 
 - 데스크톱 두 패널 배치와 390px·320px 모바일 세로 배치, 가로 넘침 없음
-- 자동 재생, 버튼 일시정지·재개, 목차 이동 후에도 수동 정지 유지
+- 자동 재생과 목차 이동 후 화면 복귀 시 재개. 초기 검수 뒤 조작 버튼을 제거했고 현재 지면에는 표시하지 않는다.
 - 도해가 화면 밖으로 나가면 재생 정지, 복귀 시 재개
 - 데스크톱 DPR 2와 모바일 검수 뷰포트 DPR 1에서 Canvas 크기 조정
 - 한국어·영어 본문 연결, 코드 복사와 목차 탐색

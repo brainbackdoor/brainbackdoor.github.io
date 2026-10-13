@@ -12,11 +12,8 @@ interface PlaybackOptions {
 /** Owns time only; individual figures calculate their own events and geometry. */
 export function useFigurePlayback({ containerRef, durationMs, finalElapsedMs, enabled, onFrame }: PlaybackOptions) {
   const elapsed = useRef(0);
-  const paused = useRef(false);
   const previousMotion = useRef<boolean | null>(null);
   const render = useRef(onFrame);
-  const syncRef = useRef<() => void>(() => {});
-  const [userPaused, setUserPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [running, setRunning] = useState(false);
 
@@ -43,7 +40,7 @@ export function useFigurePlayback({ containerRef, durationMs, finalElapsedMs, en
     }
     function sync() {
       if (disposed) return;
-      const next = figureShouldRun({ visible, hidden: document.hidden, userPaused: paused.current, reducedMotion: motion.matches, enabled });
+      const next = figureShouldRun({ visible, hidden: document.hidden, reducedMotion: motion.matches, enabled });
       if (active !== next) {
         active = next;
         lastTime = null;
@@ -60,7 +57,6 @@ export function useFigurePlayback({ containerRef, durationMs, finalElapsedMs, en
       setReducedMotion(motion.matches);
       sync();
     }
-    syncRef.current = sync;
     const observer = 'IntersectionObserver' in window
       ? new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }, { threshold: 0 })
       : null;
@@ -75,15 +71,9 @@ export function useFigurePlayback({ containerRef, durationMs, finalElapsedMs, en
       observer?.disconnect();
       document.removeEventListener('visibilitychange', sync);
       motion.removeEventListener('change', changeMotion);
-      syncRef.current = () => {};
     };
   }, [containerRef, durationMs, finalElapsedMs, enabled]);
 
-  const toggle = useCallback(() => {
-    paused.current = !paused.current;
-    setUserPaused(paused.current);
-    syncRef.current();
-  }, []);
   const redraw = useCallback(() => render.current(elapsed.current), []);
-  return { userPaused, reducedMotion, running, toggle, redraw };
+  return { reducedMotion, running, redraw };
 }

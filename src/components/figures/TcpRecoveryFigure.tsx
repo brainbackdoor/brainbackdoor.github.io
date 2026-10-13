@@ -147,7 +147,7 @@ export default function TcpRecoveryFigure({ lang = 'ko', variant = 'default' }: 
     };
   }, [playback.redraw, preview, height]);
 
-  return <AnimatedFigure containerRef={containerRef} title={preview ? labels.loss : labels.title} caption={caption} showControl={ready && !playback.reducedMotion} paused={playback.userPaused} running={playback.running} toggle={playback.toggle} lang={lang} variant={variant}>
+  return <AnimatedFigure containerRef={containerRef} title={preview ? labels.loss : labels.title} caption={caption} running={playback.running} variant={variant}>
     <div className="tcp-figure__panels">
       {(preview ? ['loss'] as const : ['normal', 'loss'] as const).map(scenario => <div className="tcp-figure__panel" key={scenario} data-scenario={scenario} data-ready={ready}>
         {!preview && <div className="tcp-figure__panel-title"><span aria-hidden="true" />{labels[scenario]}</div>}

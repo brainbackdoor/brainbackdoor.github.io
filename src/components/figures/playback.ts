@@ -7,9 +7,8 @@ export function advanceFigureTime(elapsed: number, delta: number, duration: numb
 export function figureShouldRun(state: {
   visible: boolean;
   hidden: boolean;
-  userPaused: boolean;
   reducedMotion: boolean;
   enabled: boolean;
 }): boolean {
-  return state.enabled && state.visible && !state.hidden && !state.userPaused && !state.reducedMotion;
+  return state.enabled && state.visible && !state.hidden && !state.reducedMotion;
 }

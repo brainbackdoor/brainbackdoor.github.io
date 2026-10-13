@@ -257,4 +257,33 @@ class CorrectionTests(unittest.TestCase):
         self.assertLess(out.index('<LessonFigure'),out.index('</li>'))
         self.assertEqual(out.count('id="one"'),1)
 
+    def test_list_correction_cannot_be_satisfied_by_child_blocks(self):
+        edit=dict(self.edit(),sourceType='bulleted_list')
+        block={'type':'bulleted_list','properties':{'title':[['앞 잘못된 설명 뒤']]}}
+        descendants=[
+            '<pre><code>앞 수정한 설명 뒤</code></pre>',
+            '<table><tr><td>앞 수정한 설명 뒤</td></tr></table>',
+            '<figure><svg><text>앞 수정한 설명 뒤</text></svg></figure>',
+            '<ul><li><p>앞 수정한 설명 뒤</p></li></ul>',
+            '<blockquote><p>앞 수정한 설명 뒤</p></blockquote>',
+            '<div><p>앞 수정한 설명 뒤</p></div>',
+            '<p>앞 수정한 설명 뒤</p>',
+        ]
+        for child in descendants:
+            with self.subTest(child=child):
+                doc=verify.ReadingPage()
+                doc.feed('<article class="post-content"><ul><li id="one"><p></p>'+child+'</li></ul></article>')
+                issues=verify.correction_issues({'sourceId':ROOT,'corrections':[edit]},doc,{'one':block},[edit])
+                self.assertIn('correction-text-missing',[i['type'] for i in issues])
+        doc=verify.ReadingPage()
+        doc.feed('<article class="post-content"><ul><li id="one"><p>앞 <strong>수정한 <code>설명</code></strong> 뒤</p>'+descendants[0]+'</li></ul></article>')
+        self.assertEqual(verify.correction_issues({'sourceId':ROOT,'corrections':[edit]},doc,{'one':block},[edit]),[])
+
+    def test_text_correction_requires_its_own_inline_prose(self):
+        edit=self.edit();block={'type':'text','properties':{'title':[['앞 잘못된 설명 뒤']]}}
+        doc=verify.ReadingPage()
+        doc.feed('<article class="post-content"><div id="one"><figure><svg><text>앞 수정한 설명 뒤</text></svg></figure></div></article>')
+        issues=verify.correction_issues({'sourceId':ROOT,'corrections':[edit]},doc,{'one':block},[edit])
+        self.assertIn('correction-text-missing',[i['type'] for i in issues])
+
 if __name__=='__main__': unittest.main()

@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
+INLINE_PROSE = {'a', 'span', 'strong', 'em', 'b', 'i', 'u', 's', 'del', 'mark', 'code', 'sub', 'sup', 'small', 'abbr', 'cite'}
 VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'}
 
 
@@ -30,6 +31,7 @@ class ReadingPage(HTMLParser):
         self.figure_stack = []
         self.anchor_stack = []
         self.anchor_text = {}
+        self.tags = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -41,11 +43,20 @@ class ReadingPage(HTMLParser):
         if not self.depth:
             if 'post-content' in attrs.get('class', '').split():
                 self.depth = 1
+                self.tags = [tag]
             return
         if tag not in VOID:
             self.depth += 1
+            self.tags.append(tag)
+        # Only the first direct paragraph belongs to a list block title.
+        for record in self.anchor_stack:
+            if tag == 'p' and record['tag'] == 'li' and self.depth == record['depth'] + 1 and not record['paragraph_seen']:
+                record['paragraph_seen'] = True
+                if not attrs.get('id'):
+                    record['prose_depth'] = self.depth
+                    record['prose_active'] = True
         if attrs.get('id') and tag not in VOID:
-            record = {'id': attrs['id'], 'depth': self.depth, 'text': []}
+            record = {'id': attrs['id'], 'depth': self.depth, 'tag': tag, 'text': [], 'paragraph_seen': False, 'prose_depth': None, 'prose_active': False}
             self.anchor_stack.append(record)
             self.anchor_text.setdefault(attrs['id'], []).append(record['text'])
         if tag in {'script', 'style'}:
@@ -70,13 +81,26 @@ class ReadingPage(HTMLParser):
         if tag in {'script', 'style'}:
             self.ignored = max(0, self.ignored - 1)
         self.figure_stack = [record for record in self.figure_stack if record["depth"] != self.depth]
+        for record in self.anchor_stack:
+            if record['prose_depth'] == self.depth:
+                record['prose_active'] = False
         self.anchor_stack = [record for record in self.anchor_stack if record["depth"] != self.depth]
+        self.tags.pop()
         self.depth -= 1
 
     def handle_data(self, text):
         if self.depth and not self.ignored:
             self.text.append(text)
-            for record in self.anchor_stack: record["text"].append(text)
+            for record in self.anchor_stack:
+                if record['tag'] == 'p':
+                    prose_depth = record['depth']
+                elif record['tag'] == 'li' and record['prose_active']:
+                    prose_depth = record['prose_depth']
+                else:
+                    continue
+                # Inline code is prose; child code blocks, tables and figures are not.
+                if all(tag in INLINE_PROSE for tag in self.tags[prose_depth:]):
+                    record['text'].append(text)
             for record in self.figure_stack:
                 record["text"].append(text)
             if self.current_pre is not None:

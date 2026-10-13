@@ -21,5 +21,19 @@ test('W04 304 supplies no new body and changed ETag stores v2 only on body compl
 test('W05 HTTP/2 stream frames remain blocked above TCP until missing bytes recovered',()=>{assert.deepEqual(state('W05',4900).bufferedStreams,[3,5]);assert.deepEqual(state('W05',4900).deliveredStreams,[]);assert.deepEqual(state('W05',7199).deliveredStreams,[]);assert.deepEqual(state('W05',7200).deliveredStreams,[1,3,5])});
 test('W06 retains two stated resource assumptions for both path and query cases',()=>{const s=state('W06',5000);assert.equal(s.endpoint.single,'/stations/{id}');assert.equal(s.endpoint.collection,'/stations?name=...');assert.deepEqual(s.codes.endpointPolicy,[200,200]);assert.deepEqual(s.codes.missingRepresentation,[404,404]);assert.equal(s.isRecommendation,false)});
 test('N06 empty follow-up lane does not animate an invented packet while RTO is pending',()=>{state('N06',0);const f=networkRenderers.N06(680,3000);assert.equal(f.ops.filter(o=>o.type==='circle'&&o.x<328).length,0)});
-test('sixteen figures keep finite shapes inside the responsive scene',()=>{state('N02',0);for(const item of networkInfo)for(const w of [227,297,678])for(const t of [0,...item.steps,item.final]){const f=networkRenderers[item.id](w,t);assert.ok(f.height>0,item.id);for(const op of f.ops){for(const [k,v] of Object.entries(op))if(['x','y','x1','y1','x2','y2','w','h','r','size'].includes(k))assert.ok(typeof v==='number'&&Number.isFinite(v),item.id+' nonfinite '+k);if(op.type==='rect'){assert.ok(op.x>=0&&op.y>=0&&op.w>=0&&op.h>=0,item.id+' negative rectangle');assert.ok(op.x+op.w<=w+.01,item.id+' horizontal rectangle overflow');assert.ok(op.y+op.h<=f.height+.01,item.id+' vertical rectangle overflow');}}}});
+test('sixteen figures keep finite shapes inside the responsive scene',()=>{state('N02',0);for(const item of networkInfo)for(const w of [200,227,297,678])for(const t of [0,...item.steps,item.final]){const f=networkRenderers[item.id](w,t);assert.ok(f.height>0,item.id);for(const op of f.ops){for(const [k,v] of Object.entries(op))if(['x','y','x1','y1','x2','y2','w','h','r','size'].includes(k))assert.ok(typeof v==='number'&&Number.isFinite(v),item.id+' nonfinite '+k);if(op.type==='rect'){assert.ok(op.x>=0&&op.y>=0&&op.w>=0&&op.h>=0,item.id+' negative rectangle');assert.ok(op.x+op.w<=w+.01,item.id+' horizontal rectangle overflow');assert.ok(op.y+op.h<=f.height+.01,item.id+' vertical rectangle overflow');}}}});
 test('W02 compression precedes gzip send and both wire paths use the same byte rate',()=>{const a=state('W02',2000);assert.ok(a.rawSentBytes>0);assert.equal(a.gzipSentBytes,0);const b=state('W02',3000),c=state('W02',3100);assert.ok(Math.abs((c.rawSentBytes-b.rawSentBytes)-(c.gzipSentBytes-b.gzipSentBytes))<.001)});
+
+test('N09 changes only sending policy and keeps the receiver ACK timer identical',()=>{
+  for(const t of [0,1700,3000,3600,4599]){
+    const s=state('N09',t);
+    assert.equal(s.nagle.acked,false);assert.equal(s.nodelay.acked,false);
+  }
+  const s=state('N09',4600);
+  assert.equal(s.nagle.acked,true);assert.equal(s.nodelay.acked,true);
+});
+test('N10 expiry explanation appears only after TIME_WAIT ends',()=>{
+  const text=(t:number)=>networkRenderers.N10(560,t).ops.filter(o=>o.type==='text').map(o=>o.text).join(' ');
+  for(const t of [0,1000,1100,2900,4200,7200,9999])assert.equal(text(t).includes('2MSL 만료'),false);
+  assert.ok(text(10000).includes('2MSL 만료'));
+});

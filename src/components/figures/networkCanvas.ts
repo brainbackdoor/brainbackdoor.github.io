@@ -1,4 +1,4 @@
-import { networkState as state, probeGains, type NetworkFigureId } from './network-models';
+import { networkState as state, probeGains, nagleAckTiming, type NetworkFigureId } from './network-models';
 import type { DrawOp, LessonFrame } from './lessonCanvas';
 type SequenceEvent = readonly [
     number,
@@ -130,13 +130,13 @@ function nagle(w: number, t: number): LessonFrame {
     for (let i = 0; i < 2; i++) {
         const q = ps[i], y = q.y;
         g.text(q.x, y + 14, i ? 'TCP_NODELAY=1' : 'Nagle on', C.ink, 12, 'left', true);
-        seq(g, q.w, t, [[1100, 1700, '작은 쓰기 A', 0], [i ? 3000 : 4000, i ? 3600 : 4600, 'A 확인 ACK', 1], [i ? 2500 : 4600, i ? 3100 : 5200, '작은 쓰기 B', 0]], '송신', '수신', q.x, y + 28);
+        seq(g, q.w, t, [[1100, 1700, '작은 쓰기 A', 0], [nagleAckTiming.sentAt, nagleAckTiming.receivedAt, '확인 ACK', 1], [i ? 2500 : nagleAckTiming.receivedAt, i ? 3100 : 5200, '작은 쓰기 B', 0]], '송신', '수신', q.x, y + 28);
         const st = i ? s.nodelay : s.nagle;
         g.text(q.x, y + 316, `B: ${st.secondSent ? '전송' : 'ACK 대기'}`, st.secondSent ? C.blueText : C.orangeText, 12);
     }
     return { ops: g.ops, height: ps[1].y + 342, status: s.phase };
 }
-function close(w: number, t: number): LessonFrame { const g = draw(), s = state('N10', t), end = seq(g, w, t, [[1100, 1700, 'FIN', 0], [2300, 2900, 'ACK', 1], [3500, 4200, 'FIN', 1], [4700, 5300, '마지막 ACK', 0, 'loss'], [6500, 7200, 'RTO → FIN 재전송', 1], [7800, 8500, 'ACK 재응답', 0]], '능동 종료', '수동 종료'); const h = panelNotes(g, end, w, [`능동: ${s.active}`, `수동: ${s.passive}`, s.tupleHeld ? '같은 4-tuple의 이전 연결 상태 유지' : '압축한 2MSL 만료 → 이전 상태 해제', 'TIME_WAIT은 모든 로컬 포트를 잠그는 상태가 아닙니다.']); return { ops: g.ops, height: h, status: s.phase }; }
+function close(w: number, t: number): LessonFrame { const g = draw(), s = state('N10', t), end = seq(g, w, t, [[1100, 1700, 'FIN', 0], [2300, 2900, 'ACK', 1], [3500, 4200, 'FIN', 1], [4700, 5300, '마지막 ACK', 0, 'loss'], [6500, 7200, 'RTO → FIN 재전송', 1], [7800, 8500, 'ACK 재응답', 0]], '능동 종료', '수동 종료'); const h = panelNotes(g, end, w, [`능동: ${s.active}`, `수동: ${s.passive}`, s.active === 'CLOSED' ? '압축한 2MSL 만료 → 이전 상태 해제' : s.active === 'TIME_WAIT' ? '같은 4-tuple의 이전 연결 상태 유지' : s.active === 'ESTABLISHED' ? '연결 사용 중 · 종료 시작 전' : 'FIN/ACK 교환 · 종료 진행 중', 'TIME_WAIT은 모든 로컬 포트를 잠그는 상태가 아닙니다.']); return { ops: g.ops, height: h, status: s.phase }; }
 function hol(w: number, t: number): LessonFrame { const g = draw(), s = state('N11', t); const end = seq(g, w, t, [[1100, 1700, 'DATA 1', 0], [1900, 2500, 'DATA 2', 0, 'loss'], [2700, 3300, 'DATA 3', 0], [3600, 4200, 'DATA 4', 0], [6100, 6700, 'DATA 2 재전송', 0]]); g.text(0, end, '수신 버퍼', C.muted, 11, 'left', true); [1, 2, 3, 4].forEach((n, i) => { const xx = i * (w / 4); const wait = s.buffer.includes(n), done = s.delivered.includes(n); g.rect(xx, end + 14, w / 4 - 8, 38, wait ? '#fff4e6' : done ? '#e6fcf5' : '#fff', wait ? C.orange : C.line); g.text(xx + (w / 4 - 8) / 2, end + 38, n, wait ? C.orangeText : done ? C.greenText : C.muted, 12, 'center'); }); let h = lines(g, 0, end + 84, `앱 전달: ${s.delivered.join(' → ') || '없음'}`, w, C.greenText, 12, true); return { ops: g.ops, height: h + 8, status: s.phase }; }
 function keepalive(w: number, t: number): LessonFrame {
     const g = draw(), s = state('N12', t), ps = pair(w, 345);

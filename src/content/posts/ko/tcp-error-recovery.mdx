@@ -316,11 +316,23 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <p id="502f72f7-7804-4490-bd71-6609b3517217">기존의 <span className="notion-color-blue"><a href="https://tools.ietf.org/html/rfc8312"><strong>CUBIC</strong></a></span><span className="notion-color-blue"> </span>알고리즘의 경우, 사용자가 몰리는 등의 트래픽 증가로 패킷손실이 발생할 당시의 window size를 기준으로 cwnd(congestion window)를 계산하여  패킷 손실을 방지하였다&#46;</p>
 
-<figure id="03a6fb40-125b-4b51-9a15-8102ec97f078" className="notion-figure">
+<div id="03a6fb40-125b-4b51-9a15-8102ec97f078">
+
+<LessonFigure figureId="N08" sourceBlockId="03a6fb40-125b-4b51-9a15-8102ec97f078" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/03a6fb40-125b-4b51-9a15-8102ec97f078.gif" alt="" loading="lazy" width="640" height="320" />
 
 </figure>
+
+</details>
+
+</div>
 
 <p id="01676d63-a203-41dc-a108-0ef63aab4a69">이에 반해, Google의 <span className="notion-color-blue"><a href="https://cloud.google.com/blog/products/gcp/tcp-bbr-congestion-control-comes-to-gcp-your-internet-just-got-faster"><strong>BBR</strong></a></span>은 패킷 손실보다는 최근 network's delivery rate과 round-trip time을 활용하여 허용할 수 있는 데이터 양을 제어한다&#46;</p>
 

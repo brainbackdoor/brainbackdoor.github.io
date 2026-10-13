@@ -176,6 +176,22 @@
       ]
     },
     {
+      "figureId": "N08",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "03a6fb40-125b-4b51-9a15-8102ec97f078",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "BBRv1",
+        "1.25",
+        "0.75",
+        "125 kB"
+      ],
+      "evidenceBlockIds": [
+        "03a6fb40-125b-4b51-9a15-8102ec97f078"
+      ]
+    },
+    {
       "figureId": "N09",
       "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
       "sourceBlockId": "eddb70fa-c407-45eb-8ee8-5b840a850b67",
@@ -242,6 +258,80 @@
         "Connection: close"
       ],
       "evidenceBlockIds": []
+    },
+    {
+      "figureId": "W01",
+      "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+      "sourceBlockId": "79a78b75-ca51-4cf9-8ec0-029370b43364",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "DNS",
+        "TLS",
+        "TTFB",
+        "0–540 ms"
+      ],
+      "evidenceBlockIds": [
+        "79a78b75-ca51-4cf9-8ec0-029370b43364"
+      ]
+    },
+    {
+      "figureId": "W02",
+      "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+      "sourceBlockId": "5a6de90f-33a5-4dc2-8865-ddfb145c2e3f",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "18,891",
+        "3,039",
+        "복원"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "W04",
+      "sourceId": "8e230e0d-431c-4ffe-becd-c60c1bea4615",
+      "sourceBlockId": "d1d97e99-96f7-4887-9063-c5649f2eea9a",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "If-None-Match",
+        "304",
+        "no-store",
+        "must-revalidate",
+        "v2"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "W05",
+      "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+      "sourceBlockId": "3a00437b-ae4b-404e-b895-e8554e76488a",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "stream 1",
+        "stream 3",
+        "stream 5",
+        "TCP HOL"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "W06",
+      "sourceId": "14b691d7-7fd7-4e95-8787-49e06111755f",
+      "sourceBlockId": "e377decb-702b-4971-a424-e4ee83344fde",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "/stations/{id}",
+        "/stations?name=...",
+        "200 + []",
+        "두 주장"
+      ],
+      "evidenceBlockIds": [
+        "e377decb-702b-4971-a424-e4ee83344fde"
+      ]
     }
   ],
   "corrections": [
@@ -332,6 +422,17 @@
       "newText": "probe를 보내는 쪽에서 연결 실패를 판정하고 소켓을 정리한다. RST 전송 등 후속 동작은 구현에 따라 다르다.",
       "reason": "무조건 클라이언트가 RST를 보낸다는 전제 제거",
       "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
+    },
+    {
+      "id": "http2-transport",
+      "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+      "sourceBlockId": "3a00437b-ae4b-404e-b895-e8554e76488a",
+      "sourceType": "bulleted_list",
+      "sourceTextSha256": "43c4499bbfa4eeda34a60ff9e848c05abd03e24cef517429b63c4bd544dd68e0",
+      "oldText": "TLS, HTTP/2 (HTTP2.0은 SSL 계층 위에서만 동작합니다.)",
+      "newText": "TLS, HTTP/2 (브라우저의 일반적인 HTTP/2 사용에는 TLS가 필요합니다. HTTP/2 프로토콜 자체는 TLS 없는 연결도 정의합니다.)",
+      "reason": "브라우저 배포 조건과 HTTP/2 프로토콜 자체의 전제 구분",
+      "reference": "https://www.rfc-editor.org/rfc/rfc9113.html#section-3"
     },
     {
       "id": "zero-window-probe",

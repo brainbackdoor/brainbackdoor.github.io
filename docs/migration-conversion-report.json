@@ -1032,6 +1032,22 @@
             "69e0c456-eaf3-49b8-a85a-434fb5e82337",
             "9fcf3b56-ff1b-42f2-bc21-22233a93bb88"
           ]
+        },
+        {
+          "figureId": "N08",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "03a6fb40-125b-4b51-9a15-8102ec97f078",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "BBRv1",
+            "1.25",
+            "0.75",
+            "125 kB"
+          ],
+          "evidenceBlockIds": [
+            "03a6fb40-125b-4b51-9a15-8102ec97f078"
+          ]
         }
       ],
       "corrections": [
@@ -6965,13 +6981,7 @@
         }
       ],
       "unresolvedLinks": [],
-      "warnings": [
-        {
-          "kind": "asset-download-failed",
-          "blockId": "ea8effe8-6554-438c-a5c5-26c54cfae6c7",
-          "sourceUrl": "https://cdn.cms-twdigitalassets.com/content/dam/developer-twitter/redesign-2021-images/og-social-card/devwebsite_card_tn.jpg.twimg.768.jpg"
-        }
-      ],
+      "warnings": [],
       "excluded": [
         {
           "sourceBlockId": "dc093830-f645-4642-bf85-dfcbfe7e0f64",
@@ -7073,6 +7083,24 @@
           "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         }
       ],
+      "figures": [
+        {
+          "figureId": "W06",
+          "sourceId": "14b691d7-7fd7-4e95-8787-49e06111755f",
+          "sourceBlockId": "e377decb-702b-4971-a424-e4ee83344fde",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "/stations/{id}",
+            "/stations?name=...",
+            "200 + []",
+            "두 주장"
+          ],
+          "evidenceBlockIds": [
+            "e377decb-702b-4971-a424-e4ee83344fde"
+          ]
+        }
+      ],
       "title": "200 vs 404",
       "pubDate": "2020-02-12",
       "pubDateEvidence": {
@@ -7097,11 +7125,11 @@
         },
         "assetCount": 15,
         "failedAssets": 1,
-        "warningCount": 1,
+        "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "outputFile": "src/content/posts/ko/14b691d7-7fd7-4e95-8787-49e06111755f.mdx",
-      "status": "converted"
+      "status": "converted",
+      "outputFile": "src/content/posts/ko/14b691d7-7fd7-4e95-8787-49e06111755f.mdx"
     },
     {
       "sourceId": "1c3f7881-71c5-4855-85d1-a4c7e895a66b",
@@ -19518,6 +19546,22 @@
       ],
       "figures": [
         {
+          "figureId": "W01",
+          "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+          "sourceBlockId": "79a78b75-ca51-4cf9-8ec0-029370b43364",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "DNS",
+            "TLS",
+            "TTFB",
+            "0–540 ms"
+          ],
+          "evidenceBlockIds": [
+            "79a78b75-ca51-4cf9-8ec0-029370b43364"
+          ]
+        },
+        {
           "figureId": "W03",
           "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
           "sourceBlockId": "485a6b15-2857-4a31-98ab-0c24494f7c9b",
@@ -19531,6 +19575,46 @@
           "evidenceBlockIds": [
             "485a6b15-2857-4a31-98ab-0c24494f7c9b"
           ]
+        },
+        {
+          "figureId": "W02",
+          "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+          "sourceBlockId": "5a6de90f-33a5-4dc2-8865-ddfb145c2e3f",
+          "sourceType": "bulleted_list",
+          "mode": "after",
+          "requiredText": [
+            "18,891",
+            "3,039",
+            "복원"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "W05",
+          "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+          "sourceBlockId": "3a00437b-ae4b-404e-b895-e8554e76488a",
+          "sourceType": "bulleted_list",
+          "mode": "after",
+          "requiredText": [
+            "stream 1",
+            "stream 3",
+            "stream 5",
+            "TCP HOL"
+          ],
+          "evidenceBlockIds": []
+        }
+      ],
+      "corrections": [
+        {
+          "id": "http2-transport",
+          "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+          "sourceBlockId": "3a00437b-ae4b-404e-b895-e8554e76488a",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "43c4499bbfa4eeda34a60ff9e848c05abd03e24cef517429b63c4bd544dd68e0",
+          "oldText": "TLS, HTTP/2 (HTTP2.0은 SSL 계층 위에서만 동작합니다.)",
+          "newText": "TLS, HTTP/2 (브라우저의 일반적인 HTTP/2 사용에는 TLS가 필요합니다. HTTP/2 프로토콜 자체는 TLS 없는 연결도 정의합니다.)",
+          "reason": "브라우저 배포 조건과 HTTP/2 프로토콜 자체의 전제 구분",
+          "reference": "https://www.rfc-editor.org/rfc/rfc9113.html#section-3"
         }
       ],
       "title": "화면 응답 개선하기 미션 가이드",
@@ -19557,8 +19641,8 @@
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "outputFile": "src/content/posts/ko/80dbc9d7-ba32-4220-9b39-b536172264f2.mdx",
-      "status": "converted"
+      "status": "converted",
+      "outputFile": "src/content/posts/ko/80dbc9d7-ba32-4220-9b39-b536172264f2.mdx"
     },
     {
       "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
@@ -24601,6 +24685,23 @@
       "unresolvedLinks": [],
       "warnings": [],
       "excluded": [],
+      "figures": [
+        {
+          "figureId": "W04",
+          "sourceId": "8e230e0d-431c-4ffe-becd-c60c1bea4615",
+          "sourceBlockId": "d1d97e99-96f7-4887-9063-c5649f2eea9a",
+          "sourceType": "bulleted_list",
+          "mode": "after",
+          "requiredText": [
+            "If-None-Match",
+            "304",
+            "no-store",
+            "must-revalidate",
+            "v2"
+          ],
+          "evidenceBlockIds": []
+        }
+      ],
       "title": "HTTP Cache, gzip, Servlet, Thread 등 학습 테스트",
       "pubDate": "2023-11-09",
       "pubDateEvidence": {
@@ -24626,8 +24727,8 @@
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "outputFile": "src/content/posts/ko/8e230e0d-431c-4ffe-becd-c60c1bea4615.mdx",
-      "status": "converted"
+      "status": "converted",
+      "outputFile": "src/content/posts/ko/8e230e0d-431c-4ffe-becd-c60c1bea4615.mdx"
     },
     {
       "sourceId": "9178ac06-ae33-4a96-a4cd-49c96ea28351",

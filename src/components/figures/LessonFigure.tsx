@@ -27,6 +27,8 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
   const info=[...lessonInfo,...networkInfo].find(item=>item.id===figureId)!;
   const renderer={...lessonRenderers,...networkRenderers}[figureId];
   const wideWidth=figureId==='W03'?480:560;
+  // List-embedded figures have a 210px plot in the smallest supported viewport.
+  const narrowWidth=networkInfo.some(item=>item.id===figureId)?200:227;
   const containerRef=useRef<HTMLElement>(null);
   const plotRef=useRef<HTMLDivElement>(null);
   const canvasRef=useRef<HTMLCanvasElement>(null);
@@ -37,7 +39,7 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
   const finalStatus=renderer(wideWidth,info.final).status;
   const [status,setStatus]=useState(finalStatus);
   const lastStatus=useRef(finalStatus);
-  const staticFrames=useMemo(()=>({wide:renderer(width||wideWidth,info.final),narrow:renderer(width||227,info.final)}),[renderer,width,wideWidth,info.final]);
+  const staticFrames=useMemo(()=>({wide:renderer(width||wideWidth,info.final),narrow:renderer(width||narrowWidth,info.final)}),[renderer,width,wideWidth,narrowWidth,info.final]);
 
   const frame=useCallback((elapsed:number)=>{
     const current=surface.current,canvas=canvasRef.current;
@@ -93,7 +95,7 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
 
   const staticPair=(elapsed:number,title:string)=><>
     <div className="lesson-static lesson-static--wide"><StaticLesson frame={renderer(width||wideWidth,elapsed)} width={width||wideWidth} title={title}/></div>
-    <div className="lesson-static lesson-static--narrow"><StaticLesson frame={renderer(width||227,elapsed)} width={width||227} title={title}/></div>
+    <div className="lesson-static lesson-static--narrow"><StaticLesson frame={renderer(width||narrowWidth,elapsed)} width={width||narrowWidth} title={title}/></div>
   </>;
   const style={'--lesson-wide-height':`${staticFrames.wide.height}px`,'--lesson-narrow-height':`${staticFrames.narrow.height}px`} as CSSProperties;
   return <AnimatedFigure containerRef={containerRef} title={info.title} caption={info.caption} running={playback.running} figureId={figureId} sourceBlockId={sourceBlockId}>
@@ -108,7 +110,7 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
       <summary>단계별 장면</summary>
       {info.steps.map((elapsed,i)=><div className="lesson-step" key={elapsed}>
         <p>{i+1}. {info.notes[i]}</p>
-        <div className="lesson-step-plot" style={{'--lesson-wide-height':`${renderer(width||wideWidth,elapsed).height}px`,'--lesson-narrow-height':`${renderer(width||227,elapsed).height}px`} as CSSProperties}>{staticPair(elapsed,`${info.title} · ${i+1}`)}</div>
+        <div className="lesson-step-plot" style={{'--lesson-wide-height':`${renderer(width||wideWidth,elapsed).height}px`,'--lesson-narrow-height':`${renderer(width||narrowWidth,elapsed).height}px`} as CSSProperties}>{staticPair(elapsed,`${info.title} · ${i+1}`)}</div>
       </div>)}
     </details>
   </AnimatedFigure>;

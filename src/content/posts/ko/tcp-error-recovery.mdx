@@ -68,11 +68,23 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <hr id="c3807897-e719-43ca-bca0-2ad69de11dda" />
 
-<figure id="2d7c4d52-3e13-4436-9c6b-9bc532cce38b" className="notion-figure">
+<div id="2d7c4d52-3e13-4436-9c6b-9bc532cce38b">
+
+<LessonFigure figureId="N04" sourceBlockId="2d7c4d52-3e13-4436-9c6b-9bc532cce38b" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/2d7c4d52-3e13-4436-9c6b-9bc532cce38b.png" alt="rwnd 크기 통지" loading="lazy" width="1048" height="550" /><figcaption>rwnd 크기 통지</figcaption>
 
 </figure>
+
+</details>
+
+</div>
 
 <span id="edde3cdc-37d4-4a0b-a5ae-f2fdb176df4e"></span>
 
@@ -106,7 +118,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 </div>
 
-<p id="3915897f-b4a3-420c-b6c0-f71c001e9d42">메모리 부족, 처리능력의 부족 또는 다른 문제로 인해 서버가 클라이언트로부터 보내온 데이터를 처리할 수  없는 경우 서버는 크기가 0인 window를 보낼 수 있다&#46; 클라이언트가 이 패킷을 수신하면 데이터 전송은 중지되지만, keep-alive 패킷의 전송을 통해 서버와의 연결은 유지되며, 서버 측 receive window의 상태를 점검하기 위해 일정 간격으로 패킷을  보낸다&#46;</p>
+<p id="3915897f-b4a3-420c-b6c0-f71c001e9d42">메모리 부족, 처리능력의 부족 또는 다른 문제로 인해 서버가 클라이언트로부터 보내온 데이터를 처리할 수  없는 경우 서버는 크기가 0인 window를 보낼 수 있다&#46; 클라이언트가 이 패킷을 수신하면 데이터 전송은 중지되지만, Zero Window Probe의 전송을 통해 서버와의 연결은 유지되며, 서버 측 receive window의 상태를 점검하기 위해 일정 간격으로 패킷을  보낸다&#46;</p>
 
 <hr id="91646694-aedd-42b1-a04a-f035d51535f2" />
 
@@ -116,7 +128,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <details className="figure-source">
 
-<summary>원본 패킷 캡처</summary>
+<summary>원본 자료</summary>
 
 <figure id="b460478a-8aa1-4152-8850-4d9414defdec" className="notion-figure">
 
@@ -154,7 +166,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <summary><strong>TCP retransmission</strong></summary>
 
-<p id="e85f451f-54d3-46c1-854d-e7057b823dcc">호스트가 패킷을 재전송하는 기능은 TCP가 제공하는 가장 기초적인 오류 복구 기능이며, 패킷 손실을 방지하게 설계돼 있다&#46; 패킷 손실은 애플리케이션 오작동, 라우터의 과부하 트래픽, 일시적인 서비스 정지 같은 여러가지 상황에서 발생할 수 있다&#46; 패킷 재전송 여부에 대한 주요 메커니즘은 재전송 타임아웃(RTO, Retransmission Timeout)값을 갖는 재전송 타이머를 이용하는 방법이다&#46; 패킷이 TCP를 이용해 재전송될 때마다 재전송 타이머가 동작하고, 정상적으로 ACK 패킷을 받으면 정지한다&#46; 이 때 패킷 전송과 ACK 패킷 수신 사이의 시간을 왕복 시간(RTT, Round-Trip Time)이라고 하며, 이 왕복시간들의 평균을 최종 RTO 값으로 결정한다&#46; 최대 재전송 시도 수는 송신 운영체제의 설정에 따라 다르지만, 기본적으로 윈도우는 최대 5회, 리눅스는 15회가 디폴트 값으로 설정할 수 있다&#46;</p>
+<p id="e85f451f-54d3-46c1-854d-e7057b823dcc">호스트가 패킷을 재전송하는 기능은 TCP가 제공하는 가장 기초적인 오류 복구 기능이며, 패킷 손실을 방지하게 설계돼 있다&#46; 패킷 손실은 애플리케이션 오작동, 라우터의 과부하 트래픽, 일시적인 서비스 정지 같은 여러가지 상황에서 발생할 수 있다&#46; 패킷 재전송 여부에 대한 주요 메커니즘은 재전송 타임아웃(RTO, Retransmission Timeout)값을 갖는 재전송 타이머를 이용하는 방법이다&#46; 패킷이 TCP를 이용해 재전송될 때마다 재전송 타이머가 동작하고, 정상적으로 ACK 패킷을 받으면 정지한다&#46; 이 때 패킷 전송과 ACK 패킷 수신 사이의 시간을 왕복 시간(RTT, Round-Trip Time)이라고 하며, RTO는 평활화한 RTT(SRTT)와 RTT 변동(RTTVAR)을 함께 반영하여 계산한다&#46; 재전송 타임아웃이 반복되면 RTO를 두 배로 늘린다&#46; 최대 재전송 시도 수는 송신 운영체제의 설정에 따라 다르지만, 기본적으로 윈도우는 최대 5회, 리눅스는 15회가 디폴트 값으로 설정할 수 있다&#46;</p>
 
 </details>
 
@@ -174,11 +186,17 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <p id="de3f1b81-1157-4b5c-80af-bc987bac12d8">TCP Congestion Control에는 대표적으로 <span className="notion-color-red"><strong>slow start, congestion avoidance, fast retransmit, fast recovery</strong></span> 등 4가지 방법이 있다&#46;</p>
 
+<details className="figure-source">
+
+<summary>원본 자료</summary>
+
 <figure id="02812a18-830d-4bca-90d2-ab6b7cac9371" className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/02812a18-830d-4bca-90d2-ab6b7cac9371.png" alt="" loading="lazy" width="906" height="608" />
 
 </figure>
+
+</details>
 
 <span id="3d7b5634-2823-4297-8cc9-27cd46af688f"></span>
 
@@ -198,23 +216,47 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 </details>
 
-<figure id="eb046534-d87b-4462-88ad-53418c157682" className="notion-figure">
+<div id="eb046534-d87b-4462-88ad-53418c157682">
+
+<LessonFigure figureId="N07" sourceBlockId="eb046534-d87b-4462-88ad-53418c157682" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/eb046534-d87b-4462-88ad-53418c157682.png" alt="" loading="lazy" width="563" height="276" />
 
 </figure>
 
-<p id="1c601fc5-6488-47eb-8732-5015f8e82acb">receive window size나 send window size는 모두 byte 단위이나, cwnd (congestion window) size는 segment 수를 단위로 한다&#46; 여기서 segment란 TCP header를 제외한 TCP payload 크기 즉, TCP MSS를 의미한다&#46;</p>
+</details>
+
+</div>
+
+<p id="1c601fc5-6488-47eb-8732-5015f8e82acb">receive window size, send window size와 cwnd (congestion window) size는 모두 byte 단위다&#46; 도해에서는 cwnd를 SMSS로 나눈 값을 segment 수처럼 표시할 수 있다&#46; SMSS는 송신자가 사용하는 최대 TCP payload 크기이며 TCP header를 포함하지 않는다&#46;</p>
 
 <p id="53917f71-0b92-45fc-837f-6c087d9030d9">혼잡 윈도 크기를 증가시키는데 걸리는 시간을 단축시키기 위해서는 클라이언트와 서버간의 왕복시간을 줄이거나 초기 혼잡윈도크기 값(intial cwnd)을 늘릴 수도 있다&#46; (최근의 리눅스커널은 initial cwnd size를 10 segment (lw 10)로 설정되어 있다&#46; <a href="https://tools.ietf.org/html/rfc6928">https&#58;//tools&#46;ietf&#46;org/html/rfc6928</a>)</p>
 
 <hr id="ac6925d4-d794-4722-93dd-ccc9ee77678e" />
 
-<figure id="f641d6a9-c9fd-4cf4-877c-6048569c63f8" className="notion-figure">
+<div id="f641d6a9-c9fd-4cf4-877c-6048569c63f8">
+
+<LessonFigure figureId="N05" sourceBlockId="f641d6a9-c9fd-4cf4-877c-6048569c63f8" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/f641d6a9-c9fd-4cf4-877c-6048569c63f8.png" alt="&lt;그림 1&gt; ssthresh default가 설정되지 않았을 경우" loading="lazy" width="646" height="468" /><figcaption>&lt;그림 1&gt; ssthresh default가 설정되지 않았을 경우</figcaption>
 
 </figure>
+
+</details>
+
+</div>
 
 <span id="7432ff45-1fbd-4a13-9cf5-b5223846dd86"></span>
 

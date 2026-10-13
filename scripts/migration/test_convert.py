@@ -208,4 +208,53 @@ class FigureTests(unittest.TestCase):
     def test_valid_static_figure_with_anchor_passes(self):
         self.assertEqual(self.check('<span id="one"></span><figure data-figure-id="N01" data-source-block-id="one"><svg><text>FIFO</text></svg><p>손실 4</p></figure>'),[])
 
+class CorrectionTests(unittest.TestCase):
+    def edit(self, old='잘못된 설명', new='수정한 설명'):
+        import hashlib
+        return {'id':'correction-one','sourceId':ROOT,'sourceBlockId':'one','sourceType':'text','sourceTextSha256':hashlib.sha256(('앞 '+old+' 뒤').encode()).hexdigest(),'oldText':old,'newText':new,'reason':'근거 확인','reference':'https://www.rfc-editor.org/rfc/rfc9293.html'}
+
+    def test_correction_keeps_source_hash_annotations_other_text_and_reconversion(self):
+        c=converter({'one':{'type':'text','properties':{'title':[['앞 '],['잘못된 설명',[['b']]],[' 뒤']]}},'two':{'type':'text','properties':{'title':[['다른 본문']]}}})
+        c.correction_specs=[self.edit()];out=c.convert()
+        self.assertIn('<strong>수정한 설명</strong>',out);self.assertIn('앞 ',out);self.assertIn(' 뒤',out);self.assertIn('다른 본문',out)
+        self.assertEqual(c.report['blocks'][0]['sourceTextSha256'],self.edit()['sourceTextSha256'])
+        self.assertEqual(c.report['corrections'],[self.edit()])
+        self.assertEqual(module.plain(c.blocks['one']['properties']['title']),'앞 잘못된 설명 뒤')
+
+    def test_changed_source_wrong_type_and_empty_replacement_are_rejected(self):
+        import copy
+        for kind in ['hash','type','empty','missing']:
+            c=converter({'one':{'type':'text','properties':{'title':[['앞 잘못된 설명 뒤']]}},'two':{'type':'text'}});edit=copy.deepcopy(self.edit())
+            if kind=='hash':edit['sourceTextSha256']='0'*64
+            if kind=='type':c.blocks['one']['type']='code'
+            if kind=='empty':edit['newText']=''
+            if kind=='missing':edit['oldText']='없는 설명'
+            c.correction_specs=[edit]
+            with self.subTest(kind=kind),self.assertRaises(ValueError):c.convert()
+
+    def test_verification_requires_corrected_text_in_its_source_anchor_and_trace(self):
+        edit=self.edit();block={'type':'text','properties':{'title':[['앞 잘못된 설명 뒤']]}};report={'sourceId':ROOT,'corrections':[edit]}
+        def check(html,trace=report):
+            doc=verify.ReadingPage();doc.feed('<article class="post-content">'+html+'</article>')
+            self.assertTrue(callable(getattr(verify,'correction_issues',None)))
+            return verify.correction_issues(trace,doc,{'one':block},[edit])
+        self.assertEqual(check('<p id="one">앞 수정한 설명 뒤</p>'),[])
+        self.assertIn('correction-text-missing',[i['type'] for i in check('<p id="one">앞 잘못된 설명 뒤</p><p>앞 수정한 설명 뒤</p>')])
+        self.assertIn('correction-not-traced',[i['type'] for i in check('<p id="one">앞 수정한 설명 뒤</p>',{'sourceId':ROOT,'corrections':[]})])
+
+    def test_verifier_rejects_stale_hash_and_converter_preserves_annotation_boundaries(self):
+        bad=dict(self.edit(),sourceTextSha256='0'*64)
+        block={'type':'text','properties':{'title':[['앞 잘못된 설명 뒤']]}}
+        doc=verify.ReadingPage();doc.feed('<article class="post-content"><p id="one">앞 수정한 설명 뒤</p></article>')
+        self.assertIn('correction-source-mismatch',[i['type'] for i in verify.correction_issues({'sourceId':ROOT,'corrections':[bad]},doc,{'one':block},[bad])])
+        c=converter({'one':{'type':'text','properties':{'title':[['앞 '],['잘못된 ',[['b']]],['설명 뒤', [['i']]]]}},'two':{'type':'text'}})
+        c.correction_specs=[self.edit()]
+        with self.assertRaises(ValueError):c.convert()
+
+    def test_list_supplement_is_inside_the_original_list_item(self):
+        c=converter({'one':{'type':'bulleted_list','properties':{'title':[['gzip 실습']]}},'two':{'type':'text'}})
+        c.figure_specs=[dict(FigureTests().spec('after','bulleted_list'))];out=c.convert()
+        self.assertLess(out.index('<LessonFigure'),out.index('</li>'))
+        self.assertEqual(out.count('id="one"'),1)
+
 if __name__=='__main__': unittest.main()

@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, test } from 'vitest';
 import TcpRecoveryFigure from './TcpRecoveryFigure';
 import LessonFigure from './LessonFigure';
 
@@ -59,5 +59,24 @@ describe('lesson figures without hydration', () => {
     const ids=[...html.matchAll(/\sid="([^"]+)"/g)].map(m=>m[1]);
     expect(ids.length).toBeGreaterThan(4);expect(new Set(ids).size).toBe(ids.length);
     expect(html).toContain('순환 대기');expect(html).toContain('http-nio-8080-exec-5/6');
+  });
+});
+
+
+describe('approved network and HTTP figures without hydration',()=>{
+  const cases=[
+    ['N02','500,000','12.8'],['N04','SYN/ACK','2461'],['N05','ssthresh 5','SMSS'],['N06','중복 ACK 3','RTO'],
+    ['N07','1,518','1,460'],['N08','BBRv1','pacing gain'],['N09','TCP_NODELAY=1','Nagle'],['N10','FIN 재전송','2MSL'],
+    ['N11','1 → 2 → 3 → 4','TCP'],['N12','probe 3','SO_KEEPALIVE'],['N13','handshake 1','Connection: close'],
+    ['W01','DNS','540 ms'],['W02','18,891','3,039'],['W04','304','no-store'],['W05','stream 5','바이트'],['W06','/stations?name=...','200 + []']
+  ] as const;
+  test.each(cases)('%s retains completed semantics, static steps and its source anchor',(figureId,a,b)=>{
+    const html=renderToString(createElement(LessonFigure,{figureId,sourceBlockId:'source-'+figureId}));
+    expect(html).toContain(a);expect(html).toContain(b);
+    expect(html).toContain('data-source-block-id="source-'+figureId+'"');
+    expect(html).toContain('data-ready="false"');
+    expect((html.match(/<svg /g)??[]).length).toBe(8);
+    expect((html.match(/<desc /g)??[]).length).toBe(8);
+    expect(html).not.toContain('<button');
   });
 });

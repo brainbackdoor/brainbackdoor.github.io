@@ -2,6 +2,8 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, type CSSPrope
 import AnimatedFigure from './AnimatedFigure';
 import { useFigurePlayback } from './useFigurePlayback';
 import { lessonInfo, type FigureId } from './lesson-models';
+import { networkInfo, type NetworkFigureId } from './network-models';
+import { networkRenderers } from './networkCanvas';
 import { lessonRenderers, paintLesson, type LessonFrame } from './lessonCanvas';
 
 /** Canvas and accessible SVG read the same commands and event state. */
@@ -21,9 +23,9 @@ function StaticLesson({ frame, width, title }: {frame:LessonFrame;width:number;t
   </svg>;
 }
 
-export default function LessonFigure({ figureId, sourceBlockId }: {figureId:FigureId;sourceBlockId?:string}) {
-  const info=lessonInfo.find(item=>item.id===figureId)!;
-  const renderer=lessonRenderers[figureId];
+export default function LessonFigure({ figureId, sourceBlockId }: {figureId:FigureId|NetworkFigureId;sourceBlockId?:string}) {
+  const info=[...lessonInfo,...networkInfo].find(item=>item.id===figureId)!;
+  const renderer={...lessonRenderers,...networkRenderers}[figureId];
   const wideWidth=figureId==='W03'?480:560;
   const containerRef=useRef<HTMLElement>(null);
   const plotRef=useRef<HTMLDivElement>(null);

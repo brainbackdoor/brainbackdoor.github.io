@@ -955,6 +955,21 @@
       ],
       "figures": [
         {
+          "figureId": "N04",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "2d7c4d52-3e13-4436-9c6b-9bc532cce38b",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "SYN/ACK",
+            "2461",
+            "8,192"
+          ],
+          "evidenceBlockIds": [
+            "2d7c4d52-3e13-4436-9c6b-9bc532cce38b"
+          ]
+        },
+        {
           "figureId": "N03",
           "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
           "sourceBlockId": "079ea1c3-ea90-44f9-af87-ccfe47f9954a",
@@ -970,6 +985,72 @@
             "079ea1c3-ea90-44f9-af87-ccfe47f9954a",
             "b460478a-8aa1-4152-8850-4d9414defdec"
           ]
+        },
+        {
+          "figureId": "N07",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "eb046534-d87b-4462-88ad-53418c157682",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "1,518",
+            "1,500",
+            "1,460"
+          ],
+          "evidenceBlockIds": [
+            "eb046534-d87b-4462-88ad-53418c157682"
+          ]
+        },
+        {
+          "figureId": "N05",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "f641d6a9-c9fd-4cf4-877c-6048569c63f8",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "ssthresh 5",
+            "1,460",
+            "FlightSize 10"
+          ],
+          "evidenceBlockIds": [
+            "f641d6a9-c9fd-4cf4-877c-6048569c63f8",
+            "02812a18-830d-4bca-90d2-ab6b7cac9371"
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "id": "zero-window-probe",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "3915897f-b4a3-420c-b6c0-f71c001e9d42",
+          "sourceType": "text",
+          "sourceTextSha256": "eedd2ae19392b1c2c6ddca51f056a5d44e36c46c50ae8f4c97a8edb8ee95ecda",
+          "oldText": "keep-alive 패킷",
+          "newText": "Zero Window Probe",
+          "reason": "수신 윈도 확인과 유휴 keepalive 구분",
+          "reference": "https://www.rfc-editor.org/rfc/rfc9293.html#section-3.8.6.1"
+        },
+        {
+          "id": "rto-estimator",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "e85f451f-54d3-46c1-854d-e7057b823dcc",
+          "sourceType": "text",
+          "sourceTextSha256": "be7402ebbbae544fa4872085a2c2d9540a14b6db1292b2e5ab5e6cae8d804ee7",
+          "oldText": "이 왕복시간들의 평균을 최종 RTO 값으로 결정한다.",
+          "newText": "RTO는 평활화한 RTT(SRTT)와 RTT 변동(RTTVAR)을 함께 반영하여 계산한다. 재전송 타임아웃이 반복되면 RTO를 두 배로 늘린다.",
+          "reason": "평균 RTT만으로 RTO를 정한다는 설명 보완",
+          "reference": "https://www.rfc-editor.org/rfc/rfc6298.html#section-2"
+        },
+        {
+          "id": "cwnd-byte-unit",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "1c601fc5-6488-47eb-8732-5015f8e82acb",
+          "sourceType": "text",
+          "sourceTextSha256": "fac99806f5023467725b31769aba853324e2e38e700a7d08d2b9ab56abb3d8b8",
+          "oldText": "receive window size나 send window size는 모두 byte 단위이나, cwnd (congestion window) size는 segment 수를 단위로 한다. 여기서 segment란 TCP header를 제외한 TCP payload 크기 즉, TCP MSS를 의미한다.",
+          "newText": "receive window size, send window size와 cwnd (congestion window) size는 모두 byte 단위다. 도해에서는 cwnd를 SMSS로 나눈 값을 segment 수처럼 표시할 수 있다. SMSS는 송신자가 사용하는 최대 TCP payload 크기이며 TCP header를 포함하지 않는다.",
+          "reason": "cwnd의 바이트 단위와 도해의 SMSS 단위 분리",
+          "reference": "https://www.rfc-editor.org/rfc/rfc5681.html#section-3.1"
         }
       ],
       "title": "TCP 오류복구",
@@ -1002,8 +1083,8 @@
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "outputFile": "src/content/posts/ko/tcp-error-recovery.mdx",
-      "status": "converted"
+      "status": "converted",
+      "outputFile": "src/content/posts/ko/tcp-error-recovery.mdx"
     },
     {
       "sourceId": "c6550c6d-0773-43bc-84a9-311a3de97b00",
@@ -2589,6 +2670,32 @@
           "evidenceBlockIds": [
             "eb937029-c447-4631-ac6c-ead0fd1d874c"
           ]
+        },
+        {
+          "figureId": "N02",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "262a5f0f-5540-4755-91fc-303af59bdfcf",
+          "sourceType": "text",
+          "mode": "after",
+          "requiredText": [
+            "500,000",
+            "12.8 Mbps",
+            "큐 용량"
+          ],
+          "evidenceBlockIds": []
+        }
+      ],
+      "corrections": [
+        {
+          "id": "bdp-bit-rate",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "262a5f0f-5540-4755-91fc-303af59bdfcf",
+          "sourceType": "text",
+          "sourceTextSha256": "6c0635ed12e1afc6353d74b54bf9335c2ed7e2ecbc726cfa5435a6be0f3eeb13",
+          "oldText": "10000000",
+          "newText": "100000000",
+          "reason": "100 Mbps의 bit/s 중간 표기 수정",
+          "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
         }
       ],
       "title": "bufferbloat과 buffer overflow",
@@ -2616,8 +2723,8 @@
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "outputFile": "src/content/posts/ko/95400228-c9fb-4397-ac45-281f2a6c7446.mdx",
-      "status": "converted"
+      "status": "converted",
+      "outputFile": "src/content/posts/ko/95400228-c9fb-4397-ac45-281f2a6c7446.mdx"
     },
     {
       "sourceId": "d6132043-4fd1-4960-974c-26946e0224ce",

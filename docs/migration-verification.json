@@ -33,7 +33,7 @@
       "targetPath": "/posts/95400228-c9fb-4397-ac45-281f2a6c7446",
       "checkedTextFields": 17,
       "renderedImages": 5,
-      "renderedFigures": 1,
+      "renderedFigures": 2,
       "excludedBlocks": [
         "9b4b4bc2-0738-4c27-8dd8-32170f24ebf6",
         "dae42312-7b2f-4f01-8934-2544d6af7152",
@@ -142,7 +142,7 @@
       "targetPath": "/posts/tcp-error-recovery",
       "checkedTextFields": 44,
       "renderedImages": 13,
-      "renderedFigures": 1,
+      "renderedFigures": 4,
       "excludedBlocks": [
         "07c2eb4f-c67f-41e4-9fd2-a0d48d4aa8aa",
         "c02efe3d-406a-4997-8fdb-84f9bfb5aeba",
@@ -1008,7 +1008,7 @@
   "summary": {
     "pages": 58,
     "textFields": 1806,
-    "figures": 6,
+    "figures": 10,
     "pagesWithIssues": 0,
     "brokenInternalLinks": 0,
     "unavailableSourcePages": 6,

@@ -37,6 +37,26 @@ def plain(runs):
     return ''.join(str(run[0]) for run in (runs or []) if isinstance(run, list) and run)
 
 
+def corrected_runs(block, edits):
+    runs = block.get('properties', {}).get('title', [])
+    if not edits: return runs
+    raw = plain(runs)
+    result = json.loads(json.dumps(runs))
+    for edit in edits:
+        if (block.get('type') not in {'text', 'bulleted_list', 'numbered_list'}
+                or block.get('type') != edit.get('sourceType')
+                or hashlib.sha256(raw.encode()).hexdigest() != edit.get('sourceTextSha256')):
+            raise ValueError('Correction source mismatch')
+        old, new = edit.get('oldText', ''), edit.get('newText', '')
+        if not old or not new.strip() or old == new or raw.count(old) != 1:
+            raise ValueError('Unsafe or stale correction')
+        matches = [run for run in result if isinstance(run, list) and run and old in run[0]]
+        if len(matches) != 1:
+            raise ValueError('Correction crosses source annotations')
+        matches[0][0] = matches[0][0].replace(old, new, 1)
+    return result
+
+
 def text_escape(value):
     value = html.escape(str(value), quote=False)
     # Entities survive MDX without turning source punctuation into syntax.
@@ -166,6 +186,7 @@ class Converter:
         self.report = {'sourceId': self.page_id, 'sourceUrl': entry.get('sourceUrl'), 'targetPath': entry.get('targetPath'), 'blocks': [], 'assets': [], 'unresolvedLinks': [], 'warnings': [], 'excluded': []}
         self.assets = {}
         self.figure_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text())["figures"] if item["sourceId"] == self.page_id]
+        self.correction_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text()).get("corrections", []) if item["sourceId"] == self.page_id]
         self.used_ids = Counter()
         self.block_records = {}
         self.heading_min = 3
@@ -411,13 +432,16 @@ class Converter:
             self.report.setdefault('figures', []).append(dict(spec))
             component = f'<LessonFigure figureId="{spec["figureId"]}" sourceBlockId="{block_id}" client:visible />\n\n'
             if spec['mode'] == 'after':
+                if typ in {'bulleted_list', 'numbered_list', 'to_do'}:
+                    ending = original.rfind('</li>')
+                    return original[:ending] + component + original[ending:]
                 return original + component
             source_anchor = re.match(r'<figure id="([^"]+)"', original).group(1)
             evidence = original.replace(f' id="{source_anchor}"', '', 1)
             return f'<div id="{source_anchor}">\n\n' + component + '<details className="figure-source">\n\n<summary>원본 도해</summary>\n\n' + evidence + '</details>\n\n</div>\n\n'
         evidence_ids = {key for item in self.figure_specs for key in item.get('evidenceBlockIds', [])}
         if block_id in evidence_ids and self.blocks.get(block_id, {}).get('type') == 'image':
-            return '<details className="figure-source">\n\n<summary>원본 패킷 캡처</summary>\n\n' + original + '</details>\n\n'
+            return '<details className="figure-source">\n\n<summary>원본 자료</summary>\n\n' + original + '</details>\n\n'
         return original
 
     def source_block(self, block_id, ancestors=()):
@@ -435,7 +459,10 @@ class Converter:
             self.exclude_navigation(block_id, block_id)
             return ''
         title = props.get('title', []); raw = plain(title)
-        text = self.rich(title, block_id); anchor = self.anchor(block_id)
+        edits = [edit for edit in self.correction_specs if edit['sourceBlockId'] == block_id]
+        text = self.rich(corrected_runs(b, edits), block_id); anchor = self.anchor(block_id)
+        for edit in edits:
+            if edit not in self.report.setdefault('corrections', []): self.report['corrections'].append(dict(edit))
         child_ids = b.get('content', []); ancestry = (*ancestors, block_id)
         record = {'sourceBlockId': block_id, 'type': typ, 'sourceTextChars': len(raw), 'sourceTextSha256': hashlib.sha256(raw.encode()).hexdigest(), 'status': 'converted'}
         self.report['blocks'].append(record)

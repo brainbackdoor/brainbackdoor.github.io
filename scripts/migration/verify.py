@@ -28,6 +28,8 @@ class ReadingPage(HTMLParser):
         self.current_pre = None
         self.figures = []
         self.figure_stack = []
+        self.anchor_stack = []
+        self.anchor_text = {}
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -42,6 +44,10 @@ class ReadingPage(HTMLParser):
             return
         if tag not in VOID:
             self.depth += 1
+        if attrs.get('id') and tag not in VOID:
+            record = {'id': attrs['id'], 'depth': self.depth, 'text': []}
+            self.anchor_stack.append(record)
+            self.anchor_text.setdefault(attrs['id'], []).append(record['text'])
         if tag in {'script', 'style'}:
             self.ignored += 1
         if attrs.get('data-figure-id'):
@@ -64,11 +70,13 @@ class ReadingPage(HTMLParser):
         if tag in {'script', 'style'}:
             self.ignored = max(0, self.ignored - 1)
         self.figure_stack = [record for record in self.figure_stack if record["depth"] != self.depth]
+        self.anchor_stack = [record for record in self.anchor_stack if record["depth"] != self.depth]
         self.depth -= 1
 
     def handle_data(self, text):
         if self.depth and not self.ignored:
             self.text.append(text)
+            for record in self.anchor_stack: record["text"].append(text)
             for record in self.figure_stack:
                 record["text"].append(text)
             if self.current_pre is not None:
@@ -108,6 +116,35 @@ def figure_issues(report, document, source_blocks, specs):
     return issues
 
 
+def correction_text(block, edits):
+    text = plain(block.get('properties', {}).get('title'))
+    original = text
+    for edit in edits:
+        old, new = edit.get('oldText', ''), edit.get('newText', '')
+        if (block.get('type') not in {'text', 'bulleted_list', 'numbered_list'}
+                or block.get('type') != edit.get('sourceType')
+                or hashlib.sha256(original.encode()).hexdigest() != edit.get('sourceTextSha256')
+                or not old or not new.strip() or old == new or text.count(old) != 1):
+            raise ValueError('Correction source mismatch')
+        text = text.replace(old, new, 1)
+    return text
+
+
+def correction_issues(report, document, source_blocks, specs):
+    issues = []
+    groups = {}
+    for edit in specs:
+        if edit['sourceId'] == report.get('sourceId'): groups.setdefault(edit['sourceBlockId'], []).append(edit)
+    for block_id, edits in groups.items():
+        def issue(kind): issues.append({'type': kind, 'blockId': block_id})
+        try: expected = normalized(correction_text(source_blocks.get(block_id, {}), edits))
+        except ValueError: issue('correction-source-mismatch'); continue
+        if any(edit not in report.get('corrections', []) for edit in edits): issue('correction-not-traced')
+        scoped = [normalized(''.join(text)) for text in document.anchor_text.get(block_id, [])]
+        if not scoped or any(expected not in text for text in scoped): issue('correction-text-missing')
+    return issues
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--inventory', type=Path, default=ROOT / 'docs/migration-inventory.json')
@@ -116,7 +153,9 @@ def main():
     parser.add_argument('--report', type=Path, default=ROOT / 'docs/migration-verification.json')
     parser.add_argument('--only', help='Verify one source UUID while checking all built internal links')
     args = parser.parse_args()
-    figure_specs = json.loads((ROOT / 'docs/migration-figures.json').read_text())['figures']
+    registry = json.loads((ROOT / 'docs/migration-figures.json').read_text())
+    figure_specs = registry['figures']
+    correction_specs = registry.get('corrections', [])
     inventory_data = json.loads(args.inventory.read_text())
     inventory = inventory_data['pages']
     source_blocks = {}
@@ -146,6 +185,7 @@ def main():
             continue
         document = built[output]
         issues.extend(figure_issues(report, document, source_blocks, figure_specs))
+        issues.extend(correction_issues(report, document, source_blocks, correction_specs))
         body = normalized(''.join(document.text))
         checked = 0
         excluded = []
@@ -187,6 +227,10 @@ def main():
                 fields = ['caption', 'description']
             for field in fields:
                 text = plain(props.get(field))
+                edits = [edit for edit in correction_specs if edit['sourceId'] == entry['sourceId'] and edit['sourceBlockId'] == item['sourceBlockId']] if field == 'title' else []
+                if edits:
+                    try: text = correction_text(block, edits)
+                    except ValueError: continue  # Explicit correction-source-mismatch is reported above.
                 expected = normalized(text)
                 if not expected:
                     continue

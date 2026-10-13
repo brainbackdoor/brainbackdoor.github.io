@@ -76,7 +76,9 @@ import LessonFigure from "../../../components/figures/LessonFigure";
 
 <p id="be53f3d9-5a2f-41e0-bd67-9d724020f65d">예를 들어 병목구간이 100Mbps Ethernet이고, Client와 서버의 RTT는 40ms 상황을 가정해보면,</p>
 
-<p id="262a5f0f-5540-4755-91fc-303af59bdfcf">100Mbps(bandwidth, 처리량) &#42; 40ms(delay, RTT) = 10000000 &#42; 0&#46;04 = 4000000 bits = 500Kbytes</p>
+<p id="262a5f0f-5540-4755-91fc-303af59bdfcf">100Mbps(bandwidth, 처리량) &#42; 40ms(delay, RTT) = 100000000 &#42; 0&#46;04 = 4000000 bits = 500Kbytes</p>
+
+<LessonFigure figureId="N02" sourceBlockId="262a5f0f-5540-4755-91fc-303af59bdfcf" client:visible />
 
 <p id="c4082dd3-f9f8-4be3-9723-06e2e8d8abe4">즉, 이 경우 100Mbps 속도로 40ms 동안 보낼 수 있는 데이터가 500Kbytes이기 때문에 Window size가 500Kbytes로 끊김없이 서버에서 계속 데이터를 보낼 경우, 병목구간 100Mbps를 하나의 세션이 모두 사용하게 된다&#46; 이와 같이 병목구간의 bandwidth를 최대한 다 사용할 수 있는 window size를 BDP(Bandwidth Delay Product)라 한다&#46;</p>
 

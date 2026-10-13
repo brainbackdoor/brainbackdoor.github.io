@@ -45,7 +45,7 @@
 .animated-figure--preview .tcp-figure__plot canvas,
 .animated-figure--preview .tcp-figure__fallback { height: 246px; }
 
-/* Shared by the six approved lesson drawings; coordinates remain topic-specific. */
+/* Shared by the approved lesson drawings; coordinates remain topic-specific. */
 .lesson-plot,.lesson-step-plot{position:relative;width:100%;height:var(--lesson-wide-height);min-width:0}
 .lesson-plot canvas,.lesson-static{position:absolute;inset:0;width:100%;height:100%}
 .lesson-plot canvas{visibility:hidden;display:block;margin:0;border:0}

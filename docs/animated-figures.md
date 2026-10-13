@@ -559,3 +559,5 @@ import LessonFigure from '../../../components/figures/LessonFigure';
 Minor 중 오래된 상태 설명은 갱신했다. 공통 CSS 토큰과 도해 팔레트 연결은 후속 공통 스타일 정비로 남긴다. 이번 6종은 승인한 밝은 배경 시안의 고정 팔레트를 Canvas와 SSR SVG에서 공유하며, 글자 대비를 자동 검사한다. 토큰 변경이 도해에 자동 반영되지 않는 한계는 남아 있다.
 
 최종 자동 검증: Vitest 88개·Python 23개 통과, Astro 검사 오류/경고/힌트 0, 332페이지 빌드 성공. 공개 58편의 1,806개 본문 항목과 도해 6개를 대조하여 누락·깨진 내부 링크 0. 기존 수집 불가 원문 6개·에셋 6개는 이전과 동일하다. 임시 변환 보고서의 에셋 SHA-256을 잘못된 값으로 바꾸면 검증기가 `asset-hash-mismatch`와 exit 1을 반환하는 것도 확인했다. 원본 에셋은 수정하지 않았다.
+
+운영 배포: [Actions 38363891789](https://github.com/brainbackdoor/brainbackdoor.github.io/actions/runs/38363891789) 성공 후 HTTPS의 해당 6편을 확인했다. 원래 앵커·중복 없는 DOM ID·Canvas 준비/재생·버튼 없음·근거 접힘이 유지된다. 홈 미리보기도 재생된다. 운영 S03의 실제 320px 화면은 plot 235px·높이 654px이며 가로 넘침이 없다. 후속 B03의 네트워크·HTTP 16종은 상세 명세와 새 시안부터 진행한다.

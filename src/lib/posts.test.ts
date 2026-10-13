@@ -10,6 +10,7 @@ import {
   parseEntryId,
   postsWithTag,
   relatedPosts,
+  shouldShowOriginalLink,
   sortByDateDesc,
 } from './posts';
 
@@ -225,6 +226,29 @@ describe('postsWithTag', () => {
   });
 });
 
+describe('shouldShowOriginalLink', () => {
+  const original = 'https://www.brainbackdoor.com/old-post';
+
+  it('keeps original links on GitHub Pages and local previews', () => {
+    expect(shouldShowOriginalLink(original, new URL('https://brainbackdoor.github.io'))).toBe(true);
+    expect(shouldShowOriginalLink(original, new URL('http://localhost:4321'))).toBe(true);
+  });
+
+  it('hides original links after either original hostname becomes the site domain', () => {
+    expect(shouldShowOriginalLink(original, new URL('https://www.brainbackdoor.com'))).toBe(false);
+    expect(shouldShowOriginalLink(original, new URL('https://brainbackdoor.com'))).toBe(false);
+    expect(shouldShowOriginalLink('https://brainbackdoor.com/old-post', new URL('https://www.brainbackdoor.com'))).toBe(false);
+    expect(shouldShowOriginalLink('https://brainbackdoor.notion.site/project', new URL('https://brainbackdoor.com'))).toBe(true);
+  });
+
+  it('omits absent or invalid sources', () => {
+    for (const source of [undefined, '', '/old-post', 'javascript:alert(1)']) {
+      expect(shouldShowOriginalLink(source, undefined)).toBe(false);
+    }
+    expect(shouldShowOriginalLink(original, undefined)).toBe(true);
+  });
+});
+
 describe('legacyRedirects', () => {
   const source = (over: Partial<LegacySourcePage> = {}): LegacySourcePage => ({
     sourceId: '12345678-1234-1234-1234-123456789abc',
@@ -260,6 +284,35 @@ describe('legacyRedirects', () => {
     ], available)).toEqual([]);
   });
 
+  it('maps collected project reference aliases only to the verified public Notion host', () => {
+    const referenceUrl = 'https://brainbackdoor.notion.site/Project-12345678123412341234123456789abc';
+    const project = source({ targetPath: null, contentRole: 'project-reference', referenceUrl });
+    expect(legacyRedirects([project], available)).toEqual([
+      { path: '/12345678-1234-1234-1234-123456789abc', targetPath: referenceUrl },
+      { path: '/old-post', targetPath: referenceUrl },
+    ]);
+    expect(legacyRedirects([{ ...project, collectionStatus: 'not_found' }], available)).toEqual([]);
+    expect(legacyRedirects([{ ...project, contentRole: 'post' }], available)).toEqual([]);
+    for (const invalid of [undefined, 'http://brainbackdoor.notion.site/project', '//brainbackdoor.notion.site/project',
+      'https://outside.example/project', 'https://brainbackdoor.notion.site.outside.example/project',
+      'https://user@brainbackdoor.notion.site/project', 'https://brainbackdoor.notion.site:8443/project']) {
+      expect(legacyRedirects([{ ...project, referenceUrl: invalid }], available)).toEqual([]);
+    }
+  });
+
+  it('includes both Chaak aliases in the inventory redirect set used by sitemap exclusion', () => {
+    const inventory = JSON.parse(readFileSync(new URL('../../docs/migration-inventory.json', import.meta.url), 'utf8'));
+    const pages = inventory.pages as LegacySourcePage[];
+    const targets = new Set(pages.flatMap(page => page.collectionStatus === 'collected' && page.targetPath
+      ? [page.targetPath.split(/[?#]/, 1)[0]] : []));
+    const redirects = legacyRedirects(pages, targets);
+    const project = pages.find(page => page.sourceId === '1c790d37-083f-80e3-aeed-c41e19904cc8')!;
+    for (const path of ['/1c790d37-083f-80e3-aeed-c41e19904cc8', '/1c790d37083f80e3aeedc41e19904cc8']) {
+      expect(redirects.find(item => item.path === path)?.targetPath).toBe(project.referenceUrl);
+      expect(targets.has(path)).toBe(false);
+    }
+  });
+
   it('fails on an ambiguous source alias instead of silently directing readers to a different post', () => {
     expect(() => legacyRedirects([source(), source({ sourceId: 'another-id', targetPath: '/posts/another' })], available)).toThrow('Conflicting legacy path');
   });
@@ -293,8 +346,18 @@ describe('static legacy redirect script', () => {
   it('never treats a fragment as another origin and rejects external targets', () => {
     expect(redirect('/posts/original', '#https://outside.example'))
       .toEqual(['https://blog.example/posts/original#https://outside.example']);
-    for (const path of ['//outside.example', '/\\outside.example', 'https://outside.example']) {
+    for (const path of ['//outside.example', '/\\outside.example', 'https://outside.example',
+      'http://brainbackdoor.notion.site/project', '//brainbackdoor.notion.site/project',
+      'https://brainbackdoor.notion.site.outside.example/project',
+      'https://user@brainbackdoor.notion.site/project', 'https://brainbackdoor.notion.site:8443/project']) {
       expect(redirect(path)).toEqual([]);
     }
+  });
+
+  it('preserves section bookmarks for the permitted public project reference', () => {
+    const project = 'https://brainbackdoor.notion.site/Project-12345678123412341234123456789abc';
+    expect(redirect(project)).toEqual([project]);
+    expect(redirect(project, '#section')).toEqual([project + '#section']);
+    expect(redirect(project + '#default', '#section')).toEqual([project + '#section']);
   });
 });

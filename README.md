@@ -34,7 +34,7 @@ src/
 
 ## 설계 문서
 
-- [기존 블로그 전체 콘텐츠 이전](docs/content-migration.md) — 다음 작업 순서, 현재 샘플 상태, 원문 보존·검수 기준
+- [기존 블로그 전체 콘텐츠 이전](docs/content-migration.md) — 이전 대상, 원문 검수 결과, 배포와 도메인 전환 상태
 - [본문 애니메이션 도해 작성 가이드](docs/animated-figures.md) — 공통 스타일, 시간·재생 규칙, 새 에셋 작성 템플릿과 검수 기준
 - [기존 설계 문서](docs/superpowers/specs/)
 

@@ -7,7 +7,7 @@ import AdjacentNav from './AdjacentNav.astro';
 import ReadingProgress from './ReadingProgress.astro';
 import CodeCopyButton from './CodeCopyButton.astro';
 import { loadPosts, toSummary } from '../lib/collection';
-import { adjacentPosts, relatedPosts } from '../lib/posts';
+import { adjacentPosts, relatedPosts, shouldShowOriginalLink } from '../lib/posts';
 import '../styles/post-content.css';
 
 interface Props {
@@ -31,7 +31,7 @@ const { prev, next } = adjacentPosts(post, pool);
       <div class="prose post-content">
         <Content />
       </div>
-      {post.sourceUrl && <p class="post-source" data-pagefind-ignore><a href={post.sourceUrl}>{lang === 'en' ? 'Original post' : '기존 블로그 원문'} ↗</a></p>}
+      {shouldShowOriginalLink(post.sourceUrl, Astro.site) && <p class="post-source" data-pagefind-ignore><a href={post.sourceUrl}>{lang === 'en' ? 'Original post' : '기존 블로그 원문'} ↗</a></p>}
     </article>
     <TableOfContents headings={headings} lang={lang} variant="desktop" />
   </div>

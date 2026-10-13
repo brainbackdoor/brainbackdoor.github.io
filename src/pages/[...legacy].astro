@@ -32,9 +32,13 @@ canonical.hash = '';
       // Fragments never reach the server. Preserve a bookmarked section here;
       // otherwise keep the collection-row fragment in the verified target.
       const path = document.currentScript?.getAttribute('data-target');
-      if (path?.startsWith('/') && !path.startsWith('//') && !path.includes('\\')) {
+      if (path && !path.includes('\\')) {
         const target = new URL(path, location.origin);
-        if (target.origin === location.origin) {
+        const internal = path.startsWith('/') && !path.startsWith('//') && target.origin === location.origin;
+        const projectReference = path.startsWith('https://') && target.protocol === 'https:'
+          && target.hostname === 'brainbackdoor.notion.site'
+          && !target.username && !target.password && !target.port;
+        if (internal || projectReference) {
           if (location.hash) target.hash = location.hash;
           location.replace(target.href);
         }

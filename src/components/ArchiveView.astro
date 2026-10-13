@@ -2,9 +2,11 @@
 import CategoryFilter, { type FilterablePost } from './CategoryFilter';
 import { loadPosts } from '../lib/collection';
 import { postDate, getYear } from '../lib/date';
+import { shouldShowOriginalLink } from '../lib/posts';
 
 interface Props { lang: string; }
 const { lang } = Astro.props;
+const originalBlogUrl = 'https://www.brainbackdoor.com/';
 const posts = await loadPosts(lang);
 const items: FilterablePost[] = posts.map((post) => ({
   title: post.title,
@@ -24,7 +26,7 @@ const items: FilterablePost[] = posts.map((post) => ({
 <div class="archive-page">
   <header class="archive-intro"><h1>{lang === 'en' ? 'Posts' : '글'}</h1></header>
   <CategoryFilter posts={items} lang={lang} client:load />
-  <div class="archive-end"><a href="https://www.brainbackdoor.com/">{lang === 'en' ? 'Original blog ↗' : '기존 블로그 ↗'}</a></div>
+  {shouldShowOriginalLink(originalBlogUrl, Astro.site) && <div class="archive-end"><a href={originalBlogUrl}>{lang === 'en' ? 'Original blog ↗' : '기존 블로그 ↗'}</a></div>}
 </div>
 
 <style>

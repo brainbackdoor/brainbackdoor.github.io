@@ -102,6 +102,9 @@ class ConversionTests(unittest.TestCase):
         self.assertEqual(c.target(f'/{ROOT}#section'),'/posts/parent#section')
         c.pages[ROOT].update(targetPath=None,contentRole='project-reference',sourceUrl=f'https://www.brainbackdoor.com/{ROOT}')
         self.assertEqual(c.target('/'+ROOT.replace('-','')+'?pvs=25'),f'https://www.brainbackdoor.com/{ROOT}')
+        c.pages[ROOT]['referenceUrl']=f'https://brainbackdoor.notion.site/Project-{ROOT.replace("-", "")}'
+        self.assertEqual(c.target('/'+ROOT.replace('-','')+'?pvs=25'),c.pages[ROOT]['referenceUrl'])
+        self.assertEqual(c.target(f'/{ROOT}#section'),c.pages[ROOT]['referenceUrl']+'#section')
         self.assertEqual(c.report['unresolvedLinks'],[])
 
     def test_gallery_oopy_link_and_created_date_are_preserved(self):

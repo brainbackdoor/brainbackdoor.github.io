@@ -236,7 +236,8 @@ class Converter:
                 if page and page.get('contentRole') == 'project-reference':
                     # This is a separately linked project, not an uncollected post.
                     # Use its verified public URL; compact Notion variants may fall back home.
-                    return page['sourceUrl'] + (f'#{parsed.fragment}' if parsed.fragment else '')
+                    reference_url = page.get('referenceUrl') or page['sourceUrl']
+                    return reference_url + (f'#{parsed.fragment}' if parsed.fragment else '')
                 if parsed.netloc.lower() in ['www.brainbackdoor.com','brainbackdoor.com','www.notion.so','notion.so'] or not parsed.netloc:
                     self.report['unresolvedLinks'].append({'blockId': block_id, 'sourceId': page_id, 'sourceUrl': url})
                 return urljoin(self.entry.get('sourceUrl') or 'https://www.brainbackdoor.com/', url)

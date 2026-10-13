@@ -1,6 +1,6 @@
 # 기존 블로그 전체 콘텐츠 이전
 
-상태: 2026-10-12 공개 본문 58개 이전 및 로컬 검수 완료. 원본 수집 예외는 아래에 기록했으며 배포는 후속 단계다. 디자인 기준점은 `6d21f8a` 커밋이다.
+상태: 2026-10-13 공개 본문 58개를 GitHub Pages에 배포했다. 원본 수집 예외는 아래에 기록했으며, 기존 도메인 전환은 가비아 DNS 관리 접근을 기다리고 있다. 디자인 기준점은 `6d21f8a` 커밋이다.
 
 ## 작업 목록
 
@@ -14,7 +14,11 @@
 - [x] 원문 텍스트·코드·에셋 전수 자동 대조
 - [x] 긴 글·표·접기·모바일 실제 화면 검수
 - [x] 원본 수집 예외와 외부 자료 정리
-- [ ] 배포 및 도메인 전환 (후속 단계)
+- [x] Oopy 상단 YAML 제거 커밋 (`a195c24`)
+- [x] GitHub Pages 배포 및 실제 주소 검수
+- [x] Chaak 참조의 도메인 독립 공개 Notion 주소 확인
+- [x] Chaak 기존 주소 2개 연결 및 도메인 전환 시 원문 링크 숨김 처리
+- [ ] 기존 도메인 DNS·Pages 설정 및 HTTPS 전환
 
 상세 대상은 `migration-inventory.json`, 변환 기록은 `migration-conversion-report.json`, 빌드 결과의 원문 대조는 `migration-verification.json`에 기록한다. 원본 Notion 응답은 저장소 밖 임시 캐시에 두며, 공개 본문·필요 에셋만 저장소에 포함한다.
 
@@ -25,16 +29,16 @@
 - 이미지·첨부파일 392개(113,976,062바이트)를 로컬에 저장했고 SHA-256을 대조했다.
 - 본문의 로컬 이미지 378개에 원본 크기를 지정해 지연 로딩 중에도 공간을 확보한다. 표의 미리보기 크기도 고정해 기존 주소의 본문 위치가 이미지 로딩 후 밀리지 않도록 했다. 원본 파일은 재인코딩하지 않았다.
 - 원문 텍스트 필드 1,872개를 빌드된 HTML과 대조했다. 누락 0개, 내부 링크·앵커 오류 0개.
-- 타입 검사 오류·경고·힌트 0개, Vitest 73개와 변환기 테스트 13개 통과, 정적 빌드 성공.
+- 타입 검사 오류·경고·힌트 0개, Vitest 79개와 변환기 테스트 13개 통과, 정적 빌드 성공.
 - 실제 화면에서 58개 목록, 분류 14개 → TCP 검색 3개, 전체 본문의 ‘혼잡제어’ 검색, 390px 본문 및 320px 코드·표의 가로 넘침과 코드 복사를 확인했다.
-- 기존 주소 264개를 새 지면으로 연결한다. JavaScript가 활성화된 경우 기존 본문 해시를 보존하고, 비활성인 경우 meta 이동·일반 링크를 제공한다. 정적 HTML 이동이며 서버 HTTP 301을 보장하지 않는다. 이전 주소는 사이트맵과 검색 결과에서 제외한다.
+- 기존 주소 266개를 연결한다. 내부 지면 264개와 Chaak 공개 Notion 원문으로 이동하는 2개다. JavaScript가 활성화된 경우 기존 본문 해시를 보존하고, 비활성인 경우 meta 이동·일반 링크를 제공한다. 정적 HTML 이동이며 서버 HTTP 301을 보장하지 않는다. 이전 주소는 사이트맵과 검색 결과에서 제외한다.
 - 원본 작성일이 있는 44편과 생성일만 있는 14편을 구분해 표시했다. 세부 근거는 아래 ‘날짜 근거’를 따른다.
 
 원본에서 복구되지 않는 자료를 임의로 채우지 않았다.
 
 - `migration-inventory.json`의 `failures` 6건: HTTP 404 2건과 홈으로 돌아가는 주소 변형 4건. 본문에서 해당 주소가 쓰인 경우 원본 링크를 유지한다. 이를 새 글의 정상 경로로 연결하지 않는다.
 - 북마크 썸네일 6개: TCP 성능, TCP keep-alive, 2019년 회고, 200 vs 404, 2021년 회고, 2022~2023년 회고의 외부 미리보기 이미지. 제목·설명·링크는 모두 보존하고 깨진 이미지 출력만 생략했다. 본문 이미지나 첨부파일 누락은 없다.
-- Chaak는 별도 프로젝트이므로 게시글로 중복 이전하지 않고 확인된 원본 주소로 연결한다.
+- Chaak는 별도 프로젝트이므로 게시글로 중복 이전하지 않고 공개 Notion 주소로 연결한다. 원본 수집 주소는 `sourceUrl`, 로그인 없이 실제 본문을 확인한 도메인 독립 주소는 `referenceUrl`로 구분한다.
 - Oopy 표시·SEO 설정과 Darass 댓글 삽입 코드 등 설정 블록 58개는 독자 본문에서 제외했다. 제목·설명·OG 이미지 키가 추가된 상단 YAML도 제외하며, 기술 글의 YAML 실습 코드는 보존한다. 정확한 블록 ID·해시·이유를 변환 보고서에 남겼다. 초대장의 실제 링크·방명록·갤러리 이미지는 보존한다.
 - 외부 서비스의 로그인 필요 자료와 댓글 데이터 자체는 복제하지 않는다. 기존 링크와 공개 임베드를 통해 접근한다.
 
@@ -51,6 +55,25 @@ python3 scripts/migration/verify.py
 `verify.py`는 저장소 밖 원본 캐시(`/private/tmp/brainbackdoor-migration/pages`)와 변환 보고서가 필요하다. 캐시가 사라졌다면 `collect.py`로 공개 원문을 다시 수집한 뒤 검사한다. 원본이 바뀌었을 수 있으므로 재수집 결과를 이전 시점의 동일 스냅샷으로 취급하지 않는다. `convert.py --only <sourceId>`로 한 글만 다시 변환할 수 있다.
 
 `convert.py --refresh-image-dimensions`는 네트워크 요청 없이 로컬 이미지의 크기 속성과 보고서만 갱신한다. `verify.py`는 빌드된 본문 이미지의 크기 지정 여부도 검사한다.
+
+## 배포와 도메인 전환
+
+- 현재 공개 주소: [brainbackdoor.github.io](https://brainbackdoor.github.io/)
+- 최초 이전 배포: `a195c24`, [GitHub Actions 성공 기록](https://github.com/brainbackdoor/brainbackdoor.github.io/actions/runs/38334881615)
+- 실제 공개 주소에서 홈 애니메이션, 58개 글 목록, 인프라 분류 및 TCP 검색 3개, 전체 본문의 ‘혼잡제어’ 검색, 원본 이미지, 기존 TCP 주소와 본문 위치 이동, Oopy YAML 제거를 확인했다.
+- GitHub Pages는 Actions 배포와 HTTPS가 활성화되어 있다. 현재 custom domain은 미설정이다.
+- 기존 도메인을 `site`로 설정하면 ‘기존 블로그’·‘기존 블로그 원문’ 링크는 자동으로 숨긴다. Chaak의 본문 참조와 두 UUID 주소는 기존 도메인에 의존하지 않는 공개 Notion 원문을 사용한다.
+- 2026-10-13 공개 DNS 조회: 네임서버는 `ns.gabia.co.kr`, `ns1.gabia.co.kr`, `ns.gabia.net`, `www` CNAME은 `notion2.oopy.io`, 루트 A는 `167.99.28.202`다. 현재 로그인된 가비아 세션이 없어 DNS는 변경하지 않았다.
+
+기존 대표 주소 `www.brainbackdoor.com`을 유지하는 전환 순서:
+
+1. My가비아 → DNS 관리툴에서 기존 레코드와 TTL을 확인·보관한다. 네임서버 및 메일용 레코드는 변경 대상이 아니다.
+2. `astro.config.mjs`의 `site`와 `public/robots.txt`의 사이트맵 주소를 `https://www.brainbackdoor.com`으로 맞추고 빌드한다. canonical·RSS·OG는 `site`를 따른다.
+3. GitHub Pages의 Custom domain에 `www.brainbackdoor.com`을 등록하고 준비된 빌드를 배포한다. DNS 접근이 준비되기 전에 등록하면 github.io 방문자가 아직 전환되지 않은 주소로 이동할 수 있으므로 함께 진행한다.
+4. `www` CNAME을 `brainbackdoor.github.io.`로 변경하고 루트 A를 `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`으로 교체한다.
+5. DNS 해석과 인증서 발급을 확인한 뒤 Enforce HTTPS를 확인하고 루트 → www 이동, 글·검색·이미지·기존 주소를 다시 검수한다.
+
+설정 근거: [GitHub 공식 커스텀 도메인 안내](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site), [가비아 DNS 관리 안내](https://customer.gabia.com/faq/detail/3041/3040). 전환에 문제가 생기면 보관한 DNS와 기존 Oopy 연결을 복구하고 Pages의 custom domain·사이트 메타데이터를 github.io로 되돌린다.
 
 ## 현재 상태
 

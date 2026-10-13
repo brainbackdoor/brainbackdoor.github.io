@@ -129,6 +129,19 @@ export function postsWithTag(posts: PostSummary[], tag: string): PostSummary[] {
   return sortByDateDesc(posts.filter((p) => p.tags.includes(tag)));
 }
 
+/** The old source becomes a self-link after the custom domain is transferred. */
+export function shouldShowOriginalLink(sourceUrl: string | undefined, site: URL | undefined): boolean {
+  if (!sourceUrl) return false;
+  try {
+    const source = new URL(sourceUrl);
+    if (!['https:', 'http:'].includes(source.protocol)) return false;
+    const hostname = (url: URL) => url.hostname.replace(/^www\./, '');
+    return !site || hostname(source) !== hostname(site);
+  } catch {
+    return false;
+  }
+}
+
 /** Public source paths from the migration inventory; original-host operations are separate. */
 export interface LegacySourcePage {
   sourceId: string;
@@ -136,6 +149,8 @@ export interface LegacySourcePage {
   aliases: string[];
   targetPath: string | null;
   collectionStatus: string;
+  contentRole?: string;
+  referenceUrl?: string;
 }
 
 const OWNED_ROUTE_ROOTS = new Set([
@@ -157,8 +172,20 @@ function legacyPath(value: string): string | null {
   }
 }
 
+function projectReferenceUrl(value: string | undefined): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    if (url.protocol !== 'https:' || url.hostname !== 'brainbackdoor.notion.site'
+      || url.username || url.password || url.port) return null;
+    return url.href;
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Only create aliases for collected content whose new route actually exists.
+ * Create aliases for collected content with a generated route or a verified public project reference.
  * Existing app route namespaces always win; conflicting source aliases fail the build.
  */
 export function legacyRedirects(
@@ -167,11 +194,15 @@ export function legacyRedirects(
 ): { path: string; targetPath: string }[] {
   const redirects = new Map<string, string>();
   for (const page of pages) {
-    const target = page.targetPath;
-    if (page.collectionStatus !== 'collected' || !target) continue;
-    if (!target.startsWith('/') || target.startsWith('//')) continue;
-    const targetPage = target.split(/[?#]/, 1)[0];
-    if (!availableTargets.has(targetPage)) continue;
+    if (page.collectionStatus !== 'collected') continue;
+    const reference = page.contentRole === 'project-reference' ? projectReferenceUrl(page.referenceUrl) : null;
+    const target = reference ?? page.targetPath;
+    if (!target) continue;
+    if (!reference) {
+      if (!target.startsWith('/') || target.startsWith('//')) continue;
+      const targetPage = target.split(/[?#]/, 1)[0];
+      if (!availableTargets.has(targetPage)) continue;
+    }
     for (const alias of [page.sourceUrl, `/${page.sourceId}`, ...page.aliases]) {
       const path = legacyPath(alias);
       if (!path || OWNED_ROUTE_ROOTS.has(path.split('/')[1]) || path === target) continue;

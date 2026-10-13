@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://brainbackdoor.github.io/sitemap-index.xml
+Sitemap: https://www.brainbackdoor.com/sitemap-index.xml

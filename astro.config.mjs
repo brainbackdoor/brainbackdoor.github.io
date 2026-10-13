@@ -17,10 +17,9 @@ const legacyPaths = new Set(legacyRedirects(migrationPages, canonicalPaths)
   .map(({ path }) => path)
   .filter(path => !canonicalPaths.has(path)));
 
-// 사용자 사이트(brainbackdoor.github.io)라 base path가 없다.
-// 프로젝트 사이트로 옮기게 되면 base: '/blog' 를 추가해야 한다.
+// 사용자 사이트와 커스텀 도메인 모두 루트에서 제공하므로 base path가 없다.
 export default defineConfig({
-  site: 'https://brainbackdoor.github.io',
+  site: 'https://www.brainbackdoor.com',
   integrations: [
     react(),
     // 원문 이전 시 따옴표·대시 등 문장 부호를 자동 치환하지 않는다.

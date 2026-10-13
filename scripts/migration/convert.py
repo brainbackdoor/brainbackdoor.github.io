@@ -185,6 +185,49 @@ class Converter:
     def issue(self, kind, block_id, **extra):
         self.report['warnings'].append({'kind': kind, 'blockId': block_id, **extra})
 
+    def legacy_navigation(self, block):
+        """Recognize the original three-column previous/source/next toolbar."""
+        if block.get('type') != 'column_list' or len(block.get('content', [])) != 3:
+            return False
+        labels = []
+        for column_id in block['content']:
+            column = self.blocks.get(canonical_id(column_id), {})
+            if column.get('type') != 'column': return False
+            leaves = [self.blocks.get(canonical_id(child), {}) for child in column.get('content', [])]
+            if not leaves or any(leaf.get('content') for leaf in leaves): return False
+            nonempty = [leaf for leaf in leaves if plain(leaf.get('properties', {}).get('title')).strip() or leaf.get('type') != 'text']
+            if len(nonempty) != 1: return False
+            labels.append(nonempty[0])
+        previous, source, following = labels
+        if previous.get('type') != 'text' or following.get('type') != 'text': return False
+        if not re.fullmatch(r'[⬅←]\ufe0f?\s*이전\s*글\s*:.*', plain(previous.get('properties', {}).get('title')).strip()): return False
+        if not re.fullmatch(r'[➡→]\ufe0f?\s*다음\s*글\s*:.*', plain(following.get('properties', {}).get('title')).strip()): return False
+        if source.get('type') == 'text':
+            runs = source.get('properties', {}).get('title', [])
+            return plain(runs).strip() == '‣' and any(
+                decoration[0] == 'p' for run in runs for decoration in (run[1] if len(run) > 1 else []))
+        if source.get('type') == 'alias':
+            pointer = source.get('format', {}).get('alias_pointer', {})
+            target = self.blocks.get(canonical_id(pointer.get('id', '')), {})
+            return bool(pointer.get('id')) and target.get('type') in [None, 'page']
+        return False
+
+    def exclude_navigation(self, block_id, group_id, seen=None):
+        """Keep source coverage and hashes for every removed toolbar block."""
+        if seen is None: seen = set()
+        block_id = canonical_id(block_id)
+        if block_id in seen: return
+        seen.add(block_id)
+        block = self.blocks[block_id]
+        raw = plain(block.get('properties', {}).get('title'))
+        self.report['blocks'].append({'sourceBlockId': block_id, 'type': block.get('type'),
+            'sourceTextChars': len(raw), 'sourceTextSha256': hashlib.sha256(raw.encode()).hexdigest(),
+            'status': 'excluded-legacy-navigation', 'navigationGroupId': group_id})
+        self.report['excluded'].append({'sourceBlockId': block_id, 'type': block.get('type'),
+            'reason': 'Original previous/source/next toolbar removed from the article at the owner\'s request.',
+            'navigationGroupId': group_id})
+        for child in block.get('content', []): self.exclude_navigation(child, group_id, seen)
+
     def hidden_configuration(self, block_id, block):
         raw = plain(block.get('properties', {}).get('title')).strip()
         oopy_controls = {'disqus', 'kakaoChannel', 'floatFirstTOC', 'ignoreMainOgImage'}
@@ -364,6 +407,9 @@ class Converter:
             self.issue('inaccessible-source-block',block_id)
             return f'<p><a href="https://www.brainbackdoor.com/{block_id}">https://www.brainbackdoor.com/{block_id}</a></p>\n\n'
         typ = b.get('type', 'unknown'); props = b.get('properties') or {}; fmt = b.get('format') or {}
+        if self.legacy_navigation(b):
+            self.exclude_navigation(block_id, block_id)
+            return ''
         title = props.get('title', []); raw = plain(title)
         text = self.rich(title, block_id); anchor = self.anchor(block_id)
         child_ids = b.get('content', []); ancestry = (*ancestors, block_id)
@@ -597,6 +643,7 @@ class Converter:
         def candidates(ids):
             for block_id in ids:
                 block=self.blocks.get(canonical_id(block_id),{}); raw=plain(block.get('properties',{}).get('title')).strip()
+                if self.legacy_navigation(block): continue
                 hidden=self.hidden_configuration(canonical_id(block_id),block)
                 if not hidden and block.get('type') in ['text','quote','callout','bulleted_list','numbered_list'] and raw and '‣' not in raw and not re.match(r'^[⬅➡←→]|.*(?:이전 글|다음 글)',raw):
                     yield raw

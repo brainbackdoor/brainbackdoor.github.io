@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-12T07:03:50.164603+00:00",
+  "generatedAt": "2026-10-13T04:49:52.458322+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -20,56 +20,64 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "ad62799a-7efb-4ea3-8b9c-a4708fd0de4a",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "28b5bff1-374c-4186-836b-377236bc7b14",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "fb7a7b24-c2a6-4e33-9f63-b7e24c04166c",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "e5176fde-f5b1-4e27-a928-4adbdc0a8f71",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "289b36f5-b646-40b5-bf7d-30d59e4810f1",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "5fa44943-7b52-468b-881d-ce72e203a23b",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "ca751637574b0f3f054c72e9b60dc1997567337b2639c798941281ef3540d4d2",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "0cc738e8-d35a-4fdf-9ba8-75c4550c098e",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "a5239da9-d224-4e1e-ae93-f04ac77123ac",
@@ -601,63 +609,72 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "6a11c50f-95bb-4e12-a753-5e0a9ed0462b",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "ecb027c2-f723-4282-95ee-38b50112e532",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "2091dc98-e3a3-4304-a9cd-53fbdf0b4e52",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "1068ef39-60a9-40cd-a01b-4fae9b9927c1",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "8805b780-c419-4d78-af5e-49b9d5273765",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "c2e9917e-f040-4e70-b6c5-9703e57f6b21",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "ca751637574b0f3f054c72e9b60dc1997567337b2639c798941281ef3540d4d2",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "8eeb38c4-2aab-4876-9940-b9388340edd0",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "ab00b20b-9479-47fb-9dc5-325abac579c9",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         },
         {
           "sourceBlockId": "34cc7fbd-290d-4b83-b625-f0976ab54f5b",
@@ -820,40 +837,120 @@
           "height": 325
         }
       ],
-      "unresolvedLinks": [
-        {
-          "blockId": "e5176fde-f5b1-4e27-a928-4adbdc0a8f71",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
-        {
-          "blockId": "1068ef39-60a9-40cd-a01b-4fae9b9927c1",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        }
-      ],
-      "warnings": [
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "e5176fde-f5b1-4e27-a928-4adbdc0a8f71",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "1068ef39-60a9-40cd-a01b-4fae9b9927c1",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
-        }
-      ],
+      "unresolvedLinks": [],
+      "warnings": [],
       "excluded": [
         {
           "sourceBlockId": "07c2eb4f-c67f-41e4-9fd2-a0d48d4aa8aa",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
+        },
+        {
+          "sourceBlockId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
+        },
+        {
+          "sourceBlockId": "ad62799a-7efb-4ea3-8b9c-a4708fd0de4a",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
+        },
+        {
+          "sourceBlockId": "28b5bff1-374c-4186-836b-377236bc7b14",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
+        },
+        {
+          "sourceBlockId": "fb7a7b24-c2a6-4e33-9f63-b7e24c04166c",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
+        },
+        {
+          "sourceBlockId": "e5176fde-f5b1-4e27-a928-4adbdc0a8f71",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
+        },
+        {
+          "sourceBlockId": "289b36f5-b646-40b5-bf7d-30d59e4810f1",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
+        },
+        {
+          "sourceBlockId": "5fa44943-7b52-468b-881d-ce72e203a23b",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
+        },
+        {
+          "sourceBlockId": "0cc738e8-d35a-4fdf-9ba8-75c4550c098e",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "c02efe3d-406a-4997-8fdb-84f9bfb5aeba"
         },
         {
           "sourceBlockId": "a5239da9-d224-4e1e-ae93-f04ac77123ac",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
+        },
+        {
+          "sourceBlockId": "6a11c50f-95bb-4e12-a753-5e0a9ed0462b",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
+        },
+        {
+          "sourceBlockId": "ecb027c2-f723-4282-95ee-38b50112e532",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
+        },
+        {
+          "sourceBlockId": "2091dc98-e3a3-4304-a9cd-53fbdf0b4e52",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
+        },
+        {
+          "sourceBlockId": "1068ef39-60a9-40cd-a01b-4fae9b9927c1",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
+        },
+        {
+          "sourceBlockId": "8805b780-c419-4d78-af5e-49b9d5273765",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
+        },
+        {
+          "sourceBlockId": "c2e9917e-f040-4e70-b6c5-9703e57f6b21",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
+        },
+        {
+          "sourceBlockId": "8eeb38c4-2aab-4876-9940-b9388340edd0",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
+        },
+        {
+          "sourceBlockId": "ab00b20b-9479-47fb-9dc5-325abac579c9",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d"
         }
       ],
       "title": "TCP 오류복구",
@@ -883,8 +980,8 @@
         },
         "assetCount": 13,
         "failedAssets": 0,
-        "warningCount": 2,
-        "unresolvedLinkCount": 2
+        "warningCount": 0,
+        "unresolvedLinkCount": 0
       },
       "outputFile": "src/content/posts/ko/tcp-error-recovery.mdx",
       "status": "converted"
@@ -913,49 +1010,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
         },
         {
           "sourceBlockId": "35a63458-4eec-4952-849e-8c8682f0cd7e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
         },
         {
           "sourceBlockId": "ae9cd361-2ee9-41d5-af78-d222ff487c91",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
         },
         {
           "sourceBlockId": "7416b33c-60e5-434d-9ebf-08da06d57b7d",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
         },
         {
           "sourceBlockId": "44fb49cb-75fc-4aca-b29a-1956f3ed561e",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
         },
         {
           "sourceBlockId": "1bc0fcff-aaa0-4ab6-a05f-4718471b67ae",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
         },
         {
           "sourceBlockId": "1e1becdb-d187-4555-98e5-3493d366f7b7",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "746fb0b0974ea0d560995fe0109e26d1141fe9651c423ab702e07b43afed9889",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
         },
         {
           "sourceBlockId": "0874e88b-a9d3-4dfd-8075-f12710d688e9",
@@ -1655,49 +1759,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
         },
         {
           "sourceBlockId": "5235288a-ebc4-4e9c-9e90-74609b16b4a2",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
         },
         {
           "sourceBlockId": "7f9eb8b5-44a8-495e-8a44-d803e6664145",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
         },
         {
           "sourceBlockId": "3c141a54-acc0-44eb-b3ab-0feaf08ffa5e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
         },
         {
           "sourceBlockId": "9c56f21d-afe6-425c-8c19-5084befa55ad",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
         },
         {
           "sourceBlockId": "c1a90cf7-cb3d-4d00-8356-d344d5a1f9f1",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
         },
         {
           "sourceBlockId": "7e0790af-e680-4ea7-b843-3a49b48cb8fa",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "746fb0b0974ea0d560995fe0109e26d1141fe9651c423ab702e07b43afed9889",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
         },
         {
           "sourceBlockId": "46c52ee5-f799-43b8-a629-81fdfe30cd2c",
@@ -1820,7 +1931,7 @@
         {
           "sourceBlockId": "269e468b-64a0-4e1d-a54b-cc6a5128606e",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "8d8499cc-9903-41ba-9f3b-5525dd411c78",
@@ -1828,9 +1939,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "a295eb48-3f59-44d5-ab30-011a5135f009",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
+        },
+        {
+          "sourceBlockId": "35a63458-4eec-4952-849e-8c8682f0cd7e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
+        },
+        {
+          "sourceBlockId": "ae9cd361-2ee9-41d5-af78-d222ff487c91",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
+        },
+        {
+          "sourceBlockId": "7416b33c-60e5-434d-9ebf-08da06d57b7d",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
+        },
+        {
+          "sourceBlockId": "44fb49cb-75fc-4aca-b29a-1956f3ed561e",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
+        },
+        {
+          "sourceBlockId": "1bc0fcff-aaa0-4ab6-a05f-4718471b67ae",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
+        },
+        {
+          "sourceBlockId": "1e1becdb-d187-4555-98e5-3493d366f7b7",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "a295eb48-3f59-44d5-ab30-011a5135f009"
+        },
+        {
           "sourceBlockId": "0874e88b-a9d3-4dfd-8075-f12710d688e9",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "61d8eda0-6a3d-4576-93ba-a7819bca670a",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
+        },
+        {
+          "sourceBlockId": "5235288a-ebc4-4e9c-9e90-74609b16b4a2",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
+        },
+        {
+          "sourceBlockId": "7f9eb8b5-44a8-495e-8a44-d803e6664145",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
+        },
+        {
+          "sourceBlockId": "3c141a54-acc0-44eb-b3ab-0feaf08ffa5e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
+        },
+        {
+          "sourceBlockId": "9c56f21d-afe6-425c-8c19-5084befa55ad",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
+        },
+        {
+          "sourceBlockId": "c1a90cf7-cb3d-4d00-8356-d344d5a1f9f1",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
+        },
+        {
+          "sourceBlockId": "7e0790af-e680-4ea7-b843-3a49b48cb8fa",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "61d8eda0-6a3d-4576-93ba-a7819bca670a"
         }
       ],
       "title": "2018년 회고",
@@ -1887,49 +2082,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
         },
         {
           "sourceBlockId": "af918831-4d1d-4b09-81fb-6cfa55ae5fdc",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
         },
         {
           "sourceBlockId": "d0cfd0fc-71d4-46d9-a43b-1c719f9dca4a",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
         },
         {
           "sourceBlockId": "aa9093d8-003f-401e-80ff-698e8cf7e7f7",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
         },
         {
           "sourceBlockId": "910cd62d-0767-4aea-ace2-65832aea5f46",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
         },
         {
           "sourceBlockId": "843b349b-a957-4afc-bfd6-9c1f623947aa",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
         },
         {
           "sourceBlockId": "1be4f95b-3a9b-4cce-ae1c-044187b1469b",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
         },
         {
           "sourceBlockId": "cb7f0036-bad7-4e0e-9008-a4cc4e4f2728",
@@ -2104,49 +2306,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         },
         {
           "sourceBlockId": "190e2a61-5bb9-4520-af97-3b24e5b0476c",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         },
         {
           "sourceBlockId": "edaa02a7-4182-413f-8073-ae89965acc2d",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         },
         {
           "sourceBlockId": "abe1a197-cc8e-461b-b418-2e30be513186",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         },
         {
           "sourceBlockId": "f70504e8-a1ed-41d2-a81e-cf237ecb5158",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         },
         {
           "sourceBlockId": "4a883bf0-42a0-4919-8ace-82f4f37e3be1",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         },
         {
           "sourceBlockId": "e5ee2ea2-3468-445c-93ee-4caa03d91bac",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         },
         {
           "sourceBlockId": "07e5567f-a31a-4129-af4a-f3e299da2d78",
@@ -2243,35 +2452,13 @@
           "height": 30
         }
       ],
-      "unresolvedLinks": [
-        {
-          "blockId": "910cd62d-0767-4aea-ace2-65832aea5f46",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
-        {
-          "blockId": "f70504e8-a1ed-41d2-a81e-cf237ecb5158",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        }
-      ],
-      "warnings": [
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "910cd62d-0767-4aea-ace2-65832aea5f46",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "f70504e8-a1ed-41d2-a81e-cf237ecb5158",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
-        }
-      ],
+      "unresolvedLinks": [],
+      "warnings": [],
       "excluded": [
         {
           "sourceBlockId": "9b4b4bc2-0738-4c27-8dd8-32170f24ebf6",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "dae42312-7b2f-4f01-8934-2544d6af7152",
@@ -2279,9 +2466,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "996ea163-199a-45af-8e08-6ca69a6e401a",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
+        },
+        {
+          "sourceBlockId": "af918831-4d1d-4b09-81fb-6cfa55ae5fdc",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
+        },
+        {
+          "sourceBlockId": "d0cfd0fc-71d4-46d9-a43b-1c719f9dca4a",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
+        },
+        {
+          "sourceBlockId": "aa9093d8-003f-401e-80ff-698e8cf7e7f7",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
+        },
+        {
+          "sourceBlockId": "910cd62d-0767-4aea-ace2-65832aea5f46",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
+        },
+        {
+          "sourceBlockId": "843b349b-a957-4afc-bfd6-9c1f623947aa",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
+        },
+        {
+          "sourceBlockId": "1be4f95b-3a9b-4cce-ae1c-044187b1469b",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "996ea163-199a-45af-8e08-6ca69a6e401a"
+        },
+        {
           "sourceBlockId": "cb7f0036-bad7-4e0e-9008-a4cc4e4f2728",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
+        },
+        {
+          "sourceBlockId": "190e2a61-5bb9-4520-af97-3b24e5b0476c",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
+        },
+        {
+          "sourceBlockId": "edaa02a7-4182-413f-8073-ae89965acc2d",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
+        },
+        {
+          "sourceBlockId": "abe1a197-cc8e-461b-b418-2e30be513186",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
+        },
+        {
+          "sourceBlockId": "f70504e8-a1ed-41d2-a81e-cf237ecb5158",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
+        },
+        {
+          "sourceBlockId": "4a883bf0-42a0-4919-8ace-82f4f37e3be1",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
+        },
+        {
+          "sourceBlockId": "e5ee2ea2-3468-445c-93ee-4caa03d91bac",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         }
       ],
       "title": "bufferbloat과 buffer overflow",
@@ -2306,8 +2577,8 @@
         },
         "assetCount": 5,
         "failedAssets": 0,
-        "warningCount": 2,
-        "unresolvedLinkCount": 2
+        "warningCount": 0,
+        "unresolvedLinkCount": 0
       },
       "outputFile": "src/content/posts/ko/95400228-c9fb-4397-ac45-281f2a6c7446.mdx",
       "status": "converted"
@@ -2336,49 +2607,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
         },
         {
           "sourceBlockId": "1748e220-3f49-4290-b8a8-d302f8d42788",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
         },
         {
           "sourceBlockId": "f10405b7-8064-4049-8ce0-580a8fcec697",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
         },
         {
           "sourceBlockId": "e2957010-5604-4de4-b6f4-4b0cb993fd5e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
         },
         {
           "sourceBlockId": "8b19461a-9149-4a68-a717-fb233b394ba5",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
         },
         {
           "sourceBlockId": "5320b099-dcea-4620-8199-95460fc24614",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
         },
         {
           "sourceBlockId": "f6082570-23a8-4bbb-9f99-423beb80785b",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
         },
         {
           "sourceBlockId": "c1289a87-9c6b-44a1-b2dd-3f816076887d",
@@ -2706,49 +2984,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
         },
         {
           "sourceBlockId": "d455c99f-eede-4ad3-b684-eb915bd0ce45",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
         },
         {
           "sourceBlockId": "261ddb95-3257-48be-b7c6-ade0cee93bcc",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
         },
         {
           "sourceBlockId": "ba85ecdc-da35-46aa-b4a4-e793e481a63e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
         },
         {
           "sourceBlockId": "7213c8db-3244-4cad-ba4d-35c134377598",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
         },
         {
           "sourceBlockId": "8b8c8d3d-4662-4831-a0c4-112e45fc89b1",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
         },
         {
           "sourceBlockId": "8de4c5e5-fdb8-49e0-b9a1-d454d744cddf",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
         },
         {
           "sourceBlockId": "9f924808-1d2b-4cc8-8167-010ce73ad7fb",
@@ -2867,7 +3152,7 @@
         {
           "sourceBlockId": "d916cd2b-d817-41d1-a0b5-93af30ce1b13",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "655f0155-651f-421d-8c3f-e3fe9016d86e",
@@ -2875,9 +3160,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "be3b4760-5710-409d-af67-9a40e4410895",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
+        },
+        {
+          "sourceBlockId": "1748e220-3f49-4290-b8a8-d302f8d42788",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
+        },
+        {
+          "sourceBlockId": "f10405b7-8064-4049-8ce0-580a8fcec697",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
+        },
+        {
+          "sourceBlockId": "e2957010-5604-4de4-b6f4-4b0cb993fd5e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
+        },
+        {
+          "sourceBlockId": "8b19461a-9149-4a68-a717-fb233b394ba5",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
+        },
+        {
+          "sourceBlockId": "5320b099-dcea-4620-8199-95460fc24614",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
+        },
+        {
+          "sourceBlockId": "f6082570-23a8-4bbb-9f99-423beb80785b",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "be3b4760-5710-409d-af67-9a40e4410895"
+        },
+        {
           "sourceBlockId": "c1289a87-9c6b-44a1-b2dd-3f816076887d",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
+        },
+        {
+          "sourceBlockId": "d455c99f-eede-4ad3-b684-eb915bd0ce45",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
+        },
+        {
+          "sourceBlockId": "261ddb95-3257-48be-b7c6-ade0cee93bcc",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
+        },
+        {
+          "sourceBlockId": "ba85ecdc-da35-46aa-b4a4-e793e481a63e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
+        },
+        {
+          "sourceBlockId": "7213c8db-3244-4cad-ba4d-35c134377598",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
+        },
+        {
+          "sourceBlockId": "8b8c8d3d-4662-4831-a0c4-112e45fc89b1",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
+        },
+        {
+          "sourceBlockId": "8de4c5e5-fdb8-49e0-b9a1-d454d744cddf",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "6944da28-5ca5-4c83-9ee2-58bc5261f4f7"
         }
       ],
       "title": "좋은 개발문화란?",
@@ -2932,49 +3301,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
         },
         {
           "sourceBlockId": "db7405fb-3bf3-40c6-b77b-2083101052ee",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
         },
         {
           "sourceBlockId": "e4dad989-cef3-451c-9ae5-fdfd06d53b1c",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "325b7ef3ebd05f08893aec021f7ee41ace091774276ca13905ff2504442ed9e9",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
         },
         {
           "sourceBlockId": "522a2032-de57-466c-8316-737a299c853f",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
         },
         {
           "sourceBlockId": "dc4f7bd6-d374-45f1-a42f-80de359bccfd",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
         },
         {
           "sourceBlockId": "e7750a59-bbd5-4b14-9364-abbf91c9fc35",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
         },
         {
           "sourceBlockId": "a1590fc0-1752-47f4-bb39-3435c05597c5",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "741bc3a5ec855aa7441f72c80df66f2b8f5c7fc2e26f1c3b6132efca7c98c3bf",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
         },
         {
           "sourceBlockId": "55b071e3-1c1b-42f3-a37a-b569c7bc274a",
@@ -3128,49 +3504,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
         },
         {
           "sourceBlockId": "b3ad756c-00aa-4357-b7f4-653e25fc83e0",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
         },
         {
           "sourceBlockId": "97401da7-a0b0-41ee-9b14-5943db6d567c",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "325b7ef3ebd05f08893aec021f7ee41ace091774276ca13905ff2504442ed9e9",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
         },
         {
           "sourceBlockId": "d11827a5-155a-46bf-875c-54c1f4c4035e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
         },
         {
           "sourceBlockId": "d4535ce4-1a0e-4394-b9f6-cc57627cb019",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
         },
         {
           "sourceBlockId": "99d055d1-3901-4a63-9085-2d792d90d350",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
         },
         {
           "sourceBlockId": "7b060925-7457-4d6e-9ca5-cab431783e1e",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "741bc3a5ec855aa7441f72c80df66f2b8f5c7fc2e26f1c3b6132efca7c98c3bf",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
         },
         {
           "sourceBlockId": "1f00be1f-d413-4c11-8a04-de470019d2ae",
@@ -3276,7 +3659,7 @@
         {
           "sourceBlockId": "a70f649e-2aae-4449-87ed-561de60089ef",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "39d32248-294d-4cf3-b403-edee97800949",
@@ -3284,9 +3667,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "638a7bf7-33a0-483b-adf2-0d294a159f9b",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
+        },
+        {
+          "sourceBlockId": "db7405fb-3bf3-40c6-b77b-2083101052ee",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
+        },
+        {
+          "sourceBlockId": "e4dad989-cef3-451c-9ae5-fdfd06d53b1c",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
+        },
+        {
+          "sourceBlockId": "522a2032-de57-466c-8316-737a299c853f",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
+        },
+        {
+          "sourceBlockId": "dc4f7bd6-d374-45f1-a42f-80de359bccfd",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
+        },
+        {
+          "sourceBlockId": "e7750a59-bbd5-4b14-9364-abbf91c9fc35",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
+        },
+        {
+          "sourceBlockId": "a1590fc0-1752-47f4-bb39-3435c05597c5",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "638a7bf7-33a0-483b-adf2-0d294a159f9b"
+        },
+        {
           "sourceBlockId": "55b071e3-1c1b-42f3-a37a-b569c7bc274a",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "7d5345c4-a694-48be-91ab-e527558f9d04",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
+        },
+        {
+          "sourceBlockId": "b3ad756c-00aa-4357-b7f4-653e25fc83e0",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
+        },
+        {
+          "sourceBlockId": "97401da7-a0b0-41ee-9b14-5943db6d567c",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
+        },
+        {
+          "sourceBlockId": "d11827a5-155a-46bf-875c-54c1f4c4035e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
+        },
+        {
+          "sourceBlockId": "d4535ce4-1a0e-4394-b9f6-cc57627cb019",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
+        },
+        {
+          "sourceBlockId": "99d055d1-3901-4a63-9085-2d792d90d350",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
+        },
+        {
+          "sourceBlockId": "7b060925-7457-4d6e-9ca5-cab431783e1e",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7d5345c4-a694-48be-91ab-e527558f9d04"
         }
       ],
       "title": "2019년 상반기 회고",
@@ -3340,49 +3807,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
         },
         {
           "sourceBlockId": "812a1866-0445-4afc-8553-7e97e2146389",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
         },
         {
           "sourceBlockId": "273e5cb3-7534-4951-8c26-75030c7808ef",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "ede8a3b677a109d6c51968de9266e11e133e277175cae9484a7505380db4d84e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
         },
         {
           "sourceBlockId": "07c80b16-8bdc-4564-92c6-dc257c9e17b4",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
         },
         {
           "sourceBlockId": "1610399a-62d5-4f1b-b8ab-8766653c1e13",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
         },
         {
           "sourceBlockId": "42e344e5-520f-48a4-82fd-274bc9ad89f8",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
         },
         {
           "sourceBlockId": "83019ed4-4efc-40fb-82e9-aff3fd35a13d",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "ca751637574b0f3f054c72e9b60dc1997567337b2639c798941281ef3540d4d2",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
         },
         {
           "sourceBlockId": "7e287472-4402-4783-95d8-aefdf2090a77",
@@ -3683,56 +4157,64 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         },
         {
           "sourceBlockId": "f21e0d7c-5956-48a7-a2f5-785ae93852ae",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         },
         {
           "sourceBlockId": "75e003a9-c2c6-4378-9d46-4df2569e8013",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "ede8a3b677a109d6c51968de9266e11e133e277175cae9484a7505380db4d84e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         },
         {
           "sourceBlockId": "b684a022-13af-4b27-958c-4fe4b954e66d",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         },
         {
           "sourceBlockId": "232aae6f-120a-44d1-b4e9-adeb447049f4",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         },
         {
           "sourceBlockId": "a33d7240-1ccf-4223-8d68-f0c173f34ade",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         },
         {
           "sourceBlockId": "ee275ad1-23a4-4f37-ab85-bdb2e445ad00",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "ca751637574b0f3f054c72e9b60dc1997567337b2639c798941281ef3540d4d2",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         },
         {
           "sourceBlockId": "1f47d757-8b24-4507-b61c-379606878ed4",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         },
         {
           "sourceBlockId": "fc329242-5c81-450f-8763-0209d8146a15",
@@ -3805,40 +4287,19 @@
           "renderPolicy": "unavailable bookmark preview omitted; title/description/link retained"
         }
       ],
-      "unresolvedLinks": [
-        {
-          "blockId": "1610399a-62d5-4f1b-b8ab-8766653c1e13",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
-        {
-          "blockId": "232aae6f-120a-44d1-b4e9-adeb447049f4",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        }
-      ],
+      "unresolvedLinks": [],
       "warnings": [
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "1610399a-62d5-4f1b-b8ab-8766653c1e13",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
         {
           "kind": "asset-download-failed",
           "blockId": "09498ce5-537b-413f-baed-153dd69e5509",
           "sourceUrl": "https://tech.kakao.com/wp-content/uploads/2019/12/kakaoTech_Img_43.png"
-        },
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "232aae6f-120a-44d1-b4e9-adeb447049f4",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
         }
       ],
       "excluded": [
         {
           "sourceBlockId": "8e0a7aa9-749a-4f2d-b445-2b9e5ffb5cd8",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "afd80657-4da0-4067-894a-47d40a3c4fa2",
@@ -3846,9 +4307,99 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
+        },
+        {
+          "sourceBlockId": "812a1866-0445-4afc-8553-7e97e2146389",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
+        },
+        {
+          "sourceBlockId": "273e5cb3-7534-4951-8c26-75030c7808ef",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
+        },
+        {
+          "sourceBlockId": "07c80b16-8bdc-4564-92c6-dc257c9e17b4",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
+        },
+        {
+          "sourceBlockId": "1610399a-62d5-4f1b-b8ab-8766653c1e13",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
+        },
+        {
+          "sourceBlockId": "42e344e5-520f-48a4-82fd-274bc9ad89f8",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
+        },
+        {
+          "sourceBlockId": "83019ed4-4efc-40fb-82e9-aff3fd35a13d",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "0c775597-f4a1-4dae-bdae-dbd2998c7aac"
+        },
+        {
           "sourceBlockId": "7e287472-4402-4783-95d8-aefdf2090a77",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "7ad315b2-466f-4eba-a715-896fb2af9f85",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
+        },
+        {
+          "sourceBlockId": "f21e0d7c-5956-48a7-a2f5-785ae93852ae",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
+        },
+        {
+          "sourceBlockId": "75e003a9-c2c6-4378-9d46-4df2569e8013",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
+        },
+        {
+          "sourceBlockId": "b684a022-13af-4b27-958c-4fe4b954e66d",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
+        },
+        {
+          "sourceBlockId": "232aae6f-120a-44d1-b4e9-adeb447049f4",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
+        },
+        {
+          "sourceBlockId": "a33d7240-1ccf-4223-8d68-f0c173f34ade",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
+        },
+        {
+          "sourceBlockId": "ee275ad1-23a4-4f37-ab85-bdb2e445ad00",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
+        },
+        {
+          "sourceBlockId": "1f47d757-8b24-4507-b61c-379606878ed4",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "7ad315b2-466f-4eba-a715-896fb2af9f85"
         }
       ],
       "title": "TCP 성능",
@@ -3876,8 +4427,8 @@
         },
         "assetCount": 3,
         "failedAssets": 1,
-        "warningCount": 3,
-        "unresolvedLinkCount": 2
+        "warningCount": 1,
+        "unresolvedLinkCount": 0
       },
       "outputFile": "src/content/posts/ko/02773af9-5c93-43b5-89b4-bbab94536195.mdx",
       "status": "converted"
@@ -3906,49 +4457,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
         },
         {
           "sourceBlockId": "ed459642-58f5-4ba6-b55c-6ea1fbead560",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
         },
         {
           "sourceBlockId": "bf9bafea-e80c-48d5-9fe7-7af6922ff44a",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "ede8a3b677a109d6c51968de9266e11e133e277175cae9484a7505380db4d84e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
         },
         {
           "sourceBlockId": "78c3b58e-3260-482a-b230-ddc89ecea478",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
         },
         {
           "sourceBlockId": "eac48ba7-7f5a-479e-acfc-112d53bf7255",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
         },
         {
           "sourceBlockId": "7e215550-f122-499c-ba5d-8c1cc6326959",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
         },
         {
           "sourceBlockId": "97800d22-6a35-4c25-8963-c7996a8baaeb",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
         },
         {
           "sourceBlockId": "7e402d7a-1a20-4d54-8b18-b78224373522",
@@ -4165,49 +4723,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
         },
         {
           "sourceBlockId": "762fedb5-3bdc-4a4e-96ed-17e72ffced24",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
         },
         {
           "sourceBlockId": "48c3e18e-77db-45be-8a8f-f10ecec29c73",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "ede8a3b677a109d6c51968de9266e11e133e277175cae9484a7505380db4d84e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
         },
         {
           "sourceBlockId": "bab8f25a-3e24-4f2f-a743-035fd5e1c90b",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
         },
         {
           "sourceBlockId": "cd1f3f71-d24c-43a5-9cf3-6be28db70218",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
         },
         {
           "sourceBlockId": "41492032-718e-4f6b-8e64-6f55e7f5651e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
         },
         {
           "sourceBlockId": "fcae89e9-3f49-43a2-a33d-1c0c6c3fa970",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
         },
         {
           "sourceBlockId": "b3a65af6-7dea-46e0-a953-0eadb5606805",
@@ -4280,40 +4845,19 @@
           "renderPolicy": "unavailable bookmark preview omitted; title/description/link retained"
         }
       ],
-      "unresolvedLinks": [
-        {
-          "blockId": "eac48ba7-7f5a-479e-acfc-112d53bf7255",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
-        {
-          "blockId": "cd1f3f71-d24c-43a5-9cf3-6be28db70218",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        }
-      ],
+      "unresolvedLinks": [],
       "warnings": [
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "eac48ba7-7f5a-479e-acfc-112d53bf7255",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
         {
           "kind": "asset-download-failed",
           "blockId": "65350709-7bf6-4b84-94ea-e4e6d71f2d6e",
           "sourceUrl": "https://farm9.staticflickr.com/8896/18339898259_71c350b396_b.jpg"
-        },
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "cd1f3f71-d24c-43a5-9cf3-6be28db70218",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
         }
       ],
       "excluded": [
         {
           "sourceBlockId": "5e16b956-53a2-40c5-b968-bcf67a25d75b",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "01988de3-57a7-4896-8653-6e8e98a928a5",
@@ -4321,9 +4865,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "ef959f16-5060-437a-95ef-660df191d7c4",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
+        },
+        {
+          "sourceBlockId": "ed459642-58f5-4ba6-b55c-6ea1fbead560",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
+        },
+        {
+          "sourceBlockId": "bf9bafea-e80c-48d5-9fe7-7af6922ff44a",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
+        },
+        {
+          "sourceBlockId": "78c3b58e-3260-482a-b230-ddc89ecea478",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
+        },
+        {
+          "sourceBlockId": "eac48ba7-7f5a-479e-acfc-112d53bf7255",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
+        },
+        {
+          "sourceBlockId": "7e215550-f122-499c-ba5d-8c1cc6326959",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
+        },
+        {
+          "sourceBlockId": "97800d22-6a35-4c25-8963-c7996a8baaeb",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ef959f16-5060-437a-95ef-660df191d7c4"
+        },
+        {
           "sourceBlockId": "7e402d7a-1a20-4d54-8b18-b78224373522",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "088708c9-35d4-4907-a9ba-a3551d17e07a",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
+        },
+        {
+          "sourceBlockId": "762fedb5-3bdc-4a4e-96ed-17e72ffced24",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
+        },
+        {
+          "sourceBlockId": "48c3e18e-77db-45be-8a8f-f10ecec29c73",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
+        },
+        {
+          "sourceBlockId": "bab8f25a-3e24-4f2f-a743-035fd5e1c90b",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
+        },
+        {
+          "sourceBlockId": "cd1f3f71-d24c-43a5-9cf3-6be28db70218",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
+        },
+        {
+          "sourceBlockId": "41492032-718e-4f6b-8e64-6f55e7f5651e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
+        },
+        {
+          "sourceBlockId": "fcae89e9-3f49-43a2-a33d-1c0c6c3fa970",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "088708c9-35d4-4907-a9ba-a3551d17e07a"
         }
       ],
       "title": "TCP keep-alive",
@@ -4352,8 +4980,8 @@
         },
         "assetCount": 3,
         "failedAssets": 1,
-        "warningCount": 3,
-        "unresolvedLinkCount": 2
+        "warningCount": 1,
+        "unresolvedLinkCount": 0
       },
       "outputFile": "src/content/posts/ko/beae0ed2-e020-4681-abac-fdb9e5f12c5f.mdx",
       "status": "converted"
@@ -4382,49 +5010,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
         },
         {
           "sourceBlockId": "b7a046bb-da23-4f2f-8a41-2783b177d510",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
         },
         {
           "sourceBlockId": "0db2faf9-e15a-48d1-8844-1214f4ab0ace",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "b6e011e5d64c186634885f481c19f0529baedc078123df95d497a19a8b56a351",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
         },
         {
           "sourceBlockId": "9281f5d2-7a23-4a78-b940-79c77344dbe9",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
         },
         {
           "sourceBlockId": "b31bc32d-18b3-44a6-8c07-f5b0bc1b2a92",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
         },
         {
           "sourceBlockId": "be1f1d98-0bf2-4593-b92f-24164aecfa63",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
         },
         {
           "sourceBlockId": "d12567e7-c6f2-48a5-95e0-87d552797eec",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "14b3b94e72906ddbd3f600bebc4fcbffc48f277bc311ee269349c39db2d1b51f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
         },
         {
           "sourceBlockId": "e148a75b-a774-4f8f-ba63-4ffb8eeb89d5",
@@ -4774,49 +5409,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
         },
         {
           "sourceBlockId": "3c230383-476f-4cd2-bc26-b9156ac38ad5",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
         },
         {
           "sourceBlockId": "80da85f5-9ed6-411d-9819-0bc4671a3a3b",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "b6e011e5d64c186634885f481c19f0529baedc078123df95d497a19a8b56a351",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
         },
         {
           "sourceBlockId": "9d509b84-45db-4305-9d03-2959f54644eb",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
         },
         {
           "sourceBlockId": "6a6fb430-e2fb-4821-a6e3-d6c71caeb4a3",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
         },
         {
           "sourceBlockId": "53cdae40-cb40-468c-92d6-09357653b25a",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
         },
         {
           "sourceBlockId": "196bf1f5-cf74-4546-8b92-3ebd0ad1ff7e",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "14b3b94e72906ddbd3f600bebc4fcbffc48f277bc311ee269349c39db2d1b51f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
         },
         {
           "sourceBlockId": "b8e8ef69-e5e7-43af-b8a7-55c5157e9125",
@@ -5024,7 +5666,7 @@
         {
           "sourceBlockId": "d9c7620b-7f69-4577-8ca4-eb892e422ce9",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "7cd3cc7a-25dd-413a-aa83-a53a9592acf7",
@@ -5032,9 +5674,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
+        },
+        {
+          "sourceBlockId": "b7a046bb-da23-4f2f-8a41-2783b177d510",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
+        },
+        {
+          "sourceBlockId": "0db2faf9-e15a-48d1-8844-1214f4ab0ace",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
+        },
+        {
+          "sourceBlockId": "9281f5d2-7a23-4a78-b940-79c77344dbe9",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
+        },
+        {
+          "sourceBlockId": "b31bc32d-18b3-44a6-8c07-f5b0bc1b2a92",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
+        },
+        {
+          "sourceBlockId": "be1f1d98-0bf2-4593-b92f-24164aecfa63",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
+        },
+        {
+          "sourceBlockId": "d12567e7-c6f2-48a5-95e0-87d552797eec",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "de3c462a-b6f0-465e-9eea-05fcc5b6f0c5"
+        },
+        {
           "sourceBlockId": "e148a75b-a774-4f8f-ba63-4ffb8eeb89d5",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "28729e7b-065a-4b94-9142-66bf78a086db",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
+        },
+        {
+          "sourceBlockId": "3c230383-476f-4cd2-bc26-b9156ac38ad5",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
+        },
+        {
+          "sourceBlockId": "80da85f5-9ed6-411d-9819-0bc4671a3a3b",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
+        },
+        {
+          "sourceBlockId": "9d509b84-45db-4305-9d03-2959f54644eb",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
+        },
+        {
+          "sourceBlockId": "6a6fb430-e2fb-4821-a6e3-d6c71caeb4a3",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
+        },
+        {
+          "sourceBlockId": "53cdae40-cb40-468c-92d6-09357653b25a",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
+        },
+        {
+          "sourceBlockId": "196bf1f5-cf74-4546-8b92-3ebd0ad1ff7e",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "28729e7b-065a-4b94-9142-66bf78a086db"
         }
       ],
       "title": "2019년 회고",
@@ -5090,49 +5816,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
         },
         {
           "sourceBlockId": "324ad63b-281d-40b1-b968-4873ebe1efd7",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
         },
         {
           "sourceBlockId": "0f79a753-ec9e-4e26-b512-3b7af707a76e",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
         },
         {
           "sourceBlockId": "f91b0795-fa8b-458f-a2ac-fb0432375ab6",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
         },
         {
           "sourceBlockId": "34e9c958-2592-40c8-9fba-08e6edb5ab9e",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
         },
         {
           "sourceBlockId": "aedefc54-d938-4db7-801e-437e8c444b23",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
         },
         {
           "sourceBlockId": "7fa435d5-b3f6-46b5-8d11-ab1ee0bafdb8",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
         },
         {
           "sourceBlockId": "ea3ce5ae-0866-4e8e-929a-78ded8823c7a",
@@ -5666,49 +6399,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         },
         {
           "sourceBlockId": "a5b79385-9e5e-4e34-9f60-d5b7f229d98c",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         },
         {
           "sourceBlockId": "0aada1de-f669-4848-ab16-af0885ba08b0",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         },
         {
           "sourceBlockId": "a3cb87d8-2af4-4f15-ba47-ebe3b7ef53ca",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         },
         {
           "sourceBlockId": "02920bac-9053-45d9-ad3f-892e6f82d1d6",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         },
         {
           "sourceBlockId": "38418bc4-81d2-4e1f-aa14-5a2da1376390",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         },
         {
           "sourceBlockId": "3216ba4f-24eb-4417-b5e4-022adb9427ea",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         },
         {
           "sourceBlockId": "144691b2-9744-4d17-8a57-3a176d9c49c7",
@@ -5902,40 +6642,19 @@
           "height": 30
         }
       ],
-      "unresolvedLinks": [
-        {
-          "blockId": "34e9c958-2592-40c8-9fba-08e6edb5ab9e",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
-        {
-          "blockId": "02920bac-9053-45d9-ad3f-892e6f82d1d6",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf",
-          "sourceUrl": "https://www.brainbackdoor.com/ce04ad18-3932-4157-a4e4-7921e09275bf"
-        }
-      ],
+      "unresolvedLinks": [],
       "warnings": [
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "34e9c958-2592-40c8-9fba-08e6edb5ab9e",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
-        },
         {
           "kind": "asset-download-failed",
           "blockId": "ea8effe8-6554-438c-a5c5-26c54cfae6c7",
           "sourceUrl": "https://cdn.cms-twdigitalassets.com/content/dam/developer-twitter/redesign-2021-images/og-social-card/devwebsite_card_tn.jpg.twimg.768.jpg"
-        },
-        {
-          "kind": "unresolved-page-mention-title",
-          "blockId": "02920bac-9053-45d9-ad3f-892e6f82d1d6",
-          "sourceId": "ce04ad18-3932-4157-a4e4-7921e09275bf"
         }
       ],
       "excluded": [
         {
           "sourceBlockId": "dc093830-f645-4642-bf85-dfcbfe7e0f64",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "ee631289-d075-4484-b32b-c6eb7c964d16",
@@ -5943,9 +6662,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "f628940f-0374-4c7f-9e60-838c5390c43b",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
+        },
+        {
+          "sourceBlockId": "324ad63b-281d-40b1-b968-4873ebe1efd7",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
+        },
+        {
+          "sourceBlockId": "0f79a753-ec9e-4e26-b512-3b7af707a76e",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
+        },
+        {
+          "sourceBlockId": "f91b0795-fa8b-458f-a2ac-fb0432375ab6",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
+        },
+        {
+          "sourceBlockId": "34e9c958-2592-40c8-9fba-08e6edb5ab9e",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
+        },
+        {
+          "sourceBlockId": "aedefc54-d938-4db7-801e-437e8c444b23",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
+        },
+        {
+          "sourceBlockId": "7fa435d5-b3f6-46b5-8d11-ab1ee0bafdb8",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "f628940f-0374-4c7f-9e60-838c5390c43b"
+        },
+        {
           "sourceBlockId": "ea3ce5ae-0866-4e8e-929a-78ded8823c7a",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "d52546f5-8a74-44c4-be53-052183ec9501",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
+        },
+        {
+          "sourceBlockId": "a5b79385-9e5e-4e34-9f60-d5b7f229d98c",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
+        },
+        {
+          "sourceBlockId": "0aada1de-f669-4848-ab16-af0885ba08b0",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
+        },
+        {
+          "sourceBlockId": "a3cb87d8-2af4-4f15-ba47-ebe3b7ef53ca",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
+        },
+        {
+          "sourceBlockId": "02920bac-9053-45d9-ad3f-892e6f82d1d6",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
+        },
+        {
+          "sourceBlockId": "38418bc4-81d2-4e1f-aa14-5a2da1376390",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
+        },
+        {
+          "sourceBlockId": "3216ba4f-24eb-4417-b5e4-022adb9427ea",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d52546f5-8a74-44c4-be53-052183ec9501"
         }
       ],
       "title": "200 vs 404",
@@ -5972,8 +6775,8 @@
         },
         "assetCount": 15,
         "failedAssets": 1,
-        "warningCount": 3,
-        "unresolvedLinkCount": 2
+        "warningCount": 1,
+        "unresolvedLinkCount": 0
       },
       "outputFile": "src/content/posts/ko/14b691d7-7fd7-4e95-8787-49e06111755f.mdx",
       "status": "converted"
@@ -6366,49 +7169,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
         },
         {
           "sourceBlockId": "7b2aad52-13f2-4493-b5bb-9eaddf5698f6",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
         },
         {
           "sourceBlockId": "89a11af2-125a-44cb-8b5d-c73cbf49500a",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "90f10f8120d34d370b6a773a4c55f704929d214122c8130390b4fd57d624ea8d",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
         },
         {
           "sourceBlockId": "532696e5-876e-4828-b8bb-04b6bc19ef34",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
         },
         {
           "sourceBlockId": "6a91b2c8-f0e2-4970-bec9-d2fcf91e0bb4",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
         },
         {
           "sourceBlockId": "cd64b398-3804-49b0-a49d-b09b1927c131",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
         },
         {
           "sourceBlockId": "36c2500b-ccaa-403b-979c-f326f0348a5d",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "d418eede31aecc896c5969e9fa4fabab2d7d713d82178379c3b0663edecd507c",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
         },
         {
           "sourceBlockId": "67aaf83c-8a75-4314-befe-e750151cfcf9",
@@ -6681,49 +7491,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
         },
         {
           "sourceBlockId": "645c2941-51ac-4182-8857-058f2a55c2fa",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
         },
         {
           "sourceBlockId": "0707fabd-e52c-4253-91a2-74d4564223b1",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "90f10f8120d34d370b6a773a4c55f704929d214122c8130390b4fd57d624ea8d",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
         },
         {
           "sourceBlockId": "3a7f8aa7-847b-4bda-8a9c-7b6e45f2636e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
         },
         {
           "sourceBlockId": "0cc34257-d243-4f80-b826-15f5c7965022",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
         },
         {
           "sourceBlockId": "777d5040-80a0-4fd9-9320-eb8b048d1c08",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
         },
         {
           "sourceBlockId": "4f46fd5e-e064-4441-be8f-231cac2b8091",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "d418eede31aecc896c5969e9fa4fabab2d7d713d82178379c3b0663edecd507c",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
         },
         {
           "sourceBlockId": "96000fdb-4ba2-44bc-b946-730218cfb2ce",
@@ -6869,7 +7686,7 @@
         {
           "sourceBlockId": "9dde2021-6840-446d-8c02-5595812e89c6",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "f230c590-f3ac-4a68-99ed-1dba36720dea",
@@ -6877,9 +7694,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
+        },
+        {
+          "sourceBlockId": "7b2aad52-13f2-4493-b5bb-9eaddf5698f6",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
+        },
+        {
+          "sourceBlockId": "89a11af2-125a-44cb-8b5d-c73cbf49500a",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
+        },
+        {
+          "sourceBlockId": "532696e5-876e-4828-b8bb-04b6bc19ef34",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
+        },
+        {
+          "sourceBlockId": "6a91b2c8-f0e2-4970-bec9-d2fcf91e0bb4",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
+        },
+        {
+          "sourceBlockId": "cd64b398-3804-49b0-a49d-b09b1927c131",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
+        },
+        {
+          "sourceBlockId": "36c2500b-ccaa-403b-979c-f326f0348a5d",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "5797a6ab-6234-48ca-a9cb-15a98c10fd2f"
+        },
+        {
           "sourceBlockId": "67aaf83c-8a75-4314-befe-e750151cfcf9",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
+        },
+        {
+          "sourceBlockId": "645c2941-51ac-4182-8857-058f2a55c2fa",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
+        },
+        {
+          "sourceBlockId": "0707fabd-e52c-4253-91a2-74d4564223b1",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
+        },
+        {
+          "sourceBlockId": "3a7f8aa7-847b-4bda-8a9c-7b6e45f2636e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
+        },
+        {
+          "sourceBlockId": "0cc34257-d243-4f80-b826-15f5c7965022",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
+        },
+        {
+          "sourceBlockId": "777d5040-80a0-4fd9-9320-eb8b048d1c08",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
+        },
+        {
+          "sourceBlockId": "4f46fd5e-e064-4441-be8f-231cac2b8091",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ebb94d72-8c18-4a54-953f-4d4ff9a54b6e"
         }
       ],
       "title": "2020년 상반기 회고",
@@ -6933,49 +7834,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
         },
         {
           "sourceBlockId": "4827e1a4-c65f-441e-a536-2900fc7b04a0",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
         },
         {
           "sourceBlockId": "fbdd0ba9-7fbf-47e6-a142-28311af7b092",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "bfb830c515d0ac4fafbd2c87300bc688be3797c91cdd5fa24f1386ea87e81357",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
         },
         {
           "sourceBlockId": "ce997908-4191-4c08-85e5-33f05e53c96e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
         },
         {
           "sourceBlockId": "53937788-aece-4e5a-8893-9a429593b1c9",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
         },
         {
           "sourceBlockId": "0dd0ad0c-580f-4f14-b00b-08cd3ac839a1",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
         },
         {
           "sourceBlockId": "983fdec7-1a52-4b81-b551-c9394bc0af9c",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "8b022abafccaaf670bd06db7f31076484bc5c3692226346181b319f2e93e9123",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
         },
         {
           "sourceBlockId": "80878af9-e91a-40b8-b129-7d7657d7ad82",
@@ -7178,49 +8086,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
         },
         {
           "sourceBlockId": "bdb22034-5a57-4f19-924c-5a3c1f4a6f2b",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
         },
         {
           "sourceBlockId": "073bd71a-9078-4dc6-8580-9b0c0af051e4",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "bfb830c515d0ac4fafbd2c87300bc688be3797c91cdd5fa24f1386ea87e81357",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
         },
         {
           "sourceBlockId": "9dad7367-7e0c-48d6-b297-18283adbea0d",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
         },
         {
           "sourceBlockId": "c3fb9804-aa05-4939-9d45-56d856ce3866",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
         },
         {
           "sourceBlockId": "df8eb569-a685-40d2-a780-2b8582ec50a0",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
         },
         {
           "sourceBlockId": "c708ec6d-6bf6-44b3-b0ee-ab780e43aba1",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "8b022abafccaaf670bd06db7f31076484bc5c3692226346181b319f2e93e9123",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
         },
         {
           "sourceBlockId": "c9bd93c7-3912-4168-9635-84b9cff87eab",
@@ -7329,7 +8244,7 @@
         {
           "sourceBlockId": "86e1490b-3f97-407f-8530-cf10521ba051",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "4926d07b-1e41-4015-ab63-d1843f2d2c29",
@@ -7337,9 +8252,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "46d7c70f-55aa-49ab-8907-16af2f03cc09",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
+        },
+        {
+          "sourceBlockId": "4827e1a4-c65f-441e-a536-2900fc7b04a0",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
+        },
+        {
+          "sourceBlockId": "fbdd0ba9-7fbf-47e6-a142-28311af7b092",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
+        },
+        {
+          "sourceBlockId": "ce997908-4191-4c08-85e5-33f05e53c96e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
+        },
+        {
+          "sourceBlockId": "53937788-aece-4e5a-8893-9a429593b1c9",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
+        },
+        {
+          "sourceBlockId": "0dd0ad0c-580f-4f14-b00b-08cd3ac839a1",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
+        },
+        {
+          "sourceBlockId": "983fdec7-1a52-4b81-b551-c9394bc0af9c",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "46d7c70f-55aa-49ab-8907-16af2f03cc09"
+        },
+        {
           "sourceBlockId": "80878af9-e91a-40b8-b129-7d7657d7ad82",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
+        },
+        {
+          "sourceBlockId": "bdb22034-5a57-4f19-924c-5a3c1f4a6f2b",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
+        },
+        {
+          "sourceBlockId": "073bd71a-9078-4dc6-8580-9b0c0af051e4",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
+        },
+        {
+          "sourceBlockId": "9dad7367-7e0c-48d6-b297-18283adbea0d",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
+        },
+        {
+          "sourceBlockId": "c3fb9804-aa05-4939-9d45-56d856ce3866",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
+        },
+        {
+          "sourceBlockId": "df8eb569-a685-40d2-a780-2b8582ec50a0",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
+        },
+        {
+          "sourceBlockId": "c708ec6d-6bf6-44b3-b0ee-ab780e43aba1",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "30a8373d-b69b-4bd5-b0bd-d584a8dc8369"
         }
       ],
       "title": "2020년 회고",
@@ -7393,56 +8392,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
         },
         {
           "sourceBlockId": "1134399e-5e12-42b6-9454-76ef4f7e625e",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
         },
         {
           "sourceBlockId": "f61c1b2b-e2fe-40e7-9caa-06f8fd533144",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
         },
         {
           "sourceBlockId": "eb1dc909-8bb6-4168-ba87-9a6d505b5c6c",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
         },
         {
           "sourceBlockId": "730d2984-4598-4607-9bc7-f9d97e60ab67",
           "type": "alias",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
-        },
-        {
-          "sourceBlockId": "106f0c57-b687-4361-b71b-6c8c84378112",
-          "type": "page",
-          "sourceTextChars": 2,
-          "sourceTextSha256": "086fb1db7b42f299481a8abf92b2aad46be44dff22692c928e4b9cfeb8e73e7a",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
         },
         {
           "sourceBlockId": "e3f1f972-5054-4a5d-b552-66299e9487c2",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
         },
         {
           "sourceBlockId": "b569afc3-c2ff-4ed9-ae08-925ad5cd2135",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
         },
         {
           "sourceBlockId": "da932e7d-2ccf-43f2-9728-fa49c8954f44",
@@ -8439,56 +9438,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
         },
         {
           "sourceBlockId": "c8679ff2-77c8-4722-91e5-6211f8f185bc",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
         },
         {
           "sourceBlockId": "6eacd0dd-10f2-415a-ab31-971247796528",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
         },
         {
           "sourceBlockId": "f3dd4021-ce61-4350-9fa6-ade35f42c525",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
         },
         {
           "sourceBlockId": "3763d5a7-fa7a-40eb-ae20-212662dbca87",
           "type": "alias",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
-        },
-        {
-          "sourceBlockId": "106f0c57-b687-4361-b71b-6c8c84378112",
-          "type": "page",
-          "sourceTextChars": 2,
-          "sourceTextSha256": "086fb1db7b42f299481a8abf92b2aad46be44dff22692c928e4b9cfeb8e73e7a",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
         },
         {
           "sourceBlockId": "12d25e79-d319-4635-a480-36fe08bdb385",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
         },
         {
           "sourceBlockId": "415863f5-004e-4f72-b260-89891bdf7104",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
         },
         {
           "sourceBlockId": "4c562685-d6d3-40db-b0ba-9921b7e41d96",
@@ -8695,7 +9694,7 @@
         {
           "sourceBlockId": "e290e788-b031-48aa-a910-7d41ca9cba58",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "4ea5758c-ca75-488b-b7ed-e538501519ef",
@@ -8703,9 +9702,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "54541695-4303-4043-aec1-5b30c7df74b7",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
+        },
+        {
+          "sourceBlockId": "1134399e-5e12-42b6-9454-76ef4f7e625e",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
+        },
+        {
+          "sourceBlockId": "f61c1b2b-e2fe-40e7-9caa-06f8fd533144",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
+        },
+        {
+          "sourceBlockId": "eb1dc909-8bb6-4168-ba87-9a6d505b5c6c",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
+        },
+        {
+          "sourceBlockId": "730d2984-4598-4607-9bc7-f9d97e60ab67",
+          "type": "alias",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
+        },
+        {
+          "sourceBlockId": "e3f1f972-5054-4a5d-b552-66299e9487c2",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
+        },
+        {
+          "sourceBlockId": "b569afc3-c2ff-4ed9-ae08-925ad5cd2135",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "54541695-4303-4043-aec1-5b30c7df74b7"
+        },
+        {
           "sourceBlockId": "da932e7d-2ccf-43f2-9728-fa49c8954f44",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "96c060dd-9438-4eca-9961-93cc675cdb02",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
+        },
+        {
+          "sourceBlockId": "c8679ff2-77c8-4722-91e5-6211f8f185bc",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
+        },
+        {
+          "sourceBlockId": "6eacd0dd-10f2-415a-ab31-971247796528",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
+        },
+        {
+          "sourceBlockId": "f3dd4021-ce61-4350-9fa6-ade35f42c525",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
+        },
+        {
+          "sourceBlockId": "3763d5a7-fa7a-40eb-ae20-212662dbca87",
+          "type": "alias",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
+        },
+        {
+          "sourceBlockId": "12d25e79-d319-4635-a480-36fe08bdb385",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
+        },
+        {
+          "sourceBlockId": "415863f5-004e-4f72-b260-89891bdf7104",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "96c060dd-9438-4eca-9961-93cc675cdb02"
         }
       ],
       "title": "웨딩",
@@ -8716,14 +9799,13 @@
         "note": "No authored publication date property; Notion creation time, not a verified original publication date."
       },
       "summary": {
-        "blockCount": 158,
+        "blockCount": 156,
         "typeCounts": {
           "code": 2,
           "column_list": 2,
           "column": 6,
           "text": 21,
           "alias": 2,
-          "page": 2,
           "table_of_contents": 1,
           "header": 16,
           "bulleted_list": 77,
@@ -8765,49 +9847,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
         },
         {
           "sourceBlockId": "6a8c7153-91a4-4b47-b5fc-cd6850dbe237",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
         },
         {
           "sourceBlockId": "4433e06e-2603-4770-9a2b-4e1539e48069",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
         },
         {
           "sourceBlockId": "570ab239-fbce-406e-bcf9-8d9817f7cb3c",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
         },
         {
           "sourceBlockId": "0f2ba1f6-a788-421f-a48c-590693ce27d2",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
         },
         {
           "sourceBlockId": "b2cc4fa9-31f1-42e4-b290-6ff3ec22cd11",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
         },
         {
           "sourceBlockId": "d66f62f6-b7a4-4bd4-9cfe-c529c2400664",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
         },
         {
           "sourceBlockId": "e9e14b70-9737-4ed0-b796-b703e6e9f80d",
@@ -9197,49 +10286,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         },
         {
           "sourceBlockId": "9a535ab0-74c1-4e24-bbbb-24957ed105e2",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         },
         {
           "sourceBlockId": "9f17a2d6-40d3-41dd-aba1-16d872cf04b7",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         },
         {
           "sourceBlockId": "ef7893eb-9299-4970-a023-cd8f1bf9f220",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         },
         {
           "sourceBlockId": "e0d4f3b2-184e-4f80-9f57-55bca64bc181",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         },
         {
           "sourceBlockId": "e9b5f27a-0315-4f52-a1a0-2dedd7e3fd81",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         },
         {
           "sourceBlockId": "d8269b00-5c43-4766-8568-b1a35c54dcfd",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         },
         {
           "sourceBlockId": "8a6d8021-8c33-46ec-b778-4161a06dafcc",
@@ -9355,7 +10451,7 @@
         {
           "sourceBlockId": "1ddf702a-4e19-4a6d-8114-f2ba32a55ebb",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "5aaab3fc-28e1-4c77-b0fe-474be58429f4",
@@ -9363,9 +10459,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
+        },
+        {
+          "sourceBlockId": "6a8c7153-91a4-4b47-b5fc-cd6850dbe237",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
+        },
+        {
+          "sourceBlockId": "4433e06e-2603-4770-9a2b-4e1539e48069",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
+        },
+        {
+          "sourceBlockId": "570ab239-fbce-406e-bcf9-8d9817f7cb3c",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
+        },
+        {
+          "sourceBlockId": "0f2ba1f6-a788-421f-a48c-590693ce27d2",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
+        },
+        {
+          "sourceBlockId": "b2cc4fa9-31f1-42e4-b290-6ff3ec22cd11",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
+        },
+        {
+          "sourceBlockId": "d66f62f6-b7a4-4bd4-9cfe-c529c2400664",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "4909b1b6-cd2e-4d46-8148-6dbb008e2a4b"
+        },
+        {
           "sourceBlockId": "e9e14b70-9737-4ed0-b796-b703e6e9f80d",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "55229324-2731-4390-8d2e-701fc240d5b7",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
+        },
+        {
+          "sourceBlockId": "9a535ab0-74c1-4e24-bbbb-24957ed105e2",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
+        },
+        {
+          "sourceBlockId": "9f17a2d6-40d3-41dd-aba1-16d872cf04b7",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
+        },
+        {
+          "sourceBlockId": "ef7893eb-9299-4970-a023-cd8f1bf9f220",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
+        },
+        {
+          "sourceBlockId": "e0d4f3b2-184e-4f80-9f57-55bca64bc181",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
+        },
+        {
+          "sourceBlockId": "e9b5f27a-0315-4f52-a1a0-2dedd7e3fd81",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
+        },
+        {
+          "sourceBlockId": "d8269b00-5c43-4766-8568-b1a35c54dcfd",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         }
       ],
       "title": "팀 회고 템플릿",
@@ -9424,49 +10604,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
         },
         {
           "sourceBlockId": "fc93ee91-54e9-4203-b172-ff2c3c7f160c",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
         },
         {
           "sourceBlockId": "b823ca60-6c03-4c3e-8e34-571211c6369b",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "4cda8393ec2271ac6daa8ab4c99e5d651de19c20d3bb2dc472bf0095b538da9e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
         },
         {
           "sourceBlockId": "e99268fb-8aae-44ed-9d66-40957fd72fd6",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
         },
         {
           "sourceBlockId": "7ec80384-2e39-4b70-a498-1c1af9b9231a",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
         },
         {
           "sourceBlockId": "2335a1d1-d920-4a24-a5d0-44fd0a5cfb6b",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
         },
         {
           "sourceBlockId": "7978f407-e9c0-4ebe-b4d7-41edcf7d44ba",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "73151b5c7c1ca3d103272dd0e9da658d15c27eab238a937a699f203b93381e04",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
         },
         {
           "sourceBlockId": "7819042d-6eaf-440e-ac3f-a4718fd80c14",
@@ -9830,49 +11017,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
         },
         {
           "sourceBlockId": "1206a0ed-99fc-4f6a-a397-27b470eb4191",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
         },
         {
           "sourceBlockId": "25ea8765-e240-4cc2-9c57-878a687d9827",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "4cda8393ec2271ac6daa8ab4c99e5d651de19c20d3bb2dc472bf0095b538da9e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
         },
         {
           "sourceBlockId": "c6dfae8c-3bec-4e09-8324-417e872ca2e9",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
         },
         {
           "sourceBlockId": "76c6a1b9-8535-45fc-afd1-04643831c41d",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
         },
         {
           "sourceBlockId": "ae3bb959-48fd-42e6-af13-ac868cc6aeb9",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
         },
         {
           "sourceBlockId": "3587a09b-fb6e-4f1b-bca0-cc689253b47c",
           "type": "text",
           "sourceTextChars": 18,
           "sourceTextSha256": "73151b5c7c1ca3d103272dd0e9da658d15c27eab238a937a699f203b93381e04",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
         },
         {
           "sourceBlockId": "0de64506-d37f-4649-88ed-30a1c9ce5954",
@@ -10058,7 +11252,7 @@
         {
           "sourceBlockId": "dbaf2e05-0874-465d-ba8c-37fad1ccce8a",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "36ffe128-62b5-43c7-95c3-b3c7a22f69ef",
@@ -10066,9 +11260,93 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "94d9ddf7-909a-4502-816e-e12656fdca73",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
+        },
+        {
+          "sourceBlockId": "fc93ee91-54e9-4203-b172-ff2c3c7f160c",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
+        },
+        {
+          "sourceBlockId": "b823ca60-6c03-4c3e-8e34-571211c6369b",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
+        },
+        {
+          "sourceBlockId": "e99268fb-8aae-44ed-9d66-40957fd72fd6",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
+        },
+        {
+          "sourceBlockId": "7ec80384-2e39-4b70-a498-1c1af9b9231a",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
+        },
+        {
+          "sourceBlockId": "2335a1d1-d920-4a24-a5d0-44fd0a5cfb6b",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
+        },
+        {
+          "sourceBlockId": "7978f407-e9c0-4ebe-b4d7-41edcf7d44ba",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "94d9ddf7-909a-4502-816e-e12656fdca73"
+        },
+        {
           "sourceBlockId": "7819042d-6eaf-440e-ac3f-a4718fd80c14",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "549f6d4d-2aca-4361-84c3-1d3ae5121680",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
+        },
+        {
+          "sourceBlockId": "1206a0ed-99fc-4f6a-a397-27b470eb4191",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
+        },
+        {
+          "sourceBlockId": "25ea8765-e240-4cc2-9c57-878a687d9827",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
+        },
+        {
+          "sourceBlockId": "c6dfae8c-3bec-4e09-8324-417e872ca2e9",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
+        },
+        {
+          "sourceBlockId": "76c6a1b9-8535-45fc-afd1-04643831c41d",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
+        },
+        {
+          "sourceBlockId": "ae3bb959-48fd-42e6-af13-ac868cc6aeb9",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
+        },
+        {
+          "sourceBlockId": "3587a09b-fb6e-4f1b-bca0-cc689253b47c",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "549f6d4d-2aca-4361-84c3-1d3ae5121680"
         }
       ],
       "title": "2021년 상반기 회고",
@@ -10684,49 +11962,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
         },
         {
           "sourceBlockId": "378c0979-050d-4e81-8738-a4cf1e18ef03",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
         },
         {
           "sourceBlockId": "3719fc18-c752-46d0-b538-0442cdd9205e",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
         },
         {
           "sourceBlockId": "168bd51a-4cdb-4f40-92b4-b037444a9f68",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
         },
         {
           "sourceBlockId": "0c5ecd6f-6ef9-41ad-8ddf-73c2be36a628",
           "type": "alias",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
         },
         {
           "sourceBlockId": "65c76a38-a27f-44a6-9a80-2cf6e346e353",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
         },
         {
           "sourceBlockId": "135fe1f5-f943-447f-8d32-c106da9b8184",
           "type": "text",
           "sourceTextChars": 26,
           "sourceTextSha256": "29b770d04f9e9b3a44f8603cec6fc58dd87eb469b2b46295f57dc5312f3db7d9",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
         },
         {
           "sourceBlockId": "5b0364f4-66b2-426d-8409-0240f6534587",
@@ -10980,84 +12265,96 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "c11c8748-dbe1-400c-8988-27749862275d",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "4f442dc8-7660-4eb4-bd85-b2a8e7fa1648",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "0b20212e83c31a8ddef04f54c2800310fe78596b3e6ed627778de337ad1caa6f",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "c67f3849-f19c-4e35-add0-5ea81f7fbdfa",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "1af75c45-d169-4ffc-92db-5c9c545b4f1e",
           "type": "alias",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "01a3ff99-ea30-4255-baf8-b0867e448633",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "a67a2b32-14a3-4598-8cf1-7df81f3e7080",
           "type": "text",
           "sourceTextChars": 26,
           "sourceTextSha256": "29b770d04f9e9b3a44f8603cec6fc58dd87eb469b2b46295f57dc5312f3db7d9",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "19de1a9f-2b05-4262-8186-687f6193a4c7",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "84e97ce1-76ea-445f-bc27-218c58082860",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "24924d23-511a-4fbd-8180-17e8f101c996",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "091fb660-c0ac-4529-a6c7-4dcef0902233",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         },
         {
           "sourceBlockId": "6de3757e-afef-4b97-beef-5e6cf775bc6e",
           "type": "text",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         }
       ],
       "assets": [
@@ -11163,21 +12460,12 @@
         }
       ],
       "unresolvedLinks": [],
-      "warnings": [
-        {
-          "kind": "inaccessible-source-block",
-          "blockId": "f6b3b353-a42e-4218-8106-c5cbf18e861d"
-        },
-        {
-          "kind": "inaccessible-source-block",
-          "blockId": "f6b3b353-a42e-4218-8106-c5cbf18e861d"
-        }
-      ],
+      "warnings": [],
       "excluded": [
         {
           "sourceBlockId": "ac264110-59cb-47d5-a366-658949bf4835",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "1f893836-041f-44bc-943e-520cb5690abf",
@@ -11185,9 +12473,123 @@
           "reason": "Public source UI hides this exact Darass comment-widget HTML configuration (matched by source hash)."
         },
         {
+          "sourceBlockId": "8bed461a-babf-43e3-82e8-ca3270a6ad66",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
+        },
+        {
+          "sourceBlockId": "378c0979-050d-4e81-8738-a4cf1e18ef03",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
+        },
+        {
+          "sourceBlockId": "3719fc18-c752-46d0-b538-0442cdd9205e",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
+        },
+        {
+          "sourceBlockId": "168bd51a-4cdb-4f40-92b4-b037444a9f68",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
+        },
+        {
+          "sourceBlockId": "0c5ecd6f-6ef9-41ad-8ddf-73c2be36a628",
+          "type": "alias",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
+        },
+        {
+          "sourceBlockId": "65c76a38-a27f-44a6-9a80-2cf6e346e353",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
+        },
+        {
+          "sourceBlockId": "135fe1f5-f943-447f-8d32-c106da9b8184",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "8bed461a-babf-43e3-82e8-ca3270a6ad66"
+        },
+        {
           "sourceBlockId": "5b0364f4-66b2-426d-8409-0240f6534587",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "ae4cc0cb-be69-47d6-8514-92a1646995ab",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "c11c8748-dbe1-400c-8988-27749862275d",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "4f442dc8-7660-4eb4-bd85-b2a8e7fa1648",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "c67f3849-f19c-4e35-add0-5ea81f7fbdfa",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "1af75c45-d169-4ffc-92db-5c9c545b4f1e",
+          "type": "alias",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "01a3ff99-ea30-4255-baf8-b0867e448633",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "a67a2b32-14a3-4598-8cf1-7df81f3e7080",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "19de1a9f-2b05-4262-8186-687f6193a4c7",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "84e97ce1-76ea-445f-bc27-218c58082860",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "24924d23-511a-4fbd-8180-17e8f101c996",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "091fb660-c0ac-4529-a6c7-4dcef0902233",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        },
+        {
+          "sourceBlockId": "6de3757e-afef-4b97-beef-5e6cf775bc6e",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
         }
       ],
       "title": "왜 Spark를 써야할까 ",
@@ -11212,7 +12614,7 @@
         },
         "assetCount": 10,
         "failedAssets": 0,
-        "warningCount": 2,
+        "warningCount": 0,
         "unresolvedLinkCount": 0
       },
       "outputFile": "src/content/posts/ko/833771f4-d722-4c80-8967-2f0024885bff.mdx",
@@ -11235,49 +12637,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
         },
         {
           "sourceBlockId": "eedc1787-78a2-403d-8618-2fbb7644c984",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
         },
         {
           "sourceBlockId": "636e4c6b-fd26-490b-865e-3c014028515a",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "479961b3e31a7c1860f8601eeb859e0332cb7f286f9ce7dcdb7277098bac304e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
         },
         {
           "sourceBlockId": "18e18616-798b-4850-a831-cc174014be21",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
         },
         {
           "sourceBlockId": "5eeaddb2-5a45-4b9b-b65c-c94135475978",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
         },
         {
           "sourceBlockId": "79d9c698-77b2-4e12-9a52-81c6c383b0a1",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
         },
         {
           "sourceBlockId": "9d7a2639-e908-44c7-b9e5-69183dcd023c",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
         },
         {
           "sourceBlockId": "91fbf845-d0e4-4f2f-95fc-81389e91d79d",
@@ -11774,49 +13183,56 @@
           "type": "column_list",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
         },
         {
           "sourceBlockId": "77066798-da1a-4846-9561-f055a0ec4084",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
         },
         {
           "sourceBlockId": "abed78ad-d27f-46fd-9ca2-76113d57ff58",
           "type": "text",
           "sourceTextChars": 22,
           "sourceTextSha256": "479961b3e31a7c1860f8601eeb859e0332cb7f286f9ce7dcdb7277098bac304e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
         },
         {
           "sourceBlockId": "bd139b78-1c61-4bc2-80e7-31ce5b694d99",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
         },
         {
           "sourceBlockId": "b4ef17ea-94e3-4a07-9c60-0994cab20302",
           "type": "text",
           "sourceTextChars": 2,
           "sourceTextSha256": "f2435625279d20b076f00b56288d4cc34f6a56d12110f5edc731036b1d878b2e",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
         },
         {
           "sourceBlockId": "70b022a7-acfd-4217-91c1-08dac543e232",
           "type": "column",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
         },
         {
           "sourceBlockId": "cdfa7660-9c8f-49ff-ab0a-e5460af74e68",
           "type": "text",
           "sourceTextChars": 12,
           "sourceTextSha256": "b3f5c034dd7a861446876c93c71bdb489d7c6f8bdcb2a997a48b3a520a3ba6ba",
-          "status": "converted"
+          "status": "excluded-legacy-navigation",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
         },
         {
           "sourceBlockId": "694e01f3-6fcf-4dd2-a369-40baf723bac5",
@@ -12071,12 +13487,96 @@
         {
           "sourceBlockId": "6e3cbb2e-05c4-47c5-be82-ad8f82910c4e",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
+        },
+        {
+          "sourceBlockId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
+        },
+        {
+          "sourceBlockId": "eedc1787-78a2-403d-8618-2fbb7644c984",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
+        },
+        {
+          "sourceBlockId": "636e4c6b-fd26-490b-865e-3c014028515a",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
+        },
+        {
+          "sourceBlockId": "18e18616-798b-4850-a831-cc174014be21",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
+        },
+        {
+          "sourceBlockId": "5eeaddb2-5a45-4b9b-b65c-c94135475978",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
+        },
+        {
+          "sourceBlockId": "79d9c698-77b2-4e12-9a52-81c6c383b0a1",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
+        },
+        {
+          "sourceBlockId": "9d7a2639-e908-44c7-b9e5-69183dcd023c",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "14fd7711-dfa4-4084-aa3e-f41e8649ee39"
         },
         {
           "sourceBlockId": "91fbf845-d0e4-4f2f-95fc-81389e91d79d",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3",
+          "type": "column_list",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
+        },
+        {
+          "sourceBlockId": "77066798-da1a-4846-9561-f055a0ec4084",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
+        },
+        {
+          "sourceBlockId": "abed78ad-d27f-46fd-9ca2-76113d57ff58",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
+        },
+        {
+          "sourceBlockId": "bd139b78-1c61-4bc2-80e7-31ce5b694d99",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
+        },
+        {
+          "sourceBlockId": "b4ef17ea-94e3-4a07-9c60-0994cab20302",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
+        },
+        {
+          "sourceBlockId": "70b022a7-acfd-4217-91c1-08dac543e232",
+          "type": "column",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
+        },
+        {
+          "sourceBlockId": "cdfa7660-9c8f-49ff-ab0a-e5460af74e68",
+          "type": "text",
+          "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
+          "navigationGroupId": "d6dcbc7f-664d-4f2f-9386-70997ad459d3"
         }
       ],
       "title": "2021년 회고",

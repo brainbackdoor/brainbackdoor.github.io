@@ -65,6 +65,36 @@ class ConversionTests(unittest.TestCase):
                 self.assertIn('kakaoChannel: false',out)
                 self.assertEqual(c.report['excluded'],[])
 
+    def test_legacy_navigation_is_removed_with_complete_source_trace(self):
+        blocks={'one':{'type':'column_list','content':['left','middle','right']},
+            'left':{'type':'column','content':['previous']},'middle':{'type':'column','content':['source']},
+            'right':{'type':'column','content':['following','blank']},
+            'previous':{'type':'text','properties':{'title':[['⬅️ 이전 글 : 없음']]}},
+            'source':{'type':'text','properties':{'title':[['‣ ', [['p', ROOT]]]]}},
+            'following':{'type':'text','properties':{'title':[['➡️ 다음 글 : TCP 성능']]}},
+            'blank':{'type':'text'},'two':{'type':'text','properties':{'title':[['본문과 일반 링크는 보존']]}}}
+        for source in [blocks['source'], {'type':'alias','format':{'alias_pointer':{'id':ROOT}}}]:
+            with self.subTest(source=source['type']):
+                c=converter(dict(blocks,source=source)); out=c.convert()
+                self.assertNotIn('이전 글',out); self.assertNotIn('다음 글',out)
+                self.assertNotIn('notion-columns',out); self.assertIn('본문과 일반 링크는 보존',out)
+                self.assertEqual({b['sourceBlockId'] for b in c.report['blocks']},set(blocks))
+                self.assertEqual(sum(b['status']=='excluded-legacy-navigation' for b in c.report['blocks']),8)
+
+    def test_substantive_column_content_is_not_a_navigation_toolbar(self):
+        blocks={'one':{'type':'column_list','content':['left','middle','right']},
+            'left':{'type':'column','content':['previous']},'middle':{'type':'column','content':['source']},
+            'right':{'type':'column','content':['following']},
+            'previous':{'type':'text','properties':{'title':[['⬅️ 이전 글 : 비교 자료']]}},
+            'following':{'type':'text','properties':{'title':[['➡️ 다음 글 : 비교 자료']]}},
+            'source':{'type':'text','properties':{'title':[['본문 설명']] }},'two':{'type':'text'},
+            'reference':{'type':'text','properties':{'title':[['본문 설명']]}}}
+        for source in [blocks['source'], {'type':'alias','format':{'alias_pointer':{'id':'reference'}}}]:
+            with self.subTest(source=source['type']):
+                c=converter(dict(blocks,source=source)); out=c.convert()
+                self.assertIn('본문 설명',out); self.assertIn('notion-columns',out)
+                self.assertEqual(c.report['excluded'],[])
+
     def test_verified_empty_collection_does_not_expose_stale_rows(self):
         c=converter({'one':{'type':'collection_view','collection_id':'collection','view_ids':['view']},'two':{'type':'text'},'private':{'type':'page','parent_table':'collection','parent_id':'collection','properties':{'title':[['비공개 카드']]}}})
         c.collections['collection']={'schema':{'title':{'name':'이름'}}}

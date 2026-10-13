@@ -62,15 +62,17 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
     if(!context){failed.current=true;surface.current=null;return;}
     const measuredContext=context;
     function measure() {
-      if(disposed||failed.current||!canvas||!plot||!container)return;
+      if(disposed||!canvas||!plot||!container)return;
       const measuredWidth=plot.getBoundingClientRect().width;
       if(measuredWidth<=0){surface.current=null;setReady(false);return;}
+      // Keep the SVG responsive even after Canvas rendering has failed.
+      setWidth(measuredWidth);
+      if(failed.current){surface.current=null;setReady(false);return;}
       const dpr=Math.max(1,window.devicePixelRatio||1);
       const height=renderer(measuredWidth,info.final).height;
       const pixelsWidth=Math.round(measuredWidth*dpr),pixelsHeight=Math.round(height*dpr);
       if(canvas.width!==pixelsWidth||canvas.height!==pixelsHeight){canvas.width=pixelsWidth;canvas.height=pixelsHeight;}
       surface.current={context:measuredContext,width:measuredWidth,dpr,font:getComputedStyle(container).fontFamily};
-      setWidth(measuredWidth);
       playback.redraw();
       if(!failed.current)setReady(true);
     }

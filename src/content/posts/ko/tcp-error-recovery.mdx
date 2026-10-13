@@ -170,11 +170,17 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 </details>
 
+<details className="figure-source">
+
+<summary>원본 자료</summary>
+
 <figure id="9fcf3b56-ff1b-42f2-bc21-22233a93bb88" className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/9fcf3b56-ff1b-42f2-bc21-22233a93bb88.png" alt="" loading="lazy" width="2380" height="264" />
 
 </figure>
+
+</details>
 
 <figure id="7458ade8-baa5-4cb0-94b1-74ee71ea6c87" className="notion-bookmark">
 
@@ -264,7 +270,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <p id="dc04c660-f4d6-49ea-b995-c92af09b7901">혼잡 회피에서 암묵적으로 판단하기에 패킷 손실이 일어났다는 것은 네트워크 혼잡이 일어났다는 신호다&#46; 이동 경로의 어딘가에서 정체가 일어난 링크나 라우터가 패킷을 누락시켰을 것이다&#46; 그래서 네트워크에 부담을 덜어주고 더 이상의 패킷 손실을 막기 위해 윈도 사이즈를 조정해야 하는 것이다&#46;</p>
 
-<p id="1844dbdc-e426-4e34-8724-7631b2a802e5">Packet loss가 감지되면, 바로 이전 Congestion window size를 ssthresh 값으로 설정하고 이후에 congestion avoidance 단계에서 그 ssthresh 값으로부터 segment를 하나씩 증가시키면서 network congestion이 발생하는 지점을 찾는다&#46; packet loss가 발생하면 다시 ssthresh 값을 직전 cwnd의 절반으로 줄이고 다시 slow start를 수행한다&#46; (&lt;그림1&gt;을 참조하자)</p>
+<p id="1844dbdc-e426-4e34-8724-7631b2a802e5">Reno에서는 RTO로 손실을 감지하면 ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고 cwnd를 1 SMSS로 줄여 다시 slow start를 수행한다&#46; cwnd가 ssthresh에 도달하면 혼잡 회피로 전환해 RTT당 약 1 SMSS씩 증가시킨다&#46; 세 번의 중복 ACK로 감지하는 손실은 다음 절의 빠른 재전송·빠른 회복 경로와 구분한다&#46; (&lt;그림1&gt;을 참조하자)</p>
 
 <p id="e391531a-3e5a-4288-a8e6-a9aeaabe3eb6">그런데 packet loss가 발생했을 경우 이전까지 TCP 송신자는 매번 retransmission timeout(RTO)가 발생할 때까지 기다려서 packet loss를 감지하였다&#46; 이에 대한 대안으로 Fast Retransmission과  Fast Recovery가 제시되었다&#46;</p>
 
@@ -274,21 +280,33 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 ### <strong>3) Fast Retransmission &amp; Fast Recovery</strong>
 
-<p id="602a3cd6-7a3b-4d1e-b52d-5f192fc867b3">Network에서 packet loass가 발생한 사실을 RTO가 아닌 연속 3회 DUP&#95;ACK로 인지하게 될 경우 (&lt;그림1&gt;의 4번, Fast Retransmission) 이전처럼 cwnd를 초기값부터 다시 slow start를 하지 않고 현재의 절반으로 줄인 후에 congestion avoidance를 수행해서 빠르게 packet loss가 발생했던 cwnd 직전까지 찾아간다(Fast recovery)&#46;</p>
+<p id="602a3cd6-7a3b-4d1e-b52d-5f192fc867b3">고전 Reno에서 송신자가 연속 세 번의 중복 ACK를 받으면 RTO 전에 누락된 세그먼트를 재전송한다&#46; (&lt;그림1&gt;의 Fast Retransmission) ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고, 빠른 회복 동안 cwnd를 ssthresh + 3 × SMSS로 설정한다&#46; 추가 중복 ACK마다 cwnd를 1 SMSS씩 늘리며, 새 데이터를 확인하는 ACK가 도착하면 cwnd를 ssthresh로 낮추고 혼잡 회피를 이어간다&#46; 이 경로는 cwnd를 1 SMSS로 줄이는 RTO 경로와 다르다&#46;</p>
 
 <details id="df0aedd3-9550-4c96-829b-797a6567d12a" className="notion-toggle" open>
 
 <summary>중복 ACK (DUP&#95;ACK)</summary>
 
-<p id="ea7d9d6d-431e-48d4-b854-ca04c4abd80f">수신자가 잘못된 패킷을 받았을 때 보내는 TCP packet이다&#46; TCP에서는 데이터가 보내진 순서대로 받아 재조립할 수 있게 헤더내에 있는 일련번호와 ACK번호 필드를 이용한다&#46;</p>
+<p id="ea7d9d6d-431e-48d4-b854-ca04c4abd80f">수신자가 순서가 맞지 않는 세그먼트를 받으면, 아직 채워지지 않은 연속 바이트 구간의 다음 순번을 같은 ACK 번호로 알릴 수 있다&#46; TCP에서는 데이터가 보내진 순서대로 받아 재조립할 수 있게 헤더내에 있는 일련번호와 ACK번호 필드를 이용한다&#46;</p>
 
 </details>
 
-<figure id="69e0c456-eaf3-49b8-a85a-434fb5e82337" className="notion-figure">
+<div id="69e0c456-eaf3-49b8-a85a-434fb5e82337">
+
+<LessonFigure figureId="N06" sourceBlockId="69e0c456-eaf3-49b8-a85a-434fb5e82337" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/5df70731-ea29-47b1-bff3-9f18e8ff955f/69e0c456-eaf3-49b8-a85a-434fb5e82337.png" alt="" loading="lazy" width="2968" height="782" />
 
 </figure>
+
+</details>
+
+</div>
 
 <hr id="83424742-6a80-43fa-90d0-ff457eb3d4a4" />
 

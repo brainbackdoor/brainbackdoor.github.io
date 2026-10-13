@@ -145,6 +145,22 @@
       ]
     },
     {
+      "figureId": "N06",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "69e0c456-eaf3-49b8-a85a-434fb5e82337",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "중복 ACK 3",
+        "후속 없음",
+        "RTO"
+      ],
+      "evidenceBlockIds": [
+        "69e0c456-eaf3-49b8-a85a-434fb5e82337",
+        "9fcf3b56-ff1b-42f2-bc21-22233a93bb88"
+      ]
+    },
+    {
       "figureId": "N07",
       "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
       "sourceBlockId": "eb046534-d87b-4462-88ad-53418c157682",
@@ -158,6 +174,74 @@
       "evidenceBlockIds": [
         "eb046534-d87b-4462-88ad-53418c157682"
       ]
+    },
+    {
+      "figureId": "N09",
+      "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+      "sourceBlockId": "eddb70fa-c407-45eb-8ee8-5b840a850b67",
+      "sourceType": "text",
+      "mode": "after",
+      "requiredText": [
+        "TCP_NODELAY=1",
+        "Nagle",
+        "delayed ACK"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "N10",
+      "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+      "sourceBlockId": "6e7daef2-df79-41a4-86a6-505e570686a4",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "TIME_WAIT",
+        "LAST-ACK",
+        "FIN 재전송",
+        "2MSL"
+      ],
+      "evidenceBlockIds": [
+        "6e7daef2-df79-41a4-86a6-505e570686a4"
+      ]
+    },
+    {
+      "figureId": "N11",
+      "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+      "sourceBlockId": "f7f4c5a3-e176-40dc-91ee-9547c8c9dd9c",
+      "sourceType": "text",
+      "mode": "after",
+      "requiredText": [
+        "앱 전달",
+        "1 → 2 → 3 → 4",
+        "수신 버퍼"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "N12",
+      "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+      "sourceBlockId": "0a0f2e6b-e55f-489d-83e6-426dafe34802",
+      "sourceType": "text",
+      "mode": "after",
+      "requiredText": [
+        "SO_KEEPALIVE",
+        "probe 3",
+        "idle"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "N13",
+      "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+      "sourceBlockId": "15f31b20-1a74-48ee-8d01-ef6458d86cb6",
+      "sourceType": "text",
+      "mode": "after",
+      "requiredText": [
+        "handshake 1",
+        "handshake 3",
+        "Connection: close"
+      ],
+      "evidenceBlockIds": []
     }
   ],
   "corrections": [
@@ -195,6 +279,61 @@
       "reference": "https://www.rfc-editor.org/rfc/rfc6298.html#section-2"
     },
     {
+      "id": "nagle-smss",
+      "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+      "sourceBlockId": "eddb70fa-c407-45eb-8ee8-5b840a850b67",
+      "sourceType": "text",
+      "sourceTextSha256": "249222eaf51cedc6f2434986a1b813f9f045671c76c30bb992e065099c427338",
+      "oldText": "Nagle 알고리즘은 세그먼트가 최대 크기(LAN상 1500, WAN상 수백 바이트)가 되지 않으면 전송을 하지 않는다.",
+      "newText": "Nagle 알고리즘은 미확인 데이터가 있는 동안 작은 쓰기를 모아 SMSS만큼 채워지거나 ACK가 도착하면 전송한다. IP MTU가 1,500 byte이고 IPv4/TCP 옵션이 없으면 TCP payload의 최대 크기는 1,460 byte다.",
+      "reason": "MTU와 MSS를 분리하고 첫 작은 쓰기가 무조건 대기하는 것처럼 보이지 않게 보완",
+      "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
+    },
+    {
+      "id": "nodelay-direction",
+      "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+      "sourceBlockId": "eddb70fa-c407-45eb-8ee8-5b840a850b67",
+      "sourceType": "text",
+      "sourceTextSha256": "249222eaf51cedc6f2434986a1b813f9f045671c76c30bb992e065099c427338",
+      "oldText": "TCP_NODELAY 설정을 비활성화하기도 한다.",
+      "newText": "TCP_NODELAY 설정을 활성화해 Nagle 알고리즘을 비활성화하기도 한다.",
+      "reason": "설정 방향 수정",
+      "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
+    },
+    {
+      "id": "timewait-fin-actor",
+      "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+      "sourceBlockId": "8b7b566b-fc57-4ed6-88f6-0212a263ac5b",
+      "sourceType": "text",
+      "sourceTextSha256": "a05ec9859f3e6569b2c207855c74f9d8f6bbcb6a581d1f5affab3870416f3299",
+      "oldText": "반면, TIME_WAIT이 있을 경우에는 이상을 감지하여 한번 더 FIN 패킷을 요청한다.",
+      "newText": "반면, TIME_WAIT이 있을 경우에는 수동 종료 측이 재전송한 FIN 패킷을 받고 ACK를 다시 보낸다. FIN을 다시 받은 능동 종료 측은 2MSL 타이머를 재시작한다.",
+      "reason": "FIN 재전송과 ACK 재응답 주체 구분",
+      "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
+    },
+    {
+      "id": "keepalive-purpose",
+      "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+      "sourceBlockId": "0a0f2e6b-e55f-489d-83e6-426dafe34802",
+      "sourceType": "text",
+      "sourceTextSha256": "3bbe125793a8f2d384bfb8df1008c39b9fae40e2313426dee7e57d2550341a3c",
+      "oldText": "keep alive 기능을 켬으로써 불필요한 3 way handshake를 줄이고 TIME_WAIT 소켓도 줄일 수 있다. keep alive란, 한번 맺은 세션을 요청이 끝나더라도 유지해주는 기능이다.",
+      "newText": "HTTP 연결 재사용은 불필요한 3 way handshake와 연결 종료를 줄일 수 있다. TCP keepalive는 별도 기능으로, SO_KEEPALIVE를 켠 유휴 연결에서 상대의 응답을 확인한다.",
+      "reason": "HTTP 연결 재사용과 TCP probe 목적 분리",
+      "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
+    },
+    {
+      "id": "keepalive-failure-actor",
+      "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+      "sourceBlockId": "0a0f2e6b-e55f-489d-83e6-426dafe34802",
+      "sourceType": "text",
+      "sourceTextSha256": "3bbe125793a8f2d384bfb8df1008c39b9fae40e2313426dee7e57d2550341a3c",
+      "oldText": "클라이언트는 연결이 끊어졌다고 인지하고 서버에 RST 패킷을 보낸 다음 자신의 소켓을 닫는다.",
+      "newText": "probe를 보내는 쪽에서 연결 실패를 판정하고 소켓을 정리한다. RST 전송 등 후속 동작은 구현에 따라 다르다.",
+      "reason": "무조건 클라이언트가 RST를 보낸다는 전제 제거",
+      "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
+    },
+    {
       "id": "zero-window-probe",
       "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
       "sourceBlockId": "3915897f-b4a3-420c-b6c0-f71c001e9d42",
@@ -204,6 +343,50 @@
       "newText": "Zero Window Probe",
       "reason": "수신 윈도 확인과 유휴 keepalive 구분",
       "reference": "https://www.rfc-editor.org/rfc/rfc9293.html#section-3.8.6.1"
+    },
+    {
+      "id": "reno-rto-transition",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "1844dbdc-e426-4e34-8724-7631b2a802e5",
+      "sourceType": "text",
+      "sourceTextSha256": "046b8df0820c257d98f719ea2ecf6208949b79acfabcc93cb9ac81246f52a52e",
+      "oldText": "Packet loss가 감지되면, 바로 이전 Congestion window size를 ssthresh 값으로 설정하고 이후에 congestion avoidance 단계에서 그 ssthresh 값으로부터 segment를 하나씩 증가시키면서 network congestion이 발생하는 지점을 찾는다. packet loss가 발생하면 다시 ssthresh 값을 직전 cwnd의 절반으로 줄이고 다시 slow start를 수행한다. (<그림1>을 참조하자)",
+      "newText": "Reno에서는 RTO로 손실을 감지하면 ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고 cwnd를 1 SMSS로 줄여 다시 slow start를 수행한다. cwnd가 ssthresh에 도달하면 혼잡 회피로 전환해 RTT당 약 1 SMSS씩 증가시킨다. 세 번의 중복 ACK로 감지하는 손실은 다음 절의 빠른 재전송·빠른 회복 경로와 구분한다. (<그림1>을 참조하자)",
+      "reason": "RTO와 빠른 회복의 서로 다른 전이를 도해와 맞춤",
+      "reference": "https://www.rfc-editor.org/rfc/rfc5681.html#section-3"
+    },
+    {
+      "id": "reno-fast-recovery",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "602a3cd6-7a3b-4d1e-b52d-5f192fc867b3",
+      "sourceType": "text",
+      "sourceTextSha256": "6dcade2e3340ef6abddfaefb8a377ddadca11819439e830308da78a94087f7ea",
+      "oldText": "Network에서 packet loass가 발생한 사실을 RTO가 아닌 연속 3회 DUP_ACK로 인지하게 될 경우 (<그림1>의 4번, Fast Retransmission) 이전처럼 cwnd를 초기값부터 다시 slow start를 하지 않고 현재의 절반으로 줄인 후에 congestion avoidance를 수행해서 빠르게 packet loss가 발생했던 cwnd 직전까지 찾아간다(Fast recovery).",
+      "newText": "고전 Reno에서 송신자가 연속 세 번의 중복 ACK를 받으면 RTO 전에 누락된 세그먼트를 재전송한다. (<그림1>의 Fast Retransmission) ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고, 빠른 회복 동안 cwnd를 ssthresh + 3 × SMSS로 설정한다. 추가 중복 ACK마다 cwnd를 1 SMSS씩 늘리며, 새 데이터를 확인하는 ACK가 도착하면 cwnd를 ssthresh로 낮추고 혼잡 회피를 이어간다. 이 경로는 cwnd를 1 SMSS로 줄이는 RTO 경로와 다르다.",
+      "reason": "빠른 회복의 일시적인 cwnd 증가와 이후 감소를 구분",
+      "reference": "https://www.rfc-editor.org/rfc/rfc5681.html#section-3"
+    },
+    {
+      "id": "dupack-meaning",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "ea7d9d6d-431e-48d4-b854-ca04c4abd80f",
+      "sourceType": "text",
+      "sourceTextSha256": "91f38d54b12408cffcd5e3e729cc8eb9d21cc3a9e0261749ff9b37c39dfe6fa1",
+      "oldText": "수신자가 잘못된 패킷을 받았을 때 보내는 TCP packet이다.",
+      "newText": "수신자가 순서가 맞지 않는 세그먼트를 받으면, 아직 채워지지 않은 연속 바이트 구간의 다음 순번을 같은 ACK 번호로 알릴 수 있다.",
+      "reason": "중복 ACK를 손상된 패킷에 대한 응답으로 오해하지 않도록 보완",
+      "reference": "https://www.rfc-editor.org/rfc/rfc5681.html#section-3"
+    },
+    {
+      "id": "keepalive-http-distinction",
+      "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+      "sourceBlockId": "15f31b20-1a74-48ee-8d01-ef6458d86cb6",
+      "sourceType": "text",
+      "sourceTextSha256": "906009935406682c5e96ab15bee340a39ac7c405433787457495feb36d1bd06b",
+      "oldText": "TCP keepalive는 서버간에 ACK 패킷을 보내 세션 테이블이 지워지지 않고 계속 세션 정보를 유지하는데 반해, HTTP Keepalive는 일정시간이 지나면 능동적으로 연결을 끊는다",
+      "newText": "TCP keepalive는 유휴 TCP 연결에서 상대의 응답을 확인하고, HTTP Keepalive는 같은 연결을 다음 HTTP 요청에도 재사용하는 방식이다. HTTP 서버는 설정한 유휴 제한에 따라 연결을 종료할 수 있다",
+      "reason": "TCP의 상태 확인과 HTTP의 연결 재사용·유휴 종료를 구분",
+      "reference": "https://www.rfc-editor.org/rfc/rfc9112.html#section-9.3"
     }
   ]
 }

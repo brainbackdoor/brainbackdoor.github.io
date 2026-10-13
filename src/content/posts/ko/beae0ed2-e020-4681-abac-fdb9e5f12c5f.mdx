@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "🌐"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <figure id="0ee68211-0d0c-497b-8988-5e519a6c4182" className="notion-figure">
 
 <img src="/content/beae0ed2-e020-4681-abac-fdb9e5f12c5f/0ee68211-0d0c-497b-8988-5e519a6c4182.jpg" alt="" loading="lazy" width="198" height="253" />
@@ -28,13 +30,25 @@ icon: "🌐"
 
 <p id="9ea25906-0297-4e0a-9e1b-97c9b92126ea">패킷 유실에 따른 비정상적인 통신흐름이 발생할 수 있다&#46; 가령, 아래 그림과 같이 마지막 ACK가 중간에 유실될 경우 FIN에 대한 ACK를 받지 못했기에 LAST-ACK상태이고, SYN 요청에 대해 RST를 보낸다&#46;</p>
 
-<figure id="6e7daef2-df79-41a4-86a6-505e570686a4" className="notion-figure">
+<div id="6e7daef2-df79-41a4-86a6-505e570686a4">
+
+<LessonFigure figureId="N10" sourceBlockId="6e7daef2-df79-41a4-86a6-505e570686a4" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/beae0ed2-e020-4681-abac-fdb9e5f12c5f/6e7daef2-df79-41a4-86a6-505e570686a4.png" alt="" loading="lazy" width="500" height="336" />
 
 </figure>
 
-<p id="8b7b566b-fc57-4ed6-88f6-0212a263ac5b">반면, TIME&#95;WAIT이 있을 경우에는 이상을 감지하여 한번 더 FIN 패킷을 요청한다&#46;</p>
+</details>
+
+</div>
+
+<p id="8b7b566b-fc57-4ed6-88f6-0212a263ac5b">반면, TIME&#95;WAIT이 있을 경우에는 수동 종료 측이 재전송한 FIN 패킷을 받고 ACK를 다시 보낸다&#46; FIN을 다시 받은 능동 종료 측은 2MSL 타이머를 재시작한다&#46;</p>
 
 <p id="f59d4dd9-f211-4f87-8e2a-7dc13cbb9fa4">active closer(먼저 연결을 끊는) 쪽에서 TIME&#95;WAIT 소켓이 생성된다&#46; </p>
 
@@ -56,7 +70,9 @@ icon: "🌐"
 
 ### 2) 서버 입장 
 
-<p id="0a0f2e6b-e55f-489d-83e6-426dafe34802">keep alive 기능을 켬으로써 불필요한 3 way handshake를 줄이고 TIME&#95;WAIT 소켓도 줄일 수 있다&#46; keep alive란, 한번 맺은 세션을 요청이 끝나더라도 유지해주는 기능이다&#46; 보다 구체적으로는, keepalive timeout 시간이 지나면(<code>tcp&#95;keepalive&#95;time</code> 설정값) 서버에서 <strong>Keepalive 확인 패킷</strong>을 보낸다&#46; 이 패킷에 대한 응답을 받으면 타이머는 원래 값으로 돌아가 다시 카운트를 진행한다&#46; 반면  응답을 받지 못한 경우 <code>tcp&#95;keepalive&#95;intvl</code>에 정의된 시간만큼 경과한 후 요청을 다시 보내게 되고, <code>tcp&#95;keepalive&#95;probes</code>에 정의된 횟수만큼 보낸다&#46; 이 후로도 응답이 없을 경우 클라이언트는 연결이 끊어졌다고 인지하고 서버에 RST 패킷을 보낸 다음 자신의 소켓을 닫는다&#46; (그리하여 Keepalive를 사용할 경우 연결이 끊어졌음에도 FIN 패킷을 받지 못해 정리되지 않고 남아있던 좀비 커넥션을 없애는 효과도 발생한다&#46;)</p>
+<p id="0a0f2e6b-e55f-489d-83e6-426dafe34802">HTTP 연결 재사용은 불필요한 3 way handshake와 연결 종료를 줄일 수 있다&#46; TCP keepalive는 별도 기능으로, SO&#95;KEEPALIVE를 켠 유휴 연결에서 상대의 응답을 확인한다&#46; 보다 구체적으로는, keepalive timeout 시간이 지나면(<code>tcp&#95;keepalive&#95;time</code> 설정값) 서버에서 <strong>Keepalive 확인 패킷</strong>을 보낸다&#46; 이 패킷에 대한 응답을 받으면 타이머는 원래 값으로 돌아가 다시 카운트를 진행한다&#46; 반면  응답을 받지 못한 경우 <code>tcp&#95;keepalive&#95;intvl</code>에 정의된 시간만큼 경과한 후 요청을 다시 보내게 되고, <code>tcp&#95;keepalive&#95;probes</code>에 정의된 횟수만큼 보낸다&#46; 이 후로도 응답이 없을 경우 probe를 보내는 쪽에서 연결 실패를 판정하고 소켓을 정리한다&#46; RST 전송 등 후속 동작은 구현에 따라 다르다&#46; (그리하여 Keepalive를 사용할 경우 연결이 끊어졌음에도 FIN 패킷을 받지 못해 정리되지 않고 남아있던 좀비 커넥션을 없애는 효과도 발생한다&#46;)</p>
+
+<LessonFigure figureId="N12" sourceBlockId="0a0f2e6b-e55f-489d-83e6-426dafe34802" client:visible />
 
 <hr id="99cb80f0-9ad6-43db-8bd6-2bcc3977a7a6" />
 
@@ -66,7 +82,9 @@ icon: "🌐"
 
 <p id="834b2b5c-bd14-4654-bbe0-af165587310c">HTTP Keepalive는 설정된 기간까지만 Connection을 유지하다 <strong>FIN</strong>을 서버에서 먼저 날린다&#46; Connection을 유지하기 위해서 클라이언트는 요청에 <code>Connection&#58;Keep-Alive</code> 헤더를 포함시킨다&#46;(HTTP/1&#46;0) HTTP/1&#46;1에서는 해당 설정이 빠졌고, 기본적으로 활성화되어 있다&#46; Connection 종료시에 <code>Connection&#58; close</code>헤더를 명시해야 한다&#46;</p>
 
-<p id="15f31b20-1a74-48ee-8d01-ef6458d86cb6">즉, <span className="notion-color-red"><strong>TCP keepalive는 서버간에 ACK 패킷을 보내 세션 테이블이 지워지지 않고 계속 세션 정보를 유지하는데 반해, HTTP Keepalive는 일정시간이 지나면 능동적으로 연결을 끊는다</strong></span><span className="notion-color-red">&#46;</span> 이에 TCP Keepalive는 mq, kafka 등 TCP 기반의 서비스들을 대상으로 지속적 연결을 유지해야 하는 경우 사용되고, HTTP Keepalive는 Apache, Nginx 등 웹 애플리케이션에서 설정된 기간까지 최대한 연결을 유지하기 위해 사용된다&#46; (두 설정을 모두 적용했을 경우 HTTP Keepalive가 능동적으로 FIN 패킷을 보내기에 이 설정대로 동작한다&#46;)</p>
+<p id="15f31b20-1a74-48ee-8d01-ef6458d86cb6">즉, <span className="notion-color-red"><strong>TCP keepalive는 유휴 TCP 연결에서 상대의 응답을 확인하고, HTTP Keepalive는 같은 연결을 다음 HTTP 요청에도 재사용하는 방식이다&#46; HTTP 서버는 설정한 유휴 제한에 따라 연결을 종료할 수 있다</strong></span><span className="notion-color-red">&#46;</span> 이에 TCP Keepalive는 mq, kafka 등 TCP 기반의 서비스들을 대상으로 지속적 연결을 유지해야 하는 경우 사용되고, HTTP Keepalive는 Apache, Nginx 등 웹 애플리케이션에서 설정된 기간까지 최대한 연결을 유지하기 위해 사용된다&#46; (두 설정을 모두 적용했을 경우 HTTP Keepalive가 능동적으로 FIN 패킷을 보내기에 이 설정대로 동작한다&#46;)</p>
+
+<LessonFigure figureId="N13" sourceBlockId="15f31b20-1a74-48ee-8d01-ef6458d86cb6" client:visible />
 
 <hr id="f4a1e602-12e8-4930-a4ae-07fe66aec0e7" />
 

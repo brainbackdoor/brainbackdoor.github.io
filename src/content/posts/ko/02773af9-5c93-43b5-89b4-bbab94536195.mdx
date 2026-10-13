@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "🌐"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <figure id="44aeb8f2-e9bd-400b-b804-b419a520c5f0" className="notion-figure">
 
 <img src="/content/02773af9-5c93-43b5-89b4-bbab94536195/44aeb8f2-e9bd-400b-b804-b419a520c5f0.jpg" alt="" loading="lazy" width="198" height="253" />
@@ -62,7 +64,9 @@ icon: "🌐"
 
 ## 4&#46; <strong>Nagle 알고리즘과 TCP&#95;NODELAY</strong>
 
-<p id="eddb70fa-c407-45eb-8ee8-5b840a850b67">TCP 세그먼트는 40바이트 상당의 플래그와 헤더를 포함하여 전송하기 때문에, TCP가 작은 크기의 데이터를 포함한 많은 수의 패킷을 전송한다면 네트워크 성능은 크게 떨어진다&#46; Nagle 알고리즘은 세그먼트가 최대 크기(LAN상 1500, WAN상 수백 바이트)가 되지 않으면 전송을 하지 않는다&#46; 다만 다른 모든 패킷이 확인응답을 받았을 경우에는 최대 크기보다 작은 패킷의 전송을 허락한다&#46; 전송하기 충분할 만큼의 패킷이 쌓였을 때 버퍼에 저장되어 있던 데이터가 전송된다&#46; 이 경우 크기가 작은 HTTP 메시지는 지연된다&#46; ACK 지연과 함께 고려하면 지연 시간은 더욱 늘어난다&#46; 이에 TCP&#95;NODELAY 설정을 비활성화하기도 한다&#46;</p>
+<p id="eddb70fa-c407-45eb-8ee8-5b840a850b67">TCP 세그먼트는 40바이트 상당의 플래그와 헤더를 포함하여 전송하기 때문에, TCP가 작은 크기의 데이터를 포함한 많은 수의 패킷을 전송한다면 네트워크 성능은 크게 떨어진다&#46; Nagle 알고리즘은 미확인 데이터가 있는 동안 작은 쓰기를 모아 SMSS만큼 채워지거나 ACK가 도착하면 전송한다&#46; IP MTU가 1,500 byte이고 IPv4/TCP 옵션이 없으면 TCP payload의 최대 크기는 1,460 byte다&#46; 다만 다른 모든 패킷이 확인응답을 받았을 경우에는 최대 크기보다 작은 패킷의 전송을 허락한다&#46; 전송하기 충분할 만큼의 패킷이 쌓였을 때 버퍼에 저장되어 있던 데이터가 전송된다&#46; 이 경우 크기가 작은 HTTP 메시지는 지연된다&#46; ACK 지연과 함께 고려하면 지연 시간은 더욱 늘어난다&#46; 이에 TCP&#95;NODELAY 설정을 활성화해 Nagle 알고리즘을 비활성화하기도 한다&#46;</p>
+
+<LessonFigure figureId="N09" sourceBlockId="eddb70fa-c407-45eb-8ee8-5b840a850b67" client:visible />
 
 <hr id="017f1a4f-56e2-48dc-9df8-fe367e4b201a" />
 
@@ -85,6 +89,8 @@ icon: "🌐"
 ## 6&#46; <strong>Head-of-Line (HOL) 블로킹</strong>
 
 <p id="f7f4c5a3-e176-40dc-91ee-9547c8c9dd9c">TCP는 고유의 시퀀스 번호를 가지며 수신자에게 주어진 순서대로 전달되어야 한다&#46; 이에 패킷 하나가 소실되면 다른 모든 패킷들은 소실된 패킷이 재전송될 때까지 수신자 쪽 TCP 버퍼에서 대기해야만 한다&#46; 이를 TCP HOL 블로킹이라 한다&#46; HOL 블로킹의 장점은, 애플리케이션이 패킷의 재배치나 재조합에 관여할 필요가 없어 애플리케이션의 코드 자체가 훨씬 간단해진다는 것이다&#46; 하지만 단점은 도착시간이 들쭉날쭉해서 latency를 예측하기 어렵다는 것이다(jitter) latency나 jitter에 예민한 애플리케이션의 경우 UDP를 사용하는 것이 더 좋다&#46;</p>
+
+<LessonFigure figureId="N11" sourceBlockId="f7f4c5a3-e176-40dc-91ee-9547c8c9dd9c" client:visible />
 
 <hr id="af86324b-843e-4ac2-acfb-9720264ffdc8" />
 

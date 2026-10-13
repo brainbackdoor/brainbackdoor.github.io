@@ -711,3 +711,137 @@ I01·I11·G04·G09의 재사용 후보는 앞 실행 계획대로 유지하되, 
 운영 HTTPS의 7편에서 새 16종을 각각 확인했다. 모든 도해의 Canvas 준비·재생, 원래 sourceBlockId, SVG/DOM ID의 고유성, 조작 버튼 없음이 확인됐다. TCP 글의 원본 자료 9곳도 닫힌 상태로 접근 가능하다. 운영 N05 혼잡 제어의 실제 화면을 별도로 저장했다. 모바일 전체 검수는 위의 동일 빌드 CSS viewport 결과다.
 
 B03 완료: 계획한 73종 중 기존 6종과 이번 16종을 합쳐 22종 적용. B04 이후 51종은 미제작이며 새 시안부터 진행한다. 사용자의 마무리 요청에 따라 다음 묶음에는 착수하지 않는다.
+
+
+## 15. B04 명세와 목업 — 컨테이너·Linux·스레드·객체 17종
+
+B03 이후 사용자의 ‘다음 단계 진행’에 따라 B04 1~3의 원본 대응·사실 확인·시안을 작성했다. 현재 17종은 **시안 단계이며 본문에 적용하지 않았다.** 4~6의 production 구현·재변환 매핑·본문 연결·배포는 디자인 결정 뒤 진행한다. 기존 배포 22종과 이번 시안 17종을 혼동하지 않는다.
+
+[데스크톱 시안](http://127.0.0.1:4817/system-review.html#T06) · [320px·390px 비교](http://127.0.0.1:4817/system-review-mobile.html#T06). 기존 6종/네트워크 16종 시안은 그대로 유지한다.
+
+### 원본 대응과 정보 보존
+
+8편의 최초 연결 위치를 고정했다. G02의 실행 설명, G14의 풀/대기 설명, I04의 컬렉션 설명은 아래 기본 도해를 각각의 본문에 맞춰 재사용할 후보이며 이번 시안에서 정답 구현이나 실제 성능 결과로 완성하지 않는다. 자료가 실제 출력인지 설명용 조건인지 구분한다. 아래 앵커·자료의 원본 해시는 기존 캐시·공개 에셋과 대조했다.
+
+| ID | 최초 글 / 블록 | 형태와 원본 보존 |
+| --- | --- | --- |
+| C01 | [6c414539-eeb5-402c-a18e-3eb02209e487](https://www.brainbackdoor.com/posts/6c414539-eeb5-402c-a18e-3eb02209e487/) / `d5686ba0-2435-4d37-bae6-16be2d38774d` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| C02 | [6c414539-eeb5-402c-a18e-3eb02209e487](https://www.brainbackdoor.com/posts/6c414539-eeb5-402c-a18e-3eb02209e487/) / `7f1bf63f-1281-4066-8973-4c185d8ccfa5` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| C03 | [6c414539-eeb5-402c-a18e-3eb02209e487](https://www.brainbackdoor.com/posts/6c414539-eeb5-402c-a18e-3eb02209e487/) / `aeeb0b89-15cb-4947-b679-28443204701c` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| C04 | [6c414539-eeb5-402c-a18e-3eb02209e487](https://www.brainbackdoor.com/posts/6c414539-eeb5-402c-a18e-3eb02209e487/) / `7aa6f393-9836-469a-850d-7b42c00a1e86` (`text`) | 본문 뒤 보충 + 기존 설명·코드 유지 |
+| C05 | [6c414539-eeb5-402c-a18e-3eb02209e487](https://www.brainbackdoor.com/posts/6c414539-eeb5-402c-a18e-3eb02209e487/) / `865f6a09-fc58-488c-b1cf-6cf13918cb42` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| C06 | [6c414539-eeb5-402c-a18e-3eb02209e487](https://www.brainbackdoor.com/posts/6c414539-eeb5-402c-a18e-3eb02209e487/) / `a1826478-ba85-428b-8c72-6d6e8df45599` (`text`) | 본문 뒤 보충 + 기존 설명·코드 유지 |
+| C07 | [9fcd92ce-d741-48a9-a0f5-4951c8400bd7](https://www.brainbackdoor.com/posts/9fcd92ce-d741-48a9-a0f5-4951c8400bd7/) / `33ac0f6b-9066-4f42-956d-472d48eb1fbf` (`code`) | 본문 뒤 보충 + 기존 설명·코드 유지 |
+| C08 | [6c414539-eeb5-402c-a18e-3eb02209e487](https://www.brainbackdoor.com/posts/6c414539-eeb5-402c-a18e-3eb02209e487/) / `4ee9dce3-0c0c-450c-abe5-fde207d6ef68` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| C09 | [b47f2941-5949-4368-890b-ca7825b419b9](https://www.brainbackdoor.com/posts/b47f2941-5949-4368-890b-ca7825b419b9/) / `33cd38f0-b1f5-4f91-a44c-b448ee7e060b` (`code`) | 본문 뒤 보충 + 기존 설명·코드 유지 |
+| C10 | [b47f2941-5949-4368-890b-ca7825b419b9](https://www.brainbackdoor.com/posts/b47f2941-5949-4368-890b-ca7825b419b9/) / `7b793821-364d-4e4c-b99d-c372263dabbf` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| T02 | [f78dedef-13f8-4ac2-b216-51600ce03d07](https://www.brainbackdoor.com/posts/f78dedef-13f8-4ac2-b216-51600ce03d07/) / `9d73754b-6ff7-4c68-a8cb-39630bdd2ca1` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| T03 | [8e230e0d-431c-4ffe-becd-c60c1bea4615](https://www.brainbackdoor.com/posts/8e230e0d-431c-4ffe-becd-c60c1bea4615/) / `fc603eb6-2d78-472c-9eb6-11492b9afea9` (`bulleted_list`) | 본문 뒤 보충 + 기존 설명·코드 유지 |
+| T04 | [8e230e0d-431c-4ffe-becd-c60c1bea4615](https://www.brainbackdoor.com/posts/8e230e0d-431c-4ffe-becd-c60c1bea4615/) / `8f4ac769-6136-4fed-b302-e9961778b432` (`bulleted_list`) | 본문 뒤 보충 + 기존 설명·코드 유지 |
+| T05 | [8e230e0d-431c-4ffe-becd-c60c1bea4615](https://www.brainbackdoor.com/posts/8e230e0d-431c-4ffe-becd-c60c1bea4615/) / `f2504f37-9fcc-4238-ba6e-730ad62d802e` (`bulleted_list`) | 본문 뒤 보충 + 기존 설명·코드 유지 |
+| T06 | [springcamp-2026](https://www.brainbackdoor.com/posts/springcamp-2026/) / `38190d37-083f-8049-9802-e85b45daa4ad` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| T07 | [2024-retrospect](https://www.brainbackdoor.com/posts/2024-retrospect/) / `16c90d37-083f-80a9-b5ef-e777f3c111ef` (`image`) | 원본 도해 대체 + 접힌 원본 자료 |
+| T08 | [95248237-c6a4-4489-a51e-6c548c0c103c](https://www.brainbackdoor.com/posts/95248237-c6a4-4489-a51e-6c548c0c103c/) / `23b5b3fa-9fb3-48e7-bef6-7838009727f5` (`code`) | 본문 뒤 보충 + 기존 설명·코드 유지 |
+
+- C01은 App/Bins-Lib/Guest OS/Hypervisor/Infrastructure와 Container engine/공유 Linux kernel을 구분한다. Docker Desktop의 Linux VM은 native macOS kernel과 섞지 않는다.
+- C02의 원본 명령 관계도에는 registry, image, Dockerfile/.dockerignore, container, backup의 모든 명령이 있다. 선택한 run 경로를 움직이며 나머지는 명령 관계 표와 원본 이미지로 남긴다. CLI의 socket API와 container의 실제 PPID 계층은 다르다.
+- C03은 원본 nginx PID 4453/1과 별도의 /home/joe chroot 트리를 병렬로 설명한다. 두 예를 합쳐 실제 nginx root 경로를 만들어내지 않는다. 원본의 usr/bin/cp, usr/local/bin/gcc·ape, usr/local/lib, usr/lib·bin은 경로 예로 남긴다.
+- C04의 읽기 전용/쓰기 계층·commit 명령, C05의 nginx/eth0/veth1과 Spring/eth0/veth2/docker0, C06의 named volume/bind mount 조건을 분리한다. C07의 RUN/CMD 보충 예와 원본 nginx COPY/상속 CMD 실습은 다르다.
+- C08은 원본 Mutable/Immutable Server GIF의 개별 변경/환경 교체 메시지를 유지한다. 배포 시간, 무중단, 성능 향상률을 추정하지 않는다.
+- C09의 원본 실행·로그·신호 코드와 C10의 명령 10개·실제 샘플 출력을 유지한다. C10은 원본 명령/관찰 영역의 재작성이며 측정되지 않은 서버 지표 그래프가 아니다.
+- T02는 원본 Arthas 46개 스레드 스냅샷을 보존하고 별도의 Java 상태 경로를 설명한다. WAITING 수를 장애로 단정하거나 원본 시간 변화를 만들어내지 않는다.
+- T03/T04의 SharedCounterServlet/LocalCounterServlet 공개 실습 스냅샷도 확인했다. 공유 변수 초기 0과 매 요청 지역 변수 0→1을 서로 다른 목적의 값으로 유지한다. 증가 전체를 monitor로 묶는 것은 비교용 보충 예다.
+- T05의 fixed(2)/cached(네 작업) 비교는 같은 유입·실행 시간의 설명 예다. cached의 네 worker는 설정 상한이 아니며 측정 TPS도 아니다.
+- T06은 원본 NIO/실행기/Filter·DispatcherServlet·Servlet, 8192/200 설정 예와 설명용 carrier 1/DB 1을 구분한다. JDK21/24의 monitor pinning을 비교해도 DB connection과 monitor 소유권이 사라지지는 않는다.
+- T07은 원본 heap/stack/CPU/kernel 지도를 원본 자료로 유지하고 JVM scheduler/Java thread와 coroutine dispatcher/continuation의 재개 책임만 설명한다. 일반 blocking 호출을 자동 suspend로 표현하지 않는다.
+- T08은 원문 constructor view와 getter의 별도 List, constructor의 List 복사, name 요소 복사를 구분한다. 이 Item은 name만 가진 가변 예시다. 불변 Value Object 조건과 일급컬렉션 자체의 설계 논의는 본문에 유지한다.
+
+### 자료·조건·정적 단계
+
+| ID | 조건·자료 성격 | 세 단계에서 남을 설명 |
+| --- | --- | --- |
+| C01 | Linux host, 앱 3개. VM별 guest kernel과 Linux 컨테이너의 host kernel을 비교하며 속도·메모리 배수를 추정하지 않습니다. | App·Bins/Lib를 각 실행 환경에 둡니다. / VM의 guest kernel과 Linux host kernel의 위치를 분리합니다. / Container engine·공유 Linux kernel·기반 장비를 표시합니다. Docker Desktop은 Linux VM을 거칠 수 있습니다. |
+| C02 | Linux Docker API 흐름. 로컬 이미지가 없는 run 사례와 원본 명령어 관계를 함께 유지합니다. 실제 부모 PID 트리의 재현은 아닙니다. | CLI는 Unix socket을 통해 dockerd에 요청합니다. / registry의 이미지 수신 후 로컬 이미지가 준비됩니다. / create와 start 이후 컨테이너가 실행됩니다. 원본의 build/pull/push/commit/export/import 등 관계도 별도 표에 남깁니다. |
+| C03 | host PID 4453 / container PID 1은 nginx 원본 실습 값, /home/joe는 별도의 chroot 개념 예입니다. 실제 nginx의 root 경로를 측정한 그림으로 합치지 않습니다. | nginx는 host에서 하나의 프로세스입니다. / PID namespace마다 같은 프로세스의 PID 표기가 다릅니다. / 별도의 chroot 예에서 root 안의 usr/bin, usr/local, bin을 표시합니다. PID 실습의 실제 파일시스템 경로와 동일하다고 단정하지 않습니다. |
+| C04 | 설명용 newfile/newfile2로 파일 변경과 commit의 새 이미지 ID를 비교합니다. 저장 드라이버의 실제 디스크 레이아웃은 원본 코드로 유지합니다. | newfile은 컨테이너 쓰기 계층에 생깁니다. / commit은 새 이미지 B를 만듭니다. 원래 이미지 A는 그대로입니다. / 이후 newfile2를 써도 이미지 A/B는 자동으로 바뀌지 않습니다. |
+| C05 | Linux rootful 기본 bridge 개념과 가이드의 9000:8080 예를 결합합니다. 원본 nginx/veth1과 Spring/veth2, docker0 연결은 보존합니다. | client가 host의 9000 포트로 요청합니다. / docker0와 veth2/eth0를 거쳐 8080에서 앱이 받습니다. / 도착 후 응답이 돌아옵니다. 같은 bridge의 nginx/veth1 연결은 별도 경로로 남습니다. |
+| C06 | named volume과 bind mount를 각각 비교합니다. 저장소 삭제 없이 container rm만 수행하는 조건이며, record A는 설명용 데이터입니다. | A가 연결된 저장소에 record A를 씁니다. / 컨테이너 A를 제거해도 named volume과 host 경로는 남습니다. / B에 같은 저장소를 연결해 읽습니다. mount는 기존 이미지 파일을 지우는 동작이 아닙니다. |
+| C07 | RUN 1회·CMD 2회인 설명용 정상 경로. 원본 nginx Dockerfile은 COPY와 베이스 이미지의 CMD를 사용합니다. RUN 추가 예시와 원래 실습을 구분합니다. | RUN은 build 때 실행되고 CMD는 시작 명령으로 저장됩니다. / run 뒤 쓴 데이터는 stop만으로 삭제되지 않습니다. / restart에서 CMD를 다시 실행하고, rm에서 컨테이너 쓰기 계층이 사라집니다. 이미지는 남습니다. |
+| C08 | 원본 Mutable/Immutable Server GIF의 메시지. 세 서버와 v1/v2는 설명용이며 배포 시간·성능 향상률·무중단을 주장하지 않습니다. | 서버별 변경은 서로 다른 상태를 만들 수 있습니다. / 새 v2 이미지가 준비된 뒤 각 서버를 교체합니다. / rolling 중의 혼합 버전과 전체 교체 뒤의 동일 버전을 구분합니다. |
+| C09 | SIGHUP이 전달되는 조건의 비교. 본문 nohup·1> log·2>&1·&의 역할을 분리합니다. 모든 로그아웃 정책을 같은 동작으로 단정하지 않습니다. | &는 백그라운드 실행이며 nohup 자체가 아닙니다. / 세션 종료 후 SIGHUP이 전달되는 경우 일반 실행은 종료될 수 있습니다. / nohup은 SIGHUP을 무시하고 stdout/stderr를 로그로 보냅니다. 자동 재시작이나 SIGKILL 보호는 아닙니다. |
+| C10 | 원본의 진단 명령 10개와 관찰 열을 순서대로 강조합니다. 실제 샘플 출력은 보존하며 그래프 수치나 가상의 서버 측정값을 만들지 않습니다. | uptime/dmesg/vmstat로 전체 부하와 오류·추이를 봅니다. / CPU·프로세스·디스크·메모리를 관련 열과 연결합니다. / DEV와 TCP/ETCP, top까지 원본 10개 관계를 유지합니다. 한 지표만으로 장애를 단정하지 않습니다. |
+| T02 | Java SE 21 Thread.State의 설명용 한 worker 경로. 원본 Arthas의 46개 스레드 목록은 별도 근거로 남기며 캡처의 시간 변화를 발명하지 않습니다. | monitor를 기다리는 worker는 BLOCKED입니다. / wait 뒤 notify가 와도 monitor를 재획득하기 전에는 BLOCKED일 수 있습니다. / sleep은 monitor를 놓지 않습니다. NEW부터 TERMINATED까지와 대기 이유를 구분합니다. |
+| T03 | 같은 정상 인스턴스, 요청 A/B 두 개. init/service/destroy와 본문의 공개 실습 코드가 기준이며 강제 종료·timeout 경로는 이 예에 포함하지 않습니다. | init을 한 번 마친 뒤 요청을 처리합니다. / 같은 Servlet 인스턴스에서 service가 겹칠 수 있습니다. / 정상 종료에서 두 service가 끝난 뒤 destroy를 한 번 실행합니다. |
+| T04 | 공유 counter 초기 0, 같은 두 요청. 오른쪽은 증가 전체를 monitor로 직렬화한 비교 예이며 원본 LocalCounter는 매 요청 독립 0→1입니다. | 경쟁 경로는 두 요청 모두 0을 읽습니다. / 공유 read/increment/write를 직렬화하면 B가 1을 읽습니다. / 경쟁 1과 직렬화 2를 비교합니다. 지역 counter의 1·1을 공유 합계 2로 바꾸지 않습니다. |
+| T05 | 네 작업, 동일 도착과 실행 시간. fixed(2)와 cached의 worker 생성 차이만 설명하며 실제 요청 TPS나 Tomcat 기본값의 측정은 아닙니다. | fixed는 두 작업을 실행하고 후속 작업을 기다리게 합니다. / 완료 후 다음 작업이 슬롯을 사용합니다. cached는 이 네 작업에 필요한 worker를 만듭니다. / 유입=대기+실행+완료를 유지합니다. cached의 네 worker는 설정 상한이 아닙니다. |
+| T06 | JDK21 / JDK24의 synchronized 안 지원되는 I/O. 설명용 carrier 1개·DB 1개. JEP491은 JDK24이며 native/foreign 경로의 잔여 pinning은 별도입니다. | NIO 수락·polling, 실행기, Filter/Servlet 경계를 구분합니다. / JDK21은 pinning, JDK24는 carrier를 반납합니다. monitor와 DB connection은 VT1이 계속 가질 수 있습니다. / 대기가 없어지는 것이 아니라 실행 자원을 재사용합니다. 원본 8192/200 설정값과 설명용 1/1을 구분합니다. |
+| T07 | Java Virtual Thread의 지원되는 blocking I/O와 Kotlin/kotlinx의 실제 suspend 지점. 재개 worker B는 예시 선택이며 coroutine 일반 blocking 함수는 자동 suspend되지 않습니다. | Java thread identity와 coroutine continuation을 구분합니다. / 대기 상태에서 JVM stack 상태와 continuation 상태를 각각 보존합니다. / JVM scheduler와 coroutine dispatcher가 각각 재개합니다. 원본 메모리·CPU·kernel 지도는 근거에 보존합니다. |
+| T08 | 원문 ImmutableCart의 constructor view와 getter new ArrayList, 별도의 constructor copy·요소 copy를 비교합니다. name 하나를 가진 가변 Item 예이며 불변 VO 전제와 구분합니다. | 외부 L0, view, getter G1, constructor copy L1, 요소 copy L2를 구분합니다. / 외부 List의 B 추가와 A0.name 변경이 전파되는 범위가 다릅니다. / view 변경은 예외, getter의 C 추가는 내부 List를 바꾸지 않습니다. 요소 A1을 새로 만들 때만 가변 Item 상태도 분리됩니다. |
+
+### 독립 사건표
+
+아래는 실제 timeout/실행 시간과 구분하는 연출 ms다. 상태·도형·정적 SVG가 같은 순수 시간 모델을 읽고 마지막 사건 이후 3초 이상 유지한 뒤 함께 반복한다.
+
+| ID | 사건과 확정 시각 | 완료 / 반복 |
+| --- | --- | --- |
+| C01 | 강조 단계 1,200/2,400/3,600/4,800/6,000. App/Lib→guest kernel→engine→공유 kernel | 7,000 / 10,000 |
+| C02 | socket2,000→daemon2,800→이미지 수신4,400→create5,200→start6,300 | 7,000 / 10,000 |
+| C03 | PID 관점2,500, 별도의 root 관점4,200. 같은 프로세스 수 1 유지 | 6,500 / 9,500 |
+| C04 | 쓰기 newfile2,800→새 image B commit5,200→컨테이너 후속 쓰기6,500 | 8,000 / 11,000 |
+| C05 | client1,300→host2,400→bridge3,500→veth4,600→앱 도착5,700. 응답6,300→8,900 | 9,000 / 12,000 |
+| C06 | A 생성1,200→record A 쓰기3,000→A 제거5,000→B 생성6,500→데이터 읽기7,500 | 8,500 / 11,500 |
+| C07 | build RUN2,000→image3,200→create4,000→CMD4,800→쓰기5,400→stop6,200→restart CMD7,000→rm8,800 | 10,000 / 13,000 |
+| C08 | 수동 변경2,000/3,800. v2 artifact2,200 이후 immutable 교체4,000/6,000/8,000 | 9,000 / 12,000 |
+| C09 | 프로세스1,400→세션 종료6,200→SIGHUP 도착6,500. 일반 종료/nohup 유지 | 8,500 / 11,500 |
+| C10 | 원본 순서 1,200부터 1,000 간격으로 10개 명령 강조. 실제 측정 수치 없음 | 12,000 / 15,000 |
+| T02 | start1,200→BLOCKED2,400→획득3,400→wait4,500→notify 후 BLOCKED5,900→재획득6,600→sleep7,600→8,600 재개→종료9,600 | 10,500 / 13,500 |
+| T03 | init1,200→1,800. service A2,400→5,000/B3,000→5,800. destroy6,900→7,500 | 8,000 / 11,000 |
+| T04 | 경쟁: read A1,700/B2,400→write A3,100/B3,800=1. 직렬화: A1,700→2,300, B2,800→3,500=2 | 5,000 / 8,000 |
+| T05 | 작업 도착1,700/2,300/2,900/3,500. 각 실행3,500. fixed 시작1,700/2,300/5,200/5,800; cached는 도착 즉시 | 10,500 / 13,500 |
+| T06 | VT1 carrier1,100·DB1,700·monitor2,000. I/O2,600→5,100, JDK21 pin/JDK24 unmount. VT2는 JDK24에서3,000→3,400 실행 후 DB 대기. DB 반환5,400→VT2 획득5,600→I/O5,800→7,800→완료8,300 | 9,000 / 12,000 |
+| T07 | 지원되는 I/O 또는 실제 suspend 지점2,500→5,600. A worker 반납 후 B에서 재개, 작업 완료8,300 | 8,500 / 11,500 |
+| T08 | 초기 A0 공유, 외부 B 추가3,600→A0.name 변경5,400→view 구조 변경 예외6,200→getter G1에 C 추가7,000 | 8,500 / 11,500 |
+
+### 공식 근거와 본문 수정 후보
+
+- Docker의 API·image·container 관계는 [Docker 개요](https://docs.docker.com/get-started/docker-overview/), 쓰기 계층은 [storage driver](https://docs.docker.com/engine/storage/drivers/), published port/bridge는 [bridge driver](https://docs.docker.com/engine/network/drivers/), 지속 데이터는 [volume](https://docs.docker.com/engine/storage/volumes/)과 [bind mount](https://docs.docker.com/engine/storage/bind-mounts/), RUN/CMD는 [Dockerfile](https://docs.docker.com/reference/dockerfile/)로 대조했다.
+- PID 관점은 [Linux PID namespaces](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html), nohup은 [GNU coreutils manual](https://www.gnu.org/software/coreutils/manual/html_node/nohup-invocation.html)로 대조했다. GNU 문서는 web fetch가 불안정해 공식 URL의 HTML을 별도로 읽어 신호/stdio 동작을 확인했다.
+- Java 상태와 monitor는 [Thread.State](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.State.html), [Object.wait](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait())가 기준이다. 정상 Servlet 생명주기는 [Servlet API](https://docs.oracle.com/javaee/7/api/javax/servlet/Servlet.html), 실제 counter는 본문에서 링크한 [공개 실습](https://github.com/brainbackdoor/study/tree/main/servlet/src/main/java/com/brainbackdoor)도 확인했다.
+- JEP491은 [JDK24 공식 변경 기록](https://docs.oracle.com/en/java/javase/24/migrate/significant-changes-jdk-24.html)의 synchronized pinning 개선이다. [Boot3.2.3 실행기·스케줄러](https://docs.spring.io/spring-boot/docs/3.2.3/reference/html/features.html#features.task-execution-and-scheduling)의 자동 구성 범위를 대조한다. [Kotlin coroutine](https://kotlinlang.org/docs/coroutines-basics.html)과 [dispatcher/context](https://kotlinlang.org/docs/coroutine-context-and-dispatchers.html), [Collections.unmodifiableList](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collections.html#unmodifiableList(java.util.List))를 구분했다.
+
+본문 후보는 아직 수정하지 않았다. 실제 적용 단계에서 해시를 고정한 수정 또는 보충 문장으로 연결한다.
+
+| 글 / 원본 블록 | 확인한 문제와 적용 후보 |
+| --- | --- |
+| R17 / `38190d37-083f-80da-9d4c-c404a7ae3830` | ‘JDK25 이전’ 대신 JDK24의 JEP491 적용 시점을 밝히고 monitor 관련 개선과 남는 pinning 조건을 구분 |
+| R17 / `38190d37-083f-8091-8ea4-fc8e75024454` | ‘대기시간이 사라짐’ 대신 실제 I/O·DB 대기는 남고 carrier 실행 자원을 재사용한다고 설명 |
+| R17 / `38190d37-083f-8097-8559-f62e8fcd6e86` | 모든 Kafka/RabbitMQ listener가 Boot3.2 설정 하나로 바뀐다고 단정하지 않고 버전·실행기·사용자 설정 범위 확인 |
+| I08 / `24daf336-b900-455c-b4f1-93406cc8c154` | 현재 constructor의 unmodifiableList는 기존 List의 view이며 방어적 List 복사가 아님. getter의 새 List도 요소를 공유 |
+| I06 / `731eb847-fa6b-427b-8d2d-c187ffe03a11` | bind mount는 기존 파일을 삭제/덮어쓰기보다 가림으로 설명. named volume의 초기 복사와 구분 |
+| I06 / `c9230359-dbe4-4660-b2cb-8528eee3b0e3` | 컨테이너 수정이 host에 절대 영향 없다는 표현 대신 기본 쓰기 계층과 bind mount 등의 영향을 구분 |
+| G10 / `33ac0f6b-9066-4f42-956d-472d48eb1fbf` | 같은 설명 코드 안에서 RUN 실행 시점이 서로 다름. 원래 코드·명령 해시는 유지하고 RUN=build/CMD=start라는 보충 설명을 연결 |
+
+### 검수와 현재 상태
+
+모델 부재 18개 실패 → 구현 18개 통과. 초기 C06 생성 전 제거 표시, B의 읽기 방향, 세션 종료보다 앞선 HUP 표시에 대한 재현을 추가했다. 수정 뒤 의미·도형 검사 21개 통과. 200/227/297/678px에서 숫자 좌표·크기·정적 단계의 범위를 검사한다.
+
+브라우저에서 데스크톱 Canvas 678 CSS px / 1,356 pixel(DPR2), 17종 선택·재생·3단계 SVG 확인. 320px·390px iframe 실제 CSS viewport에서 plot 242px·312px, 각 폭의 51개 정적 단계에 가로 넘침·라벨 잘림·겹침 0. 비교 패널을 세로로 펴고 원본의 긴 명령·경로·상태를 축소하지 않는다. 결과는 OS 기기 에뮬레이션으로 표현하지 않는다.
+
+기존 네트워크 목업 19개 검사, 첫 6종 선택/완료 SVG smoke 검사, 사이트 Vitest125개 통과. 현재 빌드 원문 대조 58편·1,806필드·배포 도해22종 문제0·깨진 내부 링크0. 17종의 source block type와 원본 파일10개 해시를 고정했다. source/MDX/production registry/운영 코드에는 이번 시안이 연결되지 않았다.
+
+진행 상태: B04 1·2 완료, 3의 시안 제작·검수 완료 / 디자인 결정 대기. B04 전체 완료나 17종 운영 적용으로 처리하지 않는다. 실제 구현 전체가 끝났을 때 브랜치 독립 리뷰를 수행한다.
+
+원본 에셋 해시(SHA-256):
+
+| 원본 경로 | SHA-256 |
+| --- | --- |
+| `6c414539-eeb5-402c-a18e-3eb02209e487/d5686ba0-2435-4d37-bae6-16be2d38774d.webp` | `4fdb68e3d7629003478c0d793b1caebfaae7d64b1c6c5ef621c4d88e1182120b` |
+| `6c414539-eeb5-402c-a18e-3eb02209e487/7f1bf63f-1281-4066-8973-4c185d8ccfa5.webp` | `88471285e4caf7305c947102c3c660d5a9376bac69832659c36c903ac7f611ba` |
+| `6c414539-eeb5-402c-a18e-3eb02209e487/0999e034-1688-44fe-8155-616b2e1ec3e7.webp` | `43cc8f40dec6d12f75314f4c07c92f0249907f83813c00d37ff38f0a30e3ca8f` |
+| `6c414539-eeb5-402c-a18e-3eb02209e487/aeeb0b89-15cb-4947-b679-28443204701c.webp` | `6ff43e6d2fbec15eb6b80f9479d372d8e0f569aa9c4b959efec2bcf14f934173` |
+| `6c414539-eeb5-402c-a18e-3eb02209e487/865f6a09-fc58-488c-b1cf-6cf13918cb42.webp` | `2495972ad9428c991277e2cc4362ac964bf52cb4bc28d3aed0c6ae2d31c48a6d` |
+| `6c414539-eeb5-402c-a18e-3eb02209e487/4ee9dce3-0c0c-450c-abe5-fde207d6ef68.gif` | `0ffaa207de35a4e84763d47f94acab52c7ceaae3f783b4f881ae0df0d9ca6f8e` |
+| `b47f2941-5949-4368-890b-ca7825b419b9/7b793821-364d-4e4c-b99d-c372263dabbf.webp` | `b98c3f387baaccaada2354da9145605f3ca0031b0b56576fcc68a409cea82715` |
+| `f78dedef-13f8-4ac2-b216-51600ce03d07/9d73754b-6ff7-4c68-a8cb-39630bdd2ca1.webp` | `8c6b7b7aa145726498e13c15a5dc61460af4d580b298dacefe925a2a14f305de` |
+| `38190d37-083f-8033-a7e8-f3996e11cf55/38190d37-083f-8049-9802-e85b45daa4ad.webp` | `c038d69dd892f66fbdc5c4d98097abc78debce2ab3dfd30e0d65a0799dbb8e9a` |
+| `16b90d37-083f-8025-acc7-e77b4a9e2b32/16c90d37-083f-80a9-b5ef-e777f3c111ef.webp` | `9744dbe499652b89308d84323a266ba140caeb65e0cd1e293373ead16cce5d94` |

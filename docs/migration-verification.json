@@ -584,27 +584,33 @@
       "sourceId": "11690d37-083f-80a9-b30b-c5def37b8e4f",
       "title": "끗과 시작, 그 사이 어딘가",
       "targetPath": "/posts/11690d37-083f-80a9-b30b-c5def37b8e4f",
-      "checkedTextFields": 43,
+      "checkedTextFields": 42,
       "renderedImages": 13,
-      "excludedBlocks": [],
+      "excludedBlocks": [
+        "11690d37-083f-8046-8ea4-cf72db7658c0"
+      ],
       "issues": []
     },
     {
       "sourceId": "16b90d37-083f-8025-acc7-e77b4a9e2b32",
       "title": "2024년 회고",
       "targetPath": "/posts/2024-retrospect",
-      "checkedTextFields": 21,
+      "checkedTextFields": 20,
       "renderedImages": 4,
-      "excludedBlocks": [],
+      "excludedBlocks": [
+        "16c90d37-083f-800e-869f-e4e05a599473"
+      ],
       "issues": []
     },
     {
       "sourceId": "1ac90d37-083f-8066-a151-e89a5a47a46b",
       "title": "일의 감각",
       "targetPath": "/posts/1ac90d37-083f-8066-a151-e89a5a47a46b",
-      "checkedTextFields": 17,
+      "checkedTextFields": 16,
       "renderedImages": 5,
-      "excludedBlocks": [],
+      "excludedBlocks": [
+        "1ac90d37-083f-80d1-98eb-d65b669666a2"
+      ],
       "issues": []
     },
     {
@@ -710,7 +716,7 @@
   },
   "summary": {
     "pages": 58,
-    "textFields": 1875,
+    "textFields": 1872,
     "pagesWithIssues": 0,
     "brokenInternalLinks": 0,
     "unavailableSourcePages": 6,

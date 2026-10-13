@@ -48,6 +48,23 @@ class ConversionTests(unittest.TestCase):
         out=c.convert(); self.assertNotIn('kakaoChannel',out); self.assertIn('app: example',out)
         self.assertEqual(c.report['excluded'][0]['sourceBlockId'],'one')
 
+    def test_initial_oopy_config_with_page_metadata_is_excluded(self):
+        raw = 'disqus: brainbackdoor | false\nkakaoChannel: false\nfloatFirstTOC: right\ntitle: "글 제목"\ndescription: "설명: 본문 아님"\nignoreMainOgImage: true\nogImage: "https://example.com/image.png"'
+        c=converter({'one':{'type':'code','properties':{'title':[[raw]],'language':[['YAML']]}},'two':{'type':'text','properties':{'title':[['실제 글 본문']]}}})
+        out=c.convert()
+        self.assertNotIn('```yaml',out); self.assertNotIn('ogImage',out)
+        self.assertIn('실제 글 본문',out)
+        self.assertEqual(c.report['blocks'][0]['status'],'excluded-oopy-configuration')
+
+    def test_article_yaml_examples_are_retained(self):
+        for raw in ['title: example\ndescription: documentation', 'services:\n  app:\n    image: mysql', 'kakaoChannel: false\napplication: example']:
+            with self.subTest(raw=raw):
+                c=converter({'one':{'type':'code','properties':{'title':[[raw]],'language':[['YAML']]}},'two':{'type':'code','properties':{'title':[['kakaoChannel: false']],'language':[['YAML']]}}})
+                out=c.convert()
+                self.assertIn(raw,out)
+                self.assertIn('kakaoChannel: false',out)
+                self.assertEqual(c.report['excluded'],[])
+
     def test_verified_empty_collection_does_not_expose_stale_rows(self):
         c=converter({'one':{'type':'collection_view','collection_id':'collection','view_ids':['view']},'two':{'type':'text'},'private':{'type':'page','parent_table':'collection','parent_id':'collection','properties':{'title':[['비공개 카드']]}}})
         c.collections['collection']={'schema':{'title':{'name':'이름'}}}

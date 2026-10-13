@@ -187,15 +187,16 @@ class Converter:
 
     def hidden_configuration(self, block_id, block):
         raw = plain(block.get('properties', {}).get('title')).strip()
-        configurations = {
-            'kakaoChannel: false',
-            'disqus: brainbackdoor | false\nkakaoChannel: false',
-            'disqus: brainbackdoor | false\nkakaoChannel: false\nfloatFirstTOC: right',
-        }
-        if (block.get('type') == 'code' and raw in configurations
+        oopy_controls = {'disqus', 'kakaoChannel', 'floatFirstTOC', 'ignoreMainOgImage'}
+        oopy_keys = oopy_controls | {'title', 'description', 'ogImage'}
+        lines = [line for line in raw.splitlines() if line.strip() and not line.lstrip().startswith('#')]
+        fields = [re.fullmatch(r'([A-Za-z][A-Za-z0-9]*):[ \t]*(.*)', line) for line in lines]
+        keys = {field[1] for field in fields if field}
+        if (block.get('type') == 'code' and fields and all(fields)
+                and keys <= oopy_keys and keys & oopy_controls
                 and block_id == self.root.get('content', [''])[0]
                 and plain(block.get('properties', {}).get('language')).lower() in ['yaml', 'yml']):
-            return 'The original public renderer hides this initial Oopy YAML configuration block.'
+            return 'Initial Oopy presentation and SEO configuration is excluded from the article body.'
         if (block.get('type')=='code' and plain(block.get('properties',{}).get('language')).lower()=='html'
                 and hashlib.sha256(raw.encode()).hexdigest() in {
                     '825bb098dfeee4add4f0210bb6c9f484e12fd86db526ab3baff2f235b1caafca',

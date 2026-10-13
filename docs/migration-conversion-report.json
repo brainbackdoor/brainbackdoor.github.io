@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-12T06:50:41.981942+00:00",
+  "generatedAt": "2026-10-12T07:03:50.164603+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -27789,9 +27789,7 @@
           "type": "code",
           "sourceTextChars": 539,
           "sourceTextSha256": "1bed52992da1515ad2544a7299f5f5b5b984132743fcf1b2343c65ab15239522",
-          "status": "converted",
-          "language": "YAML",
-          "renderLanguage": "yaml"
+          "status": "excluded-oopy-configuration"
         },
         {
           "sourceBlockId": "11690d37-083f-80fc-ace4-e7ef2f4935ec",
@@ -28681,6 +28679,11 @@
           "sourceBlockId": "11690d37-083f-80fc-ace4-e7ef2f4935ec",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "11690d37-083f-8046-8ea4-cf72db7658c0",
+          "type": "code",
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         }
       ],
       "title": "끗과 시작, 그 사이 어딘가",
@@ -28719,9 +28722,7 @@
           "type": "code",
           "sourceTextChars": 822,
           "sourceTextSha256": "5ac5e5203fae426ee59128d3869f8cc307b890e5660518699a21975f76abc74b",
-          "status": "converted",
-          "language": "YAML",
-          "renderLanguage": "yaml"
+          "status": "excluded-oopy-configuration"
         },
         {
           "sourceBlockId": "16c90d37-083f-808e-8d3c-d78d7d94d914",
@@ -29192,6 +29193,11 @@
           "sourceBlockId": "16c90d37-083f-808e-8d3c-d78d7d94d914",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "16c90d37-083f-800e-869f-e4e05a599473",
+          "type": "code",
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         }
       ],
       "title": "2024년 회고",
@@ -29234,9 +29240,7 @@
           "type": "code",
           "sourceTextChars": 315,
           "sourceTextSha256": "5a7d946de8ed0d88ba1ff490c4a1f60f441e2453dfb498e4f119c9c4ca753ea9",
-          "status": "converted",
-          "language": "YAML",
-          "renderLanguage": "yaml"
+          "status": "excluded-oopy-configuration"
         },
         {
           "sourceBlockId": "1ac90d37-083f-80f0-84a0-f89eeba6ff18",
@@ -29679,7 +29683,13 @@
       ],
       "unresolvedLinks": [],
       "warnings": [],
-      "excluded": [],
+      "excluded": [
+        {
+          "sourceBlockId": "1ac90d37-083f-80d1-98eb-d65b669666a2",
+          "type": "code",
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
+        }
+      ],
       "title": "일의 감각",
       "pubDate": "2025-03-10",
       "pubDateEvidence": {

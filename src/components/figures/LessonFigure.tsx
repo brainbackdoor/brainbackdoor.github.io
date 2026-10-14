@@ -5,6 +5,11 @@ import { lessonInfo, type FigureId } from './lesson-models';
 import { networkInfo, type NetworkFigureId } from './network-models';
 import { networkRenderers } from './networkCanvas';
 import { lessonRenderers, paintLesson, type LessonFrame } from './lessonCanvas';
+import { systemInfo, type SystemFigureId } from './system-models';
+import { systemRenderers } from './systemCanvas';
+
+// B04 figures placed inside a list item: their smallest plot is the list width.
+const LIST_EMBEDDED = new Set<string>(['C09', 'T03', 'T04', 'T05']);
 
 /** Canvas and accessible SVG read the same commands and event state. */
 export function LessonSvg({ frame, width, title }: {frame:LessonFrame;width:number;title:string}) {
@@ -24,13 +29,13 @@ export function LessonSvg({ frame, width, title }: {frame:LessonFrame;width:numb
   </svg>;
 }
 
-export default function LessonFigure({ figureId, sourceBlockId }: {figureId:FigureId|NetworkFigureId;sourceBlockId?:string}) {
-  const info=[...lessonInfo,...networkInfo].find(item=>item.id===figureId)!;
-  const renderer={...lessonRenderers,...networkRenderers}[figureId];
+export default function LessonFigure({ figureId, sourceBlockId }: {figureId:FigureId|NetworkFigureId|SystemFigureId;sourceBlockId?:string}) {
+  const info=[...lessonInfo,...networkInfo,...systemInfo].find(item=>item.id===figureId)!;
+  const renderer={...lessonRenderers,...networkRenderers,...systemRenderers}[figureId];
   const wideWidth=figureId==='W03'?480:560;
   // Static scenes are drawn at the smallest plot of each layout and only scale up: 284px in the article
   // at a 320px viewport, 259px when a network figure sits inside a list. Wide scenes start at the layout switch.
-  const narrowWidth=networkInfo.some(item=>item.id===figureId)?259:284;
+  const narrowWidth=networkInfo.some(item=>item.id===figureId)||LIST_EMBEDDED.has(figureId)?259:284;
   const containerRef=useRef<HTMLElement>(null);
   const plotRef=useRef<HTMLDivElement>(null);
   const canvasRef=useRef<HTMLCanvasElement>(null);

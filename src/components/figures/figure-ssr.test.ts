@@ -80,3 +80,21 @@ describe('approved network and HTTP figures without hydration',()=>{
     expect(html).not.toContain('<button');
   });
 });
+
+describe('B04 container, Linux, thread and object figures without hydration', () => {
+  const cases = [
+    ['C01', 'Guest OS', 'Linux host kernel'], ['C02', '/var/run/docker.sock', 'nginx 실행 중'], ['C03', 'PID 4453', 'PID 1'],
+    ['C04', 'Image B', 'newfile2'], ['C05', 'docker0', 'veth2'], ['C06', 'named volume', '읽음: record A'],
+    ['C07', 'Dockerfile', 'build 때 1회'], ['C08', 'Mutable Server', '교체 완료 · 모두 같은 v2'], ['C09', 'SIGHUP으로 종료', 'SIGHUP 무시 · 계속 실행'],
+    ['C10', 'sar TCP', '10 / 10'], ['T02', 'TIMED_WAITING', 'sleep() · monitor 유지'], ['T03', 'Servlet 인스턴스 1개', 'destroy 1회'],
+    ['T04', 'sharedCounter', 'localCounter'], ['T05', 'fixed(2)', '설정 상한 아님'], ['T06', 'DB connection 1', 'JEP 491'],
+    ['T07', 'continuation', 'JVM scheduler가 재개'], ['T08', 'UnsupportedOperationException', 'unmodifiableList'],
+  ] as const;
+  test.each(cases)('%s keeps its completed scene, static steps and source anchor', (figureId, a, b) => {
+    const html = renderToString(createElement(LessonFigure, { figureId, sourceBlockId: 'source-' + figureId }));
+    expect(html).toContain(a); expect(html).toContain(b);
+    expect(html).toContain('data-source-block-id="source-' + figureId + '"');
+    expect((html.match(/<svg /g) ?? []).length).toBe(8);
+    expect(html).not.toContain('<button');
+  });
+});

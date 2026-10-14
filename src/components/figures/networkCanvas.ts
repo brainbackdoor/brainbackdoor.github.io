@@ -491,7 +491,6 @@ function streamsV2(w: number, t: number): LessonFrame {
     g.text(x + cw / 2, y + 20, gap ? 'A 누락' : `범위 ${r}`, { size: 12, mono: true, weight: 600, align: 'center', color: delivered ? C.greenText : here ? C.orangeText : gap ? C.redText : C.muted });
   });
   const sy = y + 74;
-  label(g, 0, sy - 12, 'HTTP/2 분배 (TCP 위 계층)', { size: 12, weight: 600, align: 'left' });
   ranges.forEach(([, n], i) => {
     const x = i * (cw + 6), done = s.deliveredStreams.includes(n), a = appear(t, 7200);
     if (done) arrow(g, { x: x + cw / 2, y: y + 32 }, { x: x + cw / 2, y: sy - 2 }, { stroke: C.green, lw: 1.4, alpha: a, size: 6 });
@@ -499,6 +498,8 @@ function streamsV2(w: number, t: number): LessonFrame {
     g.text(x + 10, sy + 22, `stream ${n}`, { size: 12, mono: true, weight: 600 });
     g.text(x + 10, sy + 40, done ? '분배 완료' : '바이트 대기', { size: 11, color: done ? C.greenText : C.orangeText });
   });
+  // 분배 화살표 위에 바탕을 깔아 계층 이름이 가려지지 않게 한다
+  label(g, 0, sy - 12, 'HTTP/2 분배 (TCP 위 계층)', { size: 12, weight: 600, align: 'left' });
   return frame(g, sy + 58, s.phase);
 }
 

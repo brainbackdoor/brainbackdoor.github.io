@@ -253,6 +253,14 @@ describe('deployed figures v2 (R04)', () => {
     }
   });
 
+  it('keeps the W05 layer label above the stream arrows that cross it', () => {
+    const ops = renderers.W05(650, 8000).ops;
+    const at = ops.findIndex(o => o.type === 'text' && o.text === 'HTTP/2 분배 (TCP 위 계층)');
+    const arrows = ops.map((o, i) => o.type === 'path' && o.stroke === FIGURE_COLORS.green && /^M[\d.]+ [\d.]+L/.test(o.d) ? i : -1).filter(i => i >= 0);
+    expect(arrows.length).toBeGreaterThan(0);
+    expect(Math.max(...arrows)).toBeLessThan(at);
+  });
+
   it('keeps visible labels apart and inside the figure at every article width', () => {
     const SANS = (s: string) => { let n = 0; for (const ch of s) { const c = ch.codePointAt(0)!; n += c >= 0x1100 ? 0.94 : ' .,:;·|!il\'"()[]'.includes(ch) ? 0.3 : /[A-Z0-9mwMW+=→]/.test(ch) ? 0.64 : 0.52; } return n; };
     const box = (o: Text) => { const w = (o.mono ? [...o.text].reduce((n, ch) => n + (ch.codePointAt(0)! >= 0x1100 ? 1 : 0.6), 0) : SANS(o.text)) * o.size; const x = o.align === 'center' ? o.x - w / 2 : o.align === 'right' ? o.x - w : o.x; return { x1: x, x2: x + w, y1: o.y - o.size * 0.8, y2: o.y + o.size * 0.22 }; };

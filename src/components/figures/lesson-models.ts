@@ -1,5 +1,5 @@
 const clamp=(v: number)=>Math.max(0,Math.min(1,v));
-export const progress=(t: number,start: number,end: number)=>clamp((t-start)/(end-start));
+export const progress=(t: number,start: number,end: number)=>{if(!(end>start))throw new Error(`invalid span ${start}..${end}`);return clamp((t-start)/(end-start));};
 export const arrivalTimes=[1200,1600,2000,2400,2800,3200];
 export function queueState(t: number,capacity: number){
  const arrived=arrivalTimes.filter(x=>t>=x).length;

@@ -1,17 +1,15 @@
+/* The figure sits on the article page: real boundaries are drawn inside the figure, not around it. */
 .animated-figure {
   container-type: inline-size;
   box-sizing: border-box;
   max-width: 100%;
   min-width: 0;
-  margin: 24px 0;
-  padding: 20px;
-  background: var(--color-figure-bg, #fff);
-  border: 1px solid var(--color-figure-border, #dee2e6);
-  border-radius: 8px;
+  margin: 32px 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
   font-family: var(--font-sans, sans-serif);
 }
-.animated-figure .animated-figure__header { margin-bottom: 18px; }
-.animated-figure__header strong { color: var(--color-figure-text); font-size: 13px; line-height: 1.6; font-weight: 600; }
 .animated-figure .tcp-figure__panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 .tcp-figure__panel { min-width: 0; }
 .tcp-figure__panel-title { display: inline-flex; align-items: center; gap: 6px; padding: 3px 7px; margin: 0 0 14px; border-radius: 4px; color: var(--color-figure-text); background: color-mix(in srgb, var(--color-figure-blue) 10%, var(--color-figure-bg)); font-size: 12px; line-height: 1.6; font-weight: 500; }
@@ -25,20 +23,18 @@
 .tcp-figure__panel[data-ready="true"] canvas { visibility: visible; }
 .tcp-figure__panel[data-ready="true"] .tcp-figure__fallback { display: none; }
 .animated-figure .tcp-figure__description { min-height: 44px; margin: 14px 0 0; color: var(--color-figure-muted); font-size: 12px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere; }
-.animated-figure > figcaption { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid var(--color-figure-grid); color: var(--color-figure-muted); text-align: left; font-size: 11px; line-height: 1.8; word-break: keep-all; }
+.animated-figure > figcaption { margin: 8px 0 0; color: var(--color-figure-muted); text-align: left; font-size: 12px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere; }
 @container (max-width: 559px) {
   .animated-figure .tcp-figure__panels { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .tcp-figure__panel + .tcp-figure__panel { padding-top: 22px; border-top: 1px solid var(--color-figure-grid); }
 }
-@media (max-width: 600px) { .animated-figure { padding: 18px 16px; } }
 @media print {
   .animated-figure .tcp-figure__plot canvas { display: none; }
   .animated-figure .tcp-figure__panel .tcp-figure__fallback { display: block; }
 }
 
 /* Home previews keep the same renderer and timing, with one compact panel. */
-.animated-figure.animated-figure--preview { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
-.animated-figure--preview .animated-figure__header,
+.animated-figure.animated-figure--preview { margin: 0; }
 .animated-figure--preview > figcaption { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .animated-figure.animated-figure--preview .tcp-figure__panels { grid-template-columns: minmax(0, 1fr); gap: 0; }
 .animated-figure--preview .tcp-figure__plot,
@@ -54,7 +50,7 @@
 .lesson-plot[data-ready="true"] canvas{visibility:visible}
 .animated-figure .lesson-plot[data-ready="true"]>.lesson-static{display:none}
 .animated-figure .lesson-status{min-height:44px;margin:16px 0 0;color:var(--color-figure-muted);font-size:12px;line-height:1.8;word-break:keep-all;overflow-wrap:anywhere}
-.animated-figure .lesson-lock-ids{font-size:11px;line-height:1.9;color:var(--color-figure-muted);overflow-wrap:anywhere;margin:12px 0}
+.animated-figure .lesson-lock-ids{font-size:12px;line-height:1.9;color:var(--color-figure-muted);overflow-wrap:anywhere;margin:12px 0}
 .animated-figure .lesson-steps{margin:18px 0 0;border-top:1px solid var(--color-figure-grid);font-size:12px}
 .animated-figure .lesson-steps summary{cursor:pointer;padding:14px 0;color:var(--color-figure-muted)}
 .animated-figure .lesson-step{margin:0 0 24px;padding-top:12px}

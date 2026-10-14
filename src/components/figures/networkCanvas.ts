@@ -1,5 +1,5 @@
 import { networkState as state, probeGains, nagleAckTiming, type NetworkFigureId } from './network-models';
-import type { DrawOp, LessonFrame } from './lessonCanvas';
+import { FIGURE_COLORS as F, type DrawOp, type LessonFrame } from './lessonCanvas';
 type SequenceEvent = readonly [
     number,
     number,
@@ -14,7 +14,7 @@ type WaterfallRow = readonly [
     number,
     number
 ];
-const C = { ink: '#343a40', muted: '#586b80', line: '#ced4da', grid: '#e9ecef', bg: '#f8f9fa', blue: '#228be6', green: '#12b886', orange: '#fd7e14', red: '#fa5252', blueText: '#1864ab', greenText: '#087f5b', orangeText: '#9c4b00', redText: '#c92a2a' };
+const C = { ink: F.text, muted: F.muted, line: F.line, grid: F.grid, bg: F.plot, blue: F.blue, green: F.green, orange: F.orange, red: F.red, blueText: F.blueText, greenText: F.greenText, orangeText: F.orangeText, redText: F.redText };
 const p = (t: number, a: number, b: number) => Math.max(0, Math.min(1, (t - a) / (b - a)));
 function draw() {
     const ops: DrawOp[] = [];

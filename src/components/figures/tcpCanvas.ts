@@ -1,4 +1,5 @@
 import { progressAt, tcpLabels, TCP_TIME, type FigureLanguage, type TcpScenario } from './tcp';
+import { FIGURE_COLORS as F } from './lessonCanvas';
 
 export interface FigureColors {
   bg: string; plot: string; grid: string; line: string; blue: string; green: string;
@@ -9,10 +10,10 @@ export function readFigureColors(element: HTMLElement): FigureColors {
   const css = getComputedStyle(element);
   const token = (name: string, fallback: string) => css.getPropertyValue(`--color-figure-${name}`).trim() || fallback;
   return {
-    bg: token('bg', '#ffffff'), plot: token('plot', '#f8f9fa'), grid: token('grid', '#e9ecef'), line: token('line', '#ced4da'),
-    blue: token('blue', '#228be6'), green: token('green', '#12b886'), orange: token('orange', '#fd7e14'), red: token('red', '#fa5252'),
-    text: token('text', '#343a40'), muted: token('muted', '#586b80'), blueText: token('blue-text', '#1765a0'),
-    greenText: token('green-text', '#087f5b'), orangeText: token('orange-text', '#a54800'), redText: token('red-text', '#c92a2a'),
+    bg: token('bg', F.bg), plot: token('plot', F.plot), grid: token('grid', F.grid), line: token('line', F.line),
+    blue: token('blue', F.blue), green: token('green', F.green), orange: token('orange', F.orange), red: token('red', F.red),
+    text: token('text', F.text), muted: token('muted', F.muted), blueText: token('blue-text', F.blueText),
+    greenText: token('green-text', F.greenText), orangeText: token('orange-text', F.orangeText), redText: token('red-text', F.redText),
   };
 }
 

@@ -2,11 +2,31 @@ import { arrivalTimes, queueState, flowState, flowEvents, cacheState, lockState,
 
 export type DrawOp =
  | {type:'rect';x:number;y:number;w:number;h:number;fill:string;stroke:string}
- | {type:'text';x:number;y:number;text:string;color:string;size:number;align:CanvasTextAlign;bold:boolean}
+ | {type:'text';x:number;y:number;text:string;color:string;size:number;align:CanvasTextAlign;bold:boolean;mono?:boolean;alpha?:number;weight?:number}
  | {type:'line';x1:number;y1:number;x2:number;y2:number;color:string;dash:boolean}
- | {type:'circle';x:number;y:number;r:number;color:string};
+ | {type:'circle';x:number;y:number;r:number;color:string;stroke?:string;strokeWidth?:number;alpha?:number}
+ /** Rounded shapes, curves, arrowheads and icons share one SVG path string in Canvas and SVG. */
+ | {type:'path';d:string;fill:string;stroke:string;width:number;dash:number[]|null;alpha:number};
 export interface LessonFrame {ops:DrawOp[];height:number;status:string}
-const C={ink:'#343a40',muted:'#586b80',line:'#ced4da',grid:'#e9ecef',bg:'#f8f9fa',blue:'#228be6',green:'#12b886',orange:'#fd7e14',red:'#fa5252',blueText:'#1864ab',greenText:'#087f5b',orangeText:'#9c4b00',redText:'#c92a2a'};
+/** One palette for Canvas, static SVG and the --color-figure-* CSS tokens. */
+export const FIGURE_COLORS: Readonly<Record<'bg'|'plot'|'slab'|'grid'|'line'|'border'|'faint'|'blue'|'green'|'orange'|'red'|'text'|'muted'|'blueText'|'greenText'|'orangeText'|'redText'|'blueTint'|'blueSoft'|'greenTint'|'orangeTint'|'redTint',string>>={bg:'#ffffff',plot:'#f8f9fa',slab:'#f1f3f5',grid:'#e9ecef',line:'#ced4da',border:'#dee2e6',faint:'#adb5bd',blue:'#228be6',green:'#12b886',orange:'#fd7e14',red:'#fa5252',text:'#343a40',muted:'#586b80',blueText:'#1864ab',greenText:'#087f5b',orangeText:'#9c4b00',redText:'#c92a2a',blueTint:'#e7f5ff',blueSoft:'#a5d8ff',greenTint:'#e6fcf5',orangeTint:'#fff4e6',redTint:'#fff5f5'};
+const F=FIGURE_COLORS;
+const C={ink:F.text,muted:F.muted,line:F.line,grid:F.grid,bg:F.plot,blue:F.blue,green:F.green,orange:F.orange,red:F.red,blueText:F.blueText,greenText:F.greenText,orangeText:F.orangeText,redText:F.redText};
+/** Linear display progress of one span: 0 and 1 at its ends, clamped outside, invalid when the span has no length. */
+export function span(t:number,start:number,end:number){if(!(end>start))throw new Error(`invalid span ${start}..${end}`);return Math.max(0,Math.min(1,(t-start)/(end-start)));}
+/** CSS-compatible cubic-bezier: find the curve parameter for x first, then read y. */
+export function cubicBezier(x1:number,y1:number,x2:number,y2:number){
+ if(x1<0||x1>1||x2<0||x2>1)throw new Error('cubic-bezier x control points must be within 0..1');
+ const bx=(s:number)=>3*x1*s*(1-s)*(1-s)+3*x2*s*s*(1-s)+s*s*s,by=(s:number)=>3*y1*s*(1-s)*(1-s)+3*y2*s*s*(1-s)+s*s*s;
+ return (x:number)=>{if(x<=0)return 0;if(x>=1)return 1;let lo=0,hi=1;for(let i=0;i<26;i++){const m=(lo+hi)/2;if(bx(m)<x)lo=m;else hi=m;}return by((lo+hi)/2);};
+}
+const r2=(n:number)=>Math.round(n*100)/100;
+/** Closed rounded rectangle; the radius never exceeds half of the shorter side. */
+export function roundedRectPath(x:number,y:number,w:number,h:number,r:number){
+ const k=r2(Math.max(0,Math.min(r,w/2,h/2)));
+ if(!k)return `M${r2(x)} ${r2(y)}H${r2(x+w)}V${r2(y+h)}H${r2(x)}Z`;
+ return `M${r2(x+k)} ${r2(y)}H${r2(x+w-k)}A${k} ${k} 0 0 1 ${r2(x+w)} ${r2(y+k)}V${r2(y+h-k)}A${k} ${k} 0 0 1 ${r2(x+w-k)} ${r2(y+h)}H${r2(x+k)}A${k} ${k} 0 0 1 ${r2(x)} ${r2(y+h-k)}V${r2(y+k)}A${k} ${k} 0 0 1 ${r2(x+k)} ${r2(y)}Z`;
+}
 function drawing(){const ops: DrawOp[]=[];return {ops,rect:(x:number,y:number,w:number,h:number,fill:string=C.bg,stroke:string=C.line)=>ops.push({type:'rect',x,y,w,h,fill,stroke}),text:(x:number,y:number,text:string|number,color:string=C.ink,size:number=12,align:CanvasTextAlign='left',bold:boolean=false)=>ops.push({type:'text',x,y,text:String(text),color,size,align,bold}),line:(x1:number,y1:number,x2:number,y2:number,color:string=C.line,dash:boolean=false)=>ops.push({type:'line',x1,y1,x2,y2,color,dash}),circle:(x:number,y:number,r:number,color:string)=>ops.push({type:'circle',x,y,r,color})};}
 function arrow(g:ReturnType<typeof drawing>,x1:number,y1:number,x2:number,y2:number,color:string,dash=false){g.line(x1,y1,x2,y2,color,dash);const a=Math.atan2(y2-y1,x2-x1);g.line(x2,y2,x2-6*Math.cos(a-.45),y2-6*Math.sin(a-.45),color);g.line(x2,y2,x2-6*Math.cos(a+.45),y2-6*Math.sin(a+.45),color);}
 function moving(g:ReturnType<typeof drawing>,t:number,start:number,end:number,x1:number,y1:number,x2:number,y2:number,color:string){if(t<start||t>=end)return;const p=progress(t,start,end);g.circle(x1+(x2-x1)*p,y1+(y2-y1)*p,4.5,color);}
@@ -75,4 +95,9 @@ function sparkDrawing(w:number,t:number): LessonFrame{const g=drawing(),s=sparkS
  const end=base+20+ps[1].y+156;g.text(0,end,`Driver 결과   ${s.result===null?'—':s.result}`,s.result===null?C.muted:C.greenText,14,'left',true);
  return {ops:g.ops,height:end+22,status:s.phase};}
 export const lessonRenderers: Record<FigureId,(width:number,elapsed:number)=>LessonFrame>={N01:queueDrawing,N03:flowDrawing,W03:cacheDrawing,T01:lockDrawing,D03:indexDrawing,S03:sparkDrawing};
-export function paintLesson(ctx:CanvasRenderingContext2D,frame:LessonFrame,w:number,dpr:number,font:string){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,frame.height);for(const o of frame.ops){if(o.type==='rect'){ctx.fillStyle=o.fill;ctx.fillRect(o.x,o.y,o.w,o.h);if(o.stroke!=='none'){ctx.strokeStyle=o.stroke;ctx.lineWidth=1;ctx.strokeRect(o.x+.5,o.y+.5,o.w-1,o.h-1);}}else if(o.type==='circle'){ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fillStyle=o.color;ctx.fill();}else if(o.type==='line'){ctx.beginPath();ctx.strokeStyle=o.color;ctx.lineWidth=1.5;ctx.setLineDash(o.dash?[4,4]:[]);ctx.moveTo(o.x1,o.y1);ctx.lineTo(o.x2,o.y2);ctx.stroke();ctx.setLineDash([]);}else{ctx.fillStyle=o.color;ctx.font=`${o.bold?600:400} ${o.size}px ${font}`;ctx.textAlign=o.align;ctx.fillText(o.text,o.x,o.y);}}}
+export function paintLesson(ctx:CanvasRenderingContext2D,frame:LessonFrame,w:number,dpr:number,font:string,monoFont:string=font){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,frame.height);for(const o of frame.ops){
+ // Commands with opacity, caps or a second font are isolated so the four original commands paint exactly as before.
+ if(o.type==='path'){ctx.save();ctx.globalAlpha=o.alpha;const p=new Path2D(o.d);if(o.fill!=='none'){ctx.fillStyle=o.fill;ctx.fill(p);}if(o.stroke!=='none'){ctx.strokeStyle=o.stroke;ctx.lineWidth=o.width;ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash(o.dash??[]);ctx.stroke(p);}ctx.restore();continue;}
+ if(o.type==='text'&&(o.mono||o.alpha!==undefined||o.weight!==undefined)){ctx.save();ctx.globalAlpha=o.alpha??1;ctx.fillStyle=o.color;ctx.font=`${o.weight??(o.bold?600:400)} ${o.size}px ${o.mono?monoFont:font}`;ctx.textAlign=o.align;ctx.fillText(o.text,o.x,o.y);ctx.restore();continue;}
+ if(o.type==='circle'&&(o.stroke!==undefined||o.alpha!==undefined)){ctx.save();ctx.globalAlpha=o.alpha??1;ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fillStyle=o.color;ctx.fill();if(o.stroke){ctx.strokeStyle=o.stroke;ctx.lineWidth=o.strokeWidth??1;ctx.stroke();}ctx.restore();continue;}
+ if(o.type==='rect'){ctx.fillStyle=o.fill;ctx.fillRect(o.x,o.y,o.w,o.h);if(o.stroke!=='none'){ctx.strokeStyle=o.stroke;ctx.lineWidth=1;ctx.strokeRect(o.x+.5,o.y+.5,o.w-1,o.h-1);}}else if(o.type==='circle'){ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fillStyle=o.color;ctx.fill();}else if(o.type==='line'){ctx.beginPath();ctx.strokeStyle=o.color;ctx.lineWidth=1.5;ctx.setLineDash(o.dash?[4,4]:[]);ctx.moveTo(o.x1,o.y1);ctx.lineTo(o.x2,o.y2);ctx.stroke();ctx.setLineDash([]);}else{ctx.fillStyle=o.color;ctx.font=`${o.bold?600:400} ${o.size}px ${font}`;ctx.textAlign=o.align;ctx.fillText(o.text,o.x,o.y);}}}

@@ -34,10 +34,17 @@
   --color-figure-red: #fa5252;
   --color-figure-text: #343a40;
   --color-figure-muted: #586b80;
-  --color-figure-blue-text: #1765a0;
+  --color-figure-blue-text: #1864ab;
   --color-figure-green-text: #087f5b;
-  --color-figure-orange-text: #a54800;
+  --color-figure-orange-text: #9c4b00;
   --color-figure-red-text: #c92a2a;
+  --color-figure-slab: #f1f3f5;
+  --color-figure-faint: #adb5bd;
+  --color-figure-blue-tint: #e7f5ff;
+  --color-figure-blue-soft: #a5d8ff;
+  --color-figure-green-tint: #e6fcf5;
+  --color-figure-orange-tint: #fff4e6;
+  --color-figure-red-tint: #fff5f5;
 
   --font-sans: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;

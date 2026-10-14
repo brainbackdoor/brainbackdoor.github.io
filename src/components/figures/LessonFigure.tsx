@@ -7,7 +7,7 @@ import { networkRenderers } from './networkCanvas';
 import { lessonRenderers, paintLesson, type LessonFrame } from './lessonCanvas';
 
 /** Canvas and accessible SVG read the same commands and event state. */
-function StaticLesson({ frame, width, title }: {frame:LessonFrame;width:number;title:string}) {
+export function LessonSvg({ frame, width, title }: {frame:LessonFrame;width:number;title:string}) {
   const id=useId();
   return <svg viewBox={`0 0 ${width} ${frame.height}`} role="img" aria-labelledby={`${id}-title ${id}-description`}>
     <title id={`${id}-title`}>{title}</title>
@@ -15,9 +15,10 @@ function StaticLesson({ frame, width, title }: {frame:LessonFrame;width:number;t
     {frame.ops.map((op,i)=>{
       switch(op.type) {
         case 'rect': return <rect key={i} x={op.x} y={op.y} width={op.w} height={op.h} rx="3" fill={op.fill} stroke={op.stroke}/>;
-        case 'circle': return <circle key={i} cx={op.x} cy={op.y} r={op.r} fill={op.color}/>;
+        case 'circle': return <circle key={i} cx={op.x} cy={op.y} r={op.r} fill={op.color} stroke={op.stroke} strokeWidth={op.stroke?op.strokeWidth??1:undefined} opacity={op.alpha}/>;
+        case 'path': return <path key={i} d={op.d} fill={op.fill} stroke={op.stroke} strokeWidth={op.stroke==='none'?undefined:op.width} strokeDasharray={op.dash?.join(' ')} strokeLinecap="round" strokeLinejoin="round" opacity={op.alpha<1?op.alpha:undefined}/>;
         case 'line': return <line key={i} x1={op.x1} y1={op.y1} x2={op.x2} y2={op.y2} stroke={op.color} strokeWidth="1.5" strokeDasharray={op.dash?'4 4':undefined}/>;
-        case 'text': return <text key={i} x={op.x} y={op.y} fill={op.color} fontSize={op.size} fontWeight={op.bold?600:400} textAnchor={op.align==='center'?'middle':op.align==='right'?'end':'start'}>{op.text}</text>;
+        case 'text': return <text key={i} x={op.x} y={op.y} fill={op.color} fontSize={op.size} fontWeight={op.weight??(op.bold?600:400)} textAnchor={op.align==='center'?'middle':op.align==='right'?'end':'start'} opacity={op.alpha} style={op.mono?{fontFamily:'var(--font-mono)'}:undefined}>{op.text}</text>;
       }
     })}
   </svg>;
@@ -27,12 +28,13 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
   const info=[...lessonInfo,...networkInfo].find(item=>item.id===figureId)!;
   const renderer={...lessonRenderers,...networkRenderers}[figureId];
   const wideWidth=figureId==='W03'?480:560;
-  // List-embedded figures have a 210px plot in the smallest supported viewport.
-  const narrowWidth=networkInfo.some(item=>item.id===figureId)?200:227;
+  // Static scenes are drawn at the smallest plot of each layout and only scale up: 284px in the article
+  // at a 320px viewport, 259px when a network figure sits inside a list. Wide scenes start at the layout switch.
+  const narrowWidth=networkInfo.some(item=>item.id===figureId)?259:284;
   const containerRef=useRef<HTMLElement>(null);
   const plotRef=useRef<HTMLDivElement>(null);
   const canvasRef=useRef<HTMLCanvasElement>(null);
-  const surface=useRef<{context:CanvasRenderingContext2D;width:number;dpr:number;font:string}|null>(null);
+  const surface=useRef<{context:CanvasRenderingContext2D;width:number;dpr:number;font:string;mono:string}|null>(null);
   const failed=useRef(false);
   const [ready,setReady]=useState(false);
   const [width,setWidth]=useState(0);
@@ -46,7 +48,7 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
     if(failed.current||!current||!canvas||current.width<=0)return;
     try {
       const scene=renderer(current.width,Math.min(elapsed,info.final));
-      paintLesson(current.context,scene,current.width,current.dpr,current.font);
+      paintLesson(current.context,scene,current.width,current.dpr,current.font,current.mono);
       canvas.dataset.elapsed=String(Math.round(elapsed));
       if(lastStatus.current!==scene.status){lastStatus.current=scene.status;setStatus(scene.status);}
     } catch {
@@ -76,7 +78,8 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
       const height=renderer(measuredWidth,info.final).height;
       const pixelsWidth=Math.round(measuredWidth*dpr),pixelsHeight=Math.round(height*dpr);
       if(canvas.width!==pixelsWidth||canvas.height!==pixelsHeight){canvas.width=pixelsWidth;canvas.height=pixelsHeight;}
-      surface.current={context:measuredContext,width:measuredWidth,dpr,font:getComputedStyle(container).fontFamily};
+      const css=getComputedStyle(container);
+      surface.current={context:measuredContext,width:measuredWidth,dpr,font:css.fontFamily,mono:css.getPropertyValue('--font-mono').trim()||'monospace'};
       playback.redraw();
       if(!failed.current)setReady(true);
     }
@@ -94,8 +97,8 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
   },[renderer,info.final,playback.redraw]);
 
   const staticPair=(elapsed:number,title:string)=><>
-    <div className="lesson-static lesson-static--wide"><StaticLesson frame={renderer(width||wideWidth,elapsed)} width={width||wideWidth} title={title}/></div>
-    <div className="lesson-static lesson-static--narrow"><StaticLesson frame={renderer(width||narrowWidth,elapsed)} width={width||narrowWidth} title={title}/></div>
+    <div className="lesson-static lesson-static--wide"><LessonSvg frame={renderer(width||wideWidth,elapsed)} width={width||wideWidth} title={title}/></div>
+    <div className="lesson-static lesson-static--narrow"><LessonSvg frame={renderer(width||narrowWidth,elapsed)} width={width||narrowWidth} title={title}/></div>
   </>;
   const style={'--lesson-wide-height':`${staticFrames.wide.height}px`,'--lesson-narrow-height':`${staticFrames.narrow.height}px`} as CSSProperties;
   return <AnimatedFigure containerRef={containerRef} title={info.title} caption={info.caption} running={playback.running} figureId={figureId} sourceBlockId={sourceBlockId}>

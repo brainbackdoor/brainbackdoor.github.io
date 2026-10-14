@@ -15,9 +15,8 @@ interface Props {
 export default function AnimatedFigure({ containerRef, title, caption, children, running, variant = 'default', figureId, sourceBlockId }: Props) {
   const titleId = useId();
   return <figure className={`animated-figure${variant === 'preview' ? ' animated-figure--preview' : ''}`} ref={containerRef} aria-labelledby={titleId} data-playing={running} data-figure-id={figureId} data-source-block-id={sourceBlockId}>
-    <div className="animated-figure__header">
-      <strong id={titleId}>{title}</strong>
-    </div>
+    {/* The article heading already names the topic; the figure keeps its own name for assistive technology. */}
+    <strong id={titleId} className="sr-only">{title}</strong>
     {children}
     <figcaption>{caption}</figcaption>
   </figure>;

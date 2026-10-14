@@ -1,0 +1,62 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`deployed figures keep their drawings while shared support grows > draws the same SVG for the 22 deployed scenes at fixed widths 1`] = `
+{
+  "D03": "d168192f376ddad6",
+  "N01": "040645d61e4200dd",
+  "N02": "353beb2cd9b5918d",
+  "N03": "3e4bb797f67188cd",
+  "N04": "ff403911e14f3117",
+  "N05": "2240df30f5050f2d",
+  "N06": "ced0ec4482de13ec",
+  "N07": "fac3c5d88a4ca04a",
+  "N08": "31b58e554af3064d",
+  "N09": "77de46fa0ab1708e",
+  "N10": "e18a65f897a1fb41",
+  "N11": "d3bf93397ede18d9",
+  "N12": "4d9f7fbd248c4d5d",
+  "N13": "9851e94835c3f290",
+  "S03": "de49dd83003931dd",
+  "T01": "9aa52f966dcbbb52",
+  "W01": "3975dce1ee3b8fcb",
+  "W02": "1e3c9dfe44a0cef7",
+  "W03": "a8d77432f05fce6f",
+  "W04": "2dccfe34a5ffb351",
+  "W05": "eba8f7c0faf47292",
+  "W06": "39cb2b92d481d33d",
+}
+`;
+
+exports[`deployed figures keep their drawings while shared support grows > renders the same static SVG for the 22 deployed figures 1`] = `
+{
+  "D03": "b8725ea1a16df1ac",
+  "N01": "fefc68f848d65f8e",
+  "N02": "159fd3a83b18ec87",
+  "N03": "4e86ffd44d950ae3",
+  "N04": "fd149b00adbfbfc5",
+  "N05": "8d3663a65c081a8a",
+  "N06": "679ce79f22dd487a",
+  "N07": "6fd8be6366bf21ef",
+  "N08": "ec1db40b4e48c533",
+  "N09": "d90883b65d35de20",
+  "N10": "5ff86c01b9bea9f9",
+  "N11": "3e6a72d32badf8a7",
+  "N12": "45c98388d70f044a",
+  "N13": "463a36f580e881b6",
+  "S03": "ad72f00f8aaf9263",
+  "T01": "d7254e68b2128713",
+  "W01": "90599b76a3d148ad",
+  "W02": "46d501ecdc9e851b",
+  "W03": "7111c1894198cc54",
+  "W04": "a9ce25d45583e3ea",
+  "W05": "48521076cb0a1a14",
+  "W06": "6381c10de57edc42",
+}
+`;
+
+exports[`deployed figures keep their drawings while shared support grows > renders the same static SVG for the TCP body and home figures 1`] = `
+{
+  "body": "2024339703abeb9d",
+  "home": "c96e4016ff0849e8",
+}
+`;

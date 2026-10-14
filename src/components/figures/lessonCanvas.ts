@@ -1,3 +1,4 @@
+import { FIGURE_COLORS } from './figurePalette';
 import { arrivalTimes, queueState, flowState, flowEvents, cacheState, lockState, indexState, sparkState, progress, type FigureId } from './lesson-models';
 
 export type DrawOp =
@@ -8,8 +9,7 @@ export type DrawOp =
  /** Rounded shapes, curves, arrowheads and icons share one SVG path string in Canvas and SVG. */
  | {type:'path';d:string;fill:string;stroke:string;width:number;dash:number[]|null;alpha:number};
 export interface LessonFrame {ops:DrawOp[];height:number;status:string}
-/** One palette for Canvas, static SVG and the --color-figure-* CSS tokens. */
-export const FIGURE_COLORS: Readonly<Record<'bg'|'plot'|'slab'|'grid'|'line'|'border'|'faint'|'blue'|'green'|'orange'|'red'|'text'|'muted'|'blueText'|'greenText'|'orangeText'|'redText'|'blueTint'|'blueSoft'|'greenTint'|'orangeTint'|'redTint',string>>={bg:'#ffffff',plot:'#f8f9fa',slab:'#f1f3f5',grid:'#e9ecef',line:'#ced4da',border:'#dee2e6',faint:'#adb5bd',blue:'#228be6',green:'#12b886',orange:'#fd7e14',red:'#fa5252',text:'#343a40',muted:'#586b80',blueText:'#1864ab',greenText:'#087f5b',orangeText:'#9c4b00',redText:'#c92a2a',blueTint:'#e7f5ff',blueSoft:'#a5d8ff',greenTint:'#e6fcf5',orangeTint:'#fff4e6',redTint:'#fff5f5'};
+export { FIGURE_COLORS };
 const F=FIGURE_COLORS;
 const C={ink:F.text,muted:F.muted,line:F.line,grid:F.grid,bg:F.plot,blue:F.blue,green:F.green,orange:F.orange,red:F.red,blueText:F.blueText,greenText:F.greenText,orangeText:F.orangeText,redText:F.redText};
 /** Linear display progress of one span: 0 and 1 at its ends, clamped outside, invalid when the span has no length. */
@@ -99,5 +99,5 @@ export function paintLesson(ctx:CanvasRenderingContext2D,frame:LessonFrame,w:num
  // Commands with opacity, caps or a second font are isolated so the four original commands paint exactly as before.
  if(o.type==='path'){ctx.save();ctx.globalAlpha=o.alpha;const p=new Path2D(o.d);if(o.fill!=='none'){ctx.fillStyle=o.fill;ctx.fill(p);}if(o.stroke!=='none'){ctx.strokeStyle=o.stroke;ctx.lineWidth=o.width;ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash(o.dash??[]);ctx.stroke(p);}ctx.restore();continue;}
  if(o.type==='text'&&(o.mono||o.alpha!==undefined||o.weight!==undefined)){ctx.save();ctx.globalAlpha=o.alpha??1;ctx.fillStyle=o.color;ctx.font=`${o.weight??(o.bold?600:400)} ${o.size}px ${o.mono?monoFont:font}`;ctx.textAlign=o.align;ctx.fillText(o.text,o.x,o.y);ctx.restore();continue;}
- if(o.type==='circle'&&(o.stroke!==undefined||o.alpha!==undefined)){ctx.save();ctx.globalAlpha=o.alpha??1;ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fillStyle=o.color;ctx.fill();if(o.stroke){ctx.strokeStyle=o.stroke;ctx.lineWidth=o.strokeWidth??1;ctx.stroke();}ctx.restore();continue;}
+ if(o.type==='circle'&&(o.stroke!==undefined||o.alpha!==undefined)){ctx.save();ctx.globalAlpha=o.alpha??1;ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);if(o.color!=='none'){ctx.fillStyle=o.color;ctx.fill();}if(o.stroke&&o.stroke!=='none'){ctx.strokeStyle=o.stroke;ctx.lineWidth=o.strokeWidth??1;ctx.stroke();}ctx.restore();continue;}
  if(o.type==='rect'){ctx.fillStyle=o.fill;ctx.fillRect(o.x,o.y,o.w,o.h);if(o.stroke!=='none'){ctx.strokeStyle=o.stroke;ctx.lineWidth=1;ctx.strokeRect(o.x+.5,o.y+.5,o.w-1,o.h-1);}}else if(o.type==='circle'){ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fillStyle=o.color;ctx.fill();}else if(o.type==='line'){ctx.beginPath();ctx.strokeStyle=o.color;ctx.lineWidth=1.5;ctx.setLineDash(o.dash?[4,4]:[]);ctx.moveTo(o.x1,o.y1);ctx.lineTo(o.x2,o.y2);ctx.stroke();ctx.setLineDash([]);}else{ctx.fillStyle=o.color;ctx.font=`${o.bold?600:400} ${o.size}px ${font}`;ctx.textAlign=o.align;ctx.fillText(o.text,o.x,o.y);}}}

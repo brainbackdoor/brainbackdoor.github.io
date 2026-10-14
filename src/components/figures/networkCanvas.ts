@@ -1,5 +1,6 @@
 import { networkState as state, probeGains, nagleAckTiming, type NetworkFigureId } from './network-models';
-import { FIGURE_COLORS as F, type DrawOp, type LessonFrame } from './lessonCanvas';
+import type { DrawOp, LessonFrame } from './lessonCanvas';
+import { FIGURE_COLORS as F } from './figurePalette';
 type SequenceEvent = readonly [
     number,
     number,

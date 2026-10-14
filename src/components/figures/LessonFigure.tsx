@@ -15,7 +15,7 @@ export function LessonSvg({ frame, width, title }: {frame:LessonFrame;width:numb
     {frame.ops.map((op,i)=>{
       switch(op.type) {
         case 'rect': return <rect key={i} x={op.x} y={op.y} width={op.w} height={op.h} rx="3" fill={op.fill} stroke={op.stroke}/>;
-        case 'circle': return <circle key={i} cx={op.x} cy={op.y} r={op.r} fill={op.color} stroke={op.stroke} strokeWidth={op.stroke?op.strokeWidth??1:undefined} opacity={op.alpha}/>;
+        case 'circle': return <circle key={i} cx={op.x} cy={op.y} r={op.r} fill={op.color} stroke={op.stroke} strokeWidth={op.stroke&&op.stroke!=='none'?op.strokeWidth??1:undefined} opacity={op.alpha}/>;
         case 'path': return <path key={i} d={op.d} fill={op.fill} stroke={op.stroke} strokeWidth={op.stroke==='none'?undefined:op.width} strokeDasharray={op.dash?.join(' ')} strokeLinecap="round" strokeLinejoin="round" opacity={op.alpha<1?op.alpha:undefined}/>;
         case 'line': return <line key={i} x1={op.x1} y1={op.y1} x2={op.x2} y2={op.y2} stroke={op.color} strokeWidth="1.5" strokeDasharray={op.dash?'4 4':undefined}/>;
         case 'text': return <text key={i} x={op.x} y={op.y} fill={op.color} fontSize={op.size} fontWeight={op.weight??(op.bold?600:400)} textAnchor={op.align==='center'?'middle':op.align==='right'?'end':'start'} opacity={op.alpha} style={op.mono?{fontFamily:'var(--font-mono)'}:undefined}>{op.text}</text>;

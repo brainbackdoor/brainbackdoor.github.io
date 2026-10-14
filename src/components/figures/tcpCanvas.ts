@@ -1,5 +1,5 @@
 import { progressAt, tcpLabels, TCP_TIME, type FigureLanguage, type TcpScenario } from './tcp';
-import { FIGURE_COLORS as F } from './lessonCanvas';
+import { FIGURE_COLORS as F } from './figurePalette';
 
 export interface FigureColors {
   bg: string; plot: string; grid: string; line: string; blue: string; green: string;

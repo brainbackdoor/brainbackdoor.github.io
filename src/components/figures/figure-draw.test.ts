@@ -177,3 +177,22 @@ describe('figure frame', () => {
     expect(html).not.toContain('animated-figure__header');
   });
 });
+
+describe('review fixes', () => {
+  it('keeps the TCP figure and the shared palette free of lesson renderers', () => {
+    const valueImports = (file: string) => [...readFileSync(new URL(file, import.meta.url), 'utf8').matchAll(/^import\s+(?!type\b)[^;]*?from\s+'([^']+)'/gm)].map(m => m[1]);
+    expect(valueImports('./tcpCanvas.ts')).not.toContain('./lessonCanvas');
+    expect(valueImports('./TcpRecoveryFigure.tsx')).not.toContain('./lessonCanvas');
+    expect(valueImports('./figurePalette.ts')).toEqual([]);
+  });
+
+  it('treats none as no paint for circles in Canvas and SVG', () => {
+    const frame: LessonFrame = { height: 20, status: '', ops: [{ type: 'circle', x: 5, y: 5, r: 3, color: 'none', stroke: 'none', alpha: 0.5 }] };
+    const { ctx, calls } = recordingContext();
+    paintLesson(ctx, frame, 20, 1, 'Sans');
+    expect(calls.filter(c => c[0] === 'fill' || c[0] === 'stroke')).toEqual([]);
+    const html = renderToString(createElement(LessonSvg, { frame, width: 20, title: '빈 원' }));
+    expect(html).toMatch(/<circle[^>]*fill="none"/);
+    expect(html).not.toContain('stroke-width');
+  });
+});

@@ -4,8 +4,8 @@ import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import LessonFigure from './LessonFigure';
 import TcpRecoveryFigure from './TcpRecoveryFigure';
-import { lessonInfo } from './lesson-models';
-import { networkInfo } from './network-models';
+import { cacheState, lessonInfo, lockState, queueState, sparkState } from './lesson-models';
+import { networkInfo, networkState } from './network-models';
 
 const deployedIds = [...lessonInfo, ...networkInfo].map(item => item.id);
 const svgMarkup = (html: string) => (html.match(/<svg[\s\S]*?<\/svg>/g) ?? []).join('\n').replace(/id="[^"]*"|aria-labelledby="[^"]*"/g, '');
@@ -203,3 +203,71 @@ describe('review fixes', () => {
     expect(html).not.toContain('stroke-width');
   });
 });
+
+describe('deployed figures v2 (R04)', () => {
+  type Text = Extract<LessonFrame['ops'][number], { type: 'text' }>;
+  const renderers = { ...lessonRenderers, ...networkRenderers } as Record<string, (w: number, t: number) => LessonFrame>;
+  const texts = (f: LessonFrame) => f.ops.filter((o): o is Text => o.type === 'text');
+  const has = (f: LessonFrame, s: string) => texts(f).some(o => o.text === s);
+  const items = [...lessonInfo, ...networkInfo];
+  const loop = (id: string, step = 100) => { const d = items.find(i => i.id === id)!.duration; return Array.from({ length: Math.floor(d / step) + 1 }, (_, i) => i * step); };
+  // 실측 지면 폭: 데스크톱 본문 650·목록 625, 390px 본문 346·목록 321, 320px 본문 284·목록 259
+  const ARTICLE_WIDTHS = [650, 625, 346, 321, 284, 259];
+
+  it('draws every shape as a path so Canvas and SVG share the same corners', () => {
+    for (const item of items) for (const w of ARTICLE_WIDTHS) for (const t of [0, ...item.steps, item.final]) {
+      expect(renderers[item.id](w, t).ops.filter(o => o.type === 'rect' || o.type === 'line').length, `${item.id} ${w} ${t}`).toBe(0);
+    }
+  });
+
+  it('changes the endpoint states of N04 and N10 at the model times', () => {
+    for (const t of loop('N04', 50)) { const s = networkState('N04', t), f = renderers.N04(650, t); expect(has(f, s.client) && has(f, s.server), `${t}`).toBe(true); }
+    for (const t of loop('N10', 50)) { const s = networkState('N10', t), f = renderers.N10(650, t); expect(has(f, s.active) && has(f, s.passive), `${t}`).toBe(true); }
+  });
+
+  it('attaches a held lock to its owner thread in T01', () => {
+    for (const t of loop('T01', 50)) { const s = lockState(t), f = renderers.T01(650, t); expect([has(f, 'L1'), has(f, 'L2')], `${t}`).toEqual([!!s.owners.L1, !!s.owners.L2]); }
+  });
+
+  it('labels the current cwnd of N05 from the model', () => {
+    for (const t of loop('N05', 50)) expect(has(renderers.N05(650, t), `cwnd ${networkState('N05', t).cwnd}`), `${t}`).toBe(networkState('N05', t).points.length > 0);
+  });
+
+  it('shows the stored response in the proxy only after the whole body arrives (W03)', () => {
+    for (const t of loop('W03', 50)) expect(has(renderers.W03(650, t), '200 · public'), `${t}`).toBe(cacheState(t).stored);
+  });
+
+  it('shows doubled partition elements in S03 only after map', () => {
+    for (const t of loop('S03', 50)) { const s = sparkState(t), f = renderers.S03(650, t); expect(has(f, '12'), `${t}`).toBe(!!s.mapped); }
+  });
+
+  it('marks reuse at 304 and replacement after the v2 body in W04', () => {
+    for (const t of loop('W04', 50)) { const s = networkState('W04', t), f = renderers.W04(650, t); expect([has(f, 'v1 재사용'), has(f, 'v2 교체')], `${t}`).toEqual([s.unchanged.code === 304, s.changed.bodyComplete]); }
+  });
+
+  it('drops the overflow packets of N01 into the loss tray', () => {
+    for (const t of loop('N01', 50)) {
+      const s = queueState(t, 2), f = renderers.N01(650, t);
+      const lost = f.ops.filter(o => o.type === 'path' && o.stroke === FIGURE_COLORS.red && o.dash !== null).length;
+      expect(lost, `${t}`).toBe(s.dropped.length);
+    }
+  });
+
+  it('keeps visible labels apart and inside the figure at every article width', () => {
+    const SANS = (s: string) => { let n = 0; for (const ch of s) { const c = ch.codePointAt(0)!; n += c >= 0x1100 ? 0.94 : ' .,:;·|!il\'"()[]'.includes(ch) ? 0.3 : /[A-Z0-9mwMW+=→]/.test(ch) ? 0.64 : 0.52; } return n; };
+    const box = (o: Text) => { const w = (o.mono ? [...o.text].reduce((n, ch) => n + (ch.codePointAt(0)! >= 0x1100 ? 1 : 0.6), 0) : SANS(o.text)) * o.size; const x = o.align === 'center' ? o.x - w / 2 : o.align === 'right' ? o.x - w : o.x; return { x1: x, x2: x + w, y1: o.y - o.size * 0.8, y2: o.y + o.size * 0.22 }; };
+    const issues: string[] = [];
+    for (const item of items) for (const w of ARTICLE_WIDTHS) for (const t of loop(item.id)) {
+      const bs = texts(renderers[item.id](w, t)).filter(o => o.text.trim() && (o.alpha ?? 1) > 0.5).map(o => ({ o, ...box(o) }));
+      for (const b of bs) if (b.x1 < -1 || b.x2 > w + 1) issues.push(`${item.id} ${w} ${t} outside ${b.o.text}`);
+      for (let i = 0; i < bs.length; i++) for (let j = i + 1; j < bs.length; j++) {
+        const a = bs[i], b = bs[j];
+        // 같은 글자가 같은 자리에 있는 것은 이동 토큰이 출발점을 떠나는 순간이다
+        if (a.o.text === b.o.text && Math.abs(a.o.x - b.o.x) < 3 && Math.abs(a.o.y - b.o.y) < 3) continue;
+        if (Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1) > 2 && Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1) > 2) issues.push(`${item.id} ${w} ${t} ${a.o.text} / ${b.o.text}`);
+      }
+    }
+    expect([issues.length, ...new Set(issues.map(i => i.split(' ').slice(0, 2).join(' ')))]).toEqual([0]);
+  });
+});
+

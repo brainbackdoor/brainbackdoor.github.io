@@ -78,7 +78,7 @@ function arrowHead(g: G, p: Pt, ang: number, color: string, alpha = 1, size = 7)
 const CHIP: Record<string, { fill: string; stroke: string; color: string }> = {
   read: { fill: C.paper, stroke: C.muted, color: C.ink },
   held: { fill: C.paper, stroke: C.blue, color: C.blueText },
-  write: { fill: C.blue, stroke: C.blue, color: '#fff' },
+  write: { fill: C.blueText, stroke: C.blueText, color: '#fff' },
   store: { fill: C.paper, stroke: C.line, color: C.ink },
   lost: { fill: C.redTint, stroke: C.red, color: C.redText },
 };
@@ -357,7 +357,7 @@ function dbGlyph(g: G, x: number, y: number, color: string) {
 }
 function vtToken(g: G, p: Pt & { alpha: number }, label: string, kind: 'run' | 'wait' | 'pre' | 'done') {
   if (p.alpha <= 0) return;
-  const st = { run: [C.blue, C.blue, '#fff'], wait: [C.orangeTint, C.orange, C.orangeText], pre: [C.paper, C.line, C.muted], done: [C.greenTint, C.green, C.greenText] }[kind];
+  const st = { run: [C.blueText, C.blueText, '#fff'], wait: [C.orangeTint, C.orange, C.orangeText], pre: [C.paper, C.line, C.muted], done: [C.greenTint, C.green, C.greenText] }[kind];
   g.rect(p.x - 21, p.y - 12, 42, 24, { r: 12, fill: st[0], stroke: st[1], lw: 1.3, alpha: p.alpha });
   g.text(p.x, p.y + 4.5, label, { size: 12, weight: 700, mono: true, align: 'center', color: st[2], alpha: p.alpha });
 }
@@ -1222,7 +1222,7 @@ function poolPanel(g: G, ox: number, oy: number, pw: number, t: number, fixed: b
       g.rect(x0, sp.y - 4, bw, 8, { r: 4, fill: C.bg, stroke: C.line, lw: 1 });
       g.rect(x0, sp.y - 4, Math.max(1, bw * span(t, st, en)), 8, { r: 4, fill: C.blue });
     }
-    const tone = { pre: [C.paper, C.line, C.muted], wait: [C.paper, C.orange, C.orangeText], run: [C.blue, C.blue, '#fff'], done: [C.paper, C.green, C.greenText] }[kind];
+    const tone = { pre: [C.paper, C.line, C.muted], wait: [C.paper, C.orange, C.orangeText], run: [C.blueText, C.blueText, '#fff'], done: [C.paper, C.green, C.greenText] }[kind];
     g.circle(p.x, p.y, R, { fill: tone[0], stroke: tone[1], strokeWidth: 1.4 });
     g.text(p.x, p.y + 4.5, id, { size: 12, mono: true, weight: 700, align: 'center', color: tone[2] });
   }
@@ -1275,7 +1275,7 @@ function coroutinePanel(g: G, ox: number, oy: number, pw: number, t: number, kt:
     arrowHead(g, { x: B.x, y: sy + sh + 4 }, -Math.PI / 2, C.blue, 1, 6);
     g.text(B.x - 8, (sy + sh + hy) / 2 + 4, kt ? 'Dispatcher가 재개' : 'JVM scheduler가 재개', { size: 12, align: 'right', color: C.blueText });
   }
-  const tone = { run: [C.blue, C.blue, '#fff'], wait: [C.orangeTint, C.orange, C.orangeText], done: [C.greenTint, C.green, C.greenText] }[kind];
+  const tone = { run: [C.blueText, C.blueText, '#fff'], wait: [C.orangeTint, C.orange, C.orangeText], done: [C.greenTint, C.green, C.greenText] }[kind];
   g.rect(p.x - 24, p.y - 11, 48, 22, { r: 11, fill: tone[0], stroke: tone[1], lw: 1.3 });
   g.text(p.x, p.y + 4.5, label, { size: 12, mono: true, weight: 700, align: 'center', color: tone[2] });
   return hy + hh;

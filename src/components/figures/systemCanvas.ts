@@ -1080,7 +1080,9 @@ function diagnoseV2(w: number, t: number): LessonFrame {
     g.rect(x, y, cw, rh, { r: 8, fill: active ? C.blueTint : C.paper, stroke: active ? C.blue : seen.length ? C.ink : C.line, lw: active ? 1.6 : 1.1 });
     regionIcon(g, key, x + cw - 28, y + 9, active ? C.blue : seen.length ? C.ink : C.faint);
     para(g, x + 10, y + 22, label, cw - 44, { size: 12, weight: 600, color: active ? C.blueText : seen.length ? C.ink : C.muted, lh: 17 });
-    para(g, x + 10, y + rh - (narrow ? 30 : 14), seen.map(i => C10.short[i]).join('  '), cw - 20, { size: 12, mono: true, color: C.blueText, lh: 17 });
+    // 명령이 줄을 넘기면 칸 바닥에 맞춰 위로 쌓는다(데스크톱 650에서 4칸 폭이 좁아짐)
+    const cmds = seen.map(i => C10.short[i]).join('  '), extra = Math.max(0, wrap(cmds, cw - 20, 12, true).length - (narrow ? 2 : 1));
+    para(g, x + 10, y + rh - (narrow ? 30 : 14) - extra * 17, cmds, cw - 20, { size: 12, mono: true, color: C.blueText, lh: 17 });
   });
   const end = top + rows * (rh + gap) - gap + 14;
   const y = para(g, 0, end + 26, '원본 명령 10개와 관찰 영역의 연결입니다. 측정값은 원본 출력에만 있고, 이 지도에는 수치를 만들지 않습니다.', w, { color: C.muted });

@@ -156,6 +156,13 @@ describe('shared path, text and circle commands', () => {
     expect(html).toMatch(/<circle[^>]*stroke="#9c4b00"/);
     expect(html).toContain('<desc');
   });
+
+  it('keeps leading and repeated spaces in SVG text as Canvas does', () => {
+    const spaced = { height: 40, status: '', ops: [{ type: 'text', x: 0, y: 12, text: '   1> [로그]  2>&1', color: '#343a40', size: 12, align: 'left', bold: false, mono: true }, { type: 'text', x: 0, y: 30, text: 'plain', color: '#343a40', size: 12, align: 'left', bold: false }] } as LessonFrame;
+    const html = renderToString(createElement(LessonSvg, { frame: spaced, width: 100, title: '공백' }));
+    expect(html).toMatch(/<text[^>]*xml:space="preserve"[^>]*> {3}1&gt; \[로그\] {2}2&gt;&amp;1<\/text>/);
+    expect(html).not.toMatch(/<text[^>]*xml:space[^>]*>plain<\/text>/);
+  });
 });
 
 describe('time independent of frame rate', () => {

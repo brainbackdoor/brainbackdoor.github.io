@@ -164,6 +164,17 @@ describe('B04 drawings show the model values', () => {
     for (const t of loop('C10')) { const s = systemState('C10', t); if (s.visited) expect(visible(systemRenderers.C10(720, t), `${s.visited} / 10`)).toBe(true); }
   });
 
+  it('C10 keeps every command list inside its region at every article width', () => {
+    const labels = ['실행 대기열 (load)', 'CPU 코어', '프로세스', '메모리', '디스크', '네트워크 eth0', 'TCP 연결', '커널 로그'];
+    for (const w of ARTICLE_WIDTHS) for (const t of loop('C10', 100)) {
+      const ts = texts(systemRenderers.C10(w, t)), rh = w < 560 ? 84 : 78;
+      for (const label of ts.filter(o => labels.some(l => l.startsWith(o.text)) && o.weight === 600)) {
+        const bottom = label.y - 22 + rh;
+        for (const cmd of ts.filter(o => o.mono && o.x === label.x && o.y > label.y && o.y < bottom + 20)) expect(cmd.y + cmd.size * 0.22, `${w} ${t} ${cmd.text}`).toBeLessThanOrEqual(bottom - 6);
+      }
+    }
+  });
+
   it('T05 keeps the inflow equation visible for both pools', () => {
     for (const t of loop('T05')) for (const k of ['fixed', 'cached'] as const) {
       const s = systemState('T05', t)[k];

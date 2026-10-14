@@ -1010,7 +1010,7 @@ T04의 공유 값 0→1·2는 실제 쓰기 시점에 바뀐다. A/B가 읽은 �
 
 ## 18. R01 대표 시안 v2 — T04·C04·T06·T08 (2026-10-14)
 
-**상태: 목업 제작·검수 완료, 디자인 결정 대기.** production 코드·본문·registry·배포는 바꾸지 않았다. 기존 시안(`system-review.*`)은 비교 기준으로 그대로 두었다. 기술 검사 통과를 디자인 승인으로 취급하지 않는다.
+**상태: 목업 제작·검수 완료, 2026-10-14 사용자가 네 시안 방향을 승인.** 공통 지면(외곽 카드 제거·도해 내부 제목 제거·운영 여백 기준 모바일 폭)은 승인된 시안에 포함된 것으로 보고 R02에서 22종·TCP 전체 프레임에 적용했다(19절). production 코드·본문·registry·배포는 바꾸지 않았다. 기존 시안(`system-review.*`)은 비교 기준으로 그대로 두었다. 기술 검사 통과를 디자인 승인으로 취급하지 않는다.
 
 ### 시안 위치와 구조
 
@@ -1081,3 +1081,32 @@ blog-design/ (저장소 밖, 4817 정적 서버)
 4. T08의 행 라벨·사건 기록 문구 양.
 
 승인 전에는 R02(공통 Canvas/SVG 지원)로 넘어가지 않는다.
+
+
+## 19. R02 공통 Canvas/SVG 표현 지원 (2026-10-14)
+
+**상태: 구현·검수 완료, worktree 브랜치 커밋.** main 병합·배포는 하지 않았다. 새 B04 도해는 운영에 들어가지 않았다.
+
+### 추가한 공통 지원
+
+| 대상 | 내용 |
+| --- | --- |
+| `figurePalette.ts` | Canvas·정적 SVG·CSS 토큰이 함께 쓰는 단일 팔레트. 렌더러를 끌어오지 않는 독립 모듈이라 TCP·홈 번들이 강의 렌더러를 받지 않는다. |
+| `lessonCanvas.ts` DrawOp | `path`(둥근 도형·곡선·화살촉·아이콘의 SVG path 문자열, fill·stroke·두께·점선·투명도), text의 `mono`·`alpha`·`weight`, circle의 `stroke`·`strokeWidth`·`alpha`. 새 명령만 save/restore로 감싸 기존 네 명령은 그대로 그린다. `'none'`은 세 명령 모두 "그리지 않음"이다. |
+| `lessonCanvas.ts` 함수 | `span`(양 끝 0·1, 범위 밖 제한, 길이 0 이하 구간 거부), `cubicBezier`(x의 매개변수를 먼저 찾고 y를 구함), `roundedRectPath`. 기존 `progress`도 길이 0 이하 구간을 거부한다. |
+| `LessonFigure.tsx` | `LessonSvg`가 새 명령을 같은 좌표로 그린다(mono는 `var(--font-mono)`). Canvas는 컨테이너의 `--font-mono`를 받는다. JS 없는 정적 장면은 실제 최소 plot 폭(본문 284px, 목록 안 네트워크 도해 259px)에서 그려 확대만 된다. 넓은 장면은 레이아웃 전환 기준(560/480)을 유지한다. |
+| `AnimatedFigure.tsx`·`figures.css` | 외곽 카드 테두리·안쪽 여백·보이는 제목을 없앴다. 제목은 `sr-only`로 남아 figure 이름을 제공한다. 캡션과 T01 잠금 ID는 12px. |
+| `global.css` 토큰 | `--color-figure-blue-text` #1765a0→#1864ab, `--color-figure-orange-text` #a54800→#9c4b00로 Canvas 값과 통일. slab·faint·blue-tint·blue-soft·green-tint·orange-tint·red-tint 토큰 추가. TCP 도해의 파란·주황 라벨 색이 이 값으로 바뀌는 것은 의도한 변경이다. |
+
+색 글자는 흰 배경·plot 배경·자기 색 tint 위에만 쓴다. 회색 층(slab) 위에는 본문색·보조색만 쓴다. 초록 글자와 slab의 대비가 4.497:1이기 때문이다.
+
+### 검수
+
+- `pnpm test` 13파일 143개, `pnpm check` 0건, `pnpm build` 성공, 마이그레이션 단위 테스트 30개, 원문 대조 58편·1,806필드·도해 22종 문제 0·깨진 내부 링크 0(원본 누락 6/6은 기존 기록).
+- 운영 22종의 고정 폭 정적 SVG 지문과 TCP 본문·홈의 SVG 마크업 지문이 R02 전과 같다. LessonFigure 지문은 좁은 장면 폭 변경으로만 갱신했다. 새 맥락의 리뷰어가 base/head의 DrawOp와 digest를 따로 계산해 같음을 확인했다.
+- 실제 빌드(headless Chrome): T01 자동 재생, DPR2 backing store, 1280→390 크기 변경 중 시간 유지, DPR1(resize 경로), Canvas 중간 실패 뒤 정적 SVG가 새 폭(284)을 따름, 동작 줄이기 완료 SVG, JS 미사용 320px 정적 장면 폭 284, TCP 본문·홈 1280/390 재생과 가로 넘침 0. CDP 에뮬레이션은 DPR만 바꿀 때 resolution 미디어 쿼리 이벤트를 보내지 않아 실기기 이벤트 경로는 R05에서 다시 본다.
+- 리뷰 지적 중 TCP 번들 결합과 circle `'none'` 불일치를 테스트 우선으로 고쳤다. 나머지(투명도 의미 통일, 렌더러 내부 hex, 진행률 함수 통합, Path2D 캐시, 테스트 보강, 새 명령의 실제 픽셀 대조, mono 600 로딩 등)는 R03~R05에서 다룬다.
+
+### 범위 밖 발견
+
+영문 TCP 글은 320/390px에서 본문 `pre` 코드 블록(497px) 때문에 가로로 넘친다. 도해와 무관하며 별도 작업으로 분리했다.

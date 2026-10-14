@@ -925,7 +925,11 @@ function lifeV2(w: number, t: number): LessonFrame {
     g.text(cX + cW - 12, cY + 69, st, { size: 13, weight: 700, mono: true, align: 'right', color: run ? C.blueText : st === 'exited' ? C.orangeText : C.ink, alpha: a });
     g.text(cX + 12, cY + 98, `CMD 실행 ${s.cmdCalls}회`, { size: 12, color: C.muted, alpha: a });
   }
-  if (st === 'removed') g.text(cX + cW / 2, cY + cH / 2 + 4, 'rm · 컨테이너와 쓰기 계층 삭제, 이미지는 남음', { size: 12, align: 'center', color: C.muted, alpha: rmQ });
+  if (st === 'removed') {
+    // 데스크톱 본문(650)에서는 상자 폭이 좁아져 두 줄로 나눈다
+    const rows = wrap('rm · 컨테이너와 쓰기 계층 삭제, 이미지는 남음', cW - 24, 12);
+    rows.forEach((r, i) => g.text(cX + cW / 2, cY + cH / 2 + 4 + (i - (rows.length - 1) / 2) * 19, r, { size: 12, align: 'center', color: C.muted, alpha: rmQ }));
+  }
   // 상태 기록
   const ty = cY + cH + 30;
   g.text(0, ty + 12, '상태', { size: 12, color: C.muted });

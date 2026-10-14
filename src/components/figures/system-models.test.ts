@@ -119,9 +119,12 @@ describe('B04 event models keep the verified meaning', () => {
   });
 });
 
+// 지면 실측 폭: 데스크톱 본문 650·목록 625·2단 칼럼 313, 390px 본문 346·목록 321, 320px 본문 284·목록 259, 시안 720
+const ARTICLE_WIDTHS = [720, 650, 625, 346, 321, 313, 284, 259];
+
 describe('B04 drawings show the model values', () => {
   it('draws finite shapes for every figure across the loop at article widths', () => {
-    for (const id of ids) for (const w of [720, 346, 284, 259]) for (const t of loop(id, 100)) {
+    for (const id of ids) for (const w of ARTICLE_WIDTHS) for (const t of loop(id, 100)) {
       const f = systemRenderers[id](w, t);
       expect(f.height).toBeGreaterThan(0);
       for (const o of f.ops) {
@@ -172,7 +175,7 @@ describe('B04 drawings show the model values', () => {
     const SANS = (s: string) => { let n = 0; for (const ch of s) { const c = ch.codePointAt(0)!; n += c >= 0x1100 ? 0.94 : ' .,:;·|!il\'"()[]'.includes(ch) ? 0.3 : /[A-Z0-9mwMW+=→]/.test(ch) ? 0.64 : 0.52; } return n; };
     const box = (o: Text) => { const w = (o.mono ? [...o.text].reduce((n, ch) => n + (ch.codePointAt(0)! >= 0x1100 ? 1 : 0.6), 0) : SANS(o.text)) * o.size; const x = o.align === 'center' ? o.x - w / 2 : o.align === 'right' ? o.x - w : o.x; return { x1: x, x2: x + w, y1: o.y - o.size * 0.8, y2: o.y + o.size * 0.22 }; };
     const issues: string[] = [];
-    for (const item of systemInfo) for (const w of [720, 346, 284, 259]) for (let t = 0; t <= item.final; t += 100) {
+    for (const item of systemInfo) for (const w of ARTICLE_WIDTHS) for (let t = 0; t <= item.final; t += 100) {
       const bs = texts(systemRenderers[item.id](w, t)).filter(o => (o.alpha ?? 1) > 0.5).map(o => ({ o, ...box(o) }));
       for (const b of bs) if (b.x1 < -1 || b.x2 > w + 1) issues.push(`${item.id} ${w} ${t} outside ${b.o.text}`);
       for (let i = 0; i < bs.length; i++) for (let j = i + 1; j < bs.length; j++) {

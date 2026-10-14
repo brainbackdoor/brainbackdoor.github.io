@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-14T04:59:54.662722+00:00",
+  "generatedAt": "2026-10-14T06:04:48.628078+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -21670,7 +21670,8 @@
           "requiredText": [
             "docker0",
             "veth2",
-            ":9000 → :8080"
+            ":9000 → :8080",
+            "응답 도착"
           ],
           "evidenceBlockIds": []
         },
@@ -21696,9 +21697,9 @@
           "sourceType": "text",
           "sourceTextSha256": "9a3be679f61f066f141d52f27226163930675a898d3c7e46b3b80d3f9e8bd2c6",
           "oldText": "영향을 끼치지 않습니다.",
-          "newText": "영향을 끼치지 않습니다. 단, 이는 컨테이너 쓰기 계층 안의 변경일 때이며 bind mount나 volume으로 연결한 경로를 수정하면 그 내용은 호스트 쪽에 남습니다.",
-          "reason": "쓰기 계층과 mount 경로의 영향 구분",
-          "reference": "https://docs.docker.com/engine/storage/drivers/"
+          "newText": "영향을 끼치지 않습니다. 단, 이는 컨테이너 쓰기 계층 안의 변경일 때이며 bind mount로 연결한 호스트 경로나 volume을 수정하면 그 내용은 컨테이너를 지워도 남습니다.",
+          "reason": "쓰기 계층의 데이터는 컨테이너와 함께 사라지고, volume은 컨테이너 제거 뒤에도 남으며 bind mount는 호스트 경로와 직접 연결됨(Storage 개요)",
+          "reference": "https://docs.docker.com/engine/storage/"
         },
         {
           "id": "bind-mount-obscures",
@@ -21707,8 +21708,8 @@
           "sourceType": "text",
           "sourceTextSha256": "68b042f92160578f1afbca1203226a59aa95e0a6aca4cd74b42b2b5d7d682892",
           "oldText": "호스트의 볼륨으로 덮어씌워집니다.",
-          "newText": "호스트 디렉터리에 가려져 보이지 않습니다. 이미지 안의 파일이 지워지는 것은 아니며, 비어 있는 named volume을 처음 연결할 때는 반대로 컨테이너의 기존 파일이 볼륨으로 복사됩니다.",
-          "reason": "bind mount는 기존 파일을 가림. named volume 초기 복사와 구분",
+          "newText": "호스트 디렉터리에 가려져 보이지 않습니다. 이미지 안의 파일이 지워지는 것은 아니며, 비어 있는 볼륨을 처음 연결할 때는 기본적으로 반대로 컨테이너의 기존 파일이 볼륨으로 복사됩니다(volume-nocopy로 끌 수 있습니다).",
+          "reason": "bind mount는 기존 파일을 가림(bind mounts 문서). 빈 볼륨으로의 복사는 기본 동작이며 volume-nocopy로 끔(volumes 문서 https://docs.docker.com/engine/storage/volumes/)",
           "reference": "https://docs.docker.com/engine/storage/bind-mounts/"
         }
       ],
@@ -32450,7 +32451,9 @@
           "requiredText": [
             "DB connection 1",
             "JEP 491",
-            "8192"
+            "8192",
+            "carrier · pinned",
+            "DB 획득 대기"
           ],
           "evidenceBlockIds": []
         }
@@ -32474,8 +32477,8 @@
           "sourceType": "text",
           "sourceTextSha256": "feafd34a9814d63d9a5304e40d763019a9fd137c44019ab8542860a3529c607a",
           "oldText": "이 문제를 풀었다고 한다.",
-          "newText": "이 문제를 풀었다고 한다. JEP 491은 JDK 24에 반영되었고, native·foreign 호출 중 등 일부 pinning 경로는 남는다.",
-          "reason": "JEP 491의 적용 버전과 남는 pinning 경로 보충",
+          "newText": "이 문제를 풀었다고 한다. JEP 491은 JDK 24에 처음 반영되었고, LTS로는 JDK 25가 첫 버전이다. 다만 native·foreign 호출 중 등 일부 pinning 경로는 남는다.",
+          "reason": "JEP 491의 적용 버전(JDK 24, LTS로는 JDK 25)과 남는 pinning 경로 보충. 앞 문장의 \"JDK 25 이전\"과 함께 읽히도록 LTS 기준을 밝힘",
           "reference": "https://openjdk.org/jeps/491"
         },
         {
@@ -32485,8 +32488,8 @@
           "sourceType": "text",
           "sourceTextSha256": "b1d9a700ca566a44c7bf878ecb0326c01bf7e65c5b71deed6a395a8fe6a2b00e",
           "oldText": "Virtual Thread로 적용된다.",
-          "newText": "Virtual Thread로 적용된다. 단, 직접 정의한 실행기 빈이 있으면 자동 구성이 물러나므로 버전별 자동 구성 범위를 확인해야 한다.",
-          "reason": "Boot 자동 구성의 적용 범위 보충",
+          "newText": "Virtual Thread로 적용된다. 단, 직접 정의한 Executor 빈이 있으면 @Async 같은 작업 실행은 자동 구성 실행기 대신 그 빈을 쓰므로, 버전별 자동 구성 범위를 확인해야 한다.",
+          "reason": "Boot 자동 구성 실행기는 Executor 빈이 없을 때만 만들어지고, 직접 정의한 Executor는 @EnableAsync 작업 실행이 사용(Task Execution and Scheduling 절). 톰캣 요청 처리와 구분",
           "reference": "https://docs.spring.io/spring-boot/docs/3.2.3/reference/html/features.html#features.task-execution-and-scheduling"
         }
       ],

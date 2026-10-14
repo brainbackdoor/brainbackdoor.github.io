@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "🧐"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <p id="3759cb4b-a0a5-4590-a4e3-378d5f3c127e">NEXTSTEP TDD 과정 코드리뷰를 하다보면, <span className="notion-color-blue"><a href="https://brainbackdoor.tistory.com/140"><strong>일급컬렉션</strong></a></span><strong> </strong>피드백에 이어, 많이 하는 피드백이 불변객체를 작성하라는 것이다&#46;</p>
 
 <p id="f868beb6-ec4f-4c9b-a11a-0a2fb5c8ba71">Effective Java에서는 '<strong>변경 가능성을 최소화하라</strong>'는 챕터를 통해 불변 객체를 소개한다&#46; '<strong>불변 객체'는 인스턴스 생성 이후 내부 인스턴스 변수들을 수정할 수 없어야 한다&#46;</strong> 이에 근본적으로 Thread-safe하므로 동기화 작업을 할 필요 없어 오류 가능성이 적고 <span className="notion-color-blue"><a href="https://madplay.github.io/post/strive-for-failure-atomicity"><strong>실패 원자성</strong></a></span>을 제공한다&#46;</p>
@@ -66,7 +68,9 @@ final class ImmutableCart<T> {
 }
 ```
 
-<p id="24daf336-b900-455c-b4f1-93406cc8c154"><span className="notion-color-teal"><strong>unmodifiableList를 생성자에서 사용하여 전달받은 값을 방어적 복사하고, getter에서 객체를 생성해서 반환</strong></span>하는 것도 좋은 전략이라고 생각한다&#46; final 예약어를 사용하였으므로 값을 재할당할 수 없으며, unmodifiableList는 값을 수정할 시에 예외를 발생시키므로 Item을 교체하지 못한다는 의미가 분명해질 수 있다&#46; 이에 내부에서 값을 재정의하는 메서드를 작성하는 것을 방지하는 효과를 가져온다&#46;</p>
+<LessonFigure figureId="T08" sourceBlockId="23b5b3fa-9fb3-48e7-bef6-7838009727f5" client:visible />
+
+<p id="24daf336-b900-455c-b4f1-93406cc8c154"><span className="notion-color-teal"><strong>unmodifiableList를 생성자에서 사용하여 전달받은 List를 수정 불가 뷰로 감싸고(방어적 복사는 아니어서 외부 List의 변경은 그대로 보인다), getter에서 객체를 생성해서 반환</strong></span>하는 것도 좋은 전략이라고 생각한다&#46; final 예약어를 사용하였으므로 값을 재할당할 수 없으며, unmodifiableList는 값을 수정할 시에 예외를 발생시키므로 Item을 교체하지 못한다는 의미가 분명해질 수 있다&#46; 이에 내부에서 값을 재정의하는 메서드를 작성하는 것을 방지하는 효과를 가져온다&#46;</p>
 
 <p id="031aabb8-1da7-440c-9f0c-636e8fbe34a8">getter에서도 unmodifiableList를 사용할 경우 Deep Copy가 되지 않는다는 점이 <span className="notion-color-blue"><a href="https://os94.tistory.com/153"><strong>우려</strong></a></span>가 있지만, Item이<span className="notion-color-blue"> </span><span className="notion-color-blue"><a href="https://martinfowler.com/bliki/ValueObject.html"><strong>Value Object</strong></a></span>로 작성하여 불변성을 보장할 경우 속성을 변경할 수 없고 Collection에 직접 Item을 교체하는 api를 제공하지 않으므로 불변을 보장할 수는 있다&#46; 다만, 이 경우 외부 사용자 측면에서는 기대하지 않은 예외 (unsupportedoperationexception)에 직면하여 좋지 못한 경험을 준다는 단점이 있으며, unmodifiableList은 비즈니스 로직을 읽어내는데 저해된다는 주장도 있다&#46;</p>
 

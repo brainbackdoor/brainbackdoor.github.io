@@ -10,6 +10,8 @@ dateSource: "created"
 icon: "📝"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <figure id="38190d37-083f-802c-8900-c07d62ec789a" className="notion-figure">
 
 <img src="/content/38190d37-083f-8033-a7e8-f3996e11cf55/38190d37-083f-802c-8900-c07d62ec789a.webp" alt="" loading="lazy" width="2048" height="2731" />
@@ -44,17 +46,29 @@ icon: "📝"
 
 <p id="38190d37-083f-8048-b265-f8832b4f7170">가령 idle이 평균 99%면, 이론상 코어 8개로 worker <strong>800개</strong>를 돌릴 수 있다&#46; 하지만 트랜잭션이 무거우면 대기가 길어져 800개로도 모자라다&#46; 그래서 몇몇 서비스는 WebFlux로 풀기도 했다&#46; 코드를 논블로킹으로 바꿔야 하고 스택 트레이스도 끊기지만, 제한된 서버 자원으로 처리량을 확보하려면 어쩔 수 없었다&#46;</p>
 
-<figure id="38190d37-083f-8049-9802-e85b45daa4ad" className="notion-figure">
+<div id="38190d37-083f-8049-9802-e85b45daa4ad">
+
+<LessonFigure figureId="T06" sourceBlockId="38190d37-083f-8049-9802-e85b45daa4ad" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/38190d37-083f-8033-a7e8-f3996e11cf55/38190d37-083f-8049-9802-e85b45daa4ad.webp" alt="" loading="lazy" width="2048" height="1087" />
 
 </figure>
 
+</details>
+
+</div>
+
 <p id="38190d37-083f-8003-ab00-dfd072c1bd5e">Virtual Thread는 <strong>기다릴 때 스레드를 반납</strong>한다&#46; 그만큼 자원을 효율적으로 쓸 수 있다&#46;</p>
 
-<p id="38190d37-083f-8091-8ea4-fc8e75024454">가상 스레드는 실행될 때만 <strong>carrier 스레드</strong>(기본 <code>ForkJoinPool</code>)에 <strong>mount</strong>한다&#46; 블로킹을 만나면 <strong>unmount</strong>해 OS 스레드를 반납하고, carrier는 다른 가상 스레드를 <strong>mount</strong>한다&#46; 따라서 이론적으로 스레드 <code>대기시간</code>이 사라지는 셈이다&#46;</p>
+<p id="38190d37-083f-8091-8ea4-fc8e75024454">가상 스레드는 실행될 때만 <strong>carrier 스레드</strong>(기본 <code>ForkJoinPool</code>)에 <strong>mount</strong>한다&#46; 블로킹을 만나면 <strong>unmount</strong>해 OS 스레드를 반납하고, carrier는 다른 가상 스레드를 <strong>mount</strong>한다&#46; 따라서 이론적으로 스레드 <code>대기시간</code>이 사라지는 셈이다&#46; 다만 I/O·DB 대기 자체가 줄어드는 것은 아니고, 기다리는 동안 carrier를 다른 가상 스레드가 쓰는 것이다&#46;</p>
 
-<p id="38190d37-083f-80da-9d4c-c404a7ae3830"><a href="https://www.oracle.com/news/announcement/oracle-releases-java-25-2025-09-16/">JDK 25</a> 이전에는, <code>synchronized</code> 안에서 블로킹하면 carrier를 반납하지 못하고 <strong>고정(pinning)</strong> 되는 이슈로 인해 처리량이 내려갔다&#46; <code>synchronized</code>는 <strong>HikariCP</strong> 등 여러 라이브러리 코드에 포함되어 있기 때문에, 사실상 Virtual Thread의 실익이 크지 않았다&#46; <a href="https://openjdk.org/jeps/491">JEP 491</a>은 모니터 소유권을 carrier가 아니라 Virtual Thread에 연결해 이 문제를 풀었다고 한다&#46;</p>
+<p id="38190d37-083f-80da-9d4c-c404a7ae3830"><a href="https://www.oracle.com/news/announcement/oracle-releases-java-25-2025-09-16/">JDK 25</a> 이전에는, <code>synchronized</code> 안에서 블로킹하면 carrier를 반납하지 못하고 <strong>고정(pinning)</strong> 되는 이슈로 인해 처리량이 내려갔다&#46; <code>synchronized</code>는 <strong>HikariCP</strong> 등 여러 라이브러리 코드에 포함되어 있기 때문에, 사실상 Virtual Thread의 실익이 크지 않았다&#46; <a href="https://openjdk.org/jeps/491">JEP 491</a>은 모니터 소유권을 carrier가 아니라 Virtual Thread에 연결해 이 문제를 풀었다고 한다&#46; JEP 491은 JDK 24에 반영되었고, native·foreign 호출 중 등 일부 pinning 경로는 남는다&#46;</p>
 
 <span id="38190d37-083f-8099-97ac-c34773eca0bb"></span>
 
@@ -62,7 +76,7 @@ icon: "📝"
 spring.threads.virtual.enabled=true
 ```
 
-<p id="38190d37-083f-8097-8559-f62e8fcd6e86">위 설정만 하면 Boot 3&#46;2+, JDK 21+에서 톰캣 요청·<code>&#64;Async</code>·<code>&#64;Scheduled</code>·Kafka·RabbitMQ 리스너가 모두 Virtual Thread로 적용된다&#46; (데몬이라 <code>&#64;Scheduled</code>만 도는 앱은 <code>spring&#46;main&#46;keep-alive=true</code>도 둬야 JVM이 안 죽는다&#46;)</p>
+<p id="38190d37-083f-8097-8559-f62e8fcd6e86">위 설정만 하면 Boot 3&#46;2+, JDK 21+에서 톰캣 요청·<code>&#64;Async</code>·<code>&#64;Scheduled</code>·Kafka·RabbitMQ 리스너가 모두 Virtual Thread로 적용된다&#46; 단, 직접 정의한 실행기 빈이 있으면 자동 구성이 물러나므로 버전별 자동 구성 범위를 확인해야 한다&#46; (데몬이라 <code>&#64;Scheduled</code>만 도는 앱은 <code>spring&#46;main&#46;keep-alive=true</code>도 둬야 JVM이 안 죽는다&#46;)</p>
 
 <p id="38190d37-083f-801a-a904-f4755c1de3fc"><strong>Virtual Thread를 켠다면 아래를 고려해야 한다고 한다&#46;</strong></p>
 

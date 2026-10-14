@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-13T04:49:52.458322+00:00",
+  "generatedAt": "2026-10-14T04:59:54.662722+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -7472,6 +7472,34 @@
       "unresolvedLinks": [],
       "warnings": [],
       "excluded": [],
+      "figures": [
+        {
+          "figureId": "T08",
+          "sourceId": "95248237-c6a4-4489-a51e-6c548c0c103c",
+          "sourceBlockId": "23b5b3fa-9fb3-48e7-bef6-7838009727f5",
+          "sourceType": "code",
+          "mode": "after",
+          "requiredText": [
+            "UnsupportedOperationException",
+            "unmodifiableList",
+            "name 요소까지 새로 만든 L2"
+          ],
+          "evidenceBlockIds": []
+        }
+      ],
+      "corrections": [
+        {
+          "id": "unmodifiable-list-view",
+          "sourceId": "95248237-c6a4-4489-a51e-6c548c0c103c",
+          "sourceBlockId": "24daf336-b900-455c-b4f1-93406cc8c154",
+          "sourceType": "text",
+          "sourceTextSha256": "5c43b0247c3ca579b13d053c1fe5cf3a0a023a6427d823c30e7e0d7d8f09c17c",
+          "oldText": "전달받은 값을 방어적 복사하고",
+          "newText": "전달받은 List를 수정 불가 뷰로 감싸고(방어적 복사는 아니어서 외부 List의 변경은 그대로 보인다)",
+          "reason": "unmodifiableList는 기존 List의 뷰",
+          "reference": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collections.html#unmodifiableList(java.util.List)"
+        }
+      ],
       "title": "불변객체에 관해서..",
       "pubDate": "2020-04-12",
       "pubDateEvidence": {
@@ -21559,12 +21587,129 @@
         {
           "sourceBlockId": "a192d76a-bb58-4789-ac02-7ccffe41c874",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "fbaddab0-29dc-42e4-bda7-77bba88ac9ce",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "C08",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "4ee9dce3-0c0c-450c-abe5-fde207d6ef68",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Mutable Server",
+            "Immutable Server",
+            "교체 완료 · 모두 같은 v2"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "C01",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "d5686ba0-2435-4d37-bae6-16be2d38774d",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Guest OS",
+            "Linux host kernel",
+            "kernel 1개 · 공유"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "C02",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "7f1bf63f-1281-4066-8973-4c185d8ccfa5",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "/var/run/docker.sock",
+            "Registry",
+            "nginx 실행 중"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "C03",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "aeeb0b89-15cb-4947-b679-28443204701c",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "PID 4453",
+            "PID 1",
+            "프로세스가 보는 /"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "C04",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "7aa6f393-9836-469a-850d-7b42c00a1e86",
+          "sourceType": "text",
+          "mode": "after",
+          "requiredText": [
+            "Image A · 읽기 전용 층",
+            "Image B",
+            "newfile2"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "C05",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "865f6a09-fc58-488c-b1cf-6cf13918cb42",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "docker0",
+            "veth2",
+            ":9000 → :8080"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "C06",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "a1826478-ba85-428b-8c72-6d6e8df45599",
+          "sourceType": "text",
+          "mode": "after",
+          "requiredText": [
+            "named volume",
+            "bind mount",
+            "읽음: record A"
+          ],
+          "evidenceBlockIds": []
+        }
+      ],
+      "corrections": [
+        {
+          "id": "container-change-scope",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "c9230359-dbe4-4660-b2cb-8528eee3b0e3",
+          "sourceType": "text",
+          "sourceTextSha256": "9a3be679f61f066f141d52f27226163930675a898d3c7e46b3b80d3f9e8bd2c6",
+          "oldText": "영향을 끼치지 않습니다.",
+          "newText": "영향을 끼치지 않습니다. 단, 이는 컨테이너 쓰기 계층 안의 변경일 때이며 bind mount나 volume으로 연결한 경로를 수정하면 그 내용은 호스트 쪽에 남습니다.",
+          "reason": "쓰기 계층과 mount 경로의 영향 구분",
+          "reference": "https://docs.docker.com/engine/storage/drivers/"
+        },
+        {
+          "id": "bind-mount-obscures",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "731eb847-fa6b-427b-8d2d-c187ffe03a11",
+          "sourceType": "text",
+          "sourceTextSha256": "68b042f92160578f1afbca1203226a59aa95e0a6aca4cd74b42b2b5d7d682892",
+          "oldText": "호스트의 볼륨으로 덮어씌워집니다.",
+          "newText": "호스트 디렉터리에 가려져 보이지 않습니다. 이미지 안의 파일이 지워지는 것은 아니며, 비어 있는 named volume을 처음 연결할 때는 반대로 컨테이너의 기존 파일이 볼륨으로 복사됩니다.",
+          "reason": "bind mount는 기존 파일을 가림. named volume 초기 복사와 구분",
+          "reference": "https://docs.docker.com/engine/storage/bind-mounts/"
         }
       ],
       "title": "도커 컨테이너 살펴보기",
@@ -21788,12 +21933,27 @@
         {
           "sourceBlockId": "3958de12-80ca-47b4-ab28-fbc95afa56db",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "5abb4306-d42d-41fe-85f2-f37d695aab89",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "C07",
+          "sourceId": "9fcd92ce-d741-48a9-a0f5-4951c8400bd7",
+          "sourceBlockId": "33ac0f6b-9066-4f42-956d-472d48eb1fbf",
+          "sourceType": "code",
+          "mode": "after",
+          "requiredText": [
+            "Dockerfile",
+            "build 때 1회",
+            "rm · 컨테이너와 쓰기 계층 삭제, 이미지는 남음"
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "도커 컨테이너 실행해보기",
@@ -22424,12 +22584,40 @@
         {
           "sourceBlockId": "40621498-0f99-4e09-bbbb-99073ea9d114",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "40bf3396-3be9-4675-8cdb-d57cc53f8854",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "C09",
+          "sourceId": "b47f2941-5949-4368-890b-ca7825b419b9",
+          "sourceBlockId": "33cd38f0-b1f5-4f91-a44c-b448ee7e060b",
+          "sourceType": "code",
+          "mode": "after",
+          "requiredText": [
+            "[로그파일명]",
+            "SIGHUP으로 종료",
+            "SIGHUP 무시 · 계속 실행"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "C10",
+          "sourceId": "b47f2941-5949-4368-890b-ca7825b419b9",
+          "sourceBlockId": "7b793821-364d-4e4c-b99d-c372263dabbf",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "uptime",
+            "sar TCP",
+            "10 / 10"
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "리눅스 명령어 zip",
@@ -22855,6 +23043,19 @@
             "BLOCKED",
             "0x00000005c0c4b1e8",
             "0x00000005c0c4b1f8"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "T02",
+          "sourceId": "f78dedef-13f8-4ac2-b216-51600ce03d07",
+          "sourceBlockId": "9d73754b-6ff7-4c68-a8cb-39630bdd2ca1",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "TIMED_WAITING",
+            "sleep() · monitor 유지",
+            "total 46"
           ],
           "evidenceBlockIds": []
         }
@@ -24700,6 +24901,43 @@
             "v2"
           ],
           "evidenceBlockIds": []
+        },
+        {
+          "figureId": "T04",
+          "sourceId": "8e230e0d-431c-4ffe-becd-c60c1bea4615",
+          "sourceBlockId": "8f4ac769-6136-4fed-b302-e9961778b432",
+          "sourceType": "bulleted_list",
+          "mode": "after",
+          "requiredText": [
+            "sharedCounter",
+            "localCounter",
+            "덮어씀"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "T03",
+          "sourceId": "8e230e0d-431c-4ffe-becd-c60c1bea4615",
+          "sourceBlockId": "fc603eb6-2d78-472c-9eb6-11492b9afea9",
+          "sourceType": "bulleted_list",
+          "mode": "after",
+          "requiredText": [
+            "Servlet 인스턴스 1개",
+            "destroy 1회"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "T05",
+          "sourceId": "8e230e0d-431c-4ffe-becd-c60c1bea4615",
+          "sourceBlockId": "f2504f37-9fcc-4238-ba6e-730ad62d802e",
+          "sourceType": "bulleted_list",
+          "mode": "after",
+          "requiredText": [
+            "fixed(2)",
+            "설정 상한 아님"
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "HTTP Cache, gzip, Servlet, Thread 등 학습 테스트",
@@ -24727,8 +24965,8 @@
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "status": "converted",
-      "outputFile": "src/content/posts/ko/8e230e0d-431c-4ffe-becd-c60c1bea4615.mdx"
+      "outputFile": "src/content/posts/ko/8e230e0d-431c-4ffe-becd-c60c1bea4615.mdx",
+      "status": "converted"
     },
     {
       "sourceId": "9178ac06-ae33-4a96-a4cd-49c96ea28351",
@@ -31188,14 +31426,29 @@
       "warnings": [],
       "excluded": [
         {
-          "sourceBlockId": "16c90d37-083f-808e-8d3c-d78d7d94d914",
-          "type": "table_of_contents",
-          "reason": "Replaced by the site table of contents generated from the preserved headings."
-        },
-        {
           "sourceBlockId": "16c90d37-083f-800e-869f-e4e05a599473",
           "type": "code",
           "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
+        },
+        {
+          "sourceBlockId": "16c90d37-083f-808e-8d3c-d78d7d94d914",
+          "type": "table_of_contents",
+          "reason": "Replaced by the site table of contents generated from the preserved headings."
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "T07",
+          "sourceId": "16b90d37-083f-8025-acc7-e77b4a9e2b32",
+          "sourceBlockId": "16c90d37-083f-80a9-b5ef-e777f3c111ef",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "continuation",
+            "JVM scheduler가 재개",
+            "Dispatcher가 재개"
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "2024년 회고",
@@ -32187,6 +32440,56 @@
       "unresolvedLinks": [],
       "warnings": [],
       "excluded": [],
+      "figures": [
+        {
+          "figureId": "T06",
+          "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
+          "sourceBlockId": "38190d37-083f-8049-9802-e85b45daa4ad",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "DB connection 1",
+            "JEP 491",
+            "8192"
+          ],
+          "evidenceBlockIds": []
+        }
+      ],
+      "corrections": [
+        {
+          "id": "vt-wait-remains",
+          "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
+          "sourceBlockId": "38190d37-083f-8091-8ea4-fc8e75024454",
+          "sourceType": "text",
+          "sourceTextSha256": "30f0286331b00a20a4ffd46c4c5cababc1809343dfb742f22810f27ea4e8dbdf",
+          "oldText": "이 사라지는 셈이다.",
+          "newText": "이 사라지는 셈이다. 다만 I/O·DB 대기 자체가 줄어드는 것은 아니고, 기다리는 동안 carrier를 다른 가상 스레드가 쓰는 것이다.",
+          "reason": "대기 시간과 carrier 재사용의 구분 보충",
+          "reference": "https://openjdk.org/jeps/444"
+        },
+        {
+          "id": "jep491-jdk24-scope",
+          "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
+          "sourceBlockId": "38190d37-083f-80da-9d4c-c404a7ae3830",
+          "sourceType": "text",
+          "sourceTextSha256": "feafd34a9814d63d9a5304e40d763019a9fd137c44019ab8542860a3529c607a",
+          "oldText": "이 문제를 풀었다고 한다.",
+          "newText": "이 문제를 풀었다고 한다. JEP 491은 JDK 24에 반영되었고, native·foreign 호출 중 등 일부 pinning 경로는 남는다.",
+          "reason": "JEP 491의 적용 버전과 남는 pinning 경로 보충",
+          "reference": "https://openjdk.org/jeps/491"
+        },
+        {
+          "id": "boot-vt-executor-scope",
+          "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
+          "sourceBlockId": "38190d37-083f-8097-8559-f62e8fcd6e86",
+          "sourceType": "text",
+          "sourceTextSha256": "b1d9a700ca566a44c7bf878ecb0326c01bf7e65c5b71deed6a395a8fe6a2b00e",
+          "oldText": "Virtual Thread로 적용된다.",
+          "newText": "Virtual Thread로 적용된다. 단, 직접 정의한 실행기 빈이 있으면 자동 구성이 물러나므로 버전별 자동 구성 범위를 확인해야 한다.",
+          "reason": "Boot 자동 구성의 적용 범위 보충",
+          "reference": "https://docs.spring.io/spring-boot/docs/3.2.3/reference/html/features.html#features.task-execution-and-scheduling"
+        }
+      ],
       "title": "SpringCamp 2026 후기",
       "pubDate": "2026-06-16T06:30:50.474000+00:00",
       "pubDateEvidence": {

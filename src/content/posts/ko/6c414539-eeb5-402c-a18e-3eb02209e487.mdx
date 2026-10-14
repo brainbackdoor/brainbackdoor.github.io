@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "🐳"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <blockquote id="22fdc05f-b1a1-493b-8ee4-51da7accaedb" className="notion-callout">
 
 <p>📌 이 포스팅은 도커 컨테이너가 무엇인지, 명령어를 직접 입력해가며 살펴보는데 초점을 두고 있습니다&#46;<br />간단한 실습을 원하신다면, <span className="notion-color-blue"><strong><a href="/posts/9fcd92ce-d741-48a9-a0f5-4951c8400bd7">도커 컨테이너 실행해보기</a></strong></span> 포스팅을 참고 바랍니다&#46;</p>
@@ -34,11 +36,23 @@ icon: "🐳"
 
 <div id="debf6d54-8afb-4cde-9fa9-7d7be1bdf7a1" className="notion-column">
 
-<figure id="4ee9dce3-0c0c-450c-abe5-fde207d6ef68" className="notion-figure">
+<div id="4ee9dce3-0c0c-450c-abe5-fde207d6ef68">
+
+<LessonFigure figureId="C08" sourceBlockId="4ee9dce3-0c0c-450c-abe5-fde207d6ef68" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/4ee9dce3-0c0c-450c-abe5-fde207d6ef68.gif" alt="" loading="lazy" width="420" height="271" />
 
 </figure>
+
+</details>
+
+</div>
 
 </div>
 
@@ -50,11 +64,23 @@ icon: "🐳"
 
 #### 기존의 OS 가상화 방식
 
-<figure id="d5686ba0-2435-4d37-bae6-16be2d38774d" className="notion-figure">
+<div id="d5686ba0-2435-4d37-bae6-16be2d38774d">
+
+<LessonFigure figureId="C01" sourceBlockId="d5686ba0-2435-4d37-bae6-16be2d38774d" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/d5686ba0-2435-4d37-bae6-16be2d38774d.webp" alt="" loading="lazy" width="1046" height="502" />
 
 </figure>
+
+</details>
+
+</div>
 
 <p id="a65567b9-b0b2-4236-a06c-f2699b0d72b0">기존의 가상화 기술은 <strong>하이퍼바이저</strong>를 이용해 여러 개의 운영체제를 하나의 호스트에서 생성해 사용하는 방식입니다&#46; 하이퍼바이저는 호스트 컴퓨터에서 다수의 운영체제를 동시에 실행하기 위한 논리적 플랫폼 정도로 이해해도 충분하다고 생각합니다&#46;</p>
 
@@ -108,7 +134,7 @@ icon: "🐳"
 
 <p id="47af5ae3-7a5c-4ec1-b15a-e935f8b820fe">컨테이너에 필요한 커널은 호스트의 커널을 공유해 사용하고 컨테이너 안에는 애플리케이션을 구동하는데 필요한 라이브러리 및 실행 파일만 존재하기 때문에 컨테이너를 이미지로 만들었을 때 이미지의 용량 또한 가상 머신에 비해 대폭 줄어듭니다&#46;</p>
 
-<p id="c9230359-dbe4-4660-b2cb-8528eee3b0e3">무엇보다 컨테이너의 내용을 수정해도 호스트 OS에 영향을 끼치지 않습니다&#46;</p>
+<p id="c9230359-dbe4-4660-b2cb-8528eee3b0e3">무엇보다 컨테이너의 내용을 수정해도 호스트 OS에 영향을 끼치지 않습니다&#46; 단, 이는 컨테이너 쓰기 계층 안의 변경일 때이며 bind mount나 volume으로 연결한 경로를 수정하면 그 내용은 호스트 쪽에 남습니다&#46;</p>
 
 <p id="72c3f26f-3985-46ed-a079-b5c2cd9bb268">이에 <span className="notion-color-orange_background"><strong>애플리케이션의 개발과 배포가 편해지며, 여러 애플리케이션의 독립성과 확장성이 높아집니다&#46;</strong></span></p>
 
@@ -142,11 +168,23 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 ## 2&#46; Docker daemon
 
-<figure id="7f1bf63f-1281-4066-8973-4c185d8ccfa5" className="notion-figure">
+<div id="7f1bf63f-1281-4066-8973-4c185d8ccfa5">
+
+<LessonFigure figureId="C02" sourceBlockId="7f1bf63f-1281-4066-8973-4c185d8ccfa5" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/7f1bf63f-1281-4066-8973-4c185d8ccfa5.webp" alt="" loading="lazy" width="752" height="383" />
 
 </figure>
+
+</details>
+
+</div>
 
 <span id="f145d565-ed9e-4326-9550-6523bbcfcb95"></span>
 
@@ -224,11 +262,23 @@ Linux c3fdb0cda9ac 4.19.76-linuxkit #1 SMP Tue May 26 11:42:35 UTC 2020 x86_64 x
 
 </ul>
 
-<figure id="aeeb0b89-15cb-4947-b679-28443204701c" className="notion-figure">
+<div id="aeeb0b89-15cb-4947-b679-28443204701c">
+
+<LessonFigure figureId="C03" sourceBlockId="aeeb0b89-15cb-4947-b679-28443204701c" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/aeeb0b89-15cb-4947-b679-28443204701c.webp" alt="" loading="lazy" width="1254" height="1210" />
 
 </figure>
+
+</details>
+
+</div>
 
 <ul>
 
@@ -345,6 +395,8 @@ $ ps -auxfg
 
 <p id="7aa6f393-9836-469a-850d-7b42c00a1e86">컨테이너의 데이터가 변경되더라도 컨테이너 이미지의 내용을 변경할 수 없다는 걸 기억합니다&#46;</p>
 
+<LessonFigure figureId="C04" sourceBlockId="7aa6f393-9836-469a-850d-7b42c00a1e86" client:visible />
+
 <span id="c530ff87-7ec2-415d-8d6b-cf199aabdd8d"></span>
 
 ```bash
@@ -452,11 +504,23 @@ $ cat /var/lib/docker/overlay2/[컨테이너ID]/diff/second
 
 <p id="1c699095-3968-4134-abf2-0ec17854fb4f">참고로 mac이나 window는 veth interface가 VM안에 감쳐져 있어 확인하기 어렵습니다&#46;</p>
 
-<figure id="865f6a09-fc58-488c-b1cf-6cf13918cb42" className="notion-figure">
+<div id="865f6a09-fc58-488c-b1cf-6cf13918cb42">
+
+<LessonFigure figureId="C05" sourceBlockId="865f6a09-fc58-488c-b1cf-6cf13918cb42" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/6c414539-eeb5-402c-a18e-3eb02209e487/865f6a09-fc58-488c-b1cf-6cf13918cb42.webp" alt="" loading="lazy" width="2048" height="1420" />
 
 </figure>
+
+</details>
+
+</div>
 
 <span id="b8c77bfd-1129-4445-89c8-ae6a073f4c04"></span>
 
@@ -595,7 +659,9 @@ DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:8081 to:17
 
 <p id="a1826478-ba85-428b-8c72-6d6e8df45599">하지만 mysql과 같이 컨테이너 계층에 저장돼 있던 데이터베이스의 정보를 삭제해서는 안되는 경우도 있습니다&#46; 컨테이너 데이터를 영속적인 데이터로 활용하기 위한 방법 중 볼륨을 활용하는 방안이 있습니다&#46;</p>
 
-<p id="731eb847-fa6b-427b-8d2d-c187ffe03a11"><code>-</code><code><strong>v 옵션</strong></code>은 호스트의 디렉터리를 컨테이너의 디렉터리에 마운트합니다&#46; 따라서 컨테이너의 해당 경로에 파일이 있었다면 호스트의 볼륨으로 덮어씌워집니다&#46;</p>
+<LessonFigure figureId="C06" sourceBlockId="a1826478-ba85-428b-8c72-6d6e8df45599" client:visible />
+
+<p id="731eb847-fa6b-427b-8d2d-c187ffe03a11"><code>-</code><code><strong>v 옵션</strong></code>은 호스트의 디렉터리를 컨테이너의 디렉터리에 마운트합니다&#46; 따라서 컨테이너의 해당 경로에 파일이 있었다면 호스트 디렉터리에 가려져 보이지 않습니다&#46; 이미지 안의 파일이 지워지는 것은 아니며, 비어 있는 named volume을 처음 연결할 때는 반대로 컨테이너의 기존 파일이 볼륨으로 복사됩니다&#46;</p>
 
 <span id="6d842aaf-9c89-4447-b2c9-269e8a55586f"></span>
 

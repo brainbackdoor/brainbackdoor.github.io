@@ -262,7 +262,7 @@
       "targetPath": "/posts/95248237-c6a4-4489-a51e-6c548c0c103c",
       "checkedTextFields": 14,
       "renderedImages": 0,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [],
       "issues": []
     },
@@ -685,7 +685,7 @@
       "targetPath": "/posts/6c414539-eeb5-402c-a18e-3eb02209e487",
       "checkedTextFields": 68,
       "renderedImages": 7,
-      "renderedFigures": 0,
+      "renderedFigures": 7,
       "excludedBlocks": [
         "a192d76a-bb58-4789-ac02-7ccffe41c874"
       ],
@@ -697,7 +697,7 @@
       "targetPath": "/posts/9fcd92ce-d741-48a9-a0f5-4951c8400bd7",
       "checkedTextFields": 14,
       "renderedImages": 0,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "3958de12-80ca-47b4-ab28-fbc95afa56db"
       ],
@@ -709,7 +709,7 @@
       "targetPath": "/posts/b47f2941-5949-4368-890b-ca7825b419b9",
       "checkedTextFields": 51,
       "renderedImages": 1,
-      "renderedFigures": 0,
+      "renderedFigures": 2,
       "excludedBlocks": [
         "40621498-0f99-4e09-bbbb-99073ea9d114"
       ],
@@ -721,7 +721,7 @@
       "targetPath": "/posts/f78dedef-13f8-4ac2-b216-51600ce03d07",
       "checkedTextFields": 29,
       "renderedImages": 3,
-      "renderedFigures": 1,
+      "renderedFigures": 2,
       "excludedBlocks": [
         "35480bde-ea1c-4341-ba5f-36d54ac20cb3"
       ],
@@ -767,7 +767,7 @@
       "targetPath": "/posts/8e230e0d-431c-4ffe-becd-c60c1bea4615",
       "checkedTextFields": 31,
       "renderedImages": 0,
-      "renderedFigures": 1,
+      "renderedFigures": 4,
       "excludedBlocks": [],
       "issues": []
     },
@@ -885,7 +885,7 @@
       "targetPath": "/posts/2024-retrospect",
       "checkedTextFields": 20,
       "renderedImages": 4,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "16c90d37-083f-800e-869f-e4e05a599473"
       ],
@@ -909,7 +909,7 @@
       "targetPath": "/posts/springcamp-2026",
       "checkedTextFields": 44,
       "renderedImages": 6,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [],
       "issues": []
     }
@@ -1008,7 +1008,7 @@
   "summary": {
     "pages": 58,
     "textFields": 1806,
-    "figures": 22,
+    "figures": 39,
     "pagesWithIssues": 0,
     "brokenInternalLinks": 0,
     "unavailableSourcePages": 6,

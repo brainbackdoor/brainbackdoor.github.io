@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "💻"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <blockquote id="3d7a5a0b-1ec9-4800-b714-149468406824" className="notion-callout">
 
 <p>📌 리눅스가 처음인 분들을 대상으로 작성한 포스팅입니다&#46; <span className="notion-color-blue"><strong><a href="https://devhints.io/bash">cheatsheet</a></strong></span>을 함께 활용해주셔도 좋고,<span className="notion-color-blue"><strong><a href="https://wiki.kldp.org/HOWTO/html/Adv-Bash-Scr-HOWTO/"> Bash 쉘스크립팅 가이드</a></strong></span>를 따라가보시는 것도 좋습니다&#46; <br />리눅스가 프로그램의 명령을 수행하는 과정이나, 서버의 각 메트릭의 의미는 강의를 통해 확인할 수 있어요&#46;</p>
@@ -190,6 +192,8 @@ $ java -Djava.security.egd=file:/dev/./urandom -jar [jar파일명] &
 $  nohup java -jar [jar파일명] 1> [로그파일명] 2>&1  &
 ```
 
+<LessonFigure figureId="C09" sourceBlockId="33cd38f0-b1f5-4f91-a44c-b448ee7e060b" client:visible />
+
 </li>
 
 </ul>
@@ -296,11 +300,23 @@ $ free -m
 
 ## 5&#46; 리눅스 서버 상태 1분안에 파악하기
 
-<figure id="7b793821-364d-4e4c-b99d-c372263dabbf" className="notion-figure">
+<div id="7b793821-364d-4e4c-b99d-c372263dabbf">
+
+<LessonFigure figureId="C10" sourceBlockId="7b793821-364d-4e4c-b99d-c372263dabbf" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/b47f2941-5949-4368-890b-ca7825b419b9/7b793821-364d-4e4c-b99d-c372263dabbf.webp" alt="" loading="lazy" width="1634" height="718" />
 
 </figure>
+
+</details>
+
+</div>
 
 <p id="686d5b3a-3df9-4dd9-ba7a-e46285c7c117">주로 <span className="notion-color-orange_background"><strong>CPU utilization, Available memory, RX / TX 패킷량, Disk 사용률, IOPS 등을 확인</strong></span>합니다&#46;</p>
 

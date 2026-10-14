@@ -1110,3 +1110,29 @@ blog-design/ (저장소 밖, 4817 정적 서버)
 ### 범위 밖 발견
 
 영문 TCP 글은 320/390px에서 본문 `pre` 코드 블록(497px) 때문에 가로로 넘친다. 도해와 무관하며 별도 작업으로 분리했다.
+
+## 20. R03 1단계 — B04 13종 v2 시안 (2026-10-14)
+
+**상태: 시안 제작·검수 완료, 디자인 결정 대기.** 승인된 R01 4종과 합쳐 B04 17종 모두 v2 시안이 있다. production·본문·registry·배포는 바꾸지 않았다. [17종 v2](http://127.0.0.1:4817/system-review-v2.html#C01) · [기존·v2 비교](http://127.0.0.1:4817/system-review-v2-compare.html#C01) · 같은 단계 비교 그림 `blog-design/b04-v2-<ID>-compare.png`, 320·390 `b04-v2-<ID>-mobile.png`.
+
+| ID | 중심 대상과 형태 | 핵심 장면 |
+| --- | --- | --- |
+| C01 | 원본의 층 구조를 유지하고 VM·컨테이너마다 점선 경계를 그림 | Guest OS kernel 3개 강조 → Container engine → 세 컨테이너가 하나의 Linux host kernel로 이어짐(kernel 1개 · 공유) → Infrastructure |
+| C02 | 터미널, dockerd 경계와 그 가장자리의 `/var/run/docker.sock`, 사다리꼴 Registry, 로컬 이미지 칸, 컨테이너 칸 | 요청이 socket을 거쳐 dockerd에 도착 → Registry에서 pull한 층이 로컬 이미지에 도착 → created(점선) → 실행 중. 원본 명령 관계 10줄은 아래 정적 참조로 유지 |
+| C03 | host 영역 안의 컨테이너 namespace와 그 안의 nginx 하나. 별도 예로 디렉터리 트리 | 같은 nginx에 PID 4453(host)·PID 1(컨테이너)이 붙음 → 별도 chroot 예에서 root 경계가 `/home/joe` 아래로 옮겨 감 |
+| C05 | 원본 토폴로지: host 경계, nginx·Spring과 eth0, veth1·veth2, docker0, host eth0, client | 요청이 eth0(:9000) → docker0 → veth2 → Spring(:8080)으로 이동하고 응답이 같은 경로로 돌아옴. nginx/veth1 연결은 그대로 남음 |
+| C06 | named volume·bind mount 두 칸, 각각 컨테이너 자리–mount 관–저장소 원통 | record A가 관을 따라 저장소에 기록 → 컨테이너 A 제거 뒤에도 남음 → B가 연결해 같은 record A를 읽음 |
+| C07 | Dockerfile 문서, 이미지 층, 하나의 컨테이너 상자(쓰기 계층·CMD 프로세스), 상태 기록 막대 | build 때 RUN 1회 → created → running(CMD 1회) → exited(데이터 남음) → running(CMD 2회) → rm(쓰기 계층 삭제, 이미지 남음) |
+| C08 | 서버 랙 세 대씩 두 묶음, v2 이미지 | Mutable: 수동 변경이 서버마다 달리 적용돼 상태 3가지 → Immutable: 같은 v2 이미지로 한 대씩 교체, 교체 중 혼재 → 모두 v2 |
+| C09 | 두 터미널 세션, java 프로세스와 fd 1·2 포트, 로그 파일 | 일반 &는 출력이 터미널로, nohup은 `[로그파일명]`으로 → 세션 종료 → SIGHUP이 도착해 일반 실행은 종료, nohup은 무시하고 계속 실행 |
+| C10 | 터미널(현재 명령과 관찰 값), Linux 서버 지도(실행 대기열·CPU·프로세스·메모리·디스크·네트워크·TCP·커널 로그) | 명령 10개가 차례로 해당 영역에 관찰선을 긋고, 영역마다 거쳐 간 명령이 남음. top은 네 영역을 함께 봄 |
+| T02 | monitor와 peer, 상태 노드(위: NEW·RUNNABLE·TERMINATED, 아래: 세 대기 상태), worker 토큰 | worker가 상태 사이를 이동하며 지나간 간선이 남음. monitor 소유는 토큰의 자물쇠로, 각 대기 상태 아래에 monitor 대기 / wait() 반납 / sleep() 유지 |
+| T03 | 하나의 Servlet 인스턴스 띠와 init·요청 A·요청 B·destroy 막대 | init 1회 → 두 service가 같은 인스턴스에서 동시 실행(겹친 구간 강조) → 둘 다 끝난 뒤 destroy 1회 |
+| T05 | 대기열–실행 슬롯–완료 칸, 번호 붙은 작업 토큰 | fixed(2)는 3·4번이 기다렸다가 빈 슬롯으로 이동, cached는 도착마다 worker가 생김. 유입 = 대기 + 실행 + 완료 유지 |
+| T07 | carrier/worker 두 칸과 heap | VT1·C1이 A에서 실행 → 대기 중 stack·continuation이 heap에 보관 → JVM scheduler·Dispatcher가 B에서 재개 |
+
+사건 시각과 의미 값은 15절 사건표와 `system-review.js`의 모델을 그대로 읽는다. 이동 토큰은 사건 시각에 도착하고, 나타나는 효과는 사건 시각부터 300~400ms 동안 투명도만 바뀐다.
+
+**정보 보존 점검:** 기존 시안의 도해 안 문구와 v2를 자동 대조했다. 빠진 6곳을 되살렸다: C02 원본 명령 관계, C05 nginx :80과 Docker Desktop 경로 조건, C06 mount 가림 조건, T02 Arthas 스냅샷 수치, T07 context·dispatcher 조건. C10의 명령별 세부 관찰 값 목록은 도해에서 뺐다. 원본 이미지가 담은 명령→관찰 영역 관계는 지도에 남고, 실행 중인 명령의 관찰 값은 터미널에 보인다. 세부 필드와 샘플 출력은 원문 본문에 그대로 있다.
+
+**검수:** 의미 대조 13종 10,647건(전체 39,469건) 통과. 세 폭 4,419프레임의 글자 겹침·폭 초과 0(작업 중 59건 수정). headless Chrome 17종 154건 통과(자동 재생, 화면 밖·탭 숨김 정지와 재개, Canvas 중간·초기 실패, 동작 줄이기 완료 SVG와 단계 3개, 320/390/1024 넘침 0).

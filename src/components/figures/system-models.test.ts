@@ -175,6 +175,25 @@ describe('B04 drawings show the model values', () => {
     }
   });
 
+  it('names where illustrative values come from and which step runs RUN, CMD and the log redirect', () => {
+    const caption = (id: SystemFigureId) => systemInfo.find(i => i.id === id)!.caption;
+    expect(caption('C05')).not.toContain('가이드의');
+    expect(caption('C05')).toContain('「도커 컨테이너 실행해보기」의 9000:8080');
+    expect(caption('C07')).toMatch(/^RUN은 이미지를 빌드할 때, CMD는 컨테이너를 시작할 때 실행됩니다\./);
+    for (const w of ARTICLE_WIDTHS) {
+      const said = texts(systemRenderers.C09(w, systemInfo.find(i => i.id === 'C09')!.final)).map(o => o.text).join(' ');
+      expect(said).not.toContain('출력을 파일로 보낼');
+      expect(said).toContain('로그 파일로 보내는 것은 1>·2>&1 리다이렉션입니다.');
+    }
+  });
+
+  it('T05 shows a cached worker only from the arrival that creates it', () => {
+    for (const w of ARTICLE_WIDTHS) for (const t of loop('T05', 50)) {
+      const workers = systemRenderers.T05(w, t).ops.filter(o => o.type === 'path' && o.width === 1.3).length; // 사건 시각에는 투명도 0으로 그려지기 시작한다
+      expect(workers, `${w} ${t}`).toBe(2 + systemState('T05', t).cached.arrived.length);
+    }
+  });
+
   it('T05 keeps the inflow equation visible for both pools', () => {
     for (const t of loop('T05')) for (const k of ['fixed', 'cached'] as const) {
       const s = systemState('T05', t)[k];

@@ -3,6 +3,8 @@ import { renderToString } from 'react-dom/server';
 import { describe, expect, it, test } from 'vitest';
 import TcpRecoveryFigure from './TcpRecoveryFigure';
 import LessonFigure from './LessonFigure';
+import registry from '../../../docs/migration-figures.json';
+import type { SystemFigureId } from './system-models';
 
 describe('TCP static rendering', () => {
   it('renders complete, readable figures without browser APIs or hydration', () => {
@@ -98,3 +100,18 @@ describe('B04 container, Linux, thread and object figures without hydration', ()
     expect(html).not.toContain('<button');
   });
 });
+
+describe('registry requiredText stays in the static scenes', () => {
+  // verify.py와 같은 기준: 글자만 남기고 NFKC 정규화 후 공백 제거
+  const plain = (html: string) => html.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").normalize('NFKC').replace(/\s+/g, '');
+  const b04 = /^(C(0[1-9]|10)|T0[2-8])$/;
+  it('renders every requiredText registered for the B04 figures', () => {
+    const specs = registry.figures.filter(f => b04.test(f.figureId));
+    expect(specs).toHaveLength(17);
+    for (const spec of specs) {
+      const text = plain(renderToString(createElement(LessonFigure, { figureId: spec.figureId as SystemFigureId })));
+      for (const expected of spec.requiredText) expect(text, `${spec.figureId} ${expected}`).toContain(expected.normalize('NFKC').replace(/\s+/g, ''));
+    }
+  });
+});
+

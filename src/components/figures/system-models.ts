@@ -98,7 +98,7 @@ export const systemInfo = [
       6000,
       9000
     ],
-    "caption": "Linux rootful 기본 bridge 개념과 가이드의 9000:8080 예를 결합합니다. 원본 nginx/veth1과 Spring/veth2, docker0 연결은 보존합니다.",
+    "caption": "Linux rootful 기본 bridge 개념과 「도커 컨테이너 실행해보기」의 9000:8080 예를 결합합니다. 원본 nginx/veth1과 Spring/veth2, docker0 연결은 보존합니다.",
     "source": "6c414539-eeb5-402c-a18e-3eb02209e487",
     "assets": [
       "6c414539-eeb5-402c-a18e-3eb02209e487/865f6a09-fc58-488c-b1cf-6cf13918cb42.webp"
@@ -140,7 +140,7 @@ export const systemInfo = [
       6500,
       10000
     ],
-    "caption": "RUN 1회·CMD 2회인 설명용 정상 경로. 원본 nginx Dockerfile은 COPY와 베이스 이미지의 CMD를 사용합니다. RUN 추가 예시와 원래 실습을 구분합니다.",
+    "caption": "RUN은 이미지를 빌드할 때, CMD는 컨테이너를 시작할 때 실행됩니다. RUN 1회·CMD 2회인 설명용 정상 경로. 원본 nginx Dockerfile은 COPY와 베이스 이미지의 CMD를 사용합니다. RUN 추가 예시와 원래 실습을 구분합니다.",
     "source": "9fcd92ce-d741-48a9-a0f5-4951c8400bd7",
     "assets": [],
     "notes": [

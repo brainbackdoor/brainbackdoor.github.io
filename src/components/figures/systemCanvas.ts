@@ -1033,7 +1033,7 @@ function shellV2(w: number, t: number): LessonFrame {
   let y;
   if (narrow) { y = shellPanel(g, 0, 0, pw, t, false); g.line(0, y + 6, w, y + 6, { stroke: C.grid, lw: 1 }); y = shellPanel(g, 0, y + 22, pw, t, true); }
   else { y = Math.max(shellPanel(g, 0, 0, pw, t, false), shellPanel(g, pw + gap, 0, pw, t, true)); }
-  y = para(g, 0, y + 26, 'nohup은 SIGHUP을 무시하고 출력을 파일로 보낼 뿐, 자동 재시작이나 SIGKILL 보호는 아닙니다.', w, { color: C.muted });
+  y = para(g, 0, y + 26, 'nohup은 SIGHUP을 무시하게 할 뿐이고, 로그 파일로 보내는 것은 1>·2>&1 리다이렉션입니다. 자동 재시작이나 SIGKILL 보호는 아닙니다.', w, { color: C.muted });
   return { ops: g.ops, height: Math.ceil(y + 10), status: s.phase };
 }
 
@@ -1198,7 +1198,7 @@ function poolPanel(g: G, ox: number, oy: number, pw: number, t: number, fixed: b
   g.rect(qx, top + 20, qw, H - 28, { r: 8, fill: C.orangeTint, stroke: C.orange, lw: 1, dash: [3, 3] });
   g.text(sx, top + 10, fixed ? '실행 슬롯' : 'worker', { size: 12, color: C.muted });
   for (let k = 0; k < nSlots; k++) {
-    const created = fixed || t >= T05.arrivals[k] - T05.move, a = fixed ? 1 : ease.out(span(t, T05.arrivals[k] - T05.move, T05.arrivals[k]));
+    const created = fixed || t >= T05.arrivals[k], a = fixed ? 1 : ease.out(span(t, T05.arrivals[k], T05.arrivals[k] + T05.move));
     if (created) g.rect(sx, slotY(k), sw, sh, { r: 8, fill: C.paper, stroke: C.ink, lw: 1.3, alpha: a });
     else g.rect(sx, slotY(k), sw, sh, { r: 8, stroke: C.line, lw: 1, dash: [3, 4] });
   }

@@ -1294,7 +1294,7 @@ N06의 "RTO 타이머 대기"는 두 줄로 나뉘었다. W02의 "복원 / 수�
 
 ## 24. R05 실제 지면·성능·원문 검수와 배포 (2026-10-15)
 
-**상태: 검수 완료, 배포 진행.** 배포 기록은 이 절 끝에 덧붙인다.
+**상태: 검수·배포 완료(2026-10-15).** main `ede8a15`, GitHub Actions 38670489974 build·deploy 성공.
 
 ### 검증 명령
 
@@ -1343,4 +1343,13 @@ rAF 콜백 시간(렌더러 + Canvas 그리기의 JS 실행, GPU 래스터는 �
 - 도형 경계: C02의 pull 이미지가 390px 화면에서 0.2초 동안 오른쪽 14px 잘리던 것을 고쳤다. T02(259)·T08의 경계 초과도 함께 고치고, 도형 경계 검사를 B04로 넓혔다.
 - 변환 보고서의 requiredText를 registry와 맞췄다.
 - 낡은 상태 문구를 고쳤다(이 문서 첫머리, 16절 DrawOp 서술, 전체 계획 B04 상태).
+
+### 배포
+
+- **병합과 push:** 작업 브랜치를 main에 fast-forward 병합했다(d59d293 → `ede8a15`). 병합 전에 기본 checkout의 미커밋 문서 사본(브랜치 5b64092와 바이트가 같음)을 되돌렸고, `.claude/launch.json` 로컬 설정은 건드리지 않았다. 병합된 main에서 `pnpm test` 205와 build 332를 다시 확인하고 push했다.
+- **워크플로:** GitHub Actions "Deploy to GitHub Pages" 실행 38670489974가 headSha `ede8a15`에서 build·deploy 모두 success였다.
+- **HTTPS 확인**(https://www.brainbackdoor.com)
+  - 도해가 있는 글 16편이 모두 200이고 39종 도해 ID가 전부 있다. 홈은 200이고 TCP 미리보기가 있다.
+  - 이번 수정 문구가 반영됐다: N08 "추정: BtlBw", C09 리다이렉션 노트, bind mount 교정.
+  - headless Chrome으로 41개 도해(39종 + TCP 본문·홈)를 1280·390에서 봤다. 82/82가 Canvas 준비, 자동 재생, 원본 블록 앵커 존재, 컨트롤 없음, 가로 넘침 0이었다.
 

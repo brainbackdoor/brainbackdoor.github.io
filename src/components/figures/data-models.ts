@@ -11,14 +11,17 @@ export function d01(t: number) {
   };
 }
 
-/* D02 라우팅: readOnly=false → master, readOnly=true → slave. 적용 전 읽기는 이전 값 */
-export const D02 = { write: [1000, 1500, 2000], read1: [2400, 2900, 3400], apply: 4200, read2: [5000, 5500, 6000] } as const;
+/* D02 라우팅: readOnly가 아닌 트랜잭션(findLines() 조회, 설명용 쓰기) → master, readOnly=true → slave. 적용 전 읽기는 이전 값.
+   원문에서 findLines()는 master '조회'이므로 값을 바꾸지 않는다. A → B 변경은 따로 그린 설명용 쓰기다. */
+export const D02 = { lines: [600, 1100, 1500], write: [1900, 2400, 2800], read1: [3200, 3700, 4200], apply: 5000, read2: [5800, 6300, 6800] } as const;
 export function d02(t: number) {
   const read1 = t >= D02.read1[2] ? 'A' : null, read2 = t >= D02.read2[2] ? 'B' : null;
+  const leg = (c: readonly [number, number, number], dst: 'master' | 'slave') => t >= c[1] ? dst : t >= c[0] ? null : undefined;
+  const route = [leg(D02.read2, 'slave'), leg(D02.read1, 'slave'), leg(D02.write, 'master'), leg(D02.lines, 'master')].find(r => r !== undefined) ?? null;
   return {
-    route: t >= D02.read2[1] ? 'slave' : t >= D02.read2[0] ? null : t >= D02.read1[1] ? 'slave' : t >= D02.read1[0] ? null : t >= D02.write[1] ? 'master' : null,
+    route, call: t >= D02.read1[0] ? 2 : t >= D02.write[0] ? 1 : t >= D02.lines[0] ? 0 : -1,
     masterValue: t >= D02.write[2] ? 'B' : 'A', replicaValue: t >= D02.apply ? 'B' : 'A', read1, read2,
-    phase: t < D02.read1[0] ? 'readOnly=false 트랜잭션은 master로 갑니다.' : t < D02.read1[2] ? 'readOnly=true 조회는 slave로 갑니다.' : t < D02.apply ? '복제 적용 전이라 slave는 이전 값 A를 돌려줍니다.' : t < D02.read2[2] ? 'replica에 적용된 뒤 다시 조회합니다.' : '같은 조회가 이제 B를 돌려줍니다. 장애 시 자동 전환은 없습니다.',
+    phase: t < D02.write[0] ? 'findLines()처럼 readOnly가 아닌 트랜잭션은 master에서 조회합니다.' : t < D02.read1[0] ? '쓰기(설명용)도 readOnly가 아니므로 master에서 실행되고 master 값이 B가 됩니다.' : t < D02.read1[2] ? 'readOnly=true 조회는 slave로 갑니다.' : t < D02.apply ? '복제 적용 전이라 slave는 이전 값 A를 돌려줍니다.' : t < D02.read2[2] ? 'replica에 적용된 뒤 다시 조회합니다.' : '같은 조회가 이제 B를 돌려줍니다. 장애 시 자동 전환은 없습니다.',
   };
 }
 
@@ -27,9 +30,10 @@ export const D04 = { descend: [800, 1800], scan: [2200, 4200], stop: 4400, sweep
 export const D04_IDS = Array.from({ length: 10 }, (_, i) => 11000 + i);
 export function d04(t: number) {
   const right = t < D04.scan[0] ? 0 : Math.min(10, Math.floor((t - D04.scan[0]) / 200) + 1);
-  const q = p(t, D04.sweep[0], D04.sweep[1]), left = Math.max(0, Math.min(10, Math.floor((q - 0.45) / 0.01) + 1));
+  // 가공한 조건의 칸은 커서가 그 칸을 지날 때 켜진다. 칸 위치는 지면 폭에 따라 다르므로 렌더러가 커서 위치로 센다
+  const q = p(t, D04.sweep[0], D04.sweep[1]);
   return {
-    rightFound: right, rightStopped: t >= D04.stop, leftProgress: q, leftFound: q >= 0.45 ? left : 0, leftDone: t >= D04.sweep[1],
+    rightFound: right, rightStopped: t >= D04.stop, leftProgress: q, leftDone: t >= D04.sweep[1],
     phase: t < D04.scan[0] ? '범위 조건은 루트·브랜치를 거쳐 11000의 리프로 내려갑니다.' : t < D04.stop ? '정렬된 리프를 11009까지 읽습니다.' : t < D04.sweep[0] ? '범위 조건은 11010(범위 밖)에서 멈춥니다.' : t < D04.sweep[1] ? '가공한 조건은 처음부터 끝까지 모든 행에서 함수를 계산합니다.' : '두 결과는 같은 10행입니다. 읽는 범위만 다릅니다.',
   };
 }
@@ -50,11 +54,10 @@ export function d05(t: number) {
 export const D06 = { pick: 800, seek: [1200, 1700], read: 1900, gap: 500, hop: 400, stop: 4500, sweep: [5000, 8000] } as const;
 export const D06_MATCH = [100, 124, 185, 270, 283] as const;
 export function d06(t: number) {
-  const read = D06_MATCH.filter((_, i) => t >= D06.read + i * D06.gap).length, q = p(t, D06.sweep[0], D06.sweep[1]);
-  const pos = [0.08, 0.27, 0.46, 0.63, 0.86], scanFound = pos.filter(x => q >= x).length;
+  const at = (i: number) => D06.read + i * D06.gap, read = D06_MATCH.filter((_, i) => t >= at(i)).length, arrived = D06_MATCH.filter((_, i) => t >= at(i) + D06.hop).length;
   return {
-    picked: t >= D06.pick, read, indexStopped: t >= D06.stop, scanProgress: q, scanFound,
-    phase: t < D06.seek[1] ? '드라이빙 행 ProductID=1을 고르고 드리븐 인덱스에서 1을 찾습니다.' : t < D06.stop ? '인덱스에서 연속된 1 항목 5개를 읽고 각 테이블 행으로 갑니다.' : t < D06.sweep[1] ? '다음 키 2에서 멈춥니다. 인덱스가 없으면 드리븐 행 전체와 비교합니다.' : '두 경우 결과는 같은 5행입니다.',
+    picked: t >= D06.pick, read, arrived, indexStopped: t >= D06.stop, scanProgress: p(t, D06.sweep[0], D06.sweep[1]),
+    phase: t < D06.read ? '드라이빙 행 ProductID=1을 고르고 드리븐 인덱스에서 1을 찾습니다.' : t < D06.stop ? '인덱스에서 연속된 1 항목 5개를 읽고 각 테이블 행으로 갑니다.' : t < D06.sweep[1] ? '다음 키 2에서 멈춥니다. 인덱스가 없으면 드리븐 행 전체와 비교합니다.' : '두 경우 결과는 같은 5행입니다.',
   };
 }
 
@@ -63,7 +66,7 @@ export const D07 = { a: [1000, 2400, 3200, 4000, 4800, 5400], b: [1000, 1800, 26
 export function d07(t: number) {
   return {
     aStage: D07.a.filter(x => t >= x).length, bStage: D07.b.filter(x => t >= x).length,
-    phase: t < D07.b[4] ? 'A는 범위 전체를 먼저 조인하고, B는 salary만 집계·정렬·LIMIT 합니다.' : t < D07.b[6] ? 'B는 10개 id만 employee와 조인합니다.' : '같은 10개 id. 조인에 참여한 행 수가 다릅니다.',
+    phase: t < D07.b[5] ? 'A는 범위 전체를 먼저 조인하고, B는 salary만 집계·정렬·LIMIT 합니다.' : t < D07.b[6] ? 'B는 10개 id만 employee와 조인합니다.' : '같은 10개 id. 조인에 참여한 행 수가 다릅니다.',
   };
 }
 
@@ -86,7 +89,7 @@ export function d09(t: number) {
   return {
     q1Stage: D09.q1.filter(x => t >= x).length, q1Rows: t < D09.rows[0] ? 0 : Math.min(8, Math.floor((t - D09.rows[0]) / 125) + 1),
     q2: t >= D09.q2, q3: t >= D09.q3[1],
-    phase: t < D09.rows[0] ? '1번: 상품별 수량을 합하고 200개 이상만 남겨 내림차순으로 정렬합니다.' : t < D09.q2 ? '1번 결과 72행 중 원본 캡처의 상위 8행입니다.' : t < D09.q3[1] ? '2번(수량)과 3번(금액)은 같은 고객의 순위가 다릅니다.' : 'QUICK-Stop은 수량 3위에서 금액 1위가 됩니다.',
+    phase: t < D09.rows[0] ? '1번: 상품별 수량을 합하고 200개 이상만 남겨 내림차순으로 정렬합니다.' : t < D09.q2 ? '1번 결과 72행 중 원본 캡처의 상위 8행입니다.' : t < D09.q3[0] ? '2번은 고객별 수량 합계 순위입니다.' : t < D09.q3[1] ? '2번(수량)과 3번(금액)은 같은 고객의 순위가 다릅니다.' : 'QUICK-Stop은 수량 3위에서 금액 1위가 됩니다.',
   };
 }
 
@@ -95,17 +98,17 @@ export const S01 = { read: [1000, 1800], low: 1800, structured: 2800, langs: 340
 export function s01(t: number) {
   return {
     read: t >= S01.read[1], low: t >= S01.low, structured: t >= S01.structured, langs: t >= S01.langs, libs: t >= S01.libs, areas: t >= S01.areas, written: t >= S01.write[1], managers: t >= S01.managers,
-    phase: t < S01.low ? 'connector로 여러 저장소의 데이터를 읽습니다.' : t < S01.libs ? 'Low-level API 위에 Structured API(Dataset·DataFrame·SQL)가 있습니다.' : t < S01.write[1] ? '스트리밍·분석·라이브러리가 같은 API 위에서 동작합니다.' : '결과를 다시 저장소에 씁니다. 한 프레임워크 안에서 처리합니다.',
+    phase: t < S01.low ? 'connector로 여러 저장소의 데이터를 읽습니다.' : t < S01.structured ? '읽은 데이터는 Low-level API(RDD·분산 변수) 위에서 다룹니다.' : t < S01.libs ? 'Low-level API 위에 Structured API(Dataset·DataFrame·SQL)가 있습니다.' : t < S01.write[1] ? '스트리밍·분석·라이브러리가 같은 API 위에서 동작합니다.' : '결과를 다시 저장소에 씁니다. 한 프레임워크 안에서 처리합니다.',
   };
 }
 
-/* S02 논리 표 하나 → partition 2 → worker의 executor → action → driver 합계 */
-export const S02 = { split: [1200, 2000], assign: [2400, 3000], action: 4000, count: [4400, 5000], driver: [5600, 6400] } as const;
+/* S02 논리 표 하나 → 논리 partition 2 → action(count) 때 task가 executor에 배정 → partition별 count → driver 합계 */
+export const S02 = { split: [1200, 2000], action: 3000, assign: 3400, count: [3400, 4600], driver: [5200, 6000] } as const;
 export const S02_ROWS: readonly (readonly [number, number, string])[] = [[1, 5101, '2016-01-01'], [2, 5201, '2017-10-10'], [2, 5301, '2018-01-01'], [3, 5102, '2017-01-30'], [3, 5202, '2017-10-30'], [4, 5302, '2017-07-30']];
 export function s02(t: number) {
   return {
-    split: t >= S02.split[1], assigned: t >= S02.assign[1], action: t >= S02.action, counted: t >= S02.count[1], result: t >= S02.driver[1] ? 6 : null,
-    phase: t < S02.split[1] ? '사용자는 DataFrame을 하나의 표처럼 다룹니다.' : t < S02.action ? 'Spark는 행을 partition으로 나눠 executor에 배정합니다. 아직 계산 전입니다.' : t < S02.driver[1] ? 'action에서 각 executor가 자기 partition만 처리합니다.' : 'driver가 3 + 3 = 6을 합칩니다. 논리 표의 6행과 같습니다.',
+    split: t >= S02.split[1], assigned: t >= S02.assign, action: t >= S02.action, counted: t >= S02.count[1], result: t >= S02.driver[1] ? 6 : null,
+    phase: t < S02.split[1] ? '사용자는 DataFrame을 하나의 표처럼 다룹니다.' : t < S02.action ? 'Spark는 행을 논리 partition으로 나눕니다. action 전에는 계산하지 않습니다.' : t < S02.count[1] ? 'count() action에서 task가 executor에 배정되고 각자 자기 partition을 셉니다.' : t < S02.driver[1] ? '각 executor의 count 3이 driver로 갑니다.' : 'driver가 3 + 3 = 6을 합칩니다. 논리 표의 6행과 같습니다.',
   };
 }
 
@@ -114,7 +117,7 @@ export const S04 = { analyzed: [1000, 2600], optimize: [3000, 4600], physical: 5
 export function s04(t: number) {
   return {
     built: t < S04.analyzed[0] ? 0 : Math.min(6, Math.floor((t - S04.analyzed[0]) / 270) + 1), optimizing: t >= S04.optimize[0], optimized: t >= S04.optimize[1], physical: t >= S04.physical, result: t >= S04.result,
-    phase: t < S04.optimize[0] ? 'Analyzed Logical Plan: 7개 컬럼 이름 바꾸기와 date_joined 계산이 있습니다.' : t < S04.optimize[1] ? '최적화: education으로 이어지는 경로만 남기고 Project를 합칩니다.' : t < S04.result ? 'Optimized Logical Plan: Project [Education#18 AS education#238] 하나. Physical Plan 출력은 원문에 없습니다.' : '결과 스키마 education: string, 최대 5행. 결과는 그대로입니다.',
+    phase: t < S04.optimize[0] ? 'Analyzed Logical Plan: 7개 컬럼 이름 바꾸기와 date_joined 계산이 있습니다.' : t < S04.optimize[1] ? '최적화: education으로 이어지는 경로만 남기고 Project를 합칩니다.' : t < S04.physical ? 'Optimized Logical Plan: Project [Education#18 AS education#238] 하나입니다.' : t < S04.result ? 'Physical Plan 출력은 원문에 없습니다. 실행은 RDD로 이어집니다.' : '결과 스키마 education: string, 최대 5행. 결과는 그대로입니다.',
   };
 }
 
@@ -123,7 +126,7 @@ export const S05 = { transfer: [1000, 2600], filter: 2800, push: [3200, 3600], d
 export const S05_AGES = [25, 34, 41, 29, 52, 31, 19, 38] as const;
 export function s05(t: number) {
   return {
-    moved: Math.round(8 * p(t, S05.transfer[0], S05.transfer[1])), filtered: t >= S05.filter, pushed: t >= S05.push[1], dbFiltered: t >= S05.dbFilter, moved2: Math.round(5 * p(t, S05.transfer2[0], S05.transfer2[1])),
+    moved: Math.floor(8 * p(t, S05.transfer[0], S05.transfer[1])), filtered: t >= S05.filter, pushed: t >= S05.push[1], dbFiltered: t >= S05.dbFilter, moved2: Math.floor(5 * p(t, S05.transfer2[0], S05.transfer2[1])),
     phase: t < S05.push[0] ? 'pushdown이 없으면 모든 행이 네트워크를 건넌 뒤 Spark에서 걸러집니다.' : t < S05.transfer2[0] ? 'pushdown: 조건이 저장소 쪽 조회(WHERE age > 30)로 내려갑니다.' : t < S05.transfer2[1] ? '조건을 만족한 행만 건너옵니다.' : '결과는 같은 5행. 건넌 행은 8 대 5입니다.',
   };
 }
@@ -143,37 +146,37 @@ export function s06(t: number) {
 const I02 = '1101a2b0-66bf-4b74-a95d-c2c98492093b', I05 = '6ad28373-149c-4d45-b835-8dfb853db638', I07 = '833771f4-d722-4c80-8967-2f0024885bff', I12 = 'c9edaff4-1f8b-48aa-a092-730b932155fb', G07 = '7b4ef2a7-32e3-4b8e-b243-ec88a5e38708';
 export const dataInfo = [
   { id: 'D01', title: '복제 로그 전달', short: '복제', duration: 9000, final: 6500, steps: [2700, 3900, 6500], source: I02, assets: [],
-    caption: '원문 구성: 비동기(기본) 복제, binlog.000002 @ 683부터, source 1 : replica 1. 역 이름 A → B는 설명용 값이며 binlog에는 SQL 문장이 아니라 행 변경 이벤트가 기록됩니다(8.0 기본 ROW).',
+    caption: '원문 구성: 비동기(기본) 복제, binlog.000002 @ 683부터, source 1 : replica 1. 역 이름 A → B는 설명용 값이며 binlog에는 SQL 문장이 아니라 행 변경 이벤트가 기록됩니다(8.0 기본 ROW). 본문의 ‘준동시성’ 표현과 달리 이 실습 구성은 기본 비동기 복제입니다.',
     notes: ['master는 값을 바꾸고 binlog에 이벤트를 남긴 뒤 replica를 기다리지 않고 커밋 응답합니다.', 'replica는 이벤트를 relay log에 받았지만 아직 A입니다.', 'applier가 적용한 뒤 B. 커밋 응답 뒤 전송 전에 master가 멈추면 replica는 A로 남을 수 있습니다. Slave_IO_Running: Yes / Slave_SQL_Running: Yes.'] },
-  { id: 'D02', title: '읽기/쓰기 라우팅과 복제 지연', short: '라우팅', duration: 9000, final: 6600, steps: [2200, 3800, 6600], source: I02, assets: [],
-    caption: 'ReplicationRoutingDataSource는 트랜잭션 시작 시 readOnly 속성으로 master/slave를 고릅니다(LazyConnectionDataSourceProxy로 첫 SQL에서 결정). 값과 지연은 설명용이며 자동 failover는 없습니다.',
-    notes: ['findLines()처럼 readOnly가 아닌 트랜잭션은 master에서 실행합니다.', '@Transactional(readOnly = true) 조회는 slave로 가며, 적용 전이면 이전 값을 읽습니다.', '적용 뒤 같은 조회는 새 값을 읽습니다. slave가 멈춰도 master로 자동 전환되지 않습니다.'] },
+  { id: 'D02', title: '읽기/쓰기 라우팅과 복제 지연', short: '라우팅', duration: 9600, final: 7200, steps: [1700, 4600, 7200], source: I02, assets: [],
+    caption: 'ReplicationRoutingDataSource는 트랜잭션 시작 시 readOnly 속성으로 master/slave를 고릅니다(LazyConnectionDataSourceProxy로 첫 SQL에서 결정). findLines()는 master에서 조회하며, 값을 바꾸는 쓰기와 값·지연은 설명을 위해 따로 그린 것입니다. 자동 failover는 없습니다.',
+    notes: ['findLines()처럼 readOnly가 아닌 트랜잭션은 master에서 조회합니다.', '쓰기(설명용)로 master가 B가 된 뒤 @Transactional(readOnly = true) 조회는 slave로 가며, 적용 전이면 이전 값 A를 읽습니다.', '적용 뒤 같은 조회는 새 값을 읽습니다. slave가 멈춰도 master로 자동 전환되지 않습니다.'] },
   { id: 'D04', title: '컬럼 가공과 인덱스 스캔', short: '컬럼 가공', duration: 11000, final: 8600, steps: [2000, 4800, 8600], source: G07, assets: [],
     caption: 'SUBSTRING(id, 1, 4) = 1100 AND LENGTH(id) = 5와 id BETWEEN 11000 AND 11009 비교. 행 배치와 길이는 설명용이며 실측 EXPLAIN(type 등)은 원문에 없습니다. 함수 인덱스(8.0.13+)·생성 컬럼 인덱스가 있으면 달라집니다.',
     notes: ['범위 조건은 루트 → 브랜치 → 리프로 내려가 11000에서 시작합니다.', '정렬된 리프를 11009까지 읽고 11010에서 멈춥니다.', '가공한 조건은 모든 행에서 함수를 계산합니다. 결과는 같은 10행입니다.'] },
   { id: 'D05', title: 'covering index와 테이블 왕복', short: 'covering', duration: 9000, final: 6400, steps: [1400, 3700, 6400], source: G07, assets: [],
-    caption: '보조 인덱스 항목에는 키와 PK가 있어, 필요한 열이 모두 있으면 테이블에 가지 않습니다(EXPLAIN Extra: Using index). age·id 값과 항목 수는 설명용입니다.',
+    caption: '보조 인덱스 항목에는 키와 PK가 있어, 필요한 열이 모두 있으면 테이블에 가지 않습니다(MySQL 문서 기준 EXPLAIN Extra는 Using index, 원문에는 EXPLAIN 출력이 없습니다). age·id 값과 항목 수는 설명용입니다.',
     notes: ['보조 인덱스(age)에서 30의 시작점을 찾습니다.', 'id만 필요하면 인덱스 항목에서 바로 반환하고, *가 필요하면 항목마다 테이블 행으로 갑니다.', '같은 id 5개. 테이블 접근은 0회와 5회입니다.'] },
   { id: 'D06', title: '조인 키 인덱스와 드리븐 탐색', short: '인덱스 조인', duration: 11000, final: 8400, steps: [1800, 4800, 8400], source: G07, assets: [`${G07}/24df4219-edca-4d7d-b064-aacdf65ca355.png`],
-    caption: '원본 그림의 Products(드라이빙)와 OrderDetails(드리븐) 값. 드리븐 테이블의 조인 키에 인덱스가 있으면 탐색 1회와 연속 항목으로, 없으면 드리븐 전체 비교로 같은 행을 찾습니다. 조인 순서는 비용으로 정해집니다.',
+    caption: '원본 그림의 Products(드라이빙)와 OrderDetails(드리븐) 값. 드리븐 테이블의 조인 키에 인덱스가 있으면 탐색 1회와 연속 항목으로, 없으면 드리븐 전체 비교로 같은 행을 찾습니다. 조인 순서는 비용으로 정해집니다. 본문의 ‘인덱스가 있는 테이블이 드라이빙’ 설명과 달리, MySQL 문서 기준으로 탐색에 쓰이는 것은 드리븐 테이블의 조인 키 인덱스입니다.',
     notes: ['드라이빙 행 ProductID=1을 고르고 드리븐 인덱스에서 1을 찾습니다.', '연속된 1 항목 5개(100·124·185·270·283)를 읽고 다음 키에서 멈춥니다.', '인덱스가 없으면 드리븐 행 전체와 비교합니다. 결과는 같은 5행입니다.'] },
-  { id: 'D07', title: '모수 줄이기: 먼저 줄이고 조인', short: '선행 필터', duration: 11000, final: 8200, steps: [2600, 5200, 8200], source: G07, assets: [],
+  { id: 'D07', title: '모수 줄이기: 먼저 줄이고 조인', short: '선행 필터', duration: 11000, final: 8200, steps: [2600, 4600, 8200], source: G07, assets: [],
     caption: 'id BETWEEN 10001 AND 50000, GROUP BY id, ORDER BY SUM(annual_income) DESC, LIMIT 150,10. 행 수와 막대 길이는 설명용입니다. 두 결과가 같으려면 salary.id마다 employee 행이 있어야 하고, B는 바깥 ORDER BY가 없으면 출력 순서가 보장되지 않습니다.',
     notes: ['A는 범위의 employee와 salary를 먼저 모두 조인합니다.', 'B는 salary만 집계·정렬·LIMIT으로 10개 id를 정합니다.', 'B는 그 10개만 employee와 조인합니다. 같은 10개 id입니다.'] },
   { id: 'D08', title: 'MySQL 메모리와 연결 한도', short: '메모리·연결', duration: 12000, final: 9000, steps: [3000, 5200, 9000], source: G07, assets: [],
-    caption: 'Global Buffer는 하나, Thread Buffer는 연결·연산마다 잡힙니다. max_connections 4와 크기는 설명용입니다(MySQL 기본 151 + 관리자용 1). 한도를 넘은 연결은 오류를 받으며, back_log는 수락 직전의 짧은 TCP 대기열입니다.',
+    caption: 'Global Buffer는 하나, Thread Buffer는 연결·연산마다 잡힙니다. max_connections 4와 크기는 설명용입니다(MySQL 기본 151 + 관리자용 1). 한도를 넘은 연결은 오류를 받으며, back_log는 수락 직전의 짧은 TCP 대기열입니다. 본문의 ‘back_log에 초과 연결을 보관’ 설명과 달리 MySQL 문서 기준입니다.',
     notes: ['연결마다 스레드와 연결 버퍼가 붙습니다. 전역 버퍼는 시작할 때 한 번 잡힙니다.', '정렬·조인 버퍼는 그 연산이 실행되는 동안만 잡힙니다. 연결 수 × 설정값은 최악 추정입니다.', '한도를 넘은 연결은 Too many connections 오류를 받습니다.'] },
-  { id: 'D09', title: '집계·정렬 정답 읽기', short: 'SQL 정답', duration: 12000, final: 9000, steps: [3000, 6100, 9000], source: I05, assets: [`${I05}/4cfbe91d-7d30-4622-8eeb-8575b79b4ab5.png`, `${I05}/515e7ced-402e-4ad2-ad35-3ae801a58fe5.png`, `${I05}/fd612398-af00-4397-8442-89595827666d.png`],
+  { id: 'D09', title: '집계·정렬 정답 읽기', short: 'SQL 정답', duration: 12000, final: 9000, steps: [3800, 6100, 9000], source: I05, assets: [`${I05}/4cfbe91d-7d30-4622-8eeb-8575b79b4ab5.png`, `${I05}/515e7ced-402e-4ad2-ad35-3ae801a58fe5.png`, `${I05}/fd612398-af00-4397-8442-89595827666d.png`],
     caption: 'W3Schools 실습 결과의 원본 캡처 상위 8행(1번 72행, 2·3번 91행 중). 테이블 이름은 예시 스키마이며 정답 SQL은 원문에 없습니다. 200 경계 근처의 행은 원본에 없습니다.',
     notes: ['1번: 상품별 수량 합계 → 200개 이상 → 수량 내림차순.', '결과 72행 중 상위 8행. 2번은 고객별 수량 합계 순위입니다.', '3번(지출 금액)은 같은 고객의 순위가 다릅니다. QUICK-Stop은 수량 3위, 금액 1위입니다.'] },
   { id: 'S01', title: 'Spark의 저장소·API·작업 영역', short: '구성', duration: 11000, final: 8000, steps: [2400, 4800, 8000], source: I07, assets: [`${I07}/42ec7618-5d7a-427e-bb72-8a1a0e736396.webp`],
     caption: '원문 그림의 저장소·API 층·작업 영역. Dataset은 Scala·Java, DataFrame은 Python·Scala·Java·R에서 쓸 수 있습니다. 작업 영역은 Spark가 한 프레임워크로 묶은 범위이며 데이터 소비처가 아닙니다. Mesos는 원문 표기로 Spark 4.0에서 제거됐습니다.',
     notes: ['connector로 여러 저장소의 데이터를 읽습니다.', 'Low-level API(RDD·분산 변수) 위에 Structured API(Dataset·DataFrame·SQL)가 있습니다.', '스트리밍·분석·라이브러리가 같은 API 위에서 동작하고 결과를 다시 저장소에 씁니다.'] },
-  { id: 'S02', title: 'DataFrame과 partition', short: 'partition', duration: 11000, final: 8200, steps: [1100, 3500, 8200], source: I12, assets: [`${I12}/64e71090-1181-4464-80b0-9fee862e6ff1.webp`],
+  { id: 'S02', title: 'DataFrame과 partition', short: 'partition', duration: 11000, final: 8200, steps: [1100, 2600, 8200], source: I12, assets: [`${I12}/64e71090-1181-4464-80b0-9fee862e6ff1.webp`],
     caption: '원문 Invoice 6행을 원본 그림 기준으로 2개 partition에 나눈 예시입니다. Spark의 파일 읽기 partition은 바이트 크기 기준이며 키 범위 분할은 기본 동작이 아닙니다. partition은 계산 중이거나 cache할 때만 executor 메모리에 있습니다.',
-    notes: ['사용자는 DataFrame을 하나의 표처럼 다룹니다.', 'Spark는 행을 partition으로 나눠 executor에 배정합니다. action 전에는 계산하지 않습니다.', 'count()에서 각 executor가 자기 partition을 세고 driver가 3 + 3 = 6을 합칩니다.'] },
+    notes: ['사용자는 DataFrame을 하나의 표처럼 다룹니다.', 'Spark는 행을 논리 partition으로 나눕니다(그림 기준 예시 분할). action 전에는 executor에서 계산하지 않습니다.', 'count() action에서 task가 executor에 배정되어 각자 자기 partition을 세고, driver가 3 + 3 = 6을 합칩니다.'] },
   { id: 'S04', title: '실행계획 최적화', short: '실행계획', duration: 11000, final: 8000, steps: [2800, 5000, 8000], source: I12, assets: [`${I12}/afd6a78e-6c41-4085-8831-8521a14c2ba0.webp`],
-    caption: '원문 explain("extended") 출력의 Analyzed / Optimized Logical Plan. Physical Plan 부분은 원문에 비어 있어 그리지 않습니다. 최적화 뒤에도 결과 스키마(education: string)와 LIMIT 5는 같습니다.',
+    caption: '원문 explain("extended") 출력의 Analyzed / Optimized Logical Plan(노드 인자는 원문 출력을 줄여 옮기고 …로 표시). Physical Plan 부분은 원문에 비어 있어 그리지 않습니다. 최적화 뒤에도 결과 스키마(education: string)와 LIMIT 5는 같습니다.',
     notes: ['Analyzed Logical Plan: 7개 이름 바꾸기, date_joined 계산, education 선택.', '최적화는 education으로 이어지는 경로만 남기고 세 Project를 합칩니다.', 'Optimized Logical Plan은 Project 하나. 실제로 읽는 열은 Physical Plan의 scan에서 확인합니다.'] },
   { id: 'S05', title: 'predicate pushdown', short: 'pushdown', duration: 10000, final: 7400, steps: [3100, 4200, 7400], source: I12, assets: [`${I12}/53246134-9042-4fa5-9aca-0f35c6fbd5aa.webp`],
     caption: '원문 그림의 JDBC 사례(people, age > 30). 나이 값 8개는 설명용입니다. 실제 Spark JDBC는 SELECT *가 아니라 필요한 열 목록으로 조회합니다. CSV는 열을 덜 파싱할 뿐 읽는 바이트가 줄지 않고, PushedFilters는 실행 뒤 physical plan에서 확인합니다.',

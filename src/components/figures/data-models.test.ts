@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { D04, D06, D09_Q1, D09_Q2, D09_Q3, S05_AGES, d01, d02, d04, d05, d06, d08, d09, dataInfo, s02, s05, s06, type DataFigureId } from './data-models';
+import { D02, D04, D06, D09_Q1, D09_Q2, D09_Q3, S02, S05, S05_AGES, d01, d02, d04, d05, d06, d08, d09, dataInfo, s02, s05, s06, type DataFigureId } from './data-models';
 import { dataRenderers } from './dataCanvas';
-import type { DrawOp, LessonFrame } from './lessonCanvas';
+import { C, type DrawOp, type LessonFrame } from './lessonCanvas';
 
 const ids = dataInfo.map(item => item.id) as DataFigureId[];
 const info = (id: DataFigureId) => dataInfo.find(i => i.id === id)!;
@@ -28,16 +28,17 @@ describe('B05 DB and Spark event models keep the source meaning', () => {
   });
 
   it('D02 routes by readOnly and reads the old value before replication applies', () => {
-    expect([d02(1400).route, d02(1600).route]).toEqual([null, 'master']);
-    expect(d02(3000).route).toBe('slave');
-    expect([d02(3400).read1, d02(3400).replicaValue]).toEqual(['A', 'A']);
-    expect([d02(6000).read2, d02(6000).masterValue]).toEqual(['B', 'B']);
+    expect([d02(D02.lines[1] - 1).route, d02(D02.lines[1]).route, d02(D02.write[1]).route]).toEqual([null, 'master', 'master']);
+    expect(d02(D02.read1[1]).route).toBe('slave');
+    expect([d02(D02.read1[2]).read1, d02(D02.read1[2]).replicaValue]).toEqual(['A', 'A']);
+    expect([d02(D02.read2[2]).read2, d02(D02.read2[2]).masterValue]).toEqual(['B', 'B']);
   });
 
   it('D04 stops the range scan at 11010 while the function condition reads every row', () => {
     const stop = d04(D04.stop);
     expect([stop.rightFound, stop.rightStopped, stop.leftDone]).toEqual([10, true, false]);
-    expect(d04(D04.sweep[1])).toMatchObject({ leftFound: 10, leftDone: true });
+    expect(d04(D04.sweep[1]).leftDone).toBe(true);
+    expect(texts(dataRenderers.D04(284, D04.sweep[1])).filter(o => o.text === '10/10')).toHaveLength(2);
   });
 
   it('D05 returns the same five ids with zero or five table visits', () => {
@@ -120,16 +121,93 @@ describe('B05 scenes stay readable at every article width', () => {
 
   it('draws settled scenes at every static step: nothing moves or fades 60 ms later', () => {
     const issues: string[] = [];
-    for (const item of dataInfo) for (const w of [650, 284]) for (const t of [...item.steps, item.final]) {
+    for (const item of dataInfo) for (const w of [...ARTICLE_WIDTHS, 560]) for (const t of [...item.steps, item.final]) {
       if (JSON.stringify(dataRenderers[item.id](w, t)) !== JSON.stringify(dataRenderers[item.id](w, t + 60))) issues.push(`${item.id} ${w} ${t}`);
     }
     expect(issues).toEqual([]);
   });
 
   it('keeps the frame height fixed through the loop so the article does not jump', () => {
-    for (const item of dataInfo) for (const w of [650, 284]) {
+    for (const item of dataInfo) for (const w of [...ARTICLE_WIDTHS, 560]) {
       const heights = new Set(loop(item.id, 100).map(t => dataRenderers[item.id](w, t).height));
       expect([...heights], `${item.id} ${w}`).toHaveLength(1);
     }
+  });
+});
+
+describe('B05 review fixes keep the source meaning and the event timing', () => {
+  const textOp = (f: LessonFrame, s: string) => texts(f).find(o => o.text === s);
+  const stepStatus = (id: DataFigureId, i: number) => dataRenderers[id](650, info(id).steps[i]).status;
+
+  it('D02 reads with findLines() on master and changes the value only by a separate illustrative write', () => {
+    expect(d02(D02.lines[2]).masterValue).toBe('A');
+    expect(d02(D02.write[2]).masterValue).toBe('B');
+    const f = dataRenderers.D02(650, info('D02').final);
+    expect(textOp(f, 'readOnly 아님')).toBeTruthy();
+    expect(textOp(f, '쓰기 (설명용)')).toBeTruthy();
+    const ts = texts(f).map(o => o.text);
+    expect(ts[ts.indexOf('findLines()') + 1]).toBe('readOnly 아님');
+  });
+
+  it('D06 colours a table row only when its dot arrives', () => {
+    const t = D06.read + D06.hop / 2;
+    expect([d06(t).read, d06(t).arrived]).toEqual([1, 0]);
+    expect(textOp(dataRenderers.D06(650, t), '1 · 100')!.color).not.toBe(C.greenText);
+    expect(textOp(dataRenderers.D06(650, D06.read + D06.hop), '1 · 100')!.color).toBe(C.greenText);
+  });
+
+  it('S05 counts a row as moved only when its token reaches Spark', () => {
+    const one = (S05.transfer[1] - S05.transfer[0]) / 8;
+    expect(s05(S05.transfer[0] + one / 2).moved).toBe(0);
+    expect(s05(S05.transfer[0] + one).moved).toBe(1);
+    const one2 = (S05.transfer2[1] - S05.transfer2[0]) / 5;
+    expect(s05(S05.transfer2[0] + one2 / 2).moved2).toBe(0);
+  });
+
+  it('D04 lights a row of the function lane only after the cursor passes it', () => {
+    // 그리기 도구는 사각형도 path로 내보낸다: 커서는 주황 삼각형, 켜진 칸은 주황 바탕의 작은 path
+    const xs = (d: string) => [...d.matchAll(/[MLH]([\d.-]+)/g)].map(m => Number(m[1]));
+    for (const t of loop('D04', 50)) {
+      const f = dataRenderers.D04(650, t), paths = f.ops.filter((o): o is Extract<DrawOp, { type: 'path' }> => o.type === 'path');
+      const cursor = paths.find(o => o.fill === C.orange && /^M[\d.-]+ [\d.-]+L[\d.-]+ [\d.-]+L[\d.-]+ [\d.-]+Z$/.test(o.d));
+      const lit = paths.filter(o => o.fill === C.orangeTint && Math.max(...xs(o.d)) - Math.min(...xs(o.d)) < 40);
+      if (!cursor) { expect(lit, `${t}`).toHaveLength(0); continue; }
+      const tip = xs(cursor.d)[1];
+      for (const r of lit) expect((Math.max(...xs(r.d)) + Math.min(...xs(r.d))) / 2, `${t}`).toBeLessThanOrEqual(tip + 0.5);
+    }
+  });
+
+  it('S02 assigns partitions to executors only at the action', () => {
+    for (const t of loop('S02')) if (s02(t).assigned) expect(s02(t).action, `${t}`).toBe(true);
+    expect(said(dataRenderers.S02(650, info('S02').steps[1]))).toContain('논리');
+    expect(S02.action).toBeLessThanOrEqual(S02.assign);
+  });
+
+  it('keeps each static step status and note in line with what the scene draws', () => {
+    expect(stepStatus('D06', 0)).not.toContain('읽고');
+    expect(textOp(dataRenderers.D07(650, info('D07').steps[1]), '10 id ⋈ employee')!.color).toBe(C.muted);
+    expect(textOp(dataRenderers.D09(650, info('D09').steps[0]), '수량 내림차순')!.color).toBe(C.blueText);
+    expect(stepStatus('D09', 1)).not.toContain('3번');
+    expect(stepStatus('S01', 0)).not.toContain('Structured');
+    expect(stepStatus('S04', 1)).not.toContain('Physical');
+  });
+
+  it('keeps every dot inside the figure', () => {
+    const issues = new Set<string>();
+    for (const item of dataInfo) for (const w of ARTICLE_WIDTHS) for (let t = 0; t <= item.duration; t += 100) for (const o of dataRenderers[item.id](w, t).ops) {
+      if (o.type === 'circle' && (o.x - o.r < -1 || o.x + o.r > w + 1)) issues.add(`${item.id} ${w}`);
+    }
+    expect([...issues]).toEqual([]);
+  });
+
+  it('labels illustrative values and abbreviated source output as such', () => {
+    const all = (id: DataFigureId) => said(dataRenderers[id](650, info(id).final)) + ' ' + info(id).caption;
+    expect(all('D05')).not.toMatch(/\(EXPLAIN Extra: Using index\)/);
+    expect(all('D04') + all('D06') + all('D08')).toBeTruthy();
+    expect(all('S04')).not.toContain('ID→id');
+    expect(info('S04').caption).toContain('줄여');
+    expect(info('D06').caption).toContain('드라이빙');
+    expect(info('D08').caption).toContain('back_log');
+    expect(all('S06')).toContain('P2 재계산');
   });
 });

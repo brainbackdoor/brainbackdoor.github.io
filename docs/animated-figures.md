@@ -1440,7 +1440,7 @@ rAF 콜백 시간(렌더러 + Canvas 그리기의 JS 실행, GPU 래스터는 �
 
 ## 26. R06 2단계 — B05 production 이식과 본문 적용 (2026-10-15)
 
-**상태: 구현·본문 적용·검수 완료, worktree 브랜치 커밋.** main 병합·배포는 하지 않았다. 운영 도해 총계는 registry 기준 52종(기존 39 + B05 13)이다.
+**상태: 구현·본문 적용·검수·배포 완료(2026-10-15, main `28da30c`).** 운영 도해 총계는 registry 기준 52종(기존 39 + B05 13)이다.
 
 ### 이식
 
@@ -1538,3 +1538,12 @@ rAF 콜백 시간(렌더러 + Canvas 그리기의 JS 실행, GPU 래스터는 �
 - Canvas 완료 장면과 정적 SVG 장치 픽셀 대조:
   - 1280: 12종 차이 0, D09만 5픽셀(0.01%)
   - 390: 13종 차이 0
+
+### 배포 (2026-10-15)
+
+- **병합과 push:** 작업 브랜치를 main에 fast-forward 병합했다(25d9860 → `28da30c`). 병합 전에 기본 checkout의 미커밋 문서 사본 2개를 되돌렸다. 사본은 브랜치와 바이트가 같은 것을 확인했고, `.claude/launch.json` 로컬 설정은 건드리지 않았다. 병합된 main에서 `pnpm test` 243, build 332, 원문 대조 0건을 다시 확인하고 push했다.
+- **워크플로:** GitHub Actions "Deploy to GitHub Pages" 실행 38691578820이 headSha `28da30c`에서 build·deploy 모두 success였다.
+- **HTTPS 확인**(https://www.brainbackdoor.com)
+  - B05가 들어간 5편이 모두 200이고 13종 ID가 전부 있다.
+  - 리뷰 반영 문구(D02 'readOnly 아님')가 반영됐다.
+  - headless Chrome으로 도해가 있는 글 19편과 홈을 1280·390에서 봤다. 108/108이 Canvas 준비, 자동 재생, 원본 블록 앵커 존재, 컨트롤 없음, 가로 넘침 0이었다. 고유 도해 ID는 53개(52종 + TCP)다.

@@ -277,7 +277,8 @@ describe('deployed figures v2 (R04)', () => {
   it('keeps every shape inside the figure at every article width', () => {
     const box = (d: string) => { let x = 0; const xs: number[] = []; for (const [, cmd, args] of d.matchAll(/([MLHVAZ])([^MLHVAZ]*)/g)) { const n = args.trim().split(/[\s,]+/).filter(Boolean).map(Number); if (cmd === 'H') x = n[n.length - 1]; else if (cmd !== 'V' && cmd !== 'Z') x = n[n.length - 2]; if (cmd !== 'Z') xs.push(x); } return [Math.min(...xs), Math.max(...xs)]; };
     const issues = new Set<string>();
-    for (const item of items) for (const w of ARTICLE_WIDTHS) for (const t of loop(item.id, 250)) for (const o of renderers[item.id](w, t).ops) {
+    const all = [...items.map(i => [renderers[i.id], i] as const), ...systemInfo.map(i => [systemRenderers[i.id] as (w: number, t: number) => LessonFrame, i] as const)];
+    for (const [r, item] of all) for (const w of ARTICLE_WIDTHS) for (let t = 0; t <= item.duration; t += 100) for (const o of r(w, t).ops) {
       if (o.type !== 'path') continue;
       const [x1, x2] = box(o.d);
       if (x1 < -1 || x2 > w + 1) issues.add(`${item.id} ${w}`);

@@ -188,7 +188,7 @@ export const systemInfo = [
     "notes": [
       "&는 백그라운드 실행이며 nohup 자체가 아닙니다.",
       "세션 종료 후 SIGHUP이 전달되는 경우 일반 실행은 종료될 수 있습니다.",
-      "nohup은 SIGHUP을 무시하고 stdout/stderr를 로그로 보냅니다. 자동 재시작이나 SIGKILL 보호는 아닙니다."
+      "nohup은 SIGHUP을 무시하게 할 뿐이고, 로그 파일로 보내는 것은 1>·2>&1 리다이렉션입니다. 자동 재시작이나 SIGKILL 보호는 아닙니다."
     ]
   },
   {

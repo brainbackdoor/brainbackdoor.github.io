@@ -514,7 +514,7 @@ function copiesV2(w: number, t: number): LessonFrame {
 
   // 행 라벨: 곡선 위에 바탕을 깔아 읽히게 한다
   for (const l of labels) l.lines.forEach((line, i) => {
-    g.rect(-2, l.y + i * 19 - 13, textW(line, 12) + 6, 18, { r: 3, fill: C.paper });
+    g.rect(0, l.y + i * 19 - 13, textW(line, 12) + 4, 18, { r: 3, fill: C.paper });
     g.text(0, l.y + i * 19, line, { color: C.muted });
   });
   // List 슬롯과 뷰
@@ -559,7 +559,8 @@ function copiesV2(w: number, t: number): LessonFrame {
 
   // Item 객체
   const renamedRing = renamed ? 1 - span(t, T08.rename + 200, T08.rename + 900) : 0;
-  if (renamedRing > 0) g.rect(ix - 5, card.A0 - 31, itemW + 10, 62, { r: 11, stroke: C.orange, lw: 2, alpha: renamedRing });
+  // 좁은 폭에서는 카드가 오른쪽 끝에 붙으므로 고리도 그림 안에서 멈춘다
+  if (renamedRing > 0) g.rect(ix - 5, card.A0 - 31, Math.min(itemW + 10, w - ix + 4), 62, { r: 11, stroke: C.orange, lw: 2, alpha: renamedRing });
   itemCard(g, ix, card.A0, itemW, 'A0', s.view.names[0], { stroke: renamed ? C.orange : C.ink, lw: 1.8, nameColor: renamed ? C.orangeText : C.ink });
   itemCard(g, ix, card.A1, itemW, 'A1', s.deep.names[0], { stroke: C.ink });
   if (s.view.itemIds.length > 1) itemCard(g, ix, card.B0, itemW, 'B0', s.view.names[1], { alpha: ease.out(span(t, T08.addB, T08.addB + 200)) });
@@ -711,7 +712,7 @@ function cliV2(w: number, t: number): LessonFrame {
   }
   const imgW = Math.min(colW - 24, 120), imgAt = { x: storeX + 12, y: inY + 34 };
   if (t >= C02.image[0]) {
-    const q = ease.inOut(span(t, C02.image[0], C02.image[1])), from = { x: regB.x - imgW / 2, y: regB.y - 10 }, p = lerpPt(from, imgAt, q);
+    const q = ease.inOut(span(t, C02.image[0], C02.image[1])), from = { x: Math.min(regB.x - imgW / 2, w - imgW - 2), y: regB.y - 10 }, p = lerpPt(from, imgAt, q);
     layerGlyph(g, p.x, p.y, imgW, { fill: s.imageAvailable ? C.slab : C.blueTint, stroke: s.imageAvailable ? C.ink : C.blue });
     if (s.imageAvailable) g.text(imgAt.x, imgAt.y + 48, 'nginx', { size: 12, mono: true });
   }
@@ -1115,8 +1116,9 @@ function threadStatesV2(w: number, t: number): LessonFrame {
   const pos = narrow
     ? { NEW: [0.1, r1], RUNNABLE: [0.5, r1], TERMINATED: [0.83, r1], BLOCKED: [0.14, r2], WAITING: [0.44, r2], TIMED_WAITING: [0.79, r2] }
     : { NEW: [0.08, r1], RUNNABLE: [0.5, r1], TERMINATED: [0.9, r1], BLOCKED: [0.14, r2], WAITING: [0.5, r2], TIMED_WAITING: [0.85, r2] };
-  const P: Record<string, Pt> = Object.fromEntries(Object.entries(pos).map(([k, [fx, y]]) => [k, { x: fx * w, y }]));
   const nodeW = (k: string) => textW(k, 12, true) + 18;
+  // 노드가 그림 밖으로 나가지 않게 반폭만큼 안쪽에 둔다(좁은 폭의 TIMED_WAITING)
+  const P: Record<string, Pt> = Object.fromEntries(Object.entries(pos).map(([k, [fx, y]]) => [k, { x: Math.min(Math.max(fx * w, nodeW(k) / 2 + 1), w - nodeW(k) / 2 - 1), y }]));
   const offset = (a: string, b: string) => (a === 'BLOCKED' && b === 'RUNNABLE') ? 7 : (a === 'RUNNABLE' && b === 'BLOCKED') ? -7 : (a === 'TIMED_WAITING') ? 7 : (b === 'TIMED_WAITING') ? -7 : 0;
   const ends = (a: string, b: string) => {
     const A = P[a], B = P[b], ang = Math.atan2(B.y - A.y, B.x - A.x), off = offset(a, b), nx = -Math.sin(ang) * off, ny = Math.cos(ang) * off;

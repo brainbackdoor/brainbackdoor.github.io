@@ -767,8 +767,8 @@
       "sourceType": "text",
       "sourceTextSha256": "68b042f92160578f1afbca1203226a59aa95e0a6aca4cd74b42b2b5d7d682892",
       "oldText": "호스트의 볼륨으로 덮어씌워집니다.",
-      "newText": "호스트 디렉터리에 가려져 보이지 않습니다. 이미지 안의 파일이 지워지는 것은 아니며, 비어 있는 볼륨을 처음 연결할 때는 기본적으로 반대로 컨테이너의 기존 파일이 볼륨으로 복사됩니다(volume-nocopy로 끌 수 있습니다).",
-      "reason": "bind mount는 기존 파일을 가림(bind mounts 문서). 빈 볼륨으로의 복사는 기본 동작이며 volume-nocopy로 끔(volumes 문서 https://docs.docker.com/engine/storage/volumes/)",
+      "newText": "호스트 디렉터리에 가려져 보이지 않습니다. 이미지 안의 파일이 지워지는 것은 아닙니다. 호스트 디렉터리를 연결하는 bind mount에서는 파일이 복사되지 않으며, 비어 있는 volume을 처음 연결할 때만 기본적으로 컨테이너의 기존 파일이 볼륨으로 복사됩니다(-v의 nocopy, --mount의 volume-nocopy로 끌 수 있습니다).",
+      "reason": "bind mount는 기존 파일을 가리고 복사하지 않음(bind mounts 문서). 빈 volume으로의 복사는 volume에만 해당하는 기본 동작이며 -v의 nocopy·--mount의 volume-nocopy로 끔(volumes 문서 https://docs.docker.com/engine/storage/volumes/). 바로 아래 -v 예제가 bind mount이므로 대상을 구분",
       "reference": "https://docs.docker.com/engine/storage/bind-mounts/"
     },
     {

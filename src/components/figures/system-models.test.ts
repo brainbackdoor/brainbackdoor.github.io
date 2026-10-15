@@ -180,6 +180,10 @@ describe('B04 drawings show the model values', () => {
     expect(caption('C05')).not.toContain('가이드의');
     expect(caption('C05')).toContain('「도커 컨테이너 실행해보기」의 9000:8080');
     expect(caption('C07')).toMatch(/^RUN은 이미지를 빌드할 때, CMD는 컨테이너를 시작할 때 실행됩니다\./);
+    // 단계 설명과 완료 장면 설명(sr-only)도 같은 주체를 말해야 한다
+    const c09 = systemInfo.find(i => i.id === 'C09')!;
+    expect(c09.notes.join(' ')).not.toMatch(/nohup은[^.]*로그로 보냅니다/);
+    expect(c09.notes[2]).toContain('1>·2>&1 리다이렉션');
     for (const w of ARTICLE_WIDTHS) {
       const said = texts(systemRenderers.C09(w, systemInfo.find(i => i.id === 'C09')!.final)).map(o => o.text).join(' ');
       expect(said).not.toContain('출력을 파일로 보낼');

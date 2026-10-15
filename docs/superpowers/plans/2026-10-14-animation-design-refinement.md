@@ -119,12 +119,12 @@
 
 **입력/출력:** R03/R04 개선 구현 → 확인 가능한 화면·검증·전체 변경 리뷰·커밋/배포 기록.
 
-- [ ] 실패→통과 기록과 `pnpm test`, `python3 -m unittest discover -s scripts/migration -p 'test_*.py'`, `pnpm check`, `pnpm build`, `python3 scripts/migration/verify.py`를 실행한다. 기존 누락으로 기록된6 source/6 asset와 새 누락을 구분한다.
-- [ ] desktop/390/320에서 준비·핵심 사건·완료·반복 장면을 확인한다. 가로 넘침/라벨 잘림·겹침0, 필수 글자 축소 없음, 캡션 중복과 여러 도해 연속 배치의 질감을 기록한다.
-- [ ] no-JS·reduced-motion·Canvas 초기/중간 실패를 실제로 검수한다. T04의 읽기/덮어쓰기, T05의 실행/대기 차이, T06의 carrier/DB 별도 소유, T08의 A0 공유가 정적 장면에도 남는지 확인한다.
-- [ ] 표시/숨김·resize·폰트/DPR1/2·unmount·복수 인스턴스에서 시간과 listener/RAF가 독립적이고 정리되는지 검사한다.
-- [ ] 여러 도해가 보이는 실제 글에서 프레임 그리기 비용·스크롤 반응을 측정한다. 그리기 중 Canvas 크기 설정/폰트·줄바꿈 반복/불필요한 React 갱신이 있으면 근거가 확인된 부분만 수정한다. 측정 없이 60fps 또는 5ms 이하라고 선언하지 않는다.
-- [ ] 전체 변경을 한 번 독립 리뷰하고 중요 문제를 수정·재검증한다. 디자인 결정, 사건/원문 검증, 브라우저 증거, 미해결 항목을 함께 전달한다.
+- [x] 실패→통과 기록과 `pnpm test`, `python3 -m unittest discover -s scripts/migration -p 'test_*.py'`, `pnpm check`, `pnpm build`, `python3 scripts/migration/verify.py`를 실행한다. 기존 누락으로 기록된6 source/6 asset와 새 누락을 구분한다.
+- [x] desktop/390/320에서 준비·핵심 사건·완료·반복 장면을 확인한다. 가로 넘침/라벨 잘림·겹침0, 필수 글자 축소 없음, 캡션 중복과 여러 도해 연속 배치의 질감을 기록한다.
+- [x] no-JS·reduced-motion·Canvas 초기/중간 실패를 실제로 검수한다. T04의 읽기/덮어쓰기, T05의 실행/대기 차이, T06의 carrier/DB 별도 소유, T08의 A0 공유가 정적 장면에도 남는지 확인한다.
+- [x] 표시/숨김·resize·폰트/DPR1/2·unmount·복수 인스턴스에서 시간과 listener/RAF가 독립적이고 정리되는지 검사한다.
+- [x] 여러 도해가 보이는 실제 글에서 프레임 그리기 비용·스크롤 반응을 측정한다. 그리기 중 Canvas 크기 설정/폰트·줄바꿈 반복/불필요한 React 갱신이 있으면 근거가 확인된 부분만 수정한다. 측정 없이 60fps 또는 5ms 이하라고 선언하지 않는다.
+- [x] 전체 변경을 한 번 독립 리뷰하고 중요 문제를 수정·재검증한다. 디자인 결정, 사건/원문 검증, 브라우저 증거, 미해결 항목을 함께 전달한다.
 - [ ] 승인된 기존 commit/main merge/push/GitHub Pages 절차를 사용한다. 배포 SHA의 workflow 성공과 실제 HTTPS 대상 페이지·원본 연결·홈을 확인하고 기록한다.
 
 **완료 기준:** 코드 테스트·원문 대조·디자인 검수·실제 배포 증거를 각각 확인한다. 현재 문서 작업의 완료를 개선 구현 완료라고 보고하지 않는다.

@@ -53,6 +53,8 @@ import { systemRenderers } from './systemCanvas';
 import { lessonInfo } from './lesson-models';
 import { networkInfo } from './network-models';
 import { systemInfo } from './system-models';
+import { dataInfo } from './data-models';
+import { dataRenderers } from './dataCanvas';
 function luminance(hex: string) {
  if(hex.length===4)hex='#'+hex.slice(1).split('').map(c=>c+c).join('');
  const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);
@@ -67,7 +69,7 @@ function pathBox(d: string) {
  return {x:Math.min(...xs),y:Math.min(...ys),w:Math.max(...xs)-Math.min(...xs),h:Math.max(...ys)-Math.min(...ys)};
 }
 test('small drawing labels maintain readable contrast throughout each scenario',()=>{
- const all=[...lessonInfo.map(i=>[lessonRenderers[i.id],i] as const),...networkInfo.map(i=>[networkRenderers[i.id],i] as const),...systemInfo.map(i=>[systemRenderers[i.id],i] as const)];
+ const all=[...lessonInfo.map(i=>[lessonRenderers[i.id],i] as const),...networkInfo.map(i=>[networkRenderers[i.id],i] as const),...systemInfo.map(i=>[systemRenderers[i.id],i] as const),...dataInfo.map(i=>[dataRenderers[i.id],i] as const)];
  const mix=(fg: string,bg: string,a: number)=>{const h=(c: string)=>c.length===4?'#'+c.slice(1).split('').map(x=>x+x).join(''):c;const f=h(fg),b=h(bg);return '#'+[1,3,5].map(i=>Math.round(parseInt(f.slice(i,i+2),16)*a+parseInt(b.slice(i,i+2),16)*(1-a)).toString(16).padStart(2,'0')).join('');};
  for(const [draw,item] of all)for(const width of [650,284,259])for(const time of [0,...item.steps,item.final,1700,3500,4700,6500]) {
   // 정적 장면(단계·완료)에서는 흐린 글자도 투명도를 섞은 실제 색으로 읽는다. 재생 중 다른 시각은 페이드 중인 글자를 제외한다

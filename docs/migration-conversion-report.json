@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-15T02:11:45.528409+00:00",
+  "generatedAt": "2026-10-15T04:00:40.670769+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -12292,6 +12292,51 @@
       ],
       "figures": [
         {
+          "figureId": "S02",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "64e71090-1181-4464-80b0-9fee862e6ff1",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Partition 1",
+            "Partition 2",
+            "3 + 3 = 6"
+          ],
+          "evidenceBlockIds": [
+            "64e71090-1181-4464-80b0-9fee862e6ff1"
+          ]
+        },
+        {
+          "figureId": "S04",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "afd6a78e-6c41-4085-8831-8521a14c2ba0",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Education#18 AS education#238",
+            "GlobalLimit 5",
+            "원문 출력 없음"
+          ],
+          "evidenceBlockIds": [
+            "afd6a78e-6c41-4085-8831-8521a14c2ba0"
+          ]
+        },
+        {
+          "figureId": "S05",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "53246134-9042-4fa5-9aca-0f35c6fbd5aa",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "WHERE age > 30",
+            "건넌 행 8",
+            "건넌 행 5"
+          ],
+          "evidenceBlockIds": [
+            "53246134-9042-4fa5-9aca-0f35c6fbd5aa"
+          ]
+        },
+        {
           "figureId": "S03",
           "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
           "sourceBlockId": "4b8dbb7f-b227-4a7f-a6ec-fc4b95093468",
@@ -12988,6 +13033,36 @@
           "type": "text",
           "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
           "navigationGroupId": "ae4cc0cb-be69-47d6-8514-92a1646995ab"
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "S01",
+          "sourceId": "833771f4-d722-4c80-8967-2f0024885bff",
+          "sourceBlockId": "42ec7618-5d7a-427e-bb72-8a1a0e736396",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Structured APIs",
+            "Low-level APIs",
+            "Kubernetes"
+          ],
+          "evidenceBlockIds": [
+            "42ec7618-5d7a-427e-bb72-8a1a0e736396"
+          ]
+        },
+        {
+          "figureId": "S06",
+          "sourceId": "833771f4-d722-4c80-8967-2f0024885bff",
+          "sourceBlockId": "9d689001-653b-4935-9e98-30ba56a1e0d7",
+          "sourceType": "text",
+          "mode": "after",
+          "requiredText": [
+            "executor 메모리",
+            "cache() 표시",
+            "lineage"
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "왜 Spark를 써야할까 ",
@@ -23254,12 +23329,40 @@
         {
           "sourceBlockId": "e269ee70-cb46-4274-9f03-1141c39616a5",
           "type": "code",
-          "reason": "The original public renderer hides this initial Oopy YAML configuration block."
+          "reason": "Initial Oopy presentation and SEO configuration is excluded from the article body."
         },
         {
           "sourceBlockId": "afc6d748-4f4f-4b37-8483-b2879e2da774",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "D01",
+          "sourceId": "1101a2b0-66bf-4b74-a95d-c2c98492093b",
+          "sourceBlockId": "74d5d457-f374-4790-aad4-0eb12bbde92a",
+          "sourceType": "bulleted_list",
+          "mode": "after",
+          "requiredText": [
+            "binlog.000002",
+            "복제를 기다리지 않음",
+            "비동기 복제(기본)"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "D02",
+          "sourceId": "1101a2b0-66bf-4b74-a95d-c2c98492093b",
+          "sourceBlockId": "7c88c52e-6252-40e1-a848-3c3c291ffc3a",
+          "sourceType": "bulleted_list",
+          "mode": "after",
+          "requiredText": [
+            "readOnly",
+            "1회차: A · 적용 전",
+            "2회차: B · 적용 후"
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "MySQL Replication 간단히 구성해보기",
@@ -23697,6 +23800,25 @@
       "unresolvedLinks": [],
       "warnings": [],
       "excluded": [],
+      "figures": [
+        {
+          "figureId": "D09",
+          "sourceId": "6ad28373-149c-4d45-b835-8dfb853db638",
+          "sourceBlockId": "23a021ac-e2c8-4cc8-9bab-d06ee873e960",
+          "sourceType": "sub_sub_header",
+          "mode": "after",
+          "requiredText": [
+            "Camembert Pierrot",
+            "QUICK-Stop",
+            "122199.74"
+          ],
+          "evidenceBlockIds": [
+            "4cfbe91d-7d30-4622-8eeb-8575b79b4ab5",
+            "515e7ced-402e-4ad2-ad35-3ae801a58fe5",
+            "fd612398-af00-4397-8442-89595827666d"
+          ]
+        }
+      ],
       "title": "SQL, 이 정도는 알아야지 😎",
       "pubDate": "2023-11-09",
       "pubDateEvidence": {
@@ -24534,6 +24656,32 @@
       ],
       "figures": [
         {
+          "figureId": "D04",
+          "sourceId": "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
+          "sourceBlockId": "ca56aec3-a244-4589-9b68-5bd5d011fdd8",
+          "sourceType": "code",
+          "mode": "after",
+          "requiredText": [
+            "WHERE SUBSTRING(id, 1, 4) = 1100 AND LENGTH(id) = 5",
+            "WHERE id BETWEEN 11000 AND 11009",
+            "두 결과 모두 10행"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "D05",
+          "sourceId": "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
+          "sourceBlockId": "2096a345-cf2d-4bef-b6e7-7782cdb855ac",
+          "sourceType": "text",
+          "mode": "after",
+          "requiredText": [
+            "보조 인덱스 (age, id)",
+            "테이블 접근 0회",
+            "테이블 접근 5회"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
           "figureId": "D03",
           "sourceId": "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
           "sourceBlockId": "842a3914-5191-4916-9ab9-2502141b1dc2",
@@ -24551,6 +24699,47 @@
           "evidenceBlockIds": [
             "842a3914-5191-4916-9ab9-2502141b1dc2"
           ]
+        },
+        {
+          "figureId": "D06",
+          "sourceId": "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
+          "sourceBlockId": "24df4219-edca-4d7d-b064-aacdf65ca355",
+          "sourceType": "image",
+          "mode": "replace",
+          "requiredText": [
+            "Chais",
+            "키 2에서 멈춤",
+            "두 경우 결과는 같은 5행"
+          ],
+          "evidenceBlockIds": [
+            "24df4219-edca-4d7d-b064-aacdf65ca355"
+          ]
+        },
+        {
+          "figureId": "D07",
+          "sourceId": "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
+          "sourceBlockId": "e15af25e-95e5-4a2c-ae00-4fb1bbc61d7d",
+          "sourceType": "code",
+          "mode": "after",
+          "requiredText": [
+            "LIMIT 150,10",
+            "10 id ⋈ employee",
+            "바깥 ORDER BY"
+          ],
+          "evidenceBlockIds": []
+        },
+        {
+          "figureId": "D08",
+          "sourceId": "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
+          "sourceBlockId": "832a5ee5-b95d-45f9-b0d4-9aeab9022968",
+          "sourceType": "text",
+          "mode": "after",
+          "requiredText": [
+            "Global Buffer",
+            "max_connections = 4 (설명용)",
+            "Too many connections"
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "조회 성능 개선하기 미션 가이드",

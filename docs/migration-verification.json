@@ -407,7 +407,7 @@
       "targetPath": "/posts/c9edaff4-1f8b-48aa-a092-730b932155fb",
       "checkedTextFields": 32,
       "renderedImages": 12,
-      "renderedFigures": 1,
+      "renderedFigures": 4,
       "excludedBlocks": [
         "177e0dc0-1a78-46a4-a1d1-05b9b91e00cc"
       ],
@@ -419,7 +419,7 @@
       "targetPath": "/posts/833771f4-d722-4c80-8967-2f0024885bff",
       "checkedTextFields": 16,
       "renderedImages": 10,
-      "renderedFigures": 0,
+      "renderedFigures": 2,
       "excludedBlocks": [
         "ac264110-59cb-47d5-a366-658949bf4835",
         "1f893836-041f-44bc-943e-520cb5690abf",
@@ -733,7 +733,7 @@
       "targetPath": "/posts/1101a2b0-66bf-4b74-a95d-c2c98492093b",
       "checkedTextFields": 16,
       "renderedImages": 0,
-      "renderedFigures": 0,
+      "renderedFigures": 2,
       "excludedBlocks": [
         "e269ee70-cb46-4274-9f03-1141c39616a5"
       ],
@@ -745,7 +745,7 @@
       "targetPath": "/posts/6ad28373-149c-4d45-b835-8dfb853db638",
       "checkedTextFields": 12,
       "renderedImages": 4,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [],
       "issues": []
     },
@@ -755,7 +755,7 @@
       "targetPath": "/posts/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
       "checkedTextFields": 72,
       "renderedImages": 3,
-      "renderedFigures": 1,
+      "renderedFigures": 6,
       "excludedBlocks": [
         "dbdda8c2-a712-4b33-b69b-5f341e6dfb08"
       ],
@@ -1008,7 +1008,7 @@
   "summary": {
     "pages": 58,
     "textFields": 1806,
-    "figures": 39,
+    "figures": 52,
     "pagesWithIssues": 0,
     "brokenInternalLinks": 0,
     "unavailableSourcePages": 6,

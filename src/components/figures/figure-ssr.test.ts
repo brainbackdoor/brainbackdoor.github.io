@@ -5,6 +5,7 @@ import TcpRecoveryFigure from './TcpRecoveryFigure';
 import LessonFigure from './LessonFigure';
 import registry from '../../../docs/migration-figures.json';
 import type { SystemFigureId } from './system-models';
+import type { DataFigureId } from './data-models';
 
 describe('TCP static rendering', () => {
   it('renders complete, readable figures without browser APIs or hydration', () => {
@@ -115,3 +116,30 @@ describe('registry requiredText stays in the static scenes', () => {
   });
 });
 
+
+describe('B05 DB, SQL and Spark figures without hydration', () => {
+  const cases = [
+    ['D01', 'binlog.000002', '비동기 복제(기본)'], ['D02', 'RoutingDataSource', '2회차: B · 적용 후'], ['D04', 'WHERE id BETWEEN 11000 AND 11009', '두 결과 모두 10행'],
+    ['D05', '보조 인덱스 (age, id)', '테이블 접근 0회'], ['D06', 'Chef Anton\'s Gumbo Mix', '키 2에서 멈춤'], ['D07', 'LIMIT 150,10', '바깥 ORDER BY'],
+    ['D08', 'Global Buffer', 'Too many connections'], ['D09', 'Camembert Pierrot', '122199.74'], ['S01', 'Low-level APIs', 'Kubernetes'],
+    ['S02', 'Partition 2', '3 + 3 = 6'], ['S04', 'Education#18 AS education#238', '원문 출력 없음'], ['S05', '건넌 행 8', '건넌 행 5'],
+    ['S06', 'executor 메모리', 'lineage'],
+  ] as const;
+  test.each(cases)('%s keeps its completed scene, static steps and source anchor', (figureId, a, b) => {
+    const html = renderToString(createElement(LessonFigure, { figureId, sourceBlockId: 'source-' + figureId }));
+    expect(html).toContain(a.replace(/'/g, '&#x27;')); expect(html).toContain(b);
+    expect(html).toContain('data-source-block-id="source-' + figureId + '"');
+    expect((html.match(/<svg /g) ?? []).length).toBe(8);
+    expect(html).not.toContain('<button');
+  });
+
+  it('renders every requiredText registered for the B05 figures', () => {
+    const plain = (html: string) => html.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").normalize('NFKC').replace(/\s+/g, '');
+    const specs = registry.figures.filter(f => /^(D0[1-9]|S0[1-6])$/.test(f.figureId) && f.figureId !== 'D03' && f.figureId !== 'S03');
+    expect(specs.map(s => s.figureId)).toEqual(['D01', 'D02', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'S01', 'S02', 'S04', 'S05', 'S06']);
+    for (const spec of specs) {
+      const text = plain(renderToString(createElement(LessonFigure, { figureId: spec.figureId as DataFigureId })));
+      for (const expected of spec.requiredText) expect(text, `${spec.figureId} ${expected}`).toContain(expected.normalize('NFKC').replace(/\s+/g, ''));
+    }
+  });
+});

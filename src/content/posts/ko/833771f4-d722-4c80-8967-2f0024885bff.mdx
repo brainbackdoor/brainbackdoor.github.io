@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "📊"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <span id="38acb36c-542f-48b9-9ebe-d8c6469a4ae2"></span>
 
 ## 1&#46; 특징
@@ -22,11 +24,23 @@ icon: "📊"
 
 <p id="70a0812f-c931-4d19-9832-274eed4c8ce1"><strong>1) </strong><strong><span className="notion-color-blue"><a href="https://spark.apache.org/docs/latest/index.html">Apache Spark</a></span></strong><strong>는 데이터 처리를 위한 범용 프레임워크이다&#46; </strong>데이터 파이프라인을 위해 많이 사용되며, 산업 표준에 가깝다&#46; Spark는 MapReduce와 유사한 일괄처리 기능, 실시간 데이터 처리기능, SQL과 유사한 정형 데이터 처리 기능, 그래프 알고리즘, 머신러닝 알고리즘을<strong> 모두 단일 프레임워크로 통합</strong>했다&#46;</p>
 
-<figure id="42ec7618-5d7a-427e-bb72-8a1a0e736396" className="notion-figure">
+<div id="42ec7618-5d7a-427e-bb72-8a1a0e736396">
+
+<LessonFigure figureId="S01" sourceBlockId="42ec7618-5d7a-427e-bb72-8a1a0e736396" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/833771f4-d722-4c80-8967-2f0024885bff/42ec7618-5d7a-427e-bb72-8a1a0e736396.webp" alt="" loading="lazy" width="902" height="606" />
 
 </figure>
+
+</details>
+
+</div>
 
 <p id="752e19e8-6258-4ed1-b0a1-0cab574d21cc">2) 다양한 Layer의 API, 다양한 형태의 API (Dataset, Dataframe, Spark SQL)를 지원해준다&#46; </p>
 
@@ -85,6 +99,8 @@ icon: "📊"
 </figure>
 
 <p id="9d689001-653b-4935-9e98-30ba56a1e0d7">하지만 MapReduce 잡의 결과를 다른 잡에서 사용하려면 HDFS에 저장해야 하여 반복 알고리즘에는 본질적으로 맞지 않다&#46; 그리고 무엇보다도 느리다&#46; 메모리는 디스크에 비해 100배 빠르며 네트워크 통신에 비해 일반적으로 100만배 빠르다&#46; Hadoop은 Iteration할때마다 filesystem에 써야 한다&#46;</p>
+
+<LessonFigure figureId="S06" sourceBlockId="9d689001-653b-4935-9e98-30ba56a1e0d7" client:visible />
 
 <figure id="7572a480-7ebf-4e01-b581-9a3188a9e45d" className="notion-figure">
 

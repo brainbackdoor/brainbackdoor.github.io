@@ -67,6 +67,8 @@ SELECT *
 WHERE id BETWEEN 11000 AND 11009
 ```
 
+<LessonFigure figureId="D04" sourceBlockId="ca56aec3-a244-4589-9b68-5bd5d011fdd8" client:visible />
+
 <ul>
 
 <li id="d7bb06f0-8796-4a20-8902-2e8d5a5a612b">
@@ -215,6 +217,8 @@ SELECT id
 
 <p id="2096a345-cf2d-4bef-b6e7-7782cdb855ac">인덱스 스캔과정에서 얻은 정보만으로 처리할 수 있어 테이블 액세스가 발생하지 않는 쿼리를 의미합니다&#46;</p>
 
+<LessonFigure figureId="D05" sourceBlockId="2096a345-cf2d-4bef-b6e7-7782cdb855ac" client:visible />
+
 <span id="43a78cec-bb5e-4f53-813f-02f584353fa0"></span>
 
 ```sql
@@ -296,11 +300,23 @@ SELECT * FROM sys.schema_redundant_indexes;
 
 ### A&#46; 조인 연결 key 들은 양쪽 다 인덱스를 가지고 있는 것이 좋아요&#46;
 
-<figure id="24df4219-edca-4d7d-b064-aacdf65ca355" className="notion-figure">
+<div id="24df4219-edca-4d7d-b064-aacdf65ca355">
+
+<LessonFigure figureId="D06" sourceBlockId="24df4219-edca-4d7d-b064-aacdf65ca355" client:visible />
+
+<details className="figure-source">
+
+<summary>원본 도해</summary>
+
+<figure className="notion-figure">
 
 <img src="/content/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708/24df4219-edca-4d7d-b064-aacdf65ca355.png" alt="" loading="lazy" width="2214" height="606" />
 
 </figure>
+
+</details>
+
+</div>
 
 <p id="d98ab477-a7da-4bdf-ac00-4f00ac263fdd">한쪽에만 인덱스가 있을 경우, Join Buffer를 사용하여 성능 개선을 하나 일반적인 중첩 루프 조인에 비해 효율이 떨어집니다&#46;</p>
 
@@ -369,6 +385,8 @@ SELECT employee.id, employee.last_name, employee.first_name, employee.join_date
 	employee
 WHERE employee.id = salary.id;
 ```
+
+<LessonFigure figureId="D07" sourceBlockId="e15af25e-95e5-4a2c-ae00-4fb1bbc61d7d" client:visible />
 
 <span id="e25c74af-d288-4f7d-9d67-6d241e17c3a5"></span>
 
@@ -515,6 +533,8 @@ mysql> SHOW STATUS LIKE '%THREAD%';
 #### b&#46; Caching
 
 <p id="832a5ee5-b95d-45f9-b0d4-9aeab9022968">버퍼는 mysqld에서 내부적으로 하나만 확보되는 Global Buffer와 Thread(Connection)별로 확보되는 Thread Buffer가 있습니다&#46; Thread Buffer에 많은 메모리를 할당하면 성능이 올라가지만, 설정값 &#42; Connection 수만큼 확보하므로 Connection이 갑자기 늘어나면 메모리가 부족해져 swap이 발생할 수도 있습니다&#46;</p>
+
+<LessonFigure figureId="D08" sourceBlockId="832a5ee5-b95d-45f9-b0d4-9aeab9022968" client:visible />
 
 <ul>
 

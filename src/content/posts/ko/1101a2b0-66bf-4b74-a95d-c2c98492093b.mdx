@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "🪞"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <span id="982ac1ed-4a84-4f24-8a3f-3149089f87da"></span>
 
 ## 1&#46; MySQL Replication
@@ -25,6 +27,8 @@ icon: "🪞"
 <li id="74d5d457-f374-4790-aad4-0eb12bbde92a">
 
 <p>MySQL Replication의 master/slave는 1&#58;n관계입니다&#46; master는 갱신쿼리를 바이너리 로그파일로 기록하고, 이 로그파일의 내용이 slave로 전송되어 순차적으로 실행함으로써 복제됩니다&#46; 따라서 MySQL Replication은 준동시성입니다&#46; I/O 스레드가 비동기로 동작하기에 마스터에서 생성한 바이너리 로그가 슬레이브에 수신되기 전에 장애가 날 경우 손실이 발생할 수 있습니다&#46;</p>
+
+<LessonFigure figureId="D01" sourceBlockId="74d5d457-f374-4790-aad4-0eb12bbde92a" client:visible />
 
 </li>
 
@@ -135,6 +139,8 @@ class DataBaseConfig {
 <li id="7c88c52e-6252-40e1-a848-3c3c291ffc3a">
 
 <p><code><strong>findLines()</strong></code> 메서드는 master에서, <code><strong>findAllStations()</strong></code> 메서드는 slave에서 조회합니다&#46; <code><strong>&#64;Transactional(readOnly = true)</strong></code>를 사용할 경우 slave를 활용합니다&#46;</p>
+
+<LessonFigure figureId="D02" sourceBlockId="7c88c52e-6252-40e1-a848-3c3c291ffc3a" client:visible />
 
 </li>
 

@@ -6,6 +6,7 @@ import LessonFigure from './LessonFigure';
 import registry from '../../../docs/migration-figures.json';
 import type { SystemFigureId } from './system-models';
 import type { DataFigureId } from './data-models';
+import type { InfraFigureId } from './infra-models';
 
 describe('TCP static rendering', () => {
   it('renders complete, readable figures without browser APIs or hydration', () => {
@@ -139,6 +140,34 @@ describe('B05 DB, SQL and Spark figures without hydration', () => {
     expect(specs.map(s => s.figureId)).toEqual(['D01', 'D02', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'S01', 'S02', 'S04', 'S05', 'S06']);
     for (const spec of specs) {
       const text = plain(renderToString(createElement(LessonFigure, { figureId: spec.figureId as DataFigureId })));
+      for (const expected of spec.requiredText) expect(text, `${spec.figureId} ${expected}`).toContain(expected.normalize('NFKC').replace(/\s+/g, ''));
+    }
+  });
+});
+
+describe('B06 infrastructure, operations and load figures without hydration', () => {
+  const cases = [
+    ['A01', 'VPC 192.168.0.0/24', '관리망 ← 로컬 PC 공인 IP : 22'], ['A02', 'TLS 종료 지점', 'HTTP 평문'], ['A03', 'fullchain.pem', ':443이 이 인증서로 응답'],
+    ['A04', 'application-prod.properties', '운영 DB'], ['A05', 'git pull origin master', '빈 구간'], ['A06', 'conference-lt Latest(1)', '종료 정책 순서'],
+    ['A07', 'conference-0.0.1-SNAPSHOT.jar', 'DB 없음'], ['O01', 'namespace brainbackdoor', '수집 설정 없음'], ['O02', 'avg·max 2.000', 'No data'],
+    ['O03', 'gRPC [Collector IP]', 'web :8080'], ['O04', 'getInputStream', 'IOException'], ['O05', 'nGrinder controller 3.5.8', 'k6 run smoke.js'],
+    ['O06', 'Smoke', '하강 잘림'], ['O07', 'T = 2 × 0.5 + 1 = 2 s', 'VU ≠ rps ≠ 사용자 수'], ['O08', 'HALF-OPEN', '서킷 브레이커'], ['O09', '접수됨', '처리 완료'],
+  ] as const;
+  test.each(cases)('%s keeps its completed scene, static steps and source anchor', (figureId, a, b) => {
+    const html = renderToString(createElement(LessonFigure, { figureId, sourceBlockId: 'source-' + figureId }));
+    const plainHtml = html.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&').replace(/&#x27;/g, "'");
+    expect(plainHtml).toContain(a); expect(plainHtml).toContain(b);
+    expect(html).toContain('data-source-block-id="source-' + figureId + '"');
+    expect((html.match(/<svg /g) ?? []).length).toBe(8);
+    expect(html).not.toContain('<button');
+  });
+
+  it('renders every requiredText registered for the B06 figures', () => {
+    const plain = (html: string) => html.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").normalize('NFKC').replace(/\s+/g, '');
+    const specs = registry.figures.filter(f => /^(A0[1-7]|O0[1-9])$/.test(f.figureId));
+    expect(specs.map(s => s.figureId)).toEqual(['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08', 'O09']);
+    for (const spec of specs) {
+      const text = plain(renderToString(createElement(LessonFigure, { figureId: spec.figureId as InfraFigureId })));
       for (const expected of spec.requiredText) expect(text, `${spec.figureId} ${expected}`).toContain(expected.normalize('NFKC').replace(/\s+/g, ''));
     }
   });

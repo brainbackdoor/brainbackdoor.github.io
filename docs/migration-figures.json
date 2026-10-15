@@ -742,6 +742,220 @@
         "lineage"
       ],
       "evidenceBlockIds": []
+    },
+    {
+      "figureId": "A01",
+      "sourceId": "1824fb4e-415b-4a61-8ec4-76e5102ee32f",
+      "sourceBlockId": "d36d232e-2274-4ee5-9a10-00421d4c1578",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "VPC 192.168.0.0/24",
+        "외부망 ← 전체 대역 : 443",
+        "관리망 ← 로컬 PC 공인 IP : 22"
+      ],
+      "evidenceBlockIds": [
+        "d36d232e-2274-4ee5-9a10-00421d4c1578"
+      ]
+    },
+    {
+      "figureId": "A02",
+      "sourceId": "0798ec80-70e7-441d-a238-2dc640122bce",
+      "sourceBlockId": "16f66104-1008-484b-9653-a1580ea0266d",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "TLS 종료 지점",
+        "HTTP 평문",
+        "172.17.0.1:8080"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "A03",
+      "sourceId": "0798ec80-70e7-441d-a238-2dc640122bce",
+      "sourceBlockId": "a0a15cd0-60d4-4662-a8c6-3d0ac1279154",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "_acme-challenge TXT",
+        "fullchain.pem",
+        ":443이 이 인증서로 응답"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "A04",
+      "sourceId": "0798ec80-70e7-441d-a238-2dc640122bce",
+      "sourceBlockId": "bcae8fb9-3ddf-41ee-bbdd-aac12a06b345",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "application-test.properties",
+        "application-prod.properties",
+        "docker MySQL"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "A05",
+      "sourceId": "0798ec80-70e7-441d-a238-2dc640122bce",
+      "sourceBlockId": "b8a9d205-5716-4602-82b6-ccb5d18d8b68",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "git pull origin master",
+        "빈 구간",
+        "[실행 1] Nothing to do!!!"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "A06",
+      "sourceId": "b065c018-114e-4897-9a53-98115cd9b382",
+      "sourceBlockId": "dcd1b2a6-6a7b-4d0d-ba6c-9ccb23b5d79c",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "conference-lt Latest(1)",
+        "● 트래픽 받음",
+        "② 가장 오래된 인스턴스 → EC2 1"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "A07",
+      "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+      "sourceBlockId": "e1557ab1-f09c-495d-af93-1af4a591e5b0",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "conference-0.0.1-SNAPSHOT.jar",
+        "DB 없음",
+        "member"
+      ],
+      "evidenceBlockIds": [
+        "e1557ab1-f09c-495d-af93-1af4a591e5b0"
+      ]
+    },
+    {
+      "figureId": "O01",
+      "sourceId": "6660b3f1-de92-4053-b3e0-08a84ea34432",
+      "sourceBlockId": "96286a5d-f404-411b-98d7-0f6b15a01e7f",
+      "sourceType": "code",
+      "mode": "after",
+      "requiredText": [
+        "namespace brainbackdoor",
+        "로그 그룹 syslog / {instance_id}",
+        "수집 설정 없음"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "O02",
+      "sourceId": "ad9d2017-f854-4a97-bddb-6a8981dc14c1",
+      "sourceBlockId": "d45e06aa-4107-4480-bea7-9c3d4470ca6e",
+      "sourceType": "image",
+      "mode": "after",
+      "requiredText": [
+        "avg·max 2.000",
+        "mean 7.52 · p95 9.25",
+        "No data"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "O03",
+      "sourceId": "1ca5dd49-2787-4f09-b88b-8e5881aa0b15",
+      "sourceBlockId": "922830fa-fbd9-4a88-a490-30733cbfee4c",
+      "sourceType": "code",
+      "mode": "after",
+      "requiredText": [
+        "gRPC [Collector IP]",
+        "front-api",
+        "web :8080"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "O04",
+      "sourceId": "1ca5dd49-2787-4f09-b88b-8e5881aa0b15",
+      "sourceBlockId": "99f43ed6-9f80-47fe-baa7-a09330e59f4a",
+      "sourceType": "text",
+      "mode": "after",
+      "requiredText": [
+        "766 · self 10",
+        "510 · self 507",
+        "403"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "O05",
+      "sourceId": "ad9d2017-f854-4a97-bddb-6a8981dc14c1",
+      "sourceBlockId": "ffe14c21-735b-4457-ad00-fa7fbd0909ee",
+      "sourceType": "code",
+      "mode": "after",
+      "requiredText": [
+        "nGrinder controller 3.5.8",
+        "k6 run smoke.js",
+        "[테스트 대상 도메인]"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "O06",
+      "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+      "sourceBlockId": "ecf4adbb-d6e8-4696-b5db-d509f0ef572e",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "Smoke",
+        "Stress",
+        "100 → 200 → 300 → 400"
+      ],
+      "evidenceBlockIds": [
+        "ecf4adbb-d6e8-4696-b5db-d509f0ef572e"
+      ]
+    },
+    {
+      "figureId": "O07",
+      "sourceId": "ad9d2017-f854-4a97-bddb-6a8981dc14c1",
+      "sourceBlockId": "a5b4db99-c1c5-45ee-8a1c-acc4bb2abd2f",
+      "sourceType": "bulleted_list",
+      "mode": "after",
+      "requiredText": [
+        "T = 2 × 0.5 + 1 = 2 s",
+        "VU = (300 × 2) / 2 = 300",
+        "VU ≠ rps ≠ 사용자 수"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "O08",
+      "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+      "sourceBlockId": "feb9bbde-8c63-483d-a609-c35e722550f3",
+      "sourceType": "to_do",
+      "mode": "after",
+      "requiredText": [
+        "서킷 브레이커 · CLOSED",
+        "HALF-OPEN",
+        "iteration time 100ms"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "O09",
+      "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+      "sourceBlockId": "d8f78c13-674f-4fd8-8eee-efdc7077efe7",
+      "sourceType": "to_do",
+      "mode": "after",
+      "requiredText": [
+        "접수됨",
+        "처리 완료",
+        "개념 예시"
+      ],
+      "evidenceBlockIds": []
     }
   ],
   "corrections": [

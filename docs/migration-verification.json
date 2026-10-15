@@ -605,7 +605,7 @@
       "targetPath": "/posts/1824fb4e-415b-4a61-8ec4-76e5102ee32f",
       "checkedTextFields": 45,
       "renderedImages": 4,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "014b204e-ecf0-4650-b4e4-8f959863274b"
       ],
@@ -617,7 +617,7 @@
       "targetPath": "/posts/0798ec80-70e7-441d-a238-2dc640122bce",
       "checkedTextFields": 66,
       "renderedImages": 6,
-      "renderedFigures": 0,
+      "renderedFigures": 4,
       "excludedBlocks": [
         "48530334-4bdc-4303-8dc3-a1b790742b33"
       ],
@@ -653,7 +653,7 @@
       "targetPath": "/posts/dfe2e77f-066e-46e9-a575-ed1e65157321",
       "checkedTextFields": 73,
       "renderedImages": 4,
-      "renderedFigures": 0,
+      "renderedFigures": 4,
       "excludedBlocks": [
         "0ce5a93a-7f20-4b45-8163-2927cd88a219"
       ],
@@ -813,7 +813,7 @@
       "targetPath": "/posts/ad9d2017-f854-4a97-bddb-6a8981dc14c1",
       "checkedTextFields": 64,
       "renderedImages": 5,
-      "renderedFigures": 0,
+      "renderedFigures": 3,
       "excludedBlocks": [
         "b7b276d5-10a8-49e8-a0e2-78895de0e620"
       ],
@@ -825,7 +825,7 @@
       "targetPath": "/posts/6660b3f1-de92-4053-b3e0-08a84ea34432",
       "checkedTextFields": 51,
       "renderedImages": 6,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "10f3bd4d-fc24-436f-a6df-6b8a3fb3d586"
       ],
@@ -837,7 +837,7 @@
       "targetPath": "/posts/1ca5dd49-2787-4f09-b88b-8e5881aa0b15",
       "checkedTextFields": 16,
       "renderedImages": 4,
-      "renderedFigures": 0,
+      "renderedFigures": 2,
       "excludedBlocks": [
         "cb7aa6fd-4655-48ab-9d75-ec766b36f5cd"
       ],
@@ -849,7 +849,7 @@
       "targetPath": "/posts/b065c018-114e-4897-9a53-98115cd9b382",
       "checkedTextFields": 61,
       "renderedImages": 20,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "a5aecea0-54fd-42b3-bbdd-0ded75cf970a"
       ],
@@ -1008,7 +1008,7 @@
   "summary": {
     "pages": 58,
     "textFields": 1806,
-    "figures": 52,
+    "figures": 68,
     "pagesWithIssues": 0,
     "brokenInternalLinks": 0,
     "unavailableSourcePages": 6,

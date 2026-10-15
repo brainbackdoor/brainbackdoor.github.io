@@ -9,6 +9,8 @@ sourceUrl: "https://www.brainbackdoor.com/0798ec80-70e7-441d-a238-2dc640122bce"
 dateSource: "published"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <blockquote id="679bfb31-b973-4231-b9d1-56dd3a244fe1" className="notion-callout">
 
 <p>📌 컨테이너를 학습하고 3 tier로 운영환경을 구성해봅니다&#46; <br />개발 환경을 구성해보고 지속적 통합을 경험해봅니다&#46;</p>
@@ -181,6 +183,8 @@ $ cp /etc/letsencrypt/live/[도메인주소]/fullchain.pem ./
 $ cp /etc/letsencrypt/live/[도메인주소]/privkey.pem ./
 ```
 
+<LessonFigure figureId="A03" sourceBlockId="a0a15cd0-60d4-4662-a8c6-3d0ac1279154" client:visible />
+
 </li>
 
 </ul>
@@ -269,6 +273,8 @@ $ docker build -t brainbackdoor/reverse-proxy:0.0.2 .
 $ docker run -d -p 80:80 -p 443:443 --name proxy brainbackdoor/reverse-proxy:0.0.2
 ```
 
+<LessonFigure figureId="A02" sourceBlockId="16f66104-1008-484b-9653-a1580ea0266d" client:visible />
+
 </li>
 
 </ul>
@@ -319,6 +325,8 @@ $ docker run -d -p 3306:3306 brainbackdoor/data-subway:0.0.1
 ```bash
 $ java -jar -Dspring.profiles.active=prod [jar파일명]
 ```
+
+<LessonFigure figureId="A04" sourceBlockId="bcae8fb9-3ddf-41ee-bbdd-aac12a06b345" client:visible />
 
 </li>
 
@@ -500,6 +508,8 @@ function check_df() {
 </li>
 
 </ul>
+
+<LessonFigure figureId="A05" sourceBlockId="b8a9d205-5716-4602-82b6-ccb5d18d8b68" client:visible />
 
 </li>
 

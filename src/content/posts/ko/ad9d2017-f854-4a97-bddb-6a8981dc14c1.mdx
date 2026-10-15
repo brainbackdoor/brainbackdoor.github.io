@@ -10,6 +10,8 @@ dateSource: "published"
 icon: "⌛"
 ---
 
+import LessonFigure from "../../../components/figures/LessonFigure";
+
 <blockquote id="5f7df81f-06bc-4274-ac6f-eed13a79b9a2" className="notion-callout">
 
 <p>📌 서비스를 배포하기에 앞서 예상되는 상황을 테스트하여, <strong>현재 시스템이 어느 정도의 부하를 견딜 수 있는지</strong> 확인하고&#46; <strong>한계치에서 병목이 생기는 지점을 파악</strong>하고 <strong>장애 조치와 복구를 사전에 계획</strong>해둘 필요가 있습니다&#46;<br /><br />성능이란 무엇인지, 그리고 성능 테스트를 어떻게 설계해야하는지 등은 강의를 통해 확인할 수 있어요&#46; </p>
@@ -122,6 +124,8 @@ $ ./run_agent.sh
 # 백그라운드로 실행
 $ ./run_agent_bg.sh
 ```
+
+<LessonFigure figureId="O05" sourceBlockId="ffe14c21-735b-4457-ad00-fa7fbd0909ee" client:visible />
 
 <span id="92dcdec5-15e6-49de-9e52-a3de9b2f057e"></span>
 
@@ -458,6 +462,8 @@ $ k6 run --out influxdb=http://localhost:8086/myk6db smoke.js
 
 </figure>
 
+<LessonFigure figureId="O02" sourceBlockId="d45e06aa-4107-4480-bea7-9c3d4470ca6e" client:visible />
+
 <hr id="393f0a43-26b2-4b06-98bb-60352e80e764" />
 
 <span id="aa19ec35-0924-4e34-8141-fdc6c44fd69e"></span>
@@ -597,6 +603,8 @@ VUser = (목표 rps * T) / R
 </blockquote>
 
 <p id="cfd81e02-1aca-49f9-8068-43fea6e9282a">즉 VUser 300으로 두고 테스트했을 때 요청별 응답시간을 0&#46;5초 내를 달성한다면, 이 시스템은 300 rps를 보장한다고 이야기할 수 있습니다&#46; </p>
+
+<LessonFigure figureId="O07" sourceBlockId="a5b4db99-c1c5-45ee-8a1c-acc4bb2abd2f" client:visible />
 
 </li>
 

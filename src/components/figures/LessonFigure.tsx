@@ -9,9 +9,11 @@ import { systemInfo, type SystemFigureId } from './system-models';
 import { systemRenderers } from './systemCanvas';
 import { dataInfo, type DataFigureId } from './data-models';
 import { dataRenderers } from './dataCanvas';
+import { infraInfo, type InfraFigureId } from './infra-models';
+import { infraRenderers } from './infraCanvas';
 
-// Figures placed inside a list item (B04 C09·T03–T05, B05 D01·D02): their smallest plot is the list width.
-const LIST_EMBEDDED = new Set<string>(['C09', 'T03', 'T04', 'T05', 'D01', 'D02']);
+// Figures placed inside a list item (B04 C09·T03–T05, B05 D01·D02, B06 A02–A06·O07–O09): their smallest plot is the list width.
+const LIST_EMBEDDED = new Set<string>(['C09', 'T03', 'T04', 'T05', 'D01', 'D02', 'A02', 'A03', 'A04', 'A05', 'A06', 'O07', 'O08', 'O09']);
 
 /** Canvas and accessible SVG read the same commands and event state. */
 export function LessonSvg({ frame, width, title }: {frame:LessonFrame;width:number;title:string}) {
@@ -31,9 +33,9 @@ export function LessonSvg({ frame, width, title }: {frame:LessonFrame;width:numb
   </svg>;
 }
 
-export default function LessonFigure({ figureId, sourceBlockId }: {figureId:FigureId|NetworkFigureId|SystemFigureId|DataFigureId;sourceBlockId?:string}) {
-  const info=[...lessonInfo,...networkInfo,...systemInfo,...dataInfo].find(item=>item.id===figureId)!;
-  const renderer={...lessonRenderers,...networkRenderers,...systemRenderers,...dataRenderers}[figureId];
+export default function LessonFigure({ figureId, sourceBlockId }: {figureId:FigureId|NetworkFigureId|SystemFigureId|DataFigureId|InfraFigureId;sourceBlockId?:string}) {
+  const info=[...lessonInfo,...networkInfo,...systemInfo,...dataInfo,...infraInfo].find(item=>item.id===figureId)!;
+  const renderer={...lessonRenderers,...networkRenderers,...systemRenderers,...dataRenderers,...infraRenderers}[figureId];
   const wideWidth=figureId==='W03'?480:560;
   // Static scenes are drawn at the smallest plot of each layout and only scale up: 284px in the article
   // at a 320px viewport, 259px when a network figure sits inside a list. Wide scenes start at the layout switch.

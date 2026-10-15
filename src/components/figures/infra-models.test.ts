@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { A03, A05, A06, O04_ROWS, O08, a01, a03, a05, a06, o02, o07, o08, o09, infraInfo, type InfraFigureId } from './infra-models';
+import { A03, A04, A05, A06, A07_USERDATA, O04_ROWS, O08, a01, a03, a04, a05, a06, o02, o07, o08, o09, infraInfo, type InfraFigureId } from './infra-models';
 import { infraRenderers } from './infraCanvas';
 import type { DrawOp, LessonFrame } from './lessonCanvas';
 
@@ -147,5 +147,56 @@ describe('B06 scenes stay readable at every article width', () => {
       if (o.type === 'circle' && (o.x - o.r < -1 || o.x + o.r > w + 1)) issues.add(`${item.id} ${w}`);
     }
     expect([...issues]).toEqual([]);
+  });
+});
+
+describe('B06 review fixes keep each static step and source text honest', () => {
+  // 단계마다 상태 문구가 그 장면에 그려진 것만 말한다(다음 사건을 먼저 말하지 않음)
+  const STEP_STATUS: Record<InfraFigureId, [string, string, string]> = {
+    A01: ['443', '3306', '허용 경로 5개'], A02: ['301', '평문', '암호화 구간'], A03: ['TXT 값을 요구', '아직 적용 전', '응답'],
+    A04: ['test', 'local', '세 프로필'], A05: ['Nothing to do', '종료하면', '무중단 배포가 아닙니다'], A06: ['헬스 체크 통과 전', 'healthy가 된 뒤', '2대로'],
+    A07: ['사용자 데이터', '각자 DB', '원본 구조도'], O01: ['disk·mem_available·netstat', 'EC2 기본 지표', '알람'], O02: ['smoke.js', 'VU·RPS', '원인'],
+    O03: ['member-api로', 'HBase', '따로'], O04: ['펼쳐집니다', '오류 trace', '보이는 행'], O05: ['승인', '결과를 controller', '나눠'],
+    O06: ['Smoke', 'Load', '목적'], O07: ['86,400', '1 rps', '실측'], O08: ['OPEN', '증설', '측정'], O09: ['접수됨', '완료', '개념 예시'],
+  };
+  it('describes only what each static step has drawn', () => {
+    for (const item of infraInfo) item.steps.forEach((t, i) => expect(infraRenderers[item.id](650, t).status, `${item.id} ${i + 1}`).toContain(STEP_STATUS[item.id][i]));
+    expect(infraRenderers.A02(650, info('A02').steps[0]).status).not.toContain('핸드셰이크');
+    expect(infraRenderers.A03(650, A03.issued + 300).status).not.toContain('nginx에 적용합니다');
+  });
+
+  it('A07 marks the user data as a summary and keeps the jar path in the start command', () => {
+    expect(info('A07').caption).toContain('요약');
+    expect(A07_USERDATA[5]).toContain('conference-0.0.1-SNAPSHOT.jar');
+    expect(A07_USERDATA.filter(l => l.includes('aws s3 cp'))).toHaveLength(2);
+    expect(said(final('A07'))).toContain('명령 요약');
+  });
+
+  it('A01 follows the NAT clue of the original drawing: 192.168.0.160/27 is the internal network', () => {
+    const t = texts(final('A01')).map(o => o.text).join(' | ');
+    expect(t).toMatch(/AZ2 · 내부망[^|]*\| 192\.168\.0\.160/);
+    expect(t).toContain('내부망 → 인터넷 : NAT 경유 아웃바운드만');
+  });
+
+  it('A04 switches each chip on at a model time without hiding its text first', () => {
+    for (let t = 0; t <= info('A04').duration; t += 20) for (const o of texts(infraRenderers.A04(650, t))) expect(o.alpha ?? 1, `${t} ${o.text}`).toBe(1);
+    expect(a04(A04.local[0] + A04.chips[1]).chipsOn[1]).toEqual([true, true, false]);
+  });
+
+  it('A06 balances the AZs before the termination policy and ends with EC2 2 and EC2 3', () => {
+    expect(a06(info('A06').final)).toMatchObject({ oldest: 'gone', third: 'healthy', desired: 2 });
+    expect(said(final('A06'))).toContain('AZ 균형');
+  });
+
+  it('keeps unsupported claims as possibilities or recommendations', () => {
+    expect(said(final('O08')) + info('O08').notes.join(' ')).toContain('그대로 늘지 않을 수 있습니다');
+    expect(said(final('O09'))).toContain('원문에 구현 없음');
+    expect(said(final('O05')) + info('O05').notes.join(' ')).not.toContain('다른 서버입니다');
+    expect(said(final('O06'))).not.toContain('한계?');
+    expect(texts(final('A05')).filter(o => o.text.includes('(설명용)')).length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('O02 keeps the same statistics at every width', () => {
+    for (const w of [650, 259]) { const f = said(infraRenderers.O02(w, info('O02').final)); for (const s of ['med 6.92', 'p90 8.44', 'logged in successfully', 'retrieved member']) expect(f, `${w} ${s}`).toContain(s); }
   });
 });

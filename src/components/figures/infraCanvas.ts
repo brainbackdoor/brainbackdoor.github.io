@@ -1,6 +1,6 @@
 /** B06 인프라·운영 16종 렌더러. 공통 그리기 도구(lessonCanvas)와 사건 모델(infra-models)만 쓰고, Canvas와 정적 SVG가 같은 명령을 읽는다. */
-import { C, TONE, appear, arrow, draw, ease, f2, fileGlyph, frame, label, lerp, lerpPt, lockGlyph, para, pill, span, token, wrap, type G, type LessonFrame, type Pt, type Tone } from './lessonCanvas';
-import { A01, A01_BLOCKED, A01_RULES, A02, A03, A04, A04_ROWS, A05, A06, A07, A07_USERDATA, O01, O02, O02_LATENCY, O03, O04, O04_ROWS, O05, O06, O07, O08, a01, a02, a03, a04, a05, a06, a07, o01, o02, o03, o04, o05, o06, o07, o08, o09, type InfraFigureId } from './infra-models';
+import { C, TONE, appear, arrow, draw, ease, f2, fileGlyph, frame, label, lerp, lerpPt, lockGlyph, para, pill, span, textW, token, wrap, type G, type LessonFrame, type Pt, type Tone } from './lessonCanvas';
+import { A01, A01_BLOCKED, A01_RULES, A02, A03, A04, A04_ROWS, A05, A06, A07, A07_USERDATA, O01, O02, O02_LATENCY, O03, O04, O04_ROWS, O05, O07, O08, a01, a02, a03, a04, a05, a06, a07, o01, o02, o03, o04, o05, o06, o07, o08, o09, type InfraFigureId } from './infra-models';
 
 /* B06 공통 도구: 사건 시각에 도착하는 이동, 꺾인 경로 이동, 여러 줄 카드, 허용·차단 표시 */
 // [a, b] 동안 p → q로 이동해 b에 도착(도착 뒤에는 그리지 않음). 글자 위를 지나는 짧은 구간은 글자 없는 점
@@ -49,38 +49,41 @@ function mark(g: G, x: number, y: number, ok: boolean, alpha = 1) {
 /* ---------- A01 망 구성: 허용 경로 5개와 막히는 직접 접근 ---------- */
 function vpcV2(w: number, t: number): LessonFrame {
   const g = draw(), s = a01(t), wide = w >= 560;
-  const W = w - 16, top = 50, x0 = 10, gap = 10, cw = (W - 20 - gap) / 2, x1 = x0 + cw + gap;
-  const ux = Math.max(x0 + cw * 0.3, 48), lx = w - (wide ? 90 : 60), lanes = [ux + 30, ux + 62, lx - 34];
-  pill(g, ux, 13, '인터넷 사용자', { size: 11, h: 24 });
+  const W = w - 16, top = 50, x0 = 16, gap = 10, cw = (W - x0 - 10 - gap) / 2, x1 = x0 + cw + gap;
+  // 행위자: 로컬 PC는 왼쪽(관리망 AZ1으로 왼쪽 여백을 따라), 인터넷 사용자는 오른쪽(외부망 AZ2로)
+  const lx = Math.max(x0 + cw * 0.3, 52), ux = w - (wide ? 90 : 60), lanes = [ux - 34, ux - 66, lx + 34];
   pill(g, lx, 13, '로컬 PC 공인 IP', { size: 11, h: 24 });
-  // 망 카드: 좁은 폭은 CIDR을 주소와 접두사로 나눈다
-  // 좁은 폭은 CIDR을 주소와 '/접두사 · 역할' 두 줄로 나눈다
+  pill(g, ux, 13, '인터넷 사용자', { size: 11, h: 24 });
+  // 망 카드: 좁은 폭은 CIDR을 주소와 '/접두사 · 역할' 두 줄로 나눈다
   const cidr = (c: string, role: string, extra: string): Line[] => wide ? [{ text: c, mono: true }, ...(extra ? [{ text: extra, color: C.muted }] : [])] : [{ text: c.split('/')[0], mono: true }, { text: `/${c.split('/')[1]}${role ? ' · ' + role : ''}`, mono: true }, ...(extra ? [{ text: extra, color: C.muted }] : [])];
   const rowH = wide ? 61 : 76, row1 = top + 14, row2 = row1 + rowH + 30;
   g.rect(0, top, W, row2 + rowH + 34 - top, { r: 12, fill: C.bg, stroke: C.ink, lw: 1.3 });
   card(g, x0, row1, cw, [{ text: wide ? 'AZ1 · 외부망 · proxy·WAS' : 'AZ1 · 외부망' }, ...cidr('192.168.0.0/26', 'WAS', '')], { tone: 'blue', h: rowH });
   card(g, x1, row1, cw, [{ text: wide ? 'AZ2 · 외부망 · proxy·WAS' : 'AZ2 · 외부망' }, ...cidr('192.168.0.64/26', 'WAS', '')], { tone: 'blue', h: rowH });
   pill(g, x1 + cw - 32, row1 + rowH - 14, 'NAT GW', { size: 10, h: 18, fill: C.paper });
-  card(g, x0, row2, cw, [{ text: wide ? 'AZ1 · 내부망 · DB' : 'AZ1 · 내부망' }, ...cidr('192.168.0.128/27', 'DB', '배정은 설명용')], { tone: 'orange', h: rowH });
-  card(g, x1, row2, cw, [{ text: wide ? 'AZ2 · 관리망 · Bastion' : 'AZ2 · 관리망' }, ...cidr('192.168.0.160/27', 'Bastion', '배정은 설명용')], { tone: 'green', h: rowH });
+  // 원본 그림에서 NAT로만 나가는 192.168.0.160/27을 내부망으로(배정은 설명용)
+  card(g, x0, row2, cw, [{ text: wide ? 'AZ1 · 관리망 · Bastion' : 'AZ1 · 관리망' }, ...cidr('192.168.0.128/27', 'Bastion', '배정은 설명용')], { tone: 'green', h: rowH });
+  card(g, x1, row2, cw, [{ text: wide ? 'AZ2 · 내부망 · DB' : 'AZ2 · 내부망' }, ...cidr('192.168.0.160/27', 'DB', '배정은 설명용')], { tone: 'orange', h: rowH });
   const bottom = row2 + rowH + 34;
   g.text(0, bottom + 18, 'VPC 192.168.0.0/24 · IGW · AZ 2개', { size: 12, weight: 700 });
+  // NAT 아웃바운드(내부망 → NAT GW, 점선)
+  g.line(x1 + cw - 32, row2 - 2, x1 + cw - 32, row1 + rowH - 4, { stroke: C.orange, lw: 1.2, dash: [3, 3] });
   // 허용 경로(사건 시각에 도착)
   const green = C.green;
   const web: Pt[] = [{ x: ux, y: 26 }, { x: ux, y: row1 }];
-  const adminPath: Pt[] = [{ x: lx, y: 26 }, { x: lx, y: 36 }, { x: w - 5, y: 36 }, { x: w - 5, y: row2 + rowH / 2 }, { x: x1 + cw, y: row2 + rowH / 2 }];
-  const toWeb: Pt[] = [{ x: x1 + cw / 2, y: row2 }, { x: x1 + cw / 2, y: row1 + rowH }];
-  const toDb: Pt[] = [{ x: x1 + cw / 2, y: row2 + rowH }, { x: x1 + cw / 2, y: row2 + rowH + 16 }, { x: x0 + cw / 2, y: row2 + rowH + 16 }, { x: x0 + cw / 2, y: row2 + rowH }];
-  const db: Pt[] = [{ x: x0 + cw / 2, y: row1 + rowH }, { x: x0 + cw / 2, y: row2 }];
+  const adminPath: Pt[] = [{ x: lx, y: 26 }, { x: lx, y: 36 }, { x: 5, y: 36 }, { x: 5, y: row2 + rowH / 2 }, { x: x0, y: row2 + rowH / 2 }];
+  const toWeb: Pt[] = [{ x: x0 + cw / 2, y: row2 }, { x: x0 + cw / 2, y: row1 + rowH }];
+  const toDb: Pt[] = [{ x: x0 + cw / 2, y: row2 + rowH }, { x: x0 + cw / 2, y: row2 + rowH + 16 }, { x: x1 + cw / 2, y: row2 + rowH + 16 }, { x: x1 + cw / 2, y: row2 + rowH }];
+  const db: Pt[] = [{ x: x1 + cw * 0.4, y: row1 + rowH }, { x: x1 + cw * 0.4, y: row2 }];
   const flows: [Pt[], readonly number[], string, number][] = [[web, A01.web, '443', 0], [adminPath, A01.admin, '22', 4], [toWeb, A01.toWeb22, '22', 1], [toDb, A01.toDb22, '22', 3], [db, A01.db, '3306', 2]];
   for (const [pts, [a, b], port, rule] of flows) {
     if (s.allowed[rule]) route(g, pts, green, { alpha: Math.max(0.35, appear(t, b)) });
-    // 관리 경로는 지면 오른쪽 여백을 따라 돌므로 글자 없는 점으로 그린다
+    // 관리 경로는 지면 왼쪽 여백을 따라 돌므로 글자 없는 점으로 그린다
     travelAlong(g, t, pts, a, b, port, 'green', { dot: pts === adminPath });
   }
-  if (s.allowed[0]) g.text(ux - 6, 40, ':443', { size: 10.5, mono: true, align: 'right', color: C.greenText });
-  if (s.allowed[1]) g.text(x1 + cw / 2 + 7, row1 + rowH + 19, ':22', { size: 10.5, mono: true, color: C.greenText });
-  if (s.allowed[2]) g.text(x0 + cw / 2 + 7, row1 + rowH + 19, ':3306', { size: 10.5, mono: true, color: C.greenText });
+  if (s.allowed[0]) g.text(ux + 6, 40, ':443', { size: 10.5, mono: true, color: C.greenText });
+  if (s.allowed[1]) g.text(x0 + cw / 2 + 7, row1 + rowH + 19, ':22', { size: 10.5, mono: true, color: C.greenText });
+  if (s.allowed[2]) g.text(x1 + cw * 0.4 + 7, row1 + rowH + 19, ':3306', { size: 10.5, mono: true, color: C.greenText });
   if (s.allowed[3]) g.text((x0 + x1 + cw) / 2, row2 + rowH + 29, ':22', { size: 10.5, mono: true, align: 'center', color: C.greenText });
   // 막히는 직접 접근: 경계에서 ✕
   A01_BLOCKED.forEach(([, , port], i) => {
@@ -89,7 +92,7 @@ function vpcV2(w: number, t: number): LessonFrame {
     if (s.blocked[i]) mark(g, x, top, false, appear(t, at + 600));
   });
   // 규칙 표
-  const ty = bottom + 44, colW = wide ? (w - 24) / 2 : w, bx = wide ? colW + 24 : 0, by = wide ? ty : ty + 22 + 5 * 22 + 18;
+  const ty = bottom + 44, colW = wide ? (w - 24) / 2 : w, bx = wide ? colW + 24 : 0, by = wide ? ty : ty + 22 + 6 * 22 + 18;
   g.text(0, ty, '보안 그룹 인바운드(대상 ← 출발지 : 포트)', { size: 11, weight: 700 });
   A01_RULES.forEach(([dst, src, port], i) => {
     const y = ty + 10 + i * 22, on = s.allowed[i];
@@ -97,6 +100,9 @@ function vpcV2(w: number, t: number): LessonFrame {
     g.text(8, y + 14, `${dst} ← ${src} : ${port}`, { size: 11, color: on ? C.greenText : C.ink });
     if (on) mark(g, colW - 12, y + 9, true, appear(t, [A01.web, A01.toWeb22, A01.db, A01.toDb22, A01.admin][i][1]));
   });
+  const ny = ty + 10 + 5 * 22;
+  g.rect(0, ny, colW, 19, { r: 4, fill: C.orangeTint });
+  g.text(8, ny + 14, '내부망 → 인터넷 : NAT 경유 아웃바운드만', { size: 11, color: C.orangeText });
   g.text(bx, by, '막힘(허용 규칙 없음)', { size: 11, weight: 700 });
   A01_BLOCKED.forEach(([src, dst, port], i) => {
     const y = by + 10 + i * 22, on = s.blocked[i];
@@ -104,7 +110,7 @@ function vpcV2(w: number, t: number): LessonFrame {
     g.text(bx + 8, y + 14, `${src} → ${dst} : ${port}`, { size: 11, color: on ? C.redText : C.muted });
     if (on) mark(g, bx + colW - 12, y + 9, false, appear(t, A01.block[i] + 600));
   });
-  const end = wide ? ty + 10 + 5 * 22 : by + 10 + 3 * 22;
+  const end = wide ? ty + 10 + 6 * 22 : by + 10 + 3 * 22;
   const y = para(g, 0, end + 22, '규칙에 없는 인바운드는 보안 그룹이 거부합니다(허용된 요청의 응답은 자동 허용).', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
@@ -206,26 +212,26 @@ function profileV2(w: number, t: number): LessonFrame {
     g.rect(0, y, w, blockH, { r: 10, fill: act ? TONE[tone].tint : C.bg, stroke: on ? TONE[tone].line : C.grid, lw: act ? 1.6 : 1.1 });
     g.text(10, y + 18, `실행: ${['테스트', '로컬', '배포'][i]}`, { size: 11, weight: 700, color: on ? TONE[tone].text : C.muted });
     runLines.forEach((ln, k) => g.text(10, y + 34 + k * 15, ln, { size: 11, mono: true, color: on ? C.ink : C.muted }));
-    const cy = y + 34 + runLines.length * 15 + 4, a1 = appear(t, ([A04.test, A04.local, A04.prod][i][0]) + 300), a2 = appear(t, ([A04.test, A04.local, A04.prod][i][0]) + 600), a3 = appear(t, ([A04.test, A04.local, A04.prod][i][0]) + 900);
+    const cy = y + 34 + runLines.length * 15 + 4;
     // 프로필 → 파일 → DB
-    const chips: [string, string, boolean, number][] = [[prof, '프로필', true, a1], [`application-${prof}.properties`, `account.name = ${user} · password = ••••`, false, a2], [db, i === 2 ? 'DB URL 원문 없음' : '요구사항 기준', false, a3]];
+    const chips: [string, string, boolean][] = [[prof, '프로필', true], [`application-${prof}.properties`, `account.name = ${user} · password = ••••`, false], [db, i === 2 ? 'DB URL 원문 없음' : '요구사항 기준', false]];
     const widths = wide ? [70, 0, 140] : [w - 20, w - 20, w - 20];
     if (wide) widths[1] = w - 20 - widths[0] - widths[2] - 2 * 26;
     let x = 10;
     chips.forEach(([main, sub, mono0], k) => {
-      const h = Array.isArray(chipH) ? chipH[k] : chipH, cyp = wide ? cy : cy + (k === 0 ? 0 : k === 1 ? 46 : 46 + 60), cxp = wide ? x : 10, cwp = widths[k], al = on ? (k === 0 ? a1 : k === 1 ? a2 : a3) : 0;
+      const h = Array.isArray(chipH) ? chipH[k] : chipH, cyp = wide ? cy : cy + (k === 0 ? 0 : k === 1 ? 46 : 46 + 60), cxp = wide ? x : 10, cwp = widths[k], lit = s.chipsOn[i][k];
       // 좁은 폭의 파일 칩은 account 줄을 name·password 두 줄로 나눈다
       const subs = !wide && k === 1 ? sub.split(' · ') : [sub];
-      g.rect(cxp, cyp, cwp, h, { r: 6, fill: C.paper, stroke: on ? TONE[tone].line : C.grid, lw: 1, dash: on ? null : [3, 3] });
-      g.text(cxp + 8, cyp + 15, main, { size: 11, mono: k < 2 || mono0, weight: 700, color: on ? C.ink : C.muted, alpha: on ? Math.max(0.05, al) : 1 });
-      subs.forEach((sb, m) => g.text(cxp + 8, cyp + 30 + m * 14, sb, { size: 10, mono: k === 1, color: C.muted, alpha: on ? Math.max(0.05, al) : 1 }));
-      if (wide && k < 2) arrow(g, { x: cxp + cwp + 4, y: cyp + 19 }, { x: cxp + cwp + 22, y: cyp + 19 }, { stroke: on ? TONE[tone].line : C.grid, lw: 1.1, size: 4 });
+      g.rect(cxp, cyp, cwp, h, { r: 6, fill: C.paper, stroke: lit ? TONE[tone].line : C.grid, lw: 1, dash: lit ? null : [3, 3] });
+      g.text(cxp + 8, cyp + 15, main, { size: 11, mono: k < 2 || mono0, weight: 700, color: lit ? C.ink : C.muted });
+      subs.forEach((sb, m) => g.text(cxp + 8, cyp + 30 + m * 14, sb, { size: 10, mono: k === 1, color: C.muted }));
+      if (wide && k < 2) arrow(g, { x: cxp + cwp + 4, y: cyp + 19 }, { x: cxp + cwp + 22, y: cyp + 19 }, { stroke: s.chipsOn[i][k + 1] ? TONE[tone].line : C.grid, lw: 1.1, size: 4 });
       x += cwp + 26;
     });
     if (done) mark(g, w - 16, y + 14, true, appear(t, [A04.test, A04.local, A04.prod][i][1]));
     y += blockH + 10;
   });
-  const yy = para(g, 0, y + 14, 'password 값은 가렸습니다. 스크립트 사용법의 { prod | dev }와 달리 예제 프로필은 test·local·prod입니다.', w, { size: 12, color: C.muted });
+  const yy = para(g, 0, y + 14, 'password 값은 가렸습니다. 실행 방법과 프로필의 연결 방식은 원문에 없어 설명용입니다. 스크립트 사용법의 { prod | dev }와 달리 예제 프로필은 test·local·prod입니다.', w, { size: 12, color: C.muted });
   return frame(g, yy + 10, s.phase);
 }
 
@@ -239,18 +245,21 @@ function deployV2(w: number, t: number): LessonFrame {
   ];
   const sw = wide ? w * 0.58 : w;
   g.text(0, 12, '배포 스크립트(실행 2: 변경 있음)', { size: 12, weight: 700 });
-  steps.forEach(([name, cmd, at, real], i) => {
-    const on = s.run >= 2 && t >= at, y = 22 + i * 40, lines = wrap(cmd, sw - 90, 10.5, true);
-    g.rect(0, y, sw, 34, { r: 6, fill: on ? (real ? C.blueTint : C.slab) : C.paper, stroke: on ? (real ? C.blue : C.ink) : C.grid, lw: 1.1, dash: real ? null : [3, 3] });
-    g.text(8, y + 21, name, { size: 11, weight: 700, color: on ? (real ? C.blueText : C.ink) : C.muted });
-    lines.slice(0, 2).forEach((ln, k) => g.text(78, y + (lines.length > 1 ? 15 : 21) + k * 13, ln, { size: 10.5, mono: true, color: on ? C.ink : C.muted }));
+  let sy = 22;
+  steps.forEach(([name, cmd, at, real]) => {
+    const on = s.run >= 2 && t >= at, lines = wrap(cmd, sw - 90, 10.5, true), h = Math.max(34, 10 + lines.length * 13 + 4);
+    g.rect(0, sy, sw, h, { r: 6, fill: on ? (real ? C.blueTint : C.slab) : C.paper, stroke: on ? (real ? C.blue : C.ink) : C.grid, lw: 1.1, dash: real ? null : [3, 3] });
+    g.text(8, sy + h / 2 + 4, name, { size: 11, weight: 700, color: on ? (real ? C.blueText : C.ink) : C.muted });
+    lines.forEach((ln, k) => g.text(78, sy + h / 2 + 4 - (lines.length - 1) * 6.5 + k * 13, ln, { size: 10.5, mono: true, color: on ? C.ink : C.muted }));
+    sy += h + 6;
   });
-  const noteY = para(g, 0, 22 + 7 * 40 + 8, '실선 = 스크립트에 실제 코드 · 점선 = 주석 또는 다른 글(G02)의 명령', sw, { size: 10.5, color: C.muted });
+  const noteY = para(g, 0, sy + 8, '실선 = 스크립트에 실제 코드 · 점선 = 주석 또는 다른 글(G02)의 명령', sw, { size: 10.5, color: C.muted });
   // 실행 기록
   const lx = wide ? sw + 20 : 0, ly = wide ? 22 : noteY + 26, lw = wide ? w - lx : w;
   g.rect(lx, ly, lw, 110, { r: 8, fill: C.bg, stroke: C.line, lw: 1 });
   g.text(lx + 10, ly + 18, '실행 기록', { size: 11, weight: 700 });
-  const logs: [number, string, string][] = [[A05.same, '[실행 1] Nothing to do!!!', C.muted], [A05.diff, '[실행 2] 변경 감지', C.blueText], [A05.pull, '[실행 2] Pull Request', C.blueText], [A05.kill, '[실행 2] 기존 프로세스 종료', C.redText], [A05.start, '[실행 2] 새 프로세스 기동', C.greenText]];
+  // 원문 echo 문자열(Nothing to do!!!, Pull Request) 외의 줄은 설명용
+  const logs: [number, string, string][] = [[A05.same, '[실행 1] Nothing to do!!!', C.muted], [A05.diff, '[실행 2] 변경 감지(설명용)', C.blueText], [A05.pull, '[실행 2] Pull Request', C.blueText], [A05.kill, '[실행 2] 프로세스 종료(설명용)', C.redText], [A05.start, '[실행 2] 새 프로세스(설명용)', C.greenText]];
   logs.forEach(([at, txt, color], i) => { if (t >= at) g.text(lx + 10, ly + 36 + i * 15, txt, { size: 10.5, mono: true, color, alpha: appear(t, at) }); });
   // 프로세스 시간줄: 기존 → 빈 구간 → 새 프로세스
   const ty = (wide ? Math.max(noteY, ly + 110) : ly + 110) + 30, X0 = 0, X1 = w, xAt = (ms: number) => X0 + (X1 - X0) * (ms - A05.cron2) / (A05.end - A05.cron2);
@@ -290,9 +299,9 @@ function asgV2(w: number, t: number): LessonFrame {
   const py = ay + (wide ? ih : 2 * ih + gap) + 24;
   const head = para(g, 0, py, `ASG · conference-lt Latest(1) · 원하는 ${s.desired} · 최소 1 · 최대 4`, w, { size: 11, weight: 700 });
   g.text(0, head + 22, '종료 정책 순서 · 기본 휴지 300초', { size: 11, weight: 700 });
-  const pol = ['① 가장 오래된 시작 템플릿(v1 하나뿐이라 같음)', '② 가장 오래된 인스턴스 → EC2 1', '③ 기본값'];
+  const pol = ['먼저 AZ 균형: 2대인 2a에서 줄임', '① 가장 오래된 시작 템플릿(v1 하나뿐이라 같음)', '② 가장 오래된 인스턴스 → EC2 1', '③ 기본값'];
   let yy = head + 22;
-  pol.forEach((ln, i) => { const hit = i === 1 && t >= A06.scaleIn; yy = para(g, 8, yy + 18, ln, w - 8, { size: 11, weight: hit ? 700 : 400, color: hit ? C.redText : C.ink }); });
+  pol.forEach((ln, i) => { const hit = i === 2 && t >= A06.scaleIn; yy = para(g, 8, yy + 18, ln, w - 8, { size: 11, weight: hit ? 700 : 400, color: hit ? C.redText : C.ink }); });
   const y = para(g, 0, yy + 28, '새 인스턴스 AZ(2a)·CPU 값·헬스 체크 기준은 설명용입니다.', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
@@ -303,7 +312,7 @@ function modulesV2(w: number, t: number): LessonFrame {
   // 왼쪽(좁은 폭: 위): S3와 사용자 데이터
   const lw = wide ? 250 : w;
   card(g, 0, 0, lw, [{ text: 'S3 · [S3버킷 경로]' }, { text: 'config.json', mono: true }, { text: 'conference-0.0.1-SNAPSHOT.jar', mono: true }], { tone: 'orange', h: 62 });
-  g.text(0, 84, 'EC2 사용자 데이터(conference 예)', { size: 11, weight: 700 });
+  g.text(0, 84, 'EC2 사용자 데이터 · 명령 요약(… 생략)', { size: 11, weight: 700 });
   // 명령이 길면 줄을 나눠 모두 그린다(잘라내지 않음)
   let uy = 94;
   A07_USERDATA.forEach((ln, i) => {
@@ -342,16 +351,16 @@ const infraOnly = { A01: vpcV2, A02: tlsV2, A03: dns01V2, A04: profileV2, A05: d
 function collectV2(w: number, t: number): LessonFrame {
   const g = draw(), s = o01(t), wide = w >= 560;
   const top0 = para(g, 0, 12, 'EC2 · CloudWatch agent(config.json 예시, 60초)', w, { size: 12, weight: 700 }) - 12;
-  const rows: [string, string, string, number, Tone | 'none'][] = [
-    ['disk · mem_available · netstat', '메트릭 · agent', '지표(namespace 원문 없음)', O01.metrics[1], 'blue'],
-    ['/var/log/syslog', '로그 · agent', '로그 그룹 syslog / {instance_id}', O01.logs[1], 'orange'],
-    ['Spring 앱 · Micrometer', '메트릭 · 앱이 직접', 'namespace brainbackdoor', O01.micrometer[1], 'blue'],
+  const rows: [string, string, string, readonly [number, number], Tone | 'none'][] = [
+    ['disk · mem_available · netstat', '메트릭 · agent', '지표(namespace 원문 없음)', O01.metrics, 'blue'],
+    ['/var/log/syslog', '로그 · agent', '로그 그룹 syslog / {instance_id}', O01.logs, 'orange'],
+    ['Spring 앱 · Micrometer', '메트릭 · 앱이 직접', 'namespace brainbackdoor', O01.micrometer, 'blue'],
     ['EC2 기본 지표', 'CPU · Network · EBS', 'AWS/EC2', O01.ec2, 'blue'],
-    ['log/file.log(logback)', '로그', '수집 설정 없음', O01.missing, 'none'],
-    ['/var/log/nginx(마운트)', '로그', '수집 설정 없음', O01.missing, 'none'],
+    ['log/file.log(logback)', '로그', '수집 설정 없음', [O01.missing, O01.missing], 'none'],
+    ['/var/log/nginx(마운트)', '로그', '수집 설정 없음', [O01.missing, O01.missing], 'none'],
   ];
   const srcW = wide ? w * 0.44 : w, dstX = wide ? srcW + 40 : 18, dstW = wide ? w - dstX : w - 18, rh = wide ? 40 : 76;
-  rows.forEach(([src, kind, dst, at, tone], i) => {
+  rows.forEach(([src, kind, dst, [from, at], tone], i) => {
     const y = top0 + 24 + i * (rh + 8), on = t >= at, miss = tone === 'none';
     card(g, 0, y, srcW, [{ text: src, mono: src.startsWith('/') || src.startsWith('log') }, { text: kind, color: C.muted }], { h: wide ? rh : 38 });
     const dy = wide ? y : y + 44, dh = wide ? rh : 30;
@@ -361,7 +370,7 @@ function collectV2(w: number, t: number): LessonFrame {
     if (!wide) g.line(9, y + 38, 9, dy + dh / 2, { stroke: on ? (miss ? C.red : TONE[tone].line) : C.grid, lw: 1, dash: on && !miss ? null : [3, 3] });
     else arrow(g, p, q, { stroke: on ? (miss ? C.red : TONE[tone].line) : C.grid, lw: 1.1, size: 5, dash: on && !miss ? null : [3, 3] });
     if (on && miss) mark(g, wide ? (p.x + q.x) / 2 : 9 + 1, wide ? p.y : q.y - 12, false, appear(t, at));
-    if (!miss) travel(g, t, p, q, at - 700, at, kind.startsWith('로그') ? '로그' : '지표', tone === 'orange' ? 'orange' : 'blue', { dot: !wide });
+    if (!miss) travel(g, t, p, q, from, at, kind.startsWith('로그') ? '로그' : '지표', tone === 'orange' ? 'orange' : 'blue', { dot: !wide });
   });
   const by = top0 + 24 + rows.length * (rh + 8) + 14;
   g.text(0, by + 8, '대시보드', { size: 11, weight: 700, color: s.dash ? C.ink : C.muted });
@@ -393,8 +402,8 @@ function observeV2(w: number, t: number): LessonFrame {
   g.text(0, sy, '실행 전체 통계', { size: 11, weight: 700, color: s.stats ? C.ink : C.muted });
   const L = O02_LATENCY, a = appear(t, O02.stats), rows: [string, string[], string][] = [
     ['오류', ['No data(0으로 단정하지 않음)'], C.muted],
-    ['지연', wide ? [`mean ${L.mean} · p95 ${L.p95} · p90 ${L.p90} ms`, `min ${L.min} · med ${L.med} · max ${L.max} ms`] : [`mean ${L.mean} · p95 ${L.p95}`, `min ${L.min} · max ${L.max} ms`], C.orangeText],
-    ['checks', wide ? ['logged in successfully 10/10', 'retrieved member 10/10'] : ['로그인 10/10', '조회 10/10'], C.greenText],
+    ['지연', wide ? [`mean ${L.mean} · p95 ${L.p95} · p90 ${L.p90} ms`, `min ${L.min} · med ${L.med} · max ${L.max} ms`] : [`mean ${L.mean} · p95 ${L.p95}`, `p90 ${L.p90} · med ${L.med}`, `min ${L.min} · max ${L.max} ms`], C.orangeText],
+    ['checks', ['logged in successfully 10/10', 'retrieved member 10/10'], C.greenText],
   ];
   let y = sy + 10;
   rows.forEach(([name, lines, color], i) => {
@@ -419,7 +428,6 @@ function apmV2(w: number, t: number): LessonFrame {
   const cw = wide ? (w - 2 * 34 - 90) / 2 : (w - 10) / 2, ry = 22;
   const userP = wide ? { x: 40, y: ry + 30 } : { x: w / 2, y: ry + 12 };
   pill(g, userP.x, userP.y, 'USER', { size: 11, h: 24 });
-  const front = wide ? { x: 90 + 34 - 10, y: ry } : { x: w / 4 - cw / 2 + 0, y: ry + 44 };
   const fx = wide ? 114 : 0, fy = wide ? ry : ry + 44, fw = wide ? cw : w;
   card(g, fx, fy, fw, [{ text: 'front-api', mono: true }, { text: '-javaagent · agentId front-api', mono: true, color: C.muted }], { tone: 'blue', h: 58 });
   const mx = wide ? fx + fw + 34 : 0, my = wide ? ry : fy + 58 + 34, mw = wide ? cw : (w - 10) / 2;
@@ -429,6 +437,9 @@ function apmV2(w: number, t: number): LessonFrame {
   const uq: [Pt, Pt] = wide ? [{ x: userP.x + 28, y: userP.y }, { x: fx - 3, y: fy + 29 }] : [{ x: userP.x, y: userP.y + 13 }, { x: w / 2, y: fy - 3 }];
   const fm: [Pt, Pt] = wide ? [{ x: fx + fw + 3, y: fy + 20 }, { x: mx - 3, y: my + 20 }] : [{ x: mw / 2, y: fy + 58 + 3 }, { x: mw / 2, y: my - 3 }];
   arrow(g, ...uq, { stroke: C.blue, lw: 1.2, size: 5 }); arrow(g, ...fm, { stroke: C.blue, lw: 1.2, size: 5 });
+  // servermap의 front-api → conference-api 경로(정적)
+  const fc: [Pt, Pt] = wide ? [{ x: fx + fw + 3, y: fy + 44 }, { x: c2x - 3, y: c2y + 20 }] : [{ x: c2x + mw / 2, y: fy + 58 + 3 }, { x: c2x + mw / 2, y: c2y - 3 }];
+  arrow(g, ...fc, { stroke: C.blue, lw: 1.2, size: 5 });
   travel(g, t, ...uq, O03.user[0], O03.user[1], '요청', 'blue');
   travel(g, t, ...fm, O03.call[0], O03.call[1], '', 'blue', { dot: true });
   travel(g, t, fm[1], fm[0], O03.reply[0], O03.reply[1], '', 'blue', { dot: true });
@@ -447,7 +458,6 @@ function apmV2(w: number, t: number): LessonFrame {
   for (let i = 0; i < 2; i++) { const a = bp(i), b = bp(i + 1); const p: Pt = wide ? { x: a.x + bw + 3, y: a.y + bh / 2 } : { x: w / 2, y: a.y + bh + 3 }, q: Pt = wide ? { x: b.x - 3, y: b.y + bh / 2 } : { x: w / 2, y: b.y - 3 }; arrow(g, p, q, { stroke: (i === 0 ? s.stored : s.shown) ? C.orange : C.grid, lw: 1.2, size: 5 }); }
   travel(g, t, wide ? { x: bp(0).x + bw + 3, y: bp(0).y + bh / 2 } : { x: w / 2, y: bp(0).y + bh + 3 }, wide ? { x: bp(1).x - 3, y: bp(1).y + bh / 2 } : { x: w / 2, y: bp(1).y - 3 }, O03.store[0], O03.store[1], '', 'orange', { dot: true });
   const end = wide ? bp(0).y + bh : bp(2).y + bh;
-  void front;
   const y = para(g, 0, end + 26, 'sampling-rate=1이면 모든 요청을 수집합니다(주석: 20 → 5%, 100 → 1%). 저장소 방향은 Pinpoint 구조 기준입니다.', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
@@ -522,10 +532,11 @@ function shapesV2(w: number, t: number): LessonFrame {
   const g = draw(), s = o06(t), wide = w >= 560;
   const cw = wide ? (w - 2 * 24) / 3 : w, ch = 120;
   // 모양(시간 0~1, VU): 원본 그래프 근사
+  // [이름, 부제, 축 최댓값 VU, 모양(시간 0~1, VU), 진행, 색]
   const charts: [string, string, number, [number, number][], number, Tone][] = [
-    ['Smoke', '1 VU', 2, [[0, 0], [0.05, 1], [0.95, 1], [1, 0]], s.smoke, 'green'],
-    ['Load', '0 → 100 VU · 유지', 120, [[0, 0], [0.33, 100], [0.95, 100], [1, 60]], s.load, 'blue'],
-    ['Stress', '100 → 200 → 300 → 400', 450, [[0, 0], [0.04, 100], [0.17, 100], [0.18, 200], [0.32, 200], [0.33, 300], [0.47, 300], [0.48, 400], [0.62, 400], [1, 0]], s.stress, 'orange'],
+    ['Smoke', '1 VU', 1, [[0, 0], [0.05, 1], [0.95, 1], [1, 0]], s.smoke, 'green'],
+    ['Load', '0 → 100 VU · 유지', 100, [[0, 0], [0.33, 100], [0.84, 100], [1, 42]], s.load, 'blue'],
+    ['Stress', '100 → 200 → 300 → 400', 400, [[0, 0], [0.04, 100], [0.17, 100], [0.18, 200], [0.32, 200], [0.33, 300], [0.47, 300], [0.48, 400], [0.62, 400], [1, 0]], s.stress, 'orange'],
   ];
   charts.forEach(([name, sub, ymax, pts, prog, tone], i) => {
     const x = wide ? i * (cw + 24) : 0, y = wide ? 0 : i * (ch + 56);
@@ -533,16 +544,15 @@ function shapesV2(w: number, t: number): LessonFrame {
     g.text(x + cw, y + 12, sub, { size: 10.5, align: 'right', color: C.muted });
     const px = x + 26, py = y + 22, pw = cw - 30, ph = ch - 34;
     g.line(px, py, px, py + ph, { stroke: C.line, lw: 1 }); g.line(px, py + ph, px + pw, py + ph, { stroke: C.line, lw: 1 });
-    g.text(px - 4, py + 8, String(ymax === 2 ? 1 : ymax === 120 ? 100 : 400), { size: 10, mono: true, align: 'right', color: C.muted });
+    g.text(px - 4, py + 8, String(ymax), { size: 10, mono: true, align: 'right', color: C.muted });
     g.text(px + pw, py + ph + 14, '시간(근사)', { size: 10, align: 'right', color: C.muted });
-    const P = ([u, v]: [number, number]) => ({ x: px + u * pw, y: py + ph - (v / (ymax === 2 ? 1 : ymax === 120 ? 100 : 400)) * (ph - 8) });
+    const P = ([u, v]: [number, number]) => ({ x: px + u * pw, y: py + ph - (v / ymax) * (ph - 8) });
     if (prog > 0) {
       const out: Pt[] = [];
       for (let k = 0; k < pts.length; k++) { const [u] = pts[k]; if (u <= prog) out.push(P(pts[k])); else { const [u0, v0] = pts[k - 1]; const f = (prog - u0) / (u - u0); out.push(P([prog, v0 + (pts[k][1] - v0) * f])); break; } }
       if (out.length > 1) g.path('M' + out.map(q => `${q.x.toFixed(2)} ${q.y.toFixed(2)}`).join('L'), { stroke: TONE[tone].line, lw: 2 });
     }
     if (i === 1 && prog >= 1) g.text(px + pw * 0.97, py + ph - 26, '하강 잘림', { size: 10, align: 'right', color: C.muted });
-    if (i === 2 && prog >= 1) { g.rect(px + pw * 0.48, py + 2, pw * 0.14, 14, { r: 3, fill: C.redTint, alpha: appear(t, O06.stress[1]) }); g.text(px + pw * 0.55, py + 13, '한계?', { size: 10, align: 'center', color: C.redText, alpha: appear(t, O06.stress[1]) }); }
   });
   const end = wide ? ch : 3 * (ch + 56) - 56;
   let y = para(g, 0, end + 22, '모양은 원본 그래프에서 읽은 근사입니다. 지연·오류 결과 곡선은 원문에 없어 그리지 않았습니다.', w, { size: 12, color: C.muted });
@@ -611,14 +621,15 @@ function breakerV2(w: number, t: number): LessonFrame {
   states.forEach(([name, at, tone], i) => { const on = t >= at, x = wide ? i * (sw + 18) : (i % 2) * (sw + 18), y = wide ? sy : sy + Math.floor(i / 2) * 34; g.rect(x, y, sw, 26, { r: 13, fill: on ? TONE[tone].tint : C.paper, stroke: on ? TONE[tone].line : C.grid, lw: 1, dash: on ? null : [3, 3] }); g.text(x + sw / 2, y + 17, name, { size: 11, mono: true, weight: 700, align: 'center', color: on ? TONE[tone].text : C.muted }); });
   const ey = sy + (wide ? 26 : 60) + 22;
   let y = para(g, 0, ey, '목표: VUser별 iteration time 100ms 이하. 실패율 임계·대기 시간·대수는 원문에 없어 설명용입니다.', w, { size: 12, color: C.muted });
-  y = para(g, 0, y + 20, '증설한 대수만큼 처리량이 늘지는 않습니다(공유 DB 등). "n대 증설 시 rps"는 측정 과제입니다.', w, { size: 12, color: C.muted });
+  y = para(g, 0, y + 20, '증설한 대수만큼 처리량이 그대로 늘지 않을 수 있습니다(공유 DB 등). "n대 증설 시 rps"는 측정 과제입니다.', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
 /* ---------- O09 동기·비동기와 큐 ---------- */
 function queueV2(w: number, t: number): LessonFrame {
   const g = draw(), s = o09(t), wide = w >= 560;
-  pill(g, wide ? w - 90 : w / 2, 12, '개념 예시 · EDA 실습 미완성', { size: 10.5, h: 22, fill: C.paper, stroke: C.faint, color: C.muted });
+  const badge = '개념 예시 · 원문에 구현 없음(취소선)', bw = textW(badge, 10.5) + 22;
+  pill(g, wide ? w - bw / 2 - 1 : w / 2, 12, badge, { size: 10.5, h: 22, fill: C.paper, stroke: C.faint, color: C.muted });
   const lw = wide ? 92 : 64, x0 = lw, x1 = w - 8, X = (sec: number) => lerp(x0, x1, sec / 3.5), top = 34, lh = 40;
   const lanes = ['동기', '비동기', '워커'];
   lanes.forEach((ln, i) => { const y = top + i * lh; g.rect(0, y, w, lh - 4, { r: 6, fill: i % 2 ? C.paper : C.bg }); g.text(8, y + 22, ln, { size: 11, weight: 700 }); });

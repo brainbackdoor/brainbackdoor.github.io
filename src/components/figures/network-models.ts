@@ -33,7 +33,7 @@ export const networkInfo = [
         "duration": 9500,
         "steps": [
             2500,
-            4100,
+            4300,
             6500
         ],
         "caption": "ISN 1,000 / 5,000 · DATA 1,460 B · rwnd 8,192 B. 서버 앱은 수신 데이터를 처리합니다. 연출 시간은 원본의 28/56/84 ms와 구분합니다.",
@@ -78,7 +78,7 @@ export const networkInfo = [
         "duration": 10500,
         "steps": [
             3000,
-            4900,
+            5100,
             7500
         ],
         "caption": "SACK·RACK을 생략한 고전 Reno 예제. 빠른 재전송 쪽에만 후속 segment 2·3·4가 있습니다. 타이머는 연출용입니다.",
@@ -100,7 +100,7 @@ export const networkInfo = [
         "final": 5500,
         "duration": 8500,
         "steps": [
-            1300,
+            1200,
             3500,
             5500
         ],
@@ -165,7 +165,7 @@ export const networkInfo = [
         "duration": 13500,
         "steps": [
             4000,
-            6600,
+            6800,
             10500
         ],
         "caption": "정상 FIN 종료에서 마지막 ACK만 손실. 능동 종료 측 TIME_WAIT, 수동 종료 측 FIN 재전송. 2MSL은 화면에서 압축하며 OS의 초 단위 기본값을 단정하지 않습니다.",

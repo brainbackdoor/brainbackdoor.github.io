@@ -999,8 +999,9 @@ function shellPanel(g: G, ox: number, oy: number, pw: number, t: number, nohup: 
   const py = oy + 28 + th + 66, pc = { x: ox + pw * 0.34, y: py };
   if (t >= C09.start - C09.move) {
     const q = ease.inOut(span(t, C09.start - C09.move, C09.start)), dead = !alive && t >= C09.hup;
-    const a = dead ? 1 - 0.5 * span(t, C09.hup, C09.hup + 400) : q;
-    const w = procBox(g, pc.x, lerp(oy + 28 + th, py, q), 'java', { running: alive, stroke: dead ? C.red : C.ink, alpha: a });
+    // 종료된 프로세스는 흐리게 하지 않고 회색 글자·빨간 테두리·×로 표시한다(정적 장면에서도 4.5:1)
+    const a = dead ? 1 : q;
+    const w = procBox(g, pc.x, lerp(oy + 28 + th, py, q), 'java', { running: alive, stroke: dead ? C.red : C.ink, color: dead ? C.muted : C.ink, alpha: a });
     // fd 1·2: 터미널 또는 로그 파일
     if (s.started) {
       const fx = pc.x + w / 2, fy = py, lx = ox + pw - textW('[로그파일명]', 12, true) - 24, ly = py + 40;
@@ -1257,9 +1258,11 @@ function coroutinePanel(g: G, ox: number, oy: number, pw: number, t: number, kt:
   g.text(ox + pw - 10, hy + 18, 'heap', { size: 12, weight: 600, align: 'right', color: C.muted });
   if (t >= T07.wait) g.text(ox + 12, hy + 18, kt ? '실제 suspend 지점에서 대기' : '지원되는 blocking I/O에서 대기', { size: 12, color: C.orangeText });
   if (saved || t >= T07.resume) {
-    const q = saved ? ease.out(span(t, T07.wait, T07.wait + 300)) : 0.3, bw = Math.min(140, pw - 150);
-    if (kt) { g.rect(hx, hy + 32, bw, 40, { r: 6, fill: C.orangeTint, stroke: C.orange, lw: 1.3, alpha: q }); g.text(hx + 10, hy + 49, 'continuation', { size: 12, mono: true, color: C.orangeText, alpha: q }); g.text(hx + 10, hy + 65, 'label · 지역 변수', { size: 12, color: C.orangeText, alpha: q }); }
-    else { for (let i = 0; i < 3; i++) g.rect(hx, hy + 34 + i * 12, bw, 10, { r: 2, fill: C.orangeTint, stroke: C.orange, lw: 1.1, alpha: q }); g.text(hx + bw + 8, hy + 56, 'stack 보관', { size: 12, color: C.orangeText, alpha: q }); }
+    // 재개 뒤에는 흐리게 하지 않고 점선·회색으로 '보관했다가 해제됨'을 남긴다(정적 장면에서도 4.5:1)
+    const q = saved ? ease.out(span(t, T07.wait, T07.wait + 300)) : 1, bw = Math.min(140, pw - 150);
+    const fill = saved ? C.orangeTint : C.paper, stroke = saved ? C.orange : C.line, ink = saved ? C.orangeText : C.muted, dash = saved ? null : [3, 3];
+    if (kt) { g.rect(hx, hy + 32, bw, 40, { r: 6, fill, stroke, lw: 1.3, dash, alpha: q }); g.text(hx + 10, hy + 49, 'continuation', { size: 12, mono: true, color: ink, alpha: q }); g.text(hx + 10, hy + 65, 'label · 지역 변수', { size: 12, color: ink, alpha: q }); }
+    else { for (let i = 0; i < 3; i++) g.rect(hx, hy + 34 + i * 12, bw, 10, { r: 2, fill, stroke, lw: 1.1, dash, alpha: q }); g.text(hx + bw + 8, hy + 56, 'stack 보관', { size: 12, color: ink, alpha: q }); }
   }
   // 정체성 토큰: A에서 실행 → heap에 보관 → B에서 재개 → 완료
   const A = { x: ox + sw / 2, y: sy + 32 }, B = { x: ox + sw + 12 + sw / 2, y: sy + 32 }, Hp = { x: ox + pw - 44, y: hy + 44 }, label = kt ? 'C1' : 'VT1';

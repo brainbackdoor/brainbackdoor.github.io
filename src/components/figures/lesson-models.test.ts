@@ -68,15 +68,18 @@ function pathBox(d: string) {
 }
 test('small drawing labels maintain readable contrast throughout each scenario',()=>{
  const all=[...lessonInfo.map(i=>[lessonRenderers[i.id],i] as const),...networkInfo.map(i=>[networkRenderers[i.id],i] as const),...systemInfo.map(i=>[systemRenderers[i.id],i] as const)];
- for(const [draw,item] of all)for(const width of [650,284])for(const time of [0,...item.steps,item.final,1700,3500,4700,6500]) {
+ const mix=(fg: string,bg: string,a: number)=>{const h=(c: string)=>c.length===4?'#'+c.slice(1).split('').map(x=>x+x).join(''):c;const f=h(fg),b=h(bg);return '#'+[1,3,5].map(i=>Math.round(parseInt(f.slice(i,i+2),16)*a+parseInt(b.slice(i,i+2),16)*(1-a)).toString(16).padStart(2,'0')).join('');};
+ for(const [draw,item] of all)for(const width of [650,284,259])for(const time of [0,...item.steps,item.final,1700,3500,4700,6500]) {
+  // 정적 장면(단계·완료)에서는 흐린 글자도 투명도를 섞은 실제 색으로 읽는다. 재생 중 다른 시각은 페이드 중인 글자를 제외한다
+  const still=(item.steps as readonly number[]).includes(time)||time===item.final;
   const shapes: {x:number;y:number;w:number;h:number;fill:string}[]=[];
   for(const op of (draw as (w:number,t:number)=>LessonFrame)(width,time).ops) {
    if(op.type==='rect')shapes.push(op);
    if(op.type==='path'&&op.fill!=='none'&&(op.alpha??1)>.5)shapes.push({...pathBox(op.d),fill:op.fill});
    if(op.type==='circle'&&op.color!=='none'&&(op.alpha??1)>.5)shapes.push({x:op.x-op.r,y:op.y-op.r,w:op.r*2,h:op.r*2,fill:op.color});
-   if(op.type==='text'&&op.text.trim()&&(op.alpha??1)>.5) {
+   if(op.type==='text'&&op.text.trim()&&(op.alpha??1)>(still?.05:.5)) {
     const bg=shapes.findLast(r=>op.x>=r.x&&op.x<=r.x+r.w&&op.y-2>=r.y&&op.y-2<=r.y+r.h)?.fill??'#ffffff';
-    const l1=luminance(op.color),l2=luminance(bg);
+    const l1=luminance(still?mix(op.color,bg,op.alpha??1):op.color),l2=luminance(bg);
     assert.ok((Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05)>=4.5,`Unreadable label in ${item.id} at ${width}/${time}: ${op.text} (${op.color} on ${bg})`);
    }
   }

@@ -6,6 +6,8 @@ import LessonFigure from './LessonFigure';
 import TcpRecoveryFigure from './TcpRecoveryFigure';
 import { cacheState, lessonInfo, lockState, queueState, sparkState } from './lesson-models';
 import { networkInfo, networkState } from './network-models';
+import { systemInfo } from './system-models';
+import { systemRenderers } from './systemCanvas';
 
 const deployedIds = [...lessonInfo, ...networkInfo].map(item => item.id);
 const svgMarkup = (html: string) => (html.match(/<svg[\s\S]*?<\/svg>/g) ?? []).join('\n').replace(/id="[^"]*"|aria-labelledby="[^"]*"/g, '');
@@ -259,6 +261,44 @@ describe('deployed figures v2 (R04)', () => {
     const arrows = ops.map((o, i) => o.type === 'path' && o.stroke === FIGURE_COLORS.green && /^M[\d.]+ [\d.]+L/.test(o.d) ? i : -1).filter(i => i >= 0);
     expect(arrows.length).toBeGreaterThan(0);
     expect(Math.max(...arrows)).toBeLessThan(at);
+  });
+
+  it('draws no element of a static step or final scene fully transparent', () => {
+    // 단계 시각이 사건 시각과 같으면 그 사건에 나타나는 요소가 투명하게 남는다
+    const all = [...items.map(i => [renderers[i.id], i] as const), ...systemInfo.map(i => [systemRenderers[i.id], i] as const)];
+    const issues: string[] = [];
+    for (const [r, item] of all) for (const w of [650, 284]) for (const t of [...item.steps, item.final]) for (const o of r(w, t).ops) {
+      if (o.type === 'text' && o.text.trim() && (o.alpha ?? 1) < 0.05) issues.push(`${item.id} ${t} text ${o.text}`);
+      if (o.type === 'path' && (o.fill !== 'none' || o.stroke !== 'none') && o.alpha < 0.05) issues.push(`${item.id} ${t} path`);
+    }
+    expect([...new Set(issues)]).toEqual([]);
+  });
+
+  it('keeps every shape inside the figure at every article width', () => {
+    const box = (d: string) => { let x = 0; const xs: number[] = []; for (const [, cmd, args] of d.matchAll(/([MLHVAZ])([^MLHVAZ]*)/g)) { const n = args.trim().split(/[\s,]+/).filter(Boolean).map(Number); if (cmd === 'H') x = n[n.length - 1]; else if (cmd !== 'V' && cmd !== 'Z') x = n[n.length - 2]; if (cmd !== 'Z') xs.push(x); } return [Math.min(...xs), Math.max(...xs)]; };
+    const issues = new Set<string>();
+    for (const item of items) for (const w of ARTICLE_WIDTHS) for (const t of loop(item.id, 250)) for (const o of renderers[item.id](w, t).ops) {
+      if (o.type !== 'path') continue;
+      const [x1, x2] = box(o.d);
+      if (x1 < -1 || x2 > w + 1) issues.add(`${item.id} ${w}`);
+    }
+    expect([...issues]).toEqual([]);
+  });
+
+  it('shows a partition count in S03 only from the count event', () => {
+    for (const t of loop('S03', 50)) expect(texts(renderers.S03(650, t)).some(o => o.text === '0'), `${t}`).toBe(sparkState(t).result !== null);
+  });
+
+  it('keeps the Reno row of N08 free of flow dots and names the BBR values as estimates', () => {
+    for (const t of loop('N08', 250)) {
+      const f = renderers.N08(650, t), split = texts(f).find(o => o.text === 'BBRv1 · 관측 모델')!.y;
+      expect(f.ops.filter(o => o.type === 'circle' && o.r === 2.4 && o.y < split).length, `${t}`).toBe(0);
+      expect(has(f, '추정: BtlBw 100 Mbps / RTprop 40 ms')).toBe(true);
+    }
+  });
+
+  it('does not report gzip compression in W02 before the compression span starts', () => {
+    for (const t of loop('W02', 50)) if (t < 1600) expect(texts(renderers.W02(650, t)).some(o => o.text.includes('압축 중')), `${t}`).toBe(false);
   });
 
   it('keeps visible labels apart and inside the figure at every article width', () => {

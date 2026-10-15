@@ -156,7 +156,7 @@ export const systemInfo = [
     "final": 9000,
     "duration": 12000,
     "steps": [
-      2300,
+      2600,
       6200,
       9000
     ],
@@ -262,7 +262,7 @@ export const systemInfo = [
     "final": 5000,
     "duration": 8000,
     "steps": [
-      2520,
+      2700,
       3400,
       5000
     ],

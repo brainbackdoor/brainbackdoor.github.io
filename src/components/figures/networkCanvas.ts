@@ -1,5 +1,5 @@
 import { networkState as state, nagleAckTiming, probeGains, type NetworkFigureId } from './network-models';
-import { C, TONE, appear, arrow, cursor, draw, ease, frame, host, label, lerp, para, pill, seq, span, textW, token, twoUp, wrap, type G, type LaneState, type LessonFrame, type Msg, type Tone } from './lessonCanvas';
+import { C, TONE, appear, arrow, cursor, draw, ease, frame, host, hostWidth, label, lerp, para, pill, seq, span, textW, token, twoUp, wrap, type G, type LaneState, type LessonFrame, type Msg, type Tone } from './lessonCanvas';
 
 /* 운영 network·HTTP 16종(R04 v2, 2026-10-14 승인): 사건 의미는 network-models에서 읽고 여기서는 형태·위치·전개만 계산한다. */
 const notes = (g: G, y: number, w: number, list: readonly (string | readonly [string, string])[]) => {
@@ -179,16 +179,19 @@ function pathRow(g: G, y: number, w: number, t: number, rate: number, queueFrac:
   g.line(sx + 56, y + 19, qx, y + 19, { stroke: C.line, lw: 1.2 });
   g.line(qx + qw, y + 19, rx, y + 19, { stroke: C.line, lw: 1.2 });
   // 보내는 속도: 점 간격이 좁을수록 빠르다(표현 전용 흐름)
-  const gapPx = 26 / rate;
-  for (let d = (t * 0.06) % gapPx; d < qx - sx - 60; d += gapPx) g.circle(sx + 60 + d, y + 19, 2.4, { fill: C.blue });
-  for (let d = (t * 0.06) % 26; d < rx - qx - qw - 6; d += 26) g.circle(qx + qw + 4 + d, y + 19, 2.4, { fill: C.blue });
+  // 보내는 속도: 점 간격이 좁을수록 빠르다(표현 전용 흐름). 모델에 속도가 없는 Reno 줄은 rate 0으로 점을 그리지 않는다
+  if (rate > 0) {
+    const gapPx = 26 / rate;
+    for (let d = (t * 0.06) % gapPx; d < qx - sx - 60; d += gapPx) g.circle(sx + 60 + d, y + 19, 2.4, { fill: C.blue });
+    for (let d = (t * 0.06) % 26; d < rx - qx - qw - 6; d += 26) g.circle(qx + qw + 4 + d, y + 19, 2.4, { fill: C.blue });
+  }
   return { qx, qw, rx };
 }
 function bbrV2(w: number, t: number): LessonFrame {
   const g = draw(), s = state('N08', t);
   // Reno
   g.text(0, 14, 'Reno · 손실 신호', { size: 13, weight: 700 });
-  const r = pathRow(g, 30, w, t, 1, 0);
+  const r = pathRow(g, 30, w, t, 0, 0);
   // 중복 ACK 세 개가 함께 돌아와 4200에 도착 → ssthresh 20 → 10
   const ay = 98;
   g.line(56, ay, r.rx, ay, { stroke: C.grid, lw: 1, dash: [3, 4] });
@@ -208,7 +211,7 @@ function bbrV2(w: number, t: number): LessonFrame {
   pathRow(g, y + 30, w, t, s.gain, s.queueBytes / 125000, `설명용 큐 ${s.queueBytes.toLocaleString()} B`);
   const oy = y + 98;
   g.rect(0, oy, Math.min(w, 300), 52, { r: 8, fill: C.blueTint, stroke: C.blue, lw: 1.2 });
-  g.text(12, oy + 21, '관측: BtlBw 100 Mbps / RTprop 40 ms', { size: 12, weight: 600, color: C.blueText });
+  g.text(12, oy + 21, '추정: BtlBw 100 Mbps / RTprop 40 ms', { size: 12, weight: 600, color: C.blueText });
   g.text(12, oy + 42, `BDP ${s.bbrBdp.toLocaleString()} B`, { size: 12, mono: true });
   // pacing gain 주기: 1.25 → 0.75 → 1.0 × 6
   const gy = oy + 76, cw = (w - 7 * 4) / 8;
@@ -283,13 +286,12 @@ function holV2(w: number, t: number): LessonFrame {
   // 수신 버퍼 칸과 앱: 바이트 순서대로만 앱에 넘긴다
   const y = geo.bottom + 40, appW = w >= 400 ? 92 : 64, slotW = (w - appW - 40) / 4;
   g.text(0, y - 12, '수신 버퍼 (바이트 순서)', { size: 12, weight: 600 });
-  const arrivedAt: Record<number, number> = { 1: 1700, 2: 6700, 3: 3300, 4: 4200 };
   [1, 2, 3, 4].forEach((n, i) => {
     const x = i * slotW, wait = s.buffer.includes(n), done = s.delivered.includes(n), missing = n === 2 && t >= 2500 && !done;
     const fill = done ? C.greenTint : wait ? C.orangeTint : C.paper, stroke = done ? C.green : wait ? C.orange : missing ? C.red : C.line;
     g.rect(x + 2, y, slotW - 6, 34, { r: 7, fill, stroke, lw: 1.3, dash: missing ? [4, 3] : null });
     const c = done ? C.greenText : wait ? C.orangeText : missing ? C.redText : C.muted;
-    g.text(x + 2 + (slotW - 6) / 2, y + 22, missing ? '2 누락' : String(n), { size: 12, mono: true, weight: 700, align: 'center', color: c, alpha: done || wait || missing ? 1 : t >= arrivedAt[n] ? 1 : 0.5 });
+    g.text(x + 2 + (slotW - 6) / 2, y + 22, missing ? '2 누락' : String(n), { size: 12, mono: true, weight: 700, align: 'center', color: c });
   });
   const ax = w - appW;
   g.rect(ax, y - 4, appW, 42, { r: 8, fill: s.delivered.length ? C.greenTint : C.paper, stroke: s.delivered.length ? C.green : C.line, lw: 1.3 });
@@ -407,9 +409,9 @@ function gzipV2(w: number, t: number): LessonFrame {
   const g = draw(), s = state('W02', t), T0 = 1000, T1 = 7400, ratio = s.gzipBytes / s.rawBytes;
   const lane = (y: number, gz: boolean) => {
     g.text(0, y + 14, gz ? 'Content-Encoding: gzip' : 'Content-Encoding: identity', { size: 12, weight: 700, mono: true });
-    const hw = 56, by = y + 50, mid = w / 2, half = mid - hw - 18, lx = hw + 10, rx = w - hw - 10;
-    host(g, hw / 2, by - 13, '서버', { min: hw });
-    host(g, w - hw / 2, by - 13, '브라우저', { min: hw });
+    const sw = hostWidth('서버'), bw = hostWidth('브라우저'), by = y + 50, mid = w / 2, lx = sw + 10, rx = w - bw - 10, half = Math.min(mid - lx, rx - mid) - 6;
+    host(g, sw / 2, by - 13, '서버');
+    host(g, w - bw / 2, by - 13, '브라우저');
     // 전송 선: 가운데 경계를 지난 바이트만 브라우저에 있다(같은 전송률)
     g.line(mid, by - 22, mid, by + 22, { stroke: C.ink, lw: 1.2, dash: [3, 3] });
     g.rect(lx, by - 11, mid - 6 - lx, 22, { r: 6, fill: C.bg });
@@ -422,7 +424,8 @@ function gzipV2(w: number, t: number): LessonFrame {
     const got = gz ? (s.gzipReceived ? lerp(ratio, 1, ease.inOut(span(t, 3400, 3900))) : ratio * sent) : sent;
     if (got > 0) g.rect(mid + 6, by - 11, half * got, 22, { r: 6, fill: done ? C.greenTint : decoding ? C.orangeTint : C.blueTint, stroke: done ? C.green : decoding ? C.orange : C.blue, lw: 1.3 });
     if (sent > 0 && sent < 1) for (let d = (t * 0.05) % 14; d < 12; d += 6) g.circle(mid - 6 + d, by, 1.8, { fill: C.blue });
-    const stat = gz ? (t < s.gzipSendAt ? '압축 중' : s.gzipReceived ? '수신 완료' : '전송 중') : (s.rawReceived ? '수신 완료' : t < 1600 ? '전송 전' : '전송 중');
+    // 압축 구간은 아래 시간 눈금과 같이 1600부터
+    const stat = t < 1600 ? '전송 전' : gz ? (t < s.gzipSendAt ? '압축 중' : s.gzipReceived ? '수신 완료' : '전송 중') : (s.rawReceived ? '수신 완료' : '전송 중');
     g.text(lx, by - 20, `${(gz ? s.gzipBytes : s.rawBytes).toLocaleString()} B 전송 · 상태: ${stat}`, { size: 12, weight: 600, color: C.blueText });
     const same = '같은 JSON 500행 · 원문 18,891 B', ty = by + 30 + (wrap(same, rx - mid - 6, 11).length - 1) * 18;
     if (done) para(g, mid + 6, by + 30, same, rx - mid - 6, { size: 11, weight: 600, color: C.greenText, alpha: appear(t, gz ? 3900 : 6900) });
@@ -499,7 +502,7 @@ function streamsV2(w: number, t: number): LessonFrame {
     g.text(x + 10, sy + 40, done ? '분배 완료' : '바이트 대기', { size: 11, color: done ? C.greenText : C.orangeText });
   });
   // 분배 화살표 위에 바탕을 깔아 계층 이름이 가려지지 않게 한다
-  label(g, 0, sy - 12, 'HTTP/2 분배 (TCP 위 계층)', { size: 12, weight: 600, align: 'left' });
+  label(g, 4, sy - 12, 'HTTP/2 분배 (TCP 위 계층)', { size: 12, weight: 600, align: 'left' });
   return frame(g, sy + 58, s.phase);
 }
 
@@ -518,10 +521,9 @@ function statusV2(w: number, t: number): LessonFrame {
       g.text(x, ry + 14, uri, { size: 12, mono: true, weight: 600 });
       const p = { x: x + 20, y: ry + 46 }, q = { x: bx - 6, y: ry + 46 };
       if (t >= 400) { if (t < 1200) { g.line(p.x, p.y, lerp(p.x, q.x, reach), p.y, { stroke: C.blue, lw: 1.5 }); token(g, lerp(p.x, q.x, reach), p.y, 'GET', 'blue', { solid: true, r: 9 }); } else arrow(g, p, q, { stroke: C.blue, lw: 1.5, size: 6 }); }
-      // 해석: 정상 endpoint(실선 경계, 데이터만 빔) / 대상 표현 없음(점선 경계, 비어 있음)
-      const ia = appear(t, 2000, 500);
-      g.rect(bx, ry + 26, bw, 40, { r: 8, fill: missing ? C.paper : C.bg, stroke: missing ? C.orange : C.blue, lw: 1.3, dash: missing ? [4, 3] : null, alpha: Math.max(0.35, ia) });
-      g.text(bx + 10, ry + 51, missing ? '대상 없음' : 'endpoint · 결과 0건', { size: 11, color: missing ? C.orangeText : C.blueText, alpha: Math.max(0.35, ia) });
+      // 해석: 정상 endpoint(실선 경계, 데이터만 빔) / 대상 표현 없음(점선 경계, 비어 있음). 두 전제는 처음부터 나란히 둔다
+      g.rect(bx, ry + 26, bw, 40, { r: 8, fill: missing ? C.paper : C.bg, stroke: missing ? C.orange : C.blue, lw: 1.3, dash: missing ? [4, 3] : null });
+      g.text(bx + 10, ry + 51, missing ? '대상 없음' : 'endpoint · 결과 0건', { size: 11, color: missing ? C.orangeText : C.blueText });
       // 응답 문서: 4000에 나타난다
       const ra = appear(t, 4000), code = s.ready ? (missing ? '404' : '200') : '—';
       g.text(x, ry + 92, '조회 결과 없음', { size: 11, color: C.muted });

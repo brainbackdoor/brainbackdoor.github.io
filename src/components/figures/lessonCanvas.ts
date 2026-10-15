@@ -165,8 +165,9 @@ export function cylinder(g: G, cx: number, top: number, w: number, h: number, o:
   g.path(`M${f2(cx - rx)} ${f2(top)}A${f2(rx)} ${ry} 0 1 0 ${f2(cx + rx)} ${f2(top)}A${f2(rx)} ${ry} 0 1 0 ${f2(cx - rx)} ${f2(top)}Z`, { fill: o.fill ?? C.paper, stroke: s, lw: 1.4, alpha: a });
 }
 // 끝점 상자: 송신·수신 같은 양 끝
+export const hostWidth = (name: string, min = 56) => Math.max(min, textW(name, 12) + 24);
 export function host(g: G, cx: number, y: number, name: string, o: Opt = {}) {
-  const w = Math.max(o.min ?? 56, textW(name, 12) + 24);
+  const w = hostWidth(name, o.min);
   g.rect(cx - w / 2, y, w, 26, { r: 7, fill: o.fill ?? C.paper, stroke: o.stroke ?? C.ink, lw: 1.3 });
   g.text(cx, y + 17.5, name, { size: 12, weight: 600, align: 'center', color: o.color ?? C.ink });
   return w;
@@ -191,8 +192,9 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
   const sw = sp.states ? sp.stateWidth ?? 0 : 0, gl = sp.gutters?.[0] ?? 0, gr = sp.gutters?.[1] ?? 0;
   const ax = sp.x + sw + gl + 10, bx = sp.x + sp.w - sw - gr - 10, top = sp.y + 40;
   const Y = (tt: number) => top + 10 + (tt - sp.t0) * sp.k, bottom = Y(sp.t1) + 10, mid = (ax + bx) / 2;
-  host(g, Math.max(sp.x + 28, ax), sp.y, sp.lanes[0]);
-  host(g, Math.min(sp.x + sp.w - 28, bx), sp.y, sp.lanes[1]);
+  // 끝점 상자는 생명선 위에 두되, 그림 밖으로 나가지 않게 실제 반폭만큼 안쪽으로 민다
+  host(g, Math.max(ax, sp.x + hostWidth(sp.lanes[0]) / 2), sp.y, sp.lanes[0]);
+  host(g, Math.min(bx, sp.x + sp.w - hostWidth(sp.lanes[1]) / 2), sp.y, sp.lanes[1]);
   for (const x of [ax, bx]) g.line(x, sp.y + 26, x, bottom, { stroke: C.line, lw: 1.2 });
   // 끝점 상태: 바깥 여백이 있으면 바깥에, 없으면 안쪽에 쓴다
   sp.states?.forEach((list, lane) => list.forEach(([at, name, tone], i) => {
@@ -310,7 +312,7 @@ function queuePanel(g: G, x: number, y: number, pw: number, t: number, cap: numb
   arrivalTimes.forEach((at, i) => {
     if (t < at - 400 || t >= at) return;
     const q = ease.inOut(span(t, at - 400, at)), tx2 = i < cap ? slotX(cap - 1 - i) : tx + 6;
-    token(g, lerp(inX + 8, tx2, q), cy, i + 1, i === 5 ? 'orange' : 'blue', { r: 10 });
+    token(g, lerp(inX + 12, tx2, q), cy, i + 1, i === 5 ? 'orange' : 'blue', { r: 10 });
   });
   // 아래 왼쪽: 손실 칸(가득 찬 입구에서 떨어진다), 아래 오른쪽: 수신 칸(처리된 순서)
   const ly = ty + th + 34;
@@ -538,7 +540,8 @@ function sparkV2(w: number, t: number): LessonFrame {
     if (t >= 8000) {
       const n = s.filtered ? s.filtered[p].length : 0, q = ease.inOut(span(t, 8000, 8400)), c = cell(p, 3);
       const c2 = cell(p, 2), P = hop({ x: c2.x + cellW - 12, y: c2.y + cellH / 2 }, { x: c.x + cellW / 2, y: c.y + cellH / 2 }, q, 26);
-      if (t < 8400) token(g, P.x, P.y, n, 'green', { solid: false });
+      // 이동 중에는 값을 싣지 않는다: partition count는 8400 사건부터 보인다
+      if (t < 8400) token(g, P.x, P.y, '…', 'green', { solid: false });
       else token(g, c.x + cellW / 2, c.y + cellH / 2, n, 'green', { solid: true });
     }
   }

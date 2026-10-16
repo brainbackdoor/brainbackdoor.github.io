@@ -2059,3 +2059,11 @@ registry 74개와 MDX의 `figureId` 74개가 서로 정확히 맞는다. 등록�
 
 - C07 제거 장면(약 9,050 ms)에서 컨테이너 내용과 'rm …' 안내가 0.5초 동안 서로 바뀌며 겹친다(둘 다 반투명). 정적 단계가 아니고 기준 시점부터 있던 교차 페이드라 그대로 둔다.
 - 유실 지점이 라벨을 비킬 자리가 없는 폭은 259 미만(N10 220 이하, W05 241 이하)뿐이다. 블로그 plot 폭은 259 이상이다.
+
+### 배포 (2026-10-17)
+
+- **병합과 push:** fast-forward(8cdef78 → `e3b083c`). 기본 checkout은 `.claude/launch.json` 외 변경이 없었다. 병합된 main에서 `pnpm test` 331, build 332를 다시 확인하고 push했다. 원문 대조(`verify.py`)는 원문 캐시가 지워져 돌리지 못했고, 위 3절의 대체 비교로 갈음했다.
+- **워크플로:** "Deploy to GitHub Pages" 실행 38931639027, headSha `e3b083c`, build·deploy success.
+- **공개 사이트 확인**(https://www.brainbackdoor.com)
+  - 바뀐 18종이 든 11편의 HTML이 로컬 빌드와 같다. 빌드마다 바뀌는 `astro-island uid`만 다르고, 렌더러 묶음(`LessonFigure.DrNXDWo1.js`)도 같은 이름으로 200이다.
+  - headless Chrome으로 11편과 홈을 1280·390에서 봤다. 도해 72/72(36개 × 2폭)가 준비·자동 재생·원본 앵커·컨트롤 없음·가로 넘침 없음이다. 바뀐 18종 중 빠진 것은 없다.

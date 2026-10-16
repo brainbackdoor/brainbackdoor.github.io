@@ -196,8 +196,7 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
   host(g, Math.max(ax, sp.x + hostWidth(sp.lanes[0]) / 2), sp.y, sp.lanes[0]);
   host(g, Math.min(bx, sp.x + sp.w - hostWidth(sp.lanes[1]) / 2), sp.y, sp.lanes[1]);
   for (const x of [ax, bx]) g.line(x, sp.y + 26, x, bottom, { stroke: C.line, lw: 1.2 });
-  // 상태·대기 라벨은 메시지 선 뒤에 그린다: 라벨 바탕이 지나가는 선을 가려 글자가 선에 끊기지 않는다
-  const heads: (() => void)[] = [];
+  // 상태·대기·메시지 라벨은 메시지 선 뒤에 그린다: 라벨 바탕이 지나가는 선을 가려 글자가 선에 끊기지 않는다
   const late: (() => void)[] = [];
   // 끝점 상태: 바깥 여백이 있으면 바깥에, 없으면 안쪽에 쓴다
   sp.states?.forEach((list, lane) => list.forEach(([at, name, tone], i) => {
@@ -229,24 +228,51 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
   for (const m of sp.msgs) {
     if (t < m.a) continue;
     const p0 = { x: m.from ? bx : ax, y: Y(m.a) }, p1full = { x: m.from ? ax : bx, y: Y(m.b) };
-    const tone = TONE[m.tone], reach = m.loss ? 0.55 : 1, q = Math.min(1, (t - m.a) / (m.b - m.a));
-    const head = lerpPt(p0, p1full, q * reach), done = t >= m.b;
+    // 라벨은 선의 가운데에 바탕을 깔아 둔다(보낸 시각부터). 이 메시지 시간에 걸린 대기 막대(끝점 ±15)는 비켜 두고, 생명선의 상태 막대(±9)는 늘 비켜 둔다
+    const held = (lane: number) => (sp.holds ?? []).some(h => (h.lane ? 1 : 0) === lane && h.a < m.b && h.b > m.a);
+    const padL = held(0) ? 16 : 9, padR = held(1) ? 16 : 9, room = bx - ax - padL - padR;
+    let rows = wrap(m.label, bx - ax - 28, 11, true);
+    if (Math.max(...rows.map(r => textW(r, 11, true))) + 10 > room) {
+      // 두 막대 사이에 안 들어가면 ' · ' 앞뒤에서 먼저 나누고, 그래도 길면 낱말에서 나눈다
+      const [h0, ...rest] = m.label.split(' · ');
+      rows = rest.length && Math.max(textW(h0 + ' ·', 11, true), textW(rest.join(' · '), 11, true)) + 10 <= room ? [h0 + ' ·', rest.join(' · ')] : wrap(m.label, room - 10, 11, true);
+    }
+    const lw = Math.max(...rows.map(r => textW(r, 11, true))) + 10, dir = m.from ? -1 : 1;
+    const mid0 = (p0.x + p1full.x) / 2, my = (p0.y + p1full.y) / 2 - 3;
+    let mx = room >= lw ? Math.min(Math.max(mid0, ax + padL + lw / 2), bx - padR - lw / 2) : mid0;
+    // 유실 지점은 라벨 바탕 너머에 둔다(× 표시가 라벨에 가려지지 않게). 받는 쪽 안쪽 대기 라벨이 그 시각에 걸려 있으면 그 앞에서 멈추고, 자리가 모자라면 라벨을 보낸 쪽으로 당긴다
+    let edge = m.from ? ax : bx;
+    for (const h of sp.holds ?? []) {
+      if ((h.lane ? 1 : 0) === (m.from ? 1 : 0) || (h.lane ? gr : gl) > 0 || m.b < h.a || m.b > h.b) continue;
+      const hw = textW(h.label, 11) + 10;
+      edge = m.from ? Math.max(edge, ax + 16 + hw) : Math.min(edge, bx - 16 - hw);
+    }
+    const span0 = Math.abs(p1full.x - p0.x);
+    let cx = mx + dir * (lw / 2 + 12), shifted = false;
+    if (m.loss && dir * (cx - (edge - dir * 12)) > 0) {
+      cx = edge - dir * 12;
+      mx = dir > 0 ? Math.max(cx - lw / 2 - 12, ax + padL + lw / 2) : Math.min(cx + lw / 2 + 12, bx - padR - lw / 2);
+      shifted = true;
+    }
+    const want = Math.abs(cx - p0.x) / span0, reach = m.loss ? Math.min(0.9, shifted ? want : Math.max(0.55, want)) : 1;
+    const tone = TONE[m.tone], q = Math.min(1, (t - m.a) / (m.b - m.a)), head = lerpPt(p0, p1full, q * reach), done = t >= m.b;
+    // 움직이는 토큰은 선 위, 자기 라벨 아래: 지나가는 동안에도 라벨 글자를 가리지 않는다
+    const dot = () => g.circle(head.x, head.y, 4.5, { fill: tone.line });
     if (m.loss) {
       g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6, dash: [5, 4] });
-      if (done) { cross(g, head.x, head.y, C.red); label(g, head.x + (m.from ? -10 : 10), head.y + 18, '× 유실', { size: 11, color: C.redText, align: m.from ? 'right' : 'left' }); }
-      else heads.push(() => g.circle(head.x, head.y, 4.5, { fill: tone.line }));
+      if (done) {
+        cross(g, head.x, head.y, C.red);
+        // '× 유실'은 받는 쪽으로 쓰되, 생명선이나 받는 쪽 대기 라벨에 닿으면 보낸 쪽으로 돌려 쓴다
+        const lossW = textW('× 유실', 11) + 10, toward = m.from ? head.x - 10 - lossW > edge + 4 : head.x + 10 + lossW < edge - 4;
+        label(g, head.x + ((m.from ? -1 : 1) * (toward ? 10 : -10)), head.y + 18, '× 유실', { size: 11, color: C.redText, align: (m.from ? !toward : toward) ? 'left' : 'right' });
+      } else late.push(dot);
     } else if (done) arrow(g, p0, p1full, { stroke: tone.line, lw: 1.6 });
-    else { g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6 }); heads.push(() => g.circle(head.x, head.y, 4.5, { fill: tone.line })); }
-    // 라벨은 선의 가운데에 바탕을 깔아 둔다(보낸 시각부터)
-    const mx = (p0.x + p1full.x) / 2, my = (p0.y + p1full.y) / 2 - 3, maxW = bx - ax - 28;
-    const rows = wrap(m.label, maxW, 11, true);
+    else { g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6 }); late.push(dot); }
     late.push(() => rows.forEach((r, i) => label(g, mx, my + (i - (rows.length - 1) / 2) * 15 + 4, r, { size: 11, mono: true, weight: 600, color: tone.text, alpha: appear(t, m.a, 200) })));
   }
-  // 시간 커서는 이 자리(라벨 바로 아래)에 끼워 넣는다
+  // 시간 커서는 이 자리(라벨·토큰 바로 아래)에 끼워 넣는다
   const under = g.ops.length;
   late.forEach(f => f());
-  // 움직이는 토큰은 맨 위: 자기 라벨을 지날 때도 가려지지 않는다
-  heads.forEach(f => f());
   return { ax, bx, top, bottom, Y, mid, under };
 }
 // 시간 커서: 지금 시각을 시퀀스 위에 가로로 표시
@@ -284,7 +310,8 @@ function flowV2(w: number, t: number): LessonFrame {
   if (t >= 7000) {
     const y = geo.Y(7000), a = appear(t, 7000);
     g.circle(geo.bx, y, 5, { fill: C.green, alpha: a });
-    label(g, geo.bx - 12, y + 4, '앱이 8,760 B 읽음', { size: 11, align: 'right', color: C.greenText, alpha: a });
+    // 대기 막대(bx-15..bx-9)의 끝을 가리지 않게 막대 안쪽으로 비켜 쓴다
+    label(g, geo.bx - 22, y + 4, '앱이 8,760 B 읽음', { size: 11, align: 'right', color: C.greenText, alpha: a });
   }
   cursor(g, geo, t, 800, 9700);
   // 수신 버퍼: 2,920 B 칸 세 개

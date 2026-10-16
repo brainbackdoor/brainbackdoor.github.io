@@ -892,8 +892,10 @@ function volumesV2(w: number, t: number): LessonFrame {
 /* ---------- C07 빌드와 시작·중지·재시작·제거: 같은 컨테이너의 상태 전환 ---------- */
 const C07 = { run: 2000, image: 3200, create: 4000, cmd: 4800, write: 5400, stop: 6200, restart: 7000, rm: 8800, axis: [3600, 9400] };
 function lifeV2(w: number, t: number): LessonFrame {
-  // 가로 배치는 컨테이너 칸(Dockerfile 168 + 70 + 이미지 150 + 56 뒤)에 '쓰기 계층 · 데이터 있음'이 들어가는 폭부터
-  const g = draw(), s = state('C07', t), narrow = w < 168 + 70 + 150 + 56 + textW('쓰기 계층 · 데이터 있음', 12) + 40;
+  // 가로 배치는 컨테이너 칸(Dockerfile 168 + 70 + 이미지 150 + 56 뒤)에 두 줄이 다 들어가는 폭부터:
+  // 쓰기 계층 줄의 '쓰기 계층 · 데이터 있음', 둘째 줄의 CMD 알약(가운데 60) 오른쪽 8 px 뒤 상태 글자('created' 등)
+  const pillW = Math.max(64, textW('CMD 종료', 12, true) + 34), stateW = Math.max(...['created', 'running', 'exited', 'removed'].map(x => textW(x, 13, true)));
+  const g = draw(), s = state('C07', t), narrow = w < 168 + 70 + 150 + 56 + Math.max(textW('쓰기 계층 · 데이터 있음', 12) + 40, 60 + pillW / 2 + 8 + stateW + 12);
   // Dockerfile
   const dfW = narrow ? w : 168, dfH = 96;
   g.path(`M0 0H${f2(dfW - 16)}L${f2(dfW)} 16V${dfH}H0Z`, { fill: C.paper, stroke: C.ink, lw: 1.3 });

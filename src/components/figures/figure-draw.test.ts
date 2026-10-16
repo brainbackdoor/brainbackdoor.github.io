@@ -333,22 +333,21 @@ describe('every figure keeps lines and filled shapes off its labels', () => {
   const SANS = (s: string) => { let n = 0; for (const ch of s) { const c = ch.codePointAt(0)!; n += c >= 0x1100 ? 0.94 : ' .,:;·|!il\'"()[]'.includes(ch) ? 0.3 : /[A-Z0-9mwMW+=→]/.test(ch) ? 0.64 : 0.52; } return n; };
   const tbox = (o: Text) => { const tw = (o.mono ? [...o.text].reduce((n, ch) => n + (ch.codePointAt(0)! >= 0x1100 ? 1 : 0.6), 0) : SANS(o.text)) * o.size; const x = o.align === 'center' ? o.x - tw / 2 : o.align === 'right' ? o.x - tw : o.x; return { t: o.text, x1: x + 1, x2: x + tw - 1, y1: o.y - o.size * 0.7, y2: o.y + o.size * 0.1 }; };
   const pbox = (d: string) => { let x = 0, y = 0; const xs: number[] = [], ys: number[] = []; for (const [, cmd, args] of d.matchAll(/([MLHVAZ])([^MLHVAZ]*)/g)) { const n = args.trim().split(/[\s,]+/).filter(Boolean).map(Number); if (cmd === 'H') x = n[n.length - 1]; else if (cmd === 'V') y = n[n.length - 1]; else if (cmd !== 'Z') { x = n[n.length - 2]; y = n[n.length - 1]; } if (cmd !== 'Z') { xs.push(x); ys.push(y); } } return { x1: Math.min(...xs), x2: Math.max(...xs), y1: Math.min(...ys), y2: Math.max(...ys) }; };
-  const scenes = function* () { for (const [r, item] of all) for (const w of [650, 560, 346, 284, 259]) for (const t of [...item.steps, item.final]) yield [item.id, w, t, r(w, t)] as const; };
+  const scenes = function* () { for (const [r, item] of all) for (const w of [650, 625, 560, 346, 321, 284, 259]) for (const t of [...item.steps, item.final]) yield [item.id, w, t, r(w, t)] as const; };
   it('never runs a straight line through a visible word', () => {
     const issues = new Set<string>();
     for (const [id, w, t, f] of scenes()) {
-      const boxes = f.ops.filter((o): o is Text => o.type === 'text' && !!o.text.trim() && o.text !== '—' && (o.alpha ?? 1) > 0.5).map(tbox);
+      const boxes = f.ops.map((o, i) => o.type === 'text' && !!o.text.trim() && o.text !== '—' && (o.alpha ?? 1) > 0.5 ? { i, ...tbox(o) } : null).filter(Boolean) as (ReturnType<typeof tbox> & { i: number })[];
       // 선보다 나중에 칠한 채운 도형(글자 바탕 등)이 그 점을 덮으면 선은 보이지 않는다
       const fills = f.ops.map((o, i) => o.type === 'path' && o.fill !== 'none' && o.alpha > 0.5 ? { i, ...pbox(o.d) } : o.type === 'rect' && o.fill !== 'none' ? { i, x1: o.x, x2: o.x + o.w, y1: o.y, y2: o.y + o.h } : null).filter(Boolean) as { i: number; x1: number; x2: number; y1: number; y2: number }[];
       f.ops.forEach((o, li) => {
-        // 글자보다 먼저 깐 아주 옅은 눈금선(C.grid)은 차트 배경이다
-        if (o.type === 'path' && o.stroke === FIGURE_COLORS.grid && f.ops.slice(li + 1).some(q => q.type === 'text')) return;
         if (o.type === 'line') { check([[o.x1, o.y1], [o.x2, o.y2]], li); return; }
         // 투명도 0.3 미만의 아주 옅은 안내선은 배경이라 제외한다(시간 커서 0.35는 검사한다)
         if (o.type !== 'path' || o.fill !== 'none' || (o.alpha ?? 1) < 0.3 || !/^M[^A-Z]*L[^A-Z]*(L[^A-Z]*)*$/.test(o.d)) return;
         check([...o.d.matchAll(/[ML]\s*(-?[\d.]+)\s+(-?[\d.]+)/g)].map(m => [Number(m[1]), Number(m[2])]), li);
       });
       // 취소선은 실선이다(점선 커서가 글자 가운데를 지나는 것은 취소선이 아니다)
+      function grid(li: number) { const o = f.ops[li]; return o.type === 'path' && o.stroke === FIGURE_COLORS.grid; }
       function solid(li: number) { const o = f.ops[li]; return o.type !== 'path' || !o.dash?.length; }
       function check(pts: number[][], li: number) {
         for (let i = 1; i < pts.length; i++) {
@@ -356,29 +355,31 @@ describe('every figure keeps lines and filled shapes off its labels', () => {
           for (let k = 0; k <= n; k++) {
             const x = x0 + (x1 - x0) * k / n, y = y0 + (y1 - y0) * k / n;
             if (fills.some(c => c.i > li && x >= c.x1 && x <= c.x2 && y >= c.y1 && y <= c.y2)) continue;
-            for (const b of boxes) if (x > b.x1 && x < b.x2 && y > b.y1 && y < b.y2 && !(solid(li) && strike(b, x0, y0, x1, y1))) issues.add(`${id} ${w} ${t} ${b.t}`);
+            // 그 글자보다 먼저 깐 아주 옅은 눈금선(C.grid)은 차트 배경이다(글자가 선 위에 놓인다)
+            for (const b of boxes) if (x > b.x1 && x < b.x2 && y > b.y1 && y < b.y2 && !(grid(li) && b.i > li) && !(solid(li) && strike(b, x0, y0, x1, y1))) issues.add(`${id} ${w} ${t} ${b.t}`);
           }
         }
       }
-      // 취소선(글자 가운데를 지나며 글자 폭 대부분을 덮는 선, 기울기 무관)은 의도된 표시다
+      // 취소선(글자 가운데를 지나며 글자 폭 대부분을 덮는 짧은 선, 기울기 무관)은 의도된 표시다
       function strike(b: { x1: number; x2: number; y1: number; y2: number }, x0: number, y0: number, x1: number, y1: number) {
-        const mid = (b.y1 + b.y2) / 2, cy = (y0 + y1) / 2;
-        return Math.abs(cy - mid) < 4 && Math.min(x0, x1) <= b.x1 + (b.x2 - b.x1) * 0.15 && Math.max(x0, x1) >= b.x2 - (b.x2 - b.x1) * 0.15;
+        const mid = (b.y1 + b.y2) / 2, cy = (y0 + y1) / 2, tw = b.x2 - b.x1;
+        return Math.abs(cy - mid) < 4 && Math.hypot(x1 - x0, y1 - y0) <= tw + 30 && Math.abs((x0 + x1) / 2 - (b.x1 + b.x2) / 2) <= tw * 0.2 + 3 && Math.min(x0, x1) <= b.x1 + tw * 0.15 && Math.max(x0, x1) >= b.x2 - tw * 0.15;
       }
     }
     expect([...issues]).toEqual([]);
   });
 
-  it('keeps moving tokens above the labels and boxes they pass', () => {
-    // 움직이는 중에도 확인한다: 정적 단계는 토큰이 이미 도착한 장면이라 지나가는 순간이 없다
+  it('keeps moving tokens above the boxes they pass', () => {
+    // 움직이는 중에도 확인한다. 라벨 바탕(글자 바로 앞의 낮은 흰 바탕) 아래로는 지나간다: 지나가는 토큰이 글자를 가리지 않게
     const issues = new Set<string>();
     for (const [r, item] of all) for (const w of [650, 259]) for (let t = 0; t <= item.final; t += 200) {
       const f = r(w, t);
       f.ops.forEach((o, i) => {
         if (o.type !== 'circle' || o.r < 3 || o.color === 'none' || (o.alpha ?? 1) < 0.5) return;
         for (const q of f.ops.slice(i + 1)) {
-          const b = q.type === 'path' && q.fill !== 'none' && q.alpha > 0.5 ? pbox(q.d) : q.type === 'rect' && q.fill !== 'none' ? { x1: q.x, x2: q.x + q.w, y1: q.y, y2: q.y + q.h } : null;
-          if (b && o.x > b.x1 && o.x < b.x2 && o.y > b.y1 && o.y < b.y2) issues.add(`${item.id} ${w} ${t}`);
+          const b = q.type === 'path' && q.fill !== 'none' && q.alpha > 0.5 ? pbox(q.d) : q.type === 'rect' && q.fill !== 'none' ? { x1: q.x, x2: q.x + q.w, y1: q.y, y2: q.y + q.h } : null, next = f.ops[f.ops.indexOf(q) + 1];
+          const labelBg = !!b && q.type === 'path' && q.fill === FIGURE_COLORS.bg && b.y2 - b.y1 <= 18 && next?.type === 'text';
+          if (b && !labelBg && o.x > b.x1 && o.x < b.x2 && o.y > b.y1 && o.y < b.y2) issues.add(`${item.id} ${w} ${t}`);
         }
       });
     }
@@ -413,6 +414,61 @@ describe('every figure keeps lines and filled shapes off its labels', () => {
       if (t.x1 < b.x1 - 1 || t.x2 > b.x2 + 1) issues.add(`${id} ${w} ${o.text}`);
     });
     expect([...issues]).toEqual([]);
+  });
+
+  it('never leaves a dot over a word in a static scene', () => {
+    // 정적 단계·완료 장면은 읽는 장면이다: 글자 뒤에 칠한 점(토큰·표지)이 글자를 가리지 않는다
+    const issues = new Set<string>();
+    for (const [id, w, t, f] of scenes()) f.ops.forEach((o, i) => {
+      if (o.type !== 'circle' || o.r < 3 || (o.alpha ?? 1) < 0.5) return;
+      for (const q of f.ops.slice(0, i)) if (q.type === 'text' && q.text.trim() && (q.alpha ?? 1) > 0.5) {
+        const b = tbox(q);
+        if (o.x + o.r > b.x1 && o.x - o.r < b.x2 && o.y + o.r > b.y1 && o.y - o.r < b.y2) issues.add(`${id} ${w} ${t} ${q.text}`);
+      }
+    });
+    expect([...issues]).toEqual([]);
+  });
+
+  it('keeps every × mark clear of later fills', () => {
+    // 유실·차단 표시(빨간 × 두 획)는 나중에 칠한 바탕에 가려지지 않는다
+    const issues = new Set<string>();
+    for (const [id, w, t, f] of scenes()) f.ops.forEach((o, i) => {
+      if (o.type !== 'path' || o.stroke !== FIGURE_COLORS.red || o.fill !== 'none' || o.width !== 2 || !/^M[^A-Z]*L[^A-Z]*$/.test(o.d)) return;
+      const b = pbox(o.d);
+      if (Math.hypot(b.x2 - b.x1, b.y2 - b.y1) > 20) return;
+      for (const q of f.ops.slice(i + 1)) {
+        const c = q.type === 'path' && q.fill !== 'none' && q.alpha > 0.5 ? pbox(q.d) : q.type === 'rect' && q.fill !== 'none' ? { x1: q.x, x2: q.x + q.w, y1: q.y, y2: q.y + q.h } : null;
+        if (c && c.x1 < b.x2 && c.x2 > b.x1 && c.y1 < b.y2 && c.y2 > b.y1) issues.add(`${id} ${w} ${t}`);
+      }
+    });
+    expect([...issues]).toEqual([]);
+  });
+
+  it('keeps label backgrounds off every hold bar', () => {
+    // 시퀀스의 대기 막대(폭 6의 옅은 색 막대)는 라벨 바탕에 끊기면 대기가 멈춘 것처럼 보인다
+    const tints = new Set([FIGURE_COLORS.orangeTint, FIGURE_COLORS.blueTint, FIGURE_COLORS.greenTint, FIGURE_COLORS.redTint, FIGURE_COLORS.slab]);
+    const issues = new Set<string>();
+    for (const [id, w, t, f] of scenes()) f.ops.forEach((o, i) => {
+      if (o.type !== 'path' || !tints.has(o.fill) || o.stroke === 'none') return;
+      const bar = pbox(o.d);
+      if (Math.abs(bar.x2 - bar.x1 - 6) > 0.5 || bar.y2 - bar.y1 < 10) return;
+      for (const q of f.ops.slice(i + 1)) if (q.type === 'path' && q.fill === FIGURE_COLORS.bg) {
+        const c = pbox(q.d);
+        if (c.x1 < bar.x2 && c.x2 > bar.x1 && c.y1 < bar.y2 && c.y2 > bar.y1) issues.add(`${id} ${w} ${t}`);
+      }
+    });
+    expect([...issues]).toEqual([]);
+  });
+
+  it('keeps the C07 state word clear of the CMD pill at every side-by-side width', () => {
+    const r = systemRenderers.C07 as (w: number, t: number) => LessonFrame, hits: string[] = [];
+    for (let w = 560; w <= 650; w++) for (const t of [4400, 6500, 7600, 9000]) {
+      const f = r(w, t), i = f.ops.findIndex(o => o.type === 'text' && o.text.startsWith('CMD') && o.mono && o.size === 12 && o.weight === 600), st = f.ops.find((o): o is Text => o.type === 'text' && !!o.mono && o.size === 13 && o.align === 'right');
+      const pill = f.ops[i - 2];
+      if (i < 2 || !st || pill.type !== 'path' || Math.abs(st.y - (f.ops[i] as Text).y) > 10) continue;
+      if (tbox(st).x1 < pbox(pill.d).x2 + 4) hits.push(`${w} ${t} ${st.text}`);
+    }
+    expect(hits).toEqual([]);
   });
 
   it('never paints a filled shape over a label drawn before it', () => {

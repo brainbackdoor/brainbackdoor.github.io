@@ -325,4 +325,3 @@ describe('deployed figures v2 (R04)', () => {
     expect([issues.length, ...new Set(issues.map(i => i.split(' ').slice(0, 2).join(' ')))]).toEqual([0]);
   });
 });
-

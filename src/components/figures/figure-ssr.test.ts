@@ -211,3 +211,12 @@ describe('B08 adopted figure without hydration', () => {
     for (const expected of specs[0].requiredText) expect(plain, expected).toContain(expected.normalize('NFKC').replace(/\s+/g, ''));
   });
 });
+
+describe('figures stay out of the search index', () => {
+  it('marks every figure root so Pagefind indexes only the article text, not the drawn labels or captions', () => {
+    for (const figureId of ['N01', 'C04', 'D02', 'A01', 'E05', 'X05'] as const) {
+      const html = renderToString(createElement(LessonFigure, { figureId, sourceBlockId: 'source-' + figureId }));
+      expect(html, figureId).toMatch(/^<figure[^>]*data-pagefind-ignore/);
+    }
+  });
+});

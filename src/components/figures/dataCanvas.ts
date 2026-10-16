@@ -149,7 +149,9 @@ function columnV2(w: number, t: number): LessonFrame {
   const g = draw(), s = d04(t), wide = w >= 560;
   // 좁은 폭에서는 '…' 칸을 빼고 리프 묶음을 진행 막대로 줄인다(글자는 줄이지 않음)
   const all: [string, number][] = [['첫 행', 44], ['…', 22], ['10999', 46], ['', 0], ['11010', 46], ['…', 22], ['끝', 36]];
-  const cells = wide ? all : all.filter(([c]) => c !== '…'), blockIx = cells.findIndex(([c]) => c === ''), stopIx = cells.findIndex(([c]) => c === '11010');
+  // '…' 칸은 리프 10칸에 11000·11009가 들어갈 자리가 남을 때만 둔다
+  const dots = wide && (w - all.reduce((n, [, cw0]) => n + cw0 + 4, -4) - 16) / 10 - 3 >= textW('11000', 10, true) + 2;
+  const cells = dots ? all : all.filter(([c]) => c !== '…'), blockIx = cells.findIndex(([c]) => c === ''), stopIx = cells.findIndex(([c]) => c === '11010');
   const fixed = cells.reduce((n, [, cw0]) => n + cw0, 0) + (cells.length - 1) * 4, blockW = w - fixed, cw = cells.map(([, cw0]) => cw0 || blockW);
   const xs: number[] = []; let x = 0; for (const c of cw) { xs.push(x); x += c + 4; }
   const strip = (y: number, n: number, tone: Tone, stopped = false) => {

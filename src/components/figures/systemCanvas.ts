@@ -499,7 +499,7 @@ function copiesV2(w: number, t: number): LessonFrame {
   const refColor = (id: string) => id === 'A0' && waveQ >= 1 ? C.orange : C.ink;
 
   // 참조 화살표
-  const refs: { r: Row; i: number; id: string }[] = [];
+  const refs: { r: Row; i: number; id: string }[] = [], wave: Pt[] = [];
   for (const r of rows) s[r.key].itemIds.forEach((id, i) => refs.push({ r, i, id }));
   refs.forEach(({ r, i, id }) => {
     const P = cubicPts({ x: slotX(i) + slot / 2 + 4, y: r.cy }, anchor(id));
@@ -507,8 +507,7 @@ function copiesV2(w: number, t: number): LessonFrame {
     const q = ease.out(span(t, first, first + T08.draw));
     refArrow(g, P, q, refColor(id), id === 'A0' && waveQ >= 1 ? 0.85 : 0.6);
     if (id === 'A0' && waveQ > 0 && waveQ < 1) {
-      const p = splitCubic(P, cubicU(P, 1 - ease.inOut(waveQ)))[3];
-      g.circle(p.x, p.y, 4, { fill: C.orange });
+      wave.push(splitCubic(P, cubicU(P, 1 - ease.inOut(waveQ)))[3]);
     }
   });
 
@@ -565,6 +564,8 @@ function copiesV2(w: number, t: number): LessonFrame {
   itemCard(g, ix, card.A1, itemW, 'A1', s.deep.names[0], { stroke: C.ink });
   if (s.view.itemIds.length > 1) itemCard(g, ix, card.B0, itemW, 'B0', s.view.names[1], { alpha: ease.out(span(t, T08.addB, T08.addB + 200)) });
   if (s.getter.itemIds.length > 1) itemCard(g, ix, card.C0, itemW, 'C0', s.getter.names[1], { alpha: ease.out(span(t, T08.addC, T08.addC + 200)) });
+  // 되돌아가는 점은 맨 위: 슬롯 상자에 닿을 때까지 보인다
+  for (const p of wave) g.circle(p.x, p.y, 4, { fill: C.orange });
   return { ops: g.ops, height: Math.ceil(Math.max(y, card.A1 + 30) + 8), status: s.phase };
 }
 
@@ -891,7 +892,8 @@ function volumesV2(w: number, t: number): LessonFrame {
 /* ---------- C07 빌드와 시작·중지·재시작·제거: 같은 컨테이너의 상태 전환 ---------- */
 const C07 = { run: 2000, image: 3200, create: 4000, cmd: 4800, write: 5400, stop: 6200, restart: 7000, rm: 8800, axis: [3600, 9400] };
 function lifeV2(w: number, t: number): LessonFrame {
-  const g = draw(), s = state('C07', t), narrow = w < 560;
+  // 가로 배치는 컨테이너 칸(Dockerfile 168 + 70 + 이미지 150 + 56 뒤)에 '쓰기 계층 · 데이터 있음'이 들어가는 폭부터
+  const g = draw(), s = state('C07', t), narrow = w < 168 + 70 + 150 + 56 + textW('쓰기 계층 · 데이터 있음', 12) + 40;
   // Dockerfile
   const dfW = narrow ? w : 168, dfH = 96;
   g.path(`M0 0H${f2(dfW - 16)}L${f2(dfW)} 16V${dfH}H0Z`, { fill: C.paper, stroke: C.ink, lw: 1.3 });
@@ -1176,9 +1178,11 @@ function servletV2(w: number, t: number): LessonFrame {
   if (live && !narrow) g.text(X(T03.init[0]) + 10, by + 15, s.destroyed ? 'Servlet 인스턴스 1개 · 종료' : 'Servlet 인스턴스 1개', { size: 12, weight: 600 });
   // 두 service가 같은 인스턴스에서 겹치는 구간
   if (t >= T03.b[0]) { const a = X(T03.b[0]), e = X(Math.min(t, T03.a[1])); g.rect(a, by - 4, Math.max(0, e - a), 30, { r: 6, fill: C.blueSoft, alpha: 0.45 }); if (t >= T03.a[1] || !narrow) g.text((a + X(T03.a[1])) / 2, by - 8, '동시 실행', { size: 12, weight: 600, align: 'center', color: C.blueText, alpha: span(t, T03.b[0], T03.b[0] + 300) }); }
+  // 좁은 폭의 행 이름은 연결 점선보다 나중에 바탕과 함께 그린다(점선이 위쪽 행 이름을 지나므로)
+  const names: [number, string][] = [];
   rows.forEach(([label, [a, b], kind], i) => {
     const y = by + 56 + i * rowH;
-    if (narrow) g.text(0, y - 6, label, { size: 12, color: C.muted }); else g.text(0, y + 12, label.replace(' · service()', ''), { size: 12, color: C.muted });
+    if (narrow) names.push([y - 6, label]); else g.text(0, y + 12, label.replace(' · service()', ''), { size: 12, color: C.muted });
     g.rect(X(T03.axis[0]), y, w - lw, 16, { r: 3, fill: C.bg });
     if (t > a) {
       const done = t >= b;
@@ -1186,6 +1190,7 @@ function servletV2(w: number, t: number): LessonFrame {
       g.rect(X(a), y, Math.max(2, X(Math.min(t, b)) - X(a)), 16, { r: 3, fill: kind === 'run' ? C.blueTint : C.greenTint, stroke: kind === 'run' ? (done ? C.blueSoft : C.blue) : C.green, lw: 1.2 });
     }
   });
+  for (const [ny, name] of names) { g.rect(0, ny - 12, textW(name, 12) + 4, 16, { r: 3, fill: C.paper }); g.text(0, ny, name, { size: 12, color: C.muted }); }
   const y = para(g, 0, last + 30, `init ${s.initCalls}회 · 실행 중 service ${s.activeServices}개 · 완료 ${s.completed}개 · destroy ${s.destroyCalls}회`, w, { color: C.ink });
   return { ops: g.ops, height: Math.ceil(y + 10), status: s.phase };
 }

@@ -123,7 +123,11 @@ function retransmitV2(w: number, t: number): LessonFrame {
       holds: fast ? [{ lane: 0, a: 2700, b: 4300, label: '중복 ACK 3회', tone: 'orange' }] : [{ lane: 0, a: 1100, b: 6300, label: 'RTO 타이머 대기', tone: 'orange' }], gutters: [64, 0],
       states: [[], [[done, '복구', 'green']]],
     });
-    if (!fast && t >= 2400) label(g, geo.mid, geo.Y(2700), '후속 DATA 없음 → 중복 ACK 없음', { size: 11, color: C.muted, alpha: appear(t, 2400) });
+    // 안내는 대기 막대 오른쪽 자리에 둔다(좁은 폭에서는 두 줄로, 바탕이 막대를 끊지 않게)
+    if (!fast && t >= 2400) {
+      const left = geo.ax + 20, note = '후속 DATA 없음 → 중복 ACK 없음', rows = textW(note, 11) <= geo.bx - left - 10 ? [note] : ['후속 DATA 없음 →', '중복 ACK 없음'], cx = Math.max(geo.mid, left + Math.max(...rows.map(r => textW(r, 11))) / 2 + 5);
+      rows.forEach((r, j) => label(g, cx, geo.Y(2700) + (j - (rows.length - 1) / 2) * 15, r, { size: 11, color: C.muted, alpha: appear(t, 2400) }));
+    }
     cursor(g, geo, t, t0, t1);
     g.text(x, geo.bottom + 26, `중복 ACK ${st.dupacks} · ${st.delivered ? '복구 완료' : st.retransmitted ? '재전송 중' : '대기'}`, { size: 12, weight: 600, color: st.delivered ? C.greenText : C.muted });
     bottom = Math.max(bottom, geo.bottom + 26 - y0);
@@ -291,7 +295,10 @@ function holV2(w: number, t: number): LessonFrame {
     const fill = done ? C.greenTint : wait ? C.orangeTint : C.paper, stroke = done ? C.green : wait ? C.orange : missing ? C.red : C.line;
     g.rect(x + 2, y, slotW - 6, 34, { r: 7, fill, stroke, lw: 1.3, dash: missing ? [4, 3] : null });
     const c = done ? C.greenText : wait ? C.orangeText : missing ? C.redText : C.muted;
-    g.text(x + 2 + (slotW - 6) / 2, y + 22, missing ? '2 누락' : String(n), { size: 12, mono: true, weight: 700, align: 'center', color: c });
+    // 칸이 좁으면 번호와 '누락'을 두 줄로(글자는 줄이지 않는다)
+    const cx = x + 2 + (slotW - 6) / 2;
+    if (missing && textW('2 누락', 12, true) + 8 > slotW - 6) { g.text(cx, y + 15, '2', { size: 12, mono: true, weight: 700, align: 'center', color: c }); g.text(cx, y + 29, '누락', { size: 11, weight: 700, align: 'center', color: c }); }
+    else g.text(cx, y + 22, missing ? '2 누락' : String(n), { size: 12, mono: true, weight: 700, align: 'center', color: c });
   });
   const ax = w - appW;
   g.rect(ax, y - 4, appW, 42, { r: 8, fill: s.delivered.length ? C.greenTint : C.paper, stroke: s.delivered.length ? C.green : C.line, lw: 1.3 });
@@ -380,13 +387,20 @@ function waterfallV2(w: number, t: number): LessonFrame {
   g.text(0, 14, '설명용 0–540 ms', { size: 12, weight: 600 });
   for (let ms = 0; ms <= 500; ms += 100) { g.line(M(ms), top - 14, M(ms), top + step * 7 - 10, { stroke: C.grid, lw: 1 }); g.text(M(ms), top - 20, ms, { size: 11, mono: true, align: ms === 0 ? 'left' : 'center', color: C.muted }); }
   const tone = { prep: [C.blueTint, C.blue], wait: [C.orangeTint, C.orange], body: [C.greenTint, C.green] } as const;
+  // 구간 라벨(좁은 폭에서는 행 이름도)은 커서·TTFB 선보다 나중에 바탕과 함께 그려 선에 끊기지 않게 한다
+  const spans: [number, number, string, 'left' | 'right'][] = [];
+  const names: (() => void)[] = [];
   ROWS.forEach(([name, a, b, ta, tb, kind], i) => {
     const yy = top + i * step, by = narrow ? yy + 10 : yy - 4;
-    g.text(0, narrow ? yy : yy + 10, name, { size: 12, weight: kind === 'wait' ? 600 : 400, color: kind === 'wait' ? C.orangeText : C.ink });
+    const nameOp = () => {
+      if (narrow) g.rect(0, yy - 12, textW(name, 12) + 6, 16, { r: 3, fill: C.paper });
+      g.text(0, narrow ? yy : yy + 10, name, { size: 12, weight: kind === 'wait' ? 600 : 400, color: kind === 'wait' ? C.orangeText : C.ink });
+    };
+    if (narrow) names.push(nameOp); else nameOp();
     g.rect(M(a), by, Math.max(2, M(b) - M(a)), 18, { r: 5, fill: C.paper, stroke: C.line, lw: 1 });
     const q = span(t, ta, tb);
     if (q > 0) g.rect(M(a), by, Math.max(2, (M(b) - M(a)) * q), 18, { r: 5, fill: tone[kind][0], stroke: tone[kind][1], lw: 1.2 });
-    g.text(narrow ? w - 4 : M(b) + 6 > w - 70 ? M(a) - 6 : M(b) + 6, narrow ? yy : by + 13, `${a}–${b} ms`, { size: 11, mono: true, align: narrow || M(b) + 6 > w - 70 ? 'right' : 'left', color: C.muted });
+    spans.push([narrow ? w - 4 : M(b) + 6 > w - 70 ? M(a) - 6 : M(b) + 6, narrow ? yy : by + 13, `${a}–${b} ms`, narrow || M(b) + 6 > w - 70 ? 'right' : 'left']);
   });
   // ms 커서: 진행 중인 막대의 머리
   let cur = 0;
@@ -399,6 +413,8 @@ function waterfallV2(w: number, t: number): LessonFrame {
     label(g, M(ms) + 4, top + step * 7 + 8, text, { size: 11, weight: 700, align: 'left', color, alpha: a });
   };
   mark(320, 3900, 'TTFB 320 ms', C.blueText);
+  names.forEach(f => f());
+  for (const [x, yy, text, align] of spans) label(g, x, yy, text, { size: 11, mono: true, align, color: C.muted });
   let y = top + step * 7 + (t >= 3900 ? 44 : 22);
   y = para(g, 0, y, `TTFB ${s.firstByte ? '도착' : '대기'} / HTML ${s.htmlComplete ? '완료' : '수신 전 / 수신 중'}`, w, { size: 12, weight: 600, color: C.blueText });
   return frame(g, y + 10, s.phase);
@@ -413,7 +429,7 @@ function gzipV2(w: number, t: number): LessonFrame {
     host(g, sw / 2, by - 13, '서버');
     host(g, w - bw / 2, by - 13, '브라우저');
     // 전송 선: 가운데 경계를 지난 바이트만 브라우저에 있다(같은 전송률)
-    g.line(mid, by - 22, mid, by + 22, { stroke: C.ink, lw: 1.2, dash: [3, 3] });
+    g.line(mid, by - 14, mid, by + 22, { stroke: C.ink, lw: 1.2, dash: [3, 3] });
     g.rect(lx, by - 11, mid - 6 - lx, 22, { r: 6, fill: C.bg });
     g.rect(mid + 6, by - 11, rx - mid - 6, 22, { r: 6, fill: C.bg });
     const sent = gz ? s.gzipSentBytes / s.gzipBytes : s.rawSentBytes / s.rawBytes;
@@ -439,7 +455,8 @@ function gzipV2(w: number, t: number): LessonFrame {
       g.rect(x1, ry, Math.max(2, x2 - x1), 16, { r: 4, fill, stroke, lw: 1 });
       if (X(b) - x1 > textW(name, 11) + 6) g.text((x1 + X(b)) / 2, ry + 12, name, { size: 11, align: 'center', alpha: appear(t, a) });
     }
-    if (t > T0 && t < T1) g.line(X(t), ry - 3, X(t), ry + 19, { stroke: C.blue, lw: 1, alpha: 0.6 });
+    // 시간 커서는 막대 위아래 눈금으로만(막대 속 구간 이름을 지나지 않게)
+    if (t > T0 && t < T1) for (const [y0, y1] of [[ry - 5, ry + 1], [ry + 15, ry + 21]]) g.line(X(t), y0, X(t), y1, { stroke: C.blue, lw: 1, alpha: 0.6 });
     return ry + 16 - y;
   };
   const h1 = lane(0, false);

@@ -83,7 +83,8 @@ function vpcV2(w: number, t: number): LessonFrame {
   }
   if (s.allowed[0]) g.text(ux + 6, 40, ':443', { size: 10.5, mono: true, color: C.greenText });
   if (s.allowed[1]) g.text(x0 + cw / 2 + 7, row1 + rowH + 19, ':22', { size: 10.5, mono: true, color: C.greenText });
-  if (s.allowed[2]) g.text(x1 + cw * 0.4 + 7, row1 + rowH + 19, ':3306', { size: 10.5, mono: true, color: C.greenText });
+  // 3306은 경로 왼쪽에(오른쪽에는 NAT 아웃바운드 점선이 지난다)
+  if (s.allowed[2]) g.text(x1 + cw * 0.4 - 7, row1 + rowH + 19, ':3306', { size: 10.5, mono: true, align: 'right', color: C.greenText });
   if (s.allowed[3]) g.text((x0 + x1 + cw) / 2, row2 + rowH + 29, ':22', { size: 10.5, mono: true, align: 'center', color: C.greenText });
   // 막히는 직접 접근: 경계에서 ✕
   A01_BLOCKED.forEach(([, , port], i) => {
@@ -188,14 +189,15 @@ function dns01V2(w: number, t: number): LessonFrame {
   ['fullchain.pem', 'privkey.pem'].forEach((f, i) => { const x = i * (wide ? 150 : 128); fileGlyph(g, x, fy + 10, { color: s.issued ? C.ink : C.grid, s: 0.9 }); g.text(x + 18, fy + 24, f, { size: 11, mono: true, color: s.issued ? C.ink : C.muted }); });
   g.text(0, fy + 46, '개인키는 서버에서 만들고 CA로 보내지 않습니다.', { size: 11, color: C.muted });
   const steps = ['cp → 작업 폴더', 'Dockerfile COPY', 'nginx ssl_certificate', ':0.0.2 재실행 -p 443'], sy = fy + 64;
-  const sw = wide ? (w - 3 * 24) / 4 : w;
+  // 네 칸이 한 줄에 들어가는 폭에서만 가로로 둔다(가장 긴 이름이 칸 안에 들어가야 화살표가 글자를 지나지 않는다)
+  const row = wide && (w - 3 * 24) / 4 >= Math.max(...steps.map((st, i) => textW(st, 10.5, i > 0))) + 12, sw = row ? (w - 3 * 24) / 4 : w;
   steps.forEach((st, i) => {
-    const on = s.applied > i, x = wide ? i * (sw + 24) : 0, y = wide ? sy : sy + i * 34;
+    const on = s.applied > i, x = row ? i * (sw + 24) : 0, y = row ? sy : sy + i * 34;
     g.rect(x, y, sw, 26, { r: 6, fill: on ? C.blueTint : C.paper, stroke: on ? C.blue : C.grid, lw: 1.1, dash: on ? null : [3, 3] });
     g.text(x + sw / 2, y + 17, st, { size: 10.5, mono: i > 0, align: 'center', color: on ? C.blueText : C.muted });
-    if (wide && i < 3) arrow(g, { x: x + sw + 3, y: y + 13 }, { x: x + sw + 21, y: y + 13 }, { stroke: on ? C.blue : C.grid, lw: 1, size: 4 });
+    if (row && i < 3) arrow(g, { x: x + sw + 3, y: y + 13 }, { x: x + sw + 21, y: y + 13 }, { stroke: on ? C.blue : C.grid, lw: 1, size: 4 });
   });
-  const ly = wide ? sy + 50 : sy + 4 * 34 + 14;
+  const ly = row ? sy + 50 : sy + 4 * 34 + 14;
   lockGlyph(g, 0, ly - 10, s.served ? C.green : C.grid, { alpha: 1 });
   g.text(18, ly, s.served ? ':443이 이 인증서로 응답' : ':443 아직 아님', { size: 12, weight: 700, color: s.served ? C.greenText : C.muted });
   const y = para(g, 0, ly + 28, '발급은 TXT 검증을 통과한 뒤입니다. installer None이라 적용은 손으로 합니다.', w, { size: 12, color: C.muted });

@@ -394,7 +394,6 @@ function temporalV2(w: number, t: number): LessonFrame {
   g.text(12, sTop + 20, 'Server · Event History', { size: 12, weight: 700, color: C.ink });
   para(g, 12, sTop + 36, subtitle, sw - 24, { size: 11, color: C.muted });
   if (t >= E05.signal[0]) route(g, [{ x: pillX, y: 24 }, { x: pillX, y: sTop - 1 }], t >= E05.signal[1] ? C.ink : C.line, { lw: 1.3 });
-  dot(g, t, [{ x: pillX, y: 24 }, { x: pillX, y: cards[4].y }], E05.signal[0], E05.signal[1], C.orange);
   E05_HISTORY.forEach(([name, sub], i) => {
     const b = cards[i];
     if (!s.cards[i]) return;
@@ -410,6 +409,8 @@ function temporalV2(w: number, t: number): LessonFrame {
     }
   });
   g.text(24, cards[5].y + cardH + 17, '…', { size: 12, color: C.muted });
+  // 승인 신호 점은 사건 카드 위로 지나 SignalReceived 자리에 닿는다(카드보다 나중에 칠한다)
+  dot(g, t, [{ x: pillX, y: 24 }, { x: pillX, y: cards[4].y }], E05.signal[0], E05.signal[1], C.orange);
   // Worker A·B
   const wx = wide ? sw + 36 : 0, ww = wide ? w - wx : (w - 8) / 2, wTop = wide ? sTop : sBottom + 30, wH = 24 + 32 + 4 * 22 + 30;
   const workers = [{ x: wx, y: wTop, name: 'Worker A' }, { x: wide ? wx : ww + 8, y: wide ? wTop + wH + 18 : wTop, name: 'Worker B' }];

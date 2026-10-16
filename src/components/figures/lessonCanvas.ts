@@ -187,7 +187,7 @@ export interface SeqSpec {
   // 끝점 바깥 여백: 대기 구간 라벨을 시퀀스 밖에 둔다 [왼쪽, 오른쪽]
   gutters?: readonly [number, number];
 }
-export interface SeqGeo { ax: number; bx: number; top: number; bottom: number; Y: (tt: number) => number; mid: number }
+export interface SeqGeo { ax: number; bx: number; top: number; bottom: number; Y: (tt: number) => number; mid: number; under: number }
 export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
   const sw = sp.states ? sp.stateWidth ?? 0 : 0, gl = sp.gutters?.[0] ?? 0, gr = sp.gutters?.[1] ?? 0;
   const ax = sp.x + sw + gl + 10, bx = sp.x + sp.w - sw - gr - 10, top = sp.y + 40;
@@ -196,6 +196,9 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
   host(g, Math.max(ax, sp.x + hostWidth(sp.lanes[0]) / 2), sp.y, sp.lanes[0]);
   host(g, Math.min(bx, sp.x + sp.w - hostWidth(sp.lanes[1]) / 2), sp.y, sp.lanes[1]);
   for (const x of [ax, bx]) g.line(x, sp.y + 26, x, bottom, { stroke: C.line, lw: 1.2 });
+  // 상태·대기 라벨은 메시지 선 뒤에 그린다: 라벨 바탕이 지나가는 선을 가려 글자가 선에 끊기지 않는다
+  const heads: (() => void)[] = [];
+  const late: (() => void)[] = [];
   // 끝점 상태: 바깥 여백이 있으면 바깥에, 없으면 안쪽에 쓴다
   sp.states?.forEach((list, lane) => list.forEach(([at, name, tone], i) => {
     if (t < at) return;
@@ -205,7 +208,7 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
     if (y2 > y1) g.rect(lx - 2.5, y1, 5, y2 - y1, { r: 2.5, fill: col, alpha: 0.85 * a });
     // 안쪽에 쓸 때는 대기 막대(끝점 ±12)를 비켜 쓰고 바탕을 깐다
     const outside = sw > 0, tx = outside ? (lane ? bx + 10 : ax - 10) : (lane ? bx - 22 : ax + 22);
-    label(g, tx, y1 + 13, name, { size: 11, mono: true, weight: 600, align: outside === !!lane ? 'left' : 'right', color: txt, alpha: a });
+    late.push(() => label(g, tx, y1 + 13, name, { size: 11, mono: true, weight: 600, align: outside === !!lane ? 'left' : 'right', color: txt, alpha: a }));
   }));
   sp.holds?.forEach(h => {
     if (t < h.a) return;
@@ -216,11 +219,11 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
     if (gut > 0) {
       // 바깥 여백에 줄을 나눠 쓴다
       const rows = wrap(h.label, gut - 6, 11), ox = h.lane ? bx + 10 : ax - 10;
-      rows.forEach((r, i) => g.text(ox, y1 + 12 + i * 14, r, { size: 11, align: h.lane ? 'left' : 'right', color: txt }));
+      late.push(() => rows.forEach((r, i) => g.text(ox, y1 + 12 + i * 14, r, { size: 11, align: h.lane ? 'left' : 'right', color: txt })));
     } else {
       // 안쪽: 끝점 상태 라벨과 겹치지 않게 구간 시작에서 30px 아래부터
       const yl = Math.max((y1 + y2) / 2 + 4, y1 + 32);
-      label(g, h.lane ? lx - 9 : lx + 9, yl, h.label, { size: 11, align: h.lane ? 'right' : 'left', color: txt });
+      late.push(() => label(g, h.lane ? lx - 9 : lx + 9, yl, h.label, { size: 11, align: h.lane ? 'right' : 'left', color: txt }));
     }
   });
   for (const m of sp.msgs) {
@@ -231,21 +234,28 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
     if (m.loss) {
       g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6, dash: [5, 4] });
       if (done) { cross(g, head.x, head.y, C.red); label(g, head.x + (m.from ? -10 : 10), head.y + 18, '× 유실', { size: 11, color: C.redText, align: m.from ? 'right' : 'left' }); }
-      else g.circle(head.x, head.y, 4.5, { fill: tone.line });
+      else heads.push(() => g.circle(head.x, head.y, 4.5, { fill: tone.line }));
     } else if (done) arrow(g, p0, p1full, { stroke: tone.line, lw: 1.6 });
-    else { g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6 }); g.circle(head.x, head.y, 4.5, { fill: tone.line }); }
+    else { g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6 }); heads.push(() => g.circle(head.x, head.y, 4.5, { fill: tone.line })); }
     // 라벨은 선의 가운데에 바탕을 깔아 둔다(보낸 시각부터)
     const mx = (p0.x + p1full.x) / 2, my = (p0.y + p1full.y) / 2 - 3, maxW = bx - ax - 28;
     const rows = wrap(m.label, maxW, 11, true);
-    rows.forEach((r, i) => label(g, mx, my + (i - (rows.length - 1) / 2) * 15 + 4, r, { size: 11, mono: true, weight: 600, color: tone.text, alpha: appear(t, m.a, 200) }));
+    late.push(() => rows.forEach((r, i) => label(g, mx, my + (i - (rows.length - 1) / 2) * 15 + 4, r, { size: 11, mono: true, weight: 600, color: tone.text, alpha: appear(t, m.a, 200) })));
   }
-  return { ax, bx, top, bottom, Y, mid };
+  // 시간 커서는 이 자리(라벨 바로 아래)에 끼워 넣는다
+  const under = g.ops.length;
+  late.forEach(f => f());
+  // 움직이는 토큰은 맨 위: 자기 라벨을 지날 때도 가려지지 않는다
+  heads.forEach(f => f());
+  return { ax, bx, top, bottom, Y, mid, under };
 }
 // 시간 커서: 지금 시각을 시퀀스 위에 가로로 표시
 export function cursor(g: G, geo: SeqGeo, t: number, t0: number, t1: number) {
   if (t <= t0 || t >= t1) return;
   const y = geo.Y(t);
+  // 라벨보다 먼저 칠한다: 지나가는 커서가 메시지·상태 라벨을 긋지 않고 라벨 바탕 아래로 숨는다
   g.line(geo.ax - 6, y, geo.bx + 6, y, { stroke: C.blue, lw: 1, alpha: 0.35, dash: [2, 3] });
+  g.ops.splice(geo.under, 0, g.ops.pop()!);
 }
 export function frame(g: G, height: number, status: string): LessonFrame { return { ops: g.ops, height: Math.ceil(height), status }; }
 

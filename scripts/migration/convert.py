@@ -438,10 +438,11 @@ class Converter:
                 return original + component
             source_anchor = re.match(r'<figure id="([^"]+)"', original).group(1)
             evidence = original.replace(f' id="{source_anchor}"', '', 1)
-            return f'<div id="{source_anchor}">\n\n' + component + '<details className="figure-source">\n\n<summary>원본 도해</summary>\n\n' + evidence + '</details>\n\n</div>\n\n'
+            # 접은 원본의 라벨은 검색 색인에서 뺀다(도해 작업이 만든 글자). 원본 캡션·alt는 그대로 색인된다
+            return f'<div id="{source_anchor}">\n\n' + component + '<details className="figure-source">\n\n<summary data-pagefind-ignore="">원본 도해</summary>\n\n' + evidence + '</details>\n\n</div>\n\n'
         evidence_ids = {key for item in self.figure_specs for key in item.get('evidenceBlockIds', [])}
         if block_id in evidence_ids and self.blocks.get(block_id, {}).get('type') == 'image':
-            return '<details className="figure-source">\n\n<summary>원본 자료</summary>\n\n' + original + '</details>\n\n'
+            return '<details className="figure-source">\n\n<summary data-pagefind-ignore="">원본 자료</summary>\n\n' + original + '</details>\n\n'
         return original
 
     def source_block(self, block_id, ancestors=()):

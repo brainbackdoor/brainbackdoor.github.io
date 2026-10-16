@@ -167,6 +167,20 @@ class FigureTests(unittest.TestCase):
         self.assertIn('원본 캡션',out); self.assertIn('본문 보존',out)
         self.assertEqual(len(c.report.get('figures',[])),1)
 
+    def test_collapsed_source_labels_stay_out_of_the_search_index(self):
+        # 검색 본문은 원문만: 접어 둔 원본의 '원본 도해/원본 자료' 라벨은 색인하지 않고, 원본 캡션은 그대로 색인한다
+        c=converter({'one':{'type':'image','properties':{'source':[['https://example.com/image.png']],'caption':[['원본 캡션']]}},'two':{'type':'text','properties':{'title':[['본문']]}}})
+        c.figure_specs=[self.spec()]
+        out=c.convert()
+        self.assertIn('<summary data-pagefind-ignore="">원본 도해</summary>',out)
+        self.assertNotIn('<summary>',out)
+        self.assertIn('<figcaption>원본 캡션</figcaption>',out)
+        c=converter({'one':{'type':'text','properties':{'title':[['본문']]}},'two':{'type':'image','properties':{'source':[['https://example.com/ev.png']]}}})
+        c.figure_specs=[{**self.spec('after','text'),'evidenceBlockIds':['two']}]
+        out=c.convert()
+        self.assertIn('<summary data-pagefind-ignore="">원본 자료</summary>',out)
+        self.assertNotIn('<summary>',out)
+
     def test_repeated_source_block_keeps_distinct_existing_anchors(self):
         c=converter({'one':{'type':'image','properties':{'source':[['https://example.com/image.png']]}},'two':{'type':'text'}})
         c.root['content']=['one','one'];c.figure_specs=[self.spec()]

@@ -213,10 +213,11 @@ describe('B08 adopted figure without hydration', () => {
 });
 
 describe('figures stay out of the search index', () => {
-  it('marks every figure root so Pagefind indexes only the article text, not the drawn labels or captions', () => {
-    for (const figureId of ['N01', 'C04', 'D02', 'A01', 'E05', 'X05'] as const) {
-      const html = renderToString(createElement(LessonFigure, { figureId, sourceBlockId: 'source-' + figureId }));
+  it('marks every registered figure root and both TCP figure variants so Pagefind indexes only the article text', () => {
+    for (const { figureId } of registry.figures) {
+      const html = renderToString(createElement(LessonFigure, { figureId: figureId as Parameters<typeof LessonFigure>[0]['figureId'], sourceBlockId: 'source-' + figureId }));
       expect(html, figureId).toMatch(/^<figure[^>]*data-pagefind-ignore/);
     }
+    for (const variant of ['default', 'preview'] as const) expect(renderToString(createElement(TcpRecoveryFigure, { variant })), variant).toMatch(/^<figure[^>]*data-pagefind-ignore/);
   });
 });

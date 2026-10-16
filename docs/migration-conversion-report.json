@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-16T05:45:42.020649+00:00",
+  "generatedAt": "2026-10-16T06:31:16.684969+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -1148,8 +1148,8 @@
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "status": "converted",
-      "outputFile": "src/content/posts/ko/tcp-error-recovery.mdx"
+      "outputFile": "src/content/posts/ko/tcp-error-recovery.mdx",
+      "status": "converted"
     },
     {
       "sourceId": "c6550c6d-0773-43bc-84a9-311a3de97b00",
@@ -2806,8 +2806,8 @@
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "status": "converted",
-      "outputFile": "src/content/posts/ko/95400228-c9fb-4397-ac45-281f2a6c7446.mdx"
+      "outputFile": "src/content/posts/ko/95400228-c9fb-4397-ac45-281f2a6c7446.mdx",
+      "status": "converted"
     },
     {
       "sourceId": "d6132043-4fd1-4960-974c-26946e0224ce",
@@ -5118,7 +5118,13 @@
         }
       ],
       "unresolvedLinks": [],
-      "warnings": [],
+      "warnings": [
+        {
+          "kind": "asset-download-failed",
+          "blockId": "65350709-7bf6-4b84-94ea-e4e6d71f2d6e",
+          "sourceUrl": "https://farm9.staticflickr.com/8896/18339898259_71c350b396_b.jpg"
+        }
+      ],
       "excluded": [
         {
           "sourceBlockId": "5e16b956-53a2-40c5-b968-bcf67a25d75b",
@@ -5336,11 +5342,11 @@
         },
         "assetCount": 3,
         "failedAssets": 1,
-        "warningCount": 0,
+        "warningCount": 1,
         "unresolvedLinkCount": 0
       },
-      "status": "converted",
-      "outputFile": "src/content/posts/ko/beae0ed2-e020-4681-abac-fdb9e5f12c5f.mdx"
+      "outputFile": "src/content/posts/ko/beae0ed2-e020-4681-abac-fdb9e5f12c5f.mdx",
+      "status": "converted"
     },
     {
       "sourceId": "04555c7c-eb81-4283-905e-b8f9c3f8b75c",
@@ -6999,7 +7005,13 @@
         }
       ],
       "unresolvedLinks": [],
-      "warnings": [],
+      "warnings": [
+        {
+          "kind": "asset-download-failed",
+          "blockId": "ea8effe8-6554-438c-a5c5-26c54cfae6c7",
+          "sourceUrl": "https://cdn.cms-twdigitalassets.com/content/dam/developer-twitter/redesign-2021-images/og-social-card/devwebsite_card_tn.jpg.twimg.768.jpg"
+        }
+      ],
       "excluded": [
         {
           "sourceBlockId": "dc093830-f645-4642-bf85-dfcbfe7e0f64",
@@ -7143,11 +7155,11 @@
         },
         "assetCount": 15,
         "failedAssets": 1,
-        "warningCount": 0,
+        "warningCount": 1,
         "unresolvedLinkCount": 0
       },
-      "status": "converted",
-      "outputFile": "src/content/posts/ko/14b691d7-7fd7-4e95-8787-49e06111755f.mdx"
+      "outputFile": "src/content/posts/ko/14b691d7-7fd7-4e95-8787-49e06111755f.mdx",
+      "status": "converted"
     },
     {
       "sourceId": "1c3f7881-71c5-4855-85d1-a4c7e895a66b",
@@ -19848,8 +19860,8 @@
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "status": "converted",
-      "outputFile": "src/content/posts/ko/80dbc9d7-ba32-4220-9b39-b536172264f2.mdx"
+      "outputFile": "src/content/posts/ko/80dbc9d7-ba32-4220-9b39-b536172264f2.mdx",
+      "status": "converted"
     },
     {
       "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",

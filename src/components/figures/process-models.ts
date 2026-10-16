@@ -151,8 +151,24 @@ export function e05(t: number) {
   };
 }
 
+/* X05 팀 회고(B08 선택 후보, R11 §2~§4와 글 머리 스프레드시트): 예시 카드 2장 → 그룹 → 투표로 한 그룹 선택 → 액션 플랜.
+   카드·그룹·액션 플랜 문구는 원문 그대로(닉네임·이모지 제외). 득표수·1~3순위는 원문에 라벨·예시가 없어 그리지 않는다. */
+export const X05_STAGES = ['자료 모으기', '그룹핑', '투표', '액션 플랜'] as const;
+export const X05_LANES = [
+  { kind: '좋았던 점', card: '블로그 포스팅을 할 수 있었음', group: '좋은 결과물' },
+  { kind: '아쉬웠던 점', card: '일정이 계속 밀림', group: '시간 관리 못함' },
+] as const;
+export const X05_ACTION = '시간 관리를 위해 칸반보드를 활용한다.';
+export const X05 = { stages: [0, 1900, 3700, 5500], cards: [300, 700], group: [2000, 2500], vote: [3800, 4300], action: [5600, 6100], end: 6400 } as const;
+export function x05(t: number) {
+  return {
+    stage: X05.stages.filter(at => t >= at).length - 1, cards: X05.cards.map(at => t >= at), grouped: t >= X05.group[1], voted: t >= X05.vote[1], acted: t >= X05.action[1],
+    phase: t < X05.stages[1] ? '좋았던 점·아쉬웠던 점을 카드로 모읍니다.' : t < X05.stages[2] ? '비슷한 카드끼리 그룹으로 묶습니다.' : t < X05.stages[3] ? '투표로 한 그룹을 고릅니다.' : t < X05.end ? '고른 그룹에서 내일 바로 실천할 액션 플랜을 씁니다.' : '카드 → 그룹 → 투표 → 액션 플랜: 시간 관리를 위해 칸반보드를 활용한다.',
+  };
+}
+
 /* 5종 정보: 캡션은 원문 값과 설명용 값을 구분하고, 단계 시각은 멈춘 장면(사건 직후, 다음 사건 전)이다. */
-const R10 = '9178ac06-ae33-4a96-a4cd-49c96ea28351', R13 = 'c6550c6d-0773-43bc-84a9-311a3de97b00', R14 = 'c78ba22a-b64d-4016-9f09-c9de5f94e612', R17 = '38190d37-083f-8033-a7e8-f3996e11cf55';
+const R11 = 'a1094dc5-8f5c-4725-be7c-8247fc273c44', R10 = '9178ac06-ae33-4a96-a4cd-49c96ea28351', R13 = 'c6550c6d-0773-43bc-84a9-311a3de97b00', R14 = 'c78ba22a-b64d-4016-9f09-c9de5f94e612', R17 = '38190d37-083f-8033-a7e8-f3996e11cf55';
 export const processInfo = [
   { id: 'E01', title: 'ATDD 과정', short: 'ATDD', duration: 10000, final: 8400, steps: [2100, 6000, 8400], source: R10, assets: [`${R10}/9b4aaa68-872e-45ef-a101-d0c9f37a1401.webp`],
     caption: '원본 그림의 노드 9개, 실선 8개, 점선 3개(Discuss ⇢ Distill ⇢ Develop ⇢ Demo), Develop에 붙은 말풍선 5칸을 그대로 옮겼습니다. 사각형은 활동, 타원은 산출물로 읽었습니다(구분은 설명용). 원본에 되돌아가는 화살표가 없어 반복 연결은 그리지 않았습니다.',
@@ -169,5 +185,8 @@ export const processInfo = [
   { id: 'E05', title: 'Temporal Event History와 Replay', short: 'Temporal', duration: 11000, final: 9400, steps: [3100, 7100, 9400], source: R17, assets: [`${R17}/38190d37-083f-80d4-8e21-c2bc984cf496.webp`],
     caption: '원본 도해의 Server·Event History·Worker A/B와 카드 라벨(이벤트 이름은 약칭)을 옮겼습니다. 공식 문서에 맞춰 Worker 사이 직접 인계 대신 Server를 거치게 했고, 결과가 기록되기 전에 끊긴 Activity가 재시도되는 장면(본문의 at-least-once 설명)을 더했습니다. 크레딧 지급 카드, 타임아웃·재시도 시간, 7일의 압축은 설명용입니다.',
     notes: ['Worker A가 금액 계산 도중 죽어도 시작·데이터 수집 기록은 Server에 남습니다. 금액 계산은 아직 결과가 없습니다.', '끝나지 않은 금액 계산은 재시도로 완료되어 Server에 기록되고, Worker B는 코드를 처음부터 다시 실행하며 기록된 결과로 따라잡습니다.', '승인 신호를 받은 뒤 크레딧 지급을 실행합니다. Worker가 바뀌어도 워크플로우는 이어집니다.'] },
+  { id: 'X05', title: '팀 회고: 카드에서 액션 플랜까지', short: '팀 회고', duration: 9000, final: 6800, steps: [3000, 4800, 6800], source: R11, assets: [],
+    caption: '본문의 예시 카드 두 장과 그룹 이름(예시), 글 머리 스프레드시트에 적힌 액션 플랜을 옮겼습니다. 고른 그룹은 그 액션 플랜으로 확인한 것입니다. 득표수는 원문에 라벨이 없고 1~3순위·대화 단계는 예시가 없어 그리지 않았습니다. 강조와 화살표는 설명용이며, 입력 표는 아래에 그대로 있습니다.',
+    notes: ['자료 모으기에서 쓴 카드 두 장을 그룹으로 묶습니다(좋은 결과물, 시간 관리 못함).', '투표로 한 그룹(시간 관리 못함)을 고릅니다.', '고른 그룹에서 내일 바로 실천할 액션 플랜을 씁니다: 시간 관리를 위해 칸반보드를 활용한다.'] },
 ] as const;
 export type ProcessFigureId = (typeof processInfo)[number]['id'];

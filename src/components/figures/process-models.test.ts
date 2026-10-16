@@ -15,7 +15,7 @@ const ARTICLE_WIDTHS = [650, 647, 625, 346, 343, 321, 284, 281, 259];
 
 describe('B07 process models keep the source meaning', () => {
   it('covers the five process figures', () => {
-    expect(ids).toEqual(['E01', 'E02', 'E03', 'E04', 'E05']);
+    expect(ids).toEqual(['E01', 'E02', 'E03', 'E04', 'E05', 'X05']);
     for (const item of processInfo) expect(item.steps.every(t => t <= item.final) && item.final < item.duration, item.id).toBe(true);
   });
 
@@ -173,7 +173,7 @@ describe('B07 scenes stay readable at every article width', () => {
   // 단계마다 상태 문구가 그 장면에 그려진 것만 말한다(다음 사건을 먼저 말하지 않음)
   const STEP_STATUS: Record<ProcessFigureId, [string, string, string]> = {
     E01: ['Acceptance Criteria', '개발 (TDD)', 'Business Value'], E02: ['남았', 'TRUNCATE', 'MockBean'], E03: ['중복', '정책이', '경계'],
-    E04: ['적재', 'HDFS에서 읽어', '관리 도구'], E05: ['죽었', '기록된 결과', '기록값을 쓰고'],
+    E04: ['적재', 'HDFS에서 읽어', '관리 도구'], E05: ['죽었', '기록된 결과', '기록값을 쓰고'], X05: ['그룹', '투표', '칸반보드'],
   };
   it('describes only what each static step has drawn', () => {
     for (const item of processInfo) item.steps.forEach((t, i) => expect(processRenderers[item.id](650, t).status, `${item.id} ${i + 1}`).toContain(STEP_STATUS[item.id][i]));
@@ -250,3 +250,30 @@ describe('B07 review fixes keep events, steps and source claims honest', () => {
     expect(processRenderers.E05(650, (E05.started + E05.collect[0]) / 2).ops.some(o => o.type === 'circle')).toBe(true);
   });
 });
+
+describe('B08 X05 team retrospective keeps the example cards and the action plan', () => {
+  it('shows the two cards, their groups, the chosen group and the action plan with the source wording', () => {
+    for (const w of [650, 284]) {
+      const s = said(final('X05', w)).replace(/\s+/g, '');
+      for (const v of ['블로그 포스팅을 할 수 있었음', '일정이 계속 밀림', '좋은 결과물', '시간 관리 못함', '시간 관리를 위해 칸반보드를 활용한다.', '자료 모으기', '그룹핑', '투표', '액션 플랜']) expect(s, `${w} ${v}`).toContain(v.replace(/\s+/g, ''));
+    }
+  });
+
+  it('leaves out the nickname, the unlabelled vote counts and priority numbers', () => {
+    for (const w of [650, 284]) for (const t of [...info('X05').steps]) {
+      const f = processRenderers.X05(w, t), s = said(f) + info('X05').caption + info('X05').notes.join(' ');
+      expect(s).not.toContain('씨유');
+      expect(texts(f).filter(o => /^[0-9]$/.test(o.text.trim()))).toEqual([]);
+    }
+  });
+
+  it('chooses a group only at the vote and writes the action plan only after it', () => {
+    const before = said(processRenderers.X05(650, info('X05').steps[0]));
+    expect(before).not.toContain('칸반보드');
+    expect(before).not.toContain('선택');
+    const vote = said(processRenderers.X05(650, info('X05').steps[1]));
+    expect(vote).toContain('선택');
+    expect(vote).not.toContain('칸반보드를');
+  });
+});
+

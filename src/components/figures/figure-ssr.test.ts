@@ -198,3 +198,16 @@ describe('B07 process figures without hydration', () => {
     }
   });
 });
+
+describe('B08 adopted figure without hydration', () => {
+  it('X05 keeps its completed scene, static steps, source anchor and registered requiredText', () => {
+    const html = renderToString(createElement(LessonFigure, { figureId: 'X05', sourceBlockId: 'source-X05' }));
+    const plain = html.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").normalize('NFKC').replace(/\s+/g, '');
+    expect(html).toContain('data-source-block-id="source-X05"');
+    expect((html.match(/<svg /g) ?? []).length).toBe(8);
+    expect(html).not.toContain('<button');
+    const specs = registry.figures.filter(f => /^X0[1-9]$/.test(f.figureId));
+    expect(specs.map(s => s.figureId)).toEqual(['X05']);
+    for (const expected of specs[0].requiredText) expect(plain, expected).toContain(expected.normalize('NFKC').replace(/\s+/g, ''));
+  });
+});

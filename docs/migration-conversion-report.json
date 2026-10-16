@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-16T04:33:43.188280+00:00",
+  "generatedAt": "2026-10-16T05:45:42.020649+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -10942,6 +10942,21 @@
           "type": "text",
           "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
           "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
+        }
+      ],
+      "figures": [
+        {
+          "figureId": "X05",
+          "sourceId": "a1094dc5-8f5c-4725-be7c-8247fc273c44",
+          "sourceBlockId": "28bd6883-c79b-407f-8b75-7b0f0ebdf1cf",
+          "sourceType": "text",
+          "mode": "after",
+          "requiredText": [
+            "좋은 결과물",
+            "시간 관리 못함",
+            "시간 관리를 위해 칸반보드를 활용한다."
+          ],
+          "evidenceBlockIds": []
         }
       ],
       "title": "팀 회고 템플릿",

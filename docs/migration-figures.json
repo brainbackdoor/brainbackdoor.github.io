@@ -1030,6 +1030,19 @@
       "evidenceBlockIds": [
         "38190d37-083f-80d4-8e21-c2bc984cf496"
       ]
+    },
+    {
+      "figureId": "X05",
+      "sourceId": "a1094dc5-8f5c-4725-be7c-8247fc273c44",
+      "sourceBlockId": "28bd6883-c79b-407f-8b75-7b0f0ebdf1cf",
+      "sourceType": "text",
+      "mode": "after",
+      "requiredText": [
+        "좋은 결과물",
+        "시간 관리 못함",
+        "시간 관리를 위해 칸반보드를 활용한다."
+      ],
+      "evidenceBlockIds": []
     }
   ],
   "corrections": [

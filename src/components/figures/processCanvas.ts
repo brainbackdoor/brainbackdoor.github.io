@@ -1,7 +1,7 @@
 /** B07 과정 5종 렌더러. 공통 그리기 도구(lessonCanvas)와 사건 모델(process-models)만 쓰고, Canvas와 정적 SVG가 같은 명령을 읽는다. */
 import { C, TONE, appear, arrowHead, draw, ease, f2, frame, para, span, textW, wrap, type G, type LessonFrame, type Pt } from './lessonCanvas';
 import { along, route } from './infraCanvas';
-import { E01, E01_BUBBLE, E01_DASHES, E01_NODES, E02, E02_CLEAN, E02_COLS, E02_ROWS, E03, E03_CARDS, E03_DUP, E03_HOTSPOTS, E03_LEGEND, E03_PATH, E03_REST, E04, E04_ARROWS, E04_LIT, E04_MANAGEMENT, E04_NODES, E05, E05_CARD_AT, E05_CODE, E05_HISTORY, e01, e02, e02CellAt, e02Points, e03, e03At, e03Leg, e04, e04ArrowDone, e05, type Cell, type E04Node, type ProcessFigureId, type Sticky } from './process-models';
+import { E01, E01_BUBBLE, E01_DASHES, E01_NODES, E02, E02_CLEAN, E02_COLS, E02_ROWS, E03, E03_CARDS, E03_DUP, E03_HOTSPOTS, E03_LEGEND, E03_PATH, E03_REST, E04, E04_ARROWS, E04_LIT, E04_MANAGEMENT, E04_NODES, E05, E05_CARD_AT, E05_CODE, E05_HISTORY, e01, e02, e02CellAt, e02Points, e03, e03At, e03Leg, e04, e04ArrowDone, e05, x05, X05, X05_ACTION, X05_LANES, X05_STAGES, type Cell, type E04Node, type ProcessFigureId, type Sticky } from './process-models';
 
 /* B07 공통 도구 */
 type Box = { x: number; y: number; w: number; h: number };
@@ -457,4 +457,59 @@ function temporalV2(w: number, t: number): LessonFrame {
   return frame(g, end + 8, s.phase);
 }
 
-export const processRenderers: Record<ProcessFigureId, (width: number, elapsed: number) => LessonFrame> = { E01: atddV2, E02: testScopeV2, E03: stormV2, E04: platformV2, E05: temporalV2 };
+/* ---------- X05 팀 회고: 카드 → 그룹 → 투표 → 액션 플랜(레인 두 개) ---------- */
+type RetroBox = { head: string; headColor: string; headSize: number; body: string[]; bodySize: number; bodyColor: string; fill: string; stroke: string } | null;
+function retroV2(w: number, t: number): LessonFrame {
+  const g = draw(), s = x05(t), wide = w >= 560, gap = wide ? 26 : 10;
+  const boxW = wide ? (w - 3 * gap) / 4 : (w - gap) / 2;
+  // 단계(열) × 레인 내용. 보이지 않을 때도 자리를 잡아 높이가 바뀌지 않게 한다
+  const content = (c: number, l: number, on: boolean): RetroBox => {
+    const lane = X05_LANES[l], tone = l === 0 ? TONE.blue : TONE.red, out = l === 0 && s.voted;
+    if (c === 0) return { head: lane.kind, headColor: tone.text, headSize: 11, body: wrap(lane.card, boxW - 16, 12), bodySize: 12, bodyColor: C.ink, fill: tone.tint, stroke: tone.line };
+    if (c === 1) return { head: lane.group, headColor: out && on ? C.muted : C.ink, headSize: 12, body: wrap(lane.card, boxW - 16, 11), bodySize: 11, bodyColor: C.muted, fill: out && on ? C.bg : C.paper, stroke: out && on ? C.line : C.ink };
+    if (l === 0) return null;
+    if (c === 2) return { head: '선택됨', headColor: C.greenText, headSize: 12, body: [], bodySize: 11, bodyColor: C.ink, fill: C.greenTint, stroke: C.green };
+    return { head: '액션 플랜', headColor: C.greenText, headSize: 11, body: wrap(X05_ACTION, boxW - 16, 12), bodySize: 12, bodyColor: C.ink, fill: C.greenTint, stroke: C.green };
+  };
+  const hOf = (b: RetroBox) => b ? 14 + 16 + b.body.length * 15 : 0;
+  const visible = (c: number, l: number) => c === 0 ? s.cards[l] : c === 1 ? s.grouped : c === 2 ? s.voted : s.acted;
+  const appearAt = (c: number, l: number) => c === 0 ? X05.cards[l] : c === 1 ? X05.group[1] : c === 2 ? X05.vote[1] : X05.action[1];
+  // 배치: 넓은 폭은 열 4개 × 레인 2개, 좁은 폭은 단계마다 레인 두 칸을 위에서 아래로
+  const boxes: (Box | null)[][] = [[], [], [], []];
+  const headY: number[] = [];
+  let bottom = 0;
+  if (wide) {
+    const laneH = [0, 1].map(l => Math.max(...[0, 1, 2, 3].map(c => hOf(content(c, l, false)))));
+    const laneY = [30, 30 + laneH[0] + 16];
+    for (let c = 0; c < 4; c++) { headY[c] = 16; for (let l = 0; l < 2; l++) boxes[c][l] = content(c, l, false) ? { x: c * (boxW + gap), y: laneY[l], w: boxW, h: hOf(content(c, l, false)) } : null; }
+    bottom = laneY[1] + laneH[1];
+  } else {
+    let y = 0;
+    for (let c = 0; c < 4; c++) {
+      headY[c] = y + 14;
+      const h = Math.max(hOf(content(c, 0, false)), hOf(content(c, 1, false)));
+      for (let l = 0; l < 2; l++) boxes[c][l] = content(c, l, false) ? { x: l * (boxW + gap), y: y + 22, w: boxW, h: hOf(content(c, l, false)) } : null;
+      y += 22 + h + 26;
+      bottom = y - 26;
+    }
+  }
+  // 단계 이름: 지금 단계는 굵게, 지나온 단계는 보통, 아직 오지 않은 단계는 흐리게
+  X05_STAGES.forEach((name, c) => g.text(wide ? c * (boxW + gap) : 0, headY[c], name, { size: 12, weight: c === s.stage ? 700 : 600, color: c <= s.stage ? C.ink : C.muted }));
+  // 화살표: 칸에서 다음 단계 칸으로, 점이 지나간 뒤 완성
+  const link = (c: number, l: number): Pt[] => { const a = boxes[c][l]!, b = boxes[c + 1][l]!; return wide ? [{ x: a.x + a.w + 2, y: a.y + 22 }, { x: b.x - 2, y: b.y + 22 }] : [{ x: a.x + a.w / 2, y: a.y + a.h + 2 }, { x: b.x + b.w / 2, y: b.y - 2 }]; };
+  grow(g, t, link(0, 0), X05.group[0], X05.group[1], C.ink);
+  grow(g, t, link(0, 1), X05.group[0], X05.group[1], C.ink);
+  grow(g, t, link(1, 1), X05.vote[0], X05.vote[1], C.ink);
+  grow(g, t, link(2, 1), X05.action[0], X05.action[1], C.ink);
+  for (let c = 0; c < 4; c++) for (let l = 0; l < 2; l++) {
+    const b = boxes[c][l];
+    if (!b || !visible(c, l)) continue;
+    const k = content(c, l, true)!, a = appear(t, appearAt(c, l));
+    g.rect(b.x, b.y, b.w, b.h, { r: 6, fill: k.fill, stroke: k.stroke, lw: 1.2, alpha: a });
+    g.text(b.x + 8, b.y + 18, k.head, { size: k.headSize, weight: c === 1 || c === 2 ? 700 : 600, color: k.headColor, alpha: a });
+    k.body.forEach((r, i) => g.text(b.x + 8, b.y + 34 + i * 15, r, { size: k.bodySize, color: k.bodyColor, alpha: a }));
+  }
+  return frame(g, bottom + 4, s.phase);
+}
+
+export const processRenderers: Record<ProcessFigureId, (width: number, elapsed: number) => LessonFrame> = { E01: atddV2, E02: testScopeV2, E03: stormV2, E04: platformV2, E05: temporalV2, X05: retroV2 };

@@ -353,7 +353,7 @@
       "targetPath": "/posts/a1094dc5-8f5c-4725-be7c-8247fc273c44",
       "checkedTextFields": 31,
       "renderedImages": 7,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "1ddf702a-4e19-4a6d-8114-f2ba32a55ebb",
         "5aaab3fc-28e1-4c77-b0fe-474be58429f4",
@@ -1008,7 +1008,7 @@
   "summary": {
     "pages": 58,
     "textFields": 1806,
-    "figures": 73,
+    "figures": 74,
     "pagesWithIssues": 0,
     "brokenInternalLinks": 0,
     "unavailableSourcePages": 6,

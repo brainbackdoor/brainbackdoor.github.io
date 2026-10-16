@@ -1,7 +1,7 @@
 /** B07 과정 5종 렌더러. 공통 그리기 도구(lessonCanvas)와 사건 모델(process-models)만 쓰고, Canvas와 정적 SVG가 같은 명령을 읽는다. */
 import { C, TONE, appear, arrowHead, draw, ease, f2, frame, para, span, textW, wrap, type G, type LessonFrame, type Pt } from './lessonCanvas';
 import { along, route } from './infraCanvas';
-import { E01, E01_BUBBLE, E01_DASHES, E01_NODES, E02, E02_CLEAN, E02_COLS, E02_ROWS, E03, E03_CARDS, E03_HOTSPOTS, E03_LEGEND, E03_PATH, E04, E04_ARROWS, E04_LIT, E04_MANAGEMENT, E04_NODES, E05, E05_CARD_AT, E05_CODE, E05_HISTORY, e01, e02, e02CellAt, e03, e03At, e03Leg, e04, e04ArrowDone, e05, type Cell, type E04Node, type ProcessFigureId, type Sticky } from './process-models';
+import { E01, E01_BUBBLE, E01_DASHES, E01_NODES, E02, E02_CLEAN, E02_COLS, E02_ROWS, E03, E03_CARDS, E03_DUP, E03_HOTSPOTS, E03_LEGEND, E03_PATH, E03_REST, E04, E04_ARROWS, E04_LIT, E04_MANAGEMENT, E04_NODES, E05, E05_CARD_AT, E05_CODE, E05_HISTORY, e01, e02, e02CellAt, e02Points, e03, e03At, e03Leg, e04, e04ArrowDone, e05, type Cell, type E04Node, type ProcessFigureId, type Sticky } from './process-models';
 
 /* B07 공통 도구 */
 type Box = { x: number; y: number; w: number; h: number };
@@ -13,13 +13,9 @@ function edge(b: Box, q: Pt): Pt {
   return { x: c.x + dx * k, y: c.y + dy * k };
 }
 // [a, b] 동안 경로를 따라 그려지는 화살표: 그 사이에는 머리 점, 도착 뒤에는 완성된 화살표
-function grow(g: G, t: number, pts: Pt[], a: number, b: number, color: string, o: { dash?: number[] | null; both?: boolean; lw?: number } = {}) {
+function grow(g: G, t: number, pts: Pt[], a: number, b: number, color: string, o: { dash?: number[] | null; lw?: number } = {}) {
   if (t < a) return;
-  if (t >= b) {
-    route(g, pts, color, { dash: o.dash, lw: o.lw ?? 1.5 });
-    if (o.both) { const p = pts[0], q = pts[1]; arrowHead(g, p, Math.atan2(p.y - q.y, p.x - q.x), color, 1, 6); }
-    return;
-  }
+  if (t >= b) { route(g, pts, color, { dash: o.dash, lw: o.lw ?? 1.5 }); return; }
   const u = ease.inOut(span(t, a, b)), head = along(pts, u), seg = pts.slice(1).map((q, i) => Math.hypot(q.x - pts[i].x, q.y - pts[i].y)), total = seg.reduce((n, d) => n + d, 0);
   const drawn: Pt[] = [pts[0]];
   let d = u * total;
@@ -81,7 +77,7 @@ function atddV2(w: number, t: number): LessonFrame {
     const cw = (w - 24 - 2 * 14) / 3, r1 = top + 30, r2 = r1 + 40 + 22;
     bottom = r2 + 40 + 12;
     g.rect(0, top, w, bottom - top, { r: 14, fill: C.bg, stroke: C.line, lw: 1.2 });
-    g.text(12, top + 18, 'Develop 안에서', { size: 11, weight: 600, color: C.muted });
+    g.text(12, top + 18, 'Develop에 붙은 말풍선', { size: 11, weight: 600, color: C.muted });
     chips = E01_BUBBLE.map((_, i) => ({ x: 12 + (i % 3) * (cw + 14), y: i < 3 ? r1 : r2, w: cw, h: 40 }));
   }
   chips.forEach((b, i) => {
@@ -94,7 +90,6 @@ function atddV2(w: number, t: number): LessonFrame {
     if (s.chips[i]) g.rect(b.x, b.y, b.w, b.h, { r: 4, fill: TONE.orange.tint, stroke: TONE.orange.line, lw: 1.2, alpha: appear(t, E01.chips[i]) });
     lines(g, b, E01_BUBBLE[i], { weight: 600, color: s.chips[i] ? C.ink : C.muted });
   });
-  // 지나가는 점(카드)은 실선 위에서만
   return frame(g, bottom + 6, s.phase);
 }
 
@@ -103,7 +98,7 @@ function testScopeV2(w: number, t: number): LessonFrame {
   const g = draw(), s = e02(t), wide = w >= 560;
   const L = wide ? 140 : 0, gap = wide ? 8 : 4, cw = (w - L - 4 * gap) / 5, top0 = wide ? 26 : 22, rowH = wide ? 46 : 64, cellY = wide ? 4 : 20, ch = 36;
   const colX = (c: number) => L + c * (cw + gap);
-  const short = ['Ctrl', 'Svc', '도메인', 'Repo', 'DB'];
+  const short = ['Ctrl', 'Svc', 'Repo', 'DB', '도메인'];
   E02_COLS.forEach((name, c) => g.text(colX(c) + cw / 2, 14, wide ? name : short[c], { size: 11, weight: 600, align: 'center', color: C.muted }));
   const rowStart = (r: number) => r === 0 ? E02.acc1[0] : E02.rows[r - 1][0];
   E02_ROWS.forEach((row, r) => {
@@ -112,6 +107,7 @@ function testScopeV2(w: number, t: number): LessonFrame {
     else { g.text(0, ry + 13, row.name, { size: 12, weight: 700, color: started ? C.ink : C.muted }); g.text(textW(row.name, 12) + 8, ry + 13, row.driver, { size: 11, color: C.muted }); }
     row.cells.forEach((kind: Cell, c) => {
       const x = colX(c), at = e02CellAt(r, c);
+      if (kind === 'na') return;
       g.rect(x, y, cw, ch, { r: 5, stroke: C.grid, dash: [3, 3] });
       if (kind === 'out') {
         if (!started) return;
@@ -128,14 +124,18 @@ function testScopeV2(w: number, t: number): LessonFrame {
       else if (kind === 'db') { g.text(x + cw / 2, y + 15, 'DB', { size: 11, weight: 600, align: 'center', color: C.greenText }); g.text(x + cw / 2, y + 29, `행 ${s.rows}`, { size: 11, align: 'center', color: C.ink }); }
       else { g.text(x + cw / 2, y + 15, '웹 계층', { size: 11, weight: 600, align: 'center', color: C.greenText }); g.text(x + cw / 2, y + 29, mockText, { size: 11, weight: 600, align: 'center', color: C.orangeText }); }
     });
-    // 요청 점: 행 이름(넓은 폭) 또는 왼쪽 끝에서 마지막 실행·대역 칸까지
-    const reach = Math.max(...row.cells.map((k, i) => k === 'out' ? -1 : i)), x0 = wide ? L - 14 : 6, x1 = colX(reach) + cw / 2, cy = y + ch / 2;
+    // 요청 점: path의 칸을 차례로 지난다(구간마다 같은 시간, 도착 시각 = 칸이 켜지는 시각). 직접 호출은 첫 칸에서 출발
+    const xs = e02Points(r).map(c => c < 0 ? (wide ? L - 14 : 6) : colX(c) + cw / 2), n = xs.length - 1, cy = y + ch / 2;
     const windows = r === 0 ? [E02.acc1, E02.acc2] : [E02.rows[r - 1]];
-    windows.forEach(([a, b]) => dot(g, t, [{ x: x0, y: cy }, { x: x1, y: cy }], a, b));
+    if (n > 0) windows.forEach(([a, b]) => {
+      if (t < a || t >= b) return;
+      const u = (t - a) / (b - a) * n, k = Math.min(n - 1, Math.floor(u)), x = xs[k] + (xs[k + 1] - xs[k]) * ease.inOut(u - k);
+      g.circle(x, cy, 4.5, { fill: C.blue });
+    });
   });
   // 범례
   let y = top0 + 5 * rowH + 14;
-  const legend = wide ? ['실행 = 테스트에서 실제로 실행 · MockBean = @MockBean 대역 · — = 범위 밖'] : ['Ctrl·Svc·Repo = Controller·Service·Repository', 'Mock = @MockBean 대역 · — = 범위 밖'];
+  const legend = wide ? ['실행 = 테스트에서 실제로 실행 · MockBean = @MockBean 대역 · — = 범위 밖 · 도메인 열은 단위 테스트만 표시'] : ['Ctrl·Svc·Repo = Controller·Service·Repository', 'Mock = @MockBean 대역 · — = 범위 밖', '도메인 열은 단위 테스트만 표시'];
   legend.forEach(l => { y = para(g, 0, y, l, w, { size: 11, color: C.muted }) + 16; });
   // 인수테스트 격리: 다음 테스트의 @BeforeEach에서 databaseCleanup.execute()
   y = para(g, 0, y + 8, '인수테스트 격리 · 다음 테스트의 @BeforeEach → databaseCleanup.execute()', w, { size: 12, weight: 700, color: t >= E02.clean[0] ? C.ink : C.muted }) + 12;
@@ -155,7 +155,7 @@ const STICKY: Record<Sticky, { fill: string; line: string }> = {
   event: { fill: '#ffc078', line: '#e8590c' }, command: { fill: '#a5d8ff', line: '#1c7ed6' }, policy: { fill: '#d0bfff', line: '#7048e8' }, system: { fill: '#fcc2d7', line: '#d6336c' },
   actor: { fill: '#ffe066', line: '#f08c00' }, read: { fill: '#b2f2bb', line: '#37b24d' }, hotspot: { fill: '#ff8787', line: '#e03131' }, aggregate: { fill: '#fff3bf', line: '#f08c00' },
 };
-const SCATTER: Record<string, [number, number]> = { e1: [10, -6], e2: [-8, 6], e2b: [10, 4], e3: [-10, -6], e4: [8, 6], dup: [-6, -6] };
+const SCATTER: Record<string, [number, number]> = { e1: [16, -10], e2: [-16, -10], e2b: [-14, -6], e3: [-18, 8], e4: [16, 10], dup: [-14, 12] };
 function sticky(g: G, b: Box, text: string, kind: Sticky, alpha = 1) {
   g.rect(b.x, b.y, b.w, b.h, { r: 3, fill: STICKY[kind].fill, stroke: STICKY[kind].line, lw: 1, alpha });
   lines(g, b, wrap(text, b.w - 10, 11), { alpha });
@@ -232,10 +232,21 @@ function stormV2(w: number, t: number): LessonFrame {
   if (t >= E03.drop && !s.dupGone) {
     const b = slot('p2'), k = 1 - ease.inOut(s.aligned), a = appear(t, E03.drop) * (1 - span(t, E03.dup[0], E03.dup[1]));
     b.x += SCATTER.dup[0] * k; b.y += SCATTER.dup[1] * k;
-    sticky(g, b, '회원가입 약관을 동의했다', 'event', a);
+    sticky(g, b, E03_DUP, 'event', a);
     if (s.dupCrossed) { g.line(b.x + 4, b.y + 4, b.x + b.w - 4, b.y + b.h - 4, { stroke: C.red, lw: 2, alpha: a }); g.line(b.x + 4, b.y + b.h - 4, b.x + b.w - 4, b.y + 4, { stroke: C.red, lw: 2, alpha: a }); }
   }
-  return frame(g, aBottom + 4, s.phase);
+  // 그리지 않은 보드의 나머지: 보드 라벨 그대로 목록으로(경계 단계에 나타남, 자리는 처음부터 잡아 둔다)
+  let ry = aBottom + 22;
+  const ra = s.bound ? appear(t, E03.bound) : 0;
+  if (ra > 0) g.text(0, ry, '보드의 나머지', { size: 12, weight: 700, color: C.ink, alpha: ra });
+  for (const line of E03_REST) {
+    // 항목 머리에만 '·'를 두고, 이어지는 줄은 들여 쓴다(목록 안의 '·'는 줄 끝에 붙여 새 항목처럼 보이지 않게)
+    const rows = wrap(line.replace(/ · /g, '\u00a0· '), w - 10, 11);
+    ry += 18;
+    if (ra > 0) { g.text(0, ry, '·', { size: 11, color: C.muted, alpha: ra }); rows.forEach((r, i) => g.text(10, ry + i * 18, r, { size: 11, color: C.muted, alpha: ra })); }
+    ry += (rows.length - 1) * 18;
+  }
+  return frame(g, ry + 8, s.phase);
 }
 
 /* ---------- E04 데이터 플랫폼: 원본 3열 배치(넓은 폭) / 영역을 세로로 쌓기(좁은 폭) ---------- */
@@ -326,18 +337,34 @@ function platformV2(w: number, t: number): LessonFrame {
   if (s.working) { const c = mid(B.workflow); g.circle(B.workflow.x + B.workflow.w - 14, c.y, 4.5, { fill: C.blue }); }
   dot(g, t, routes.a8, E04.a8[0], E04.a8[1]); dot(g, t, routes.a9, E04.a9[0], E04.a9[1]); dot(g, t, routes.a10, E04.a10[0], E04.a10[1]);
   // 관리 영역: 데이터 경로와 선 없음(점선 테두리로 분리)
-  const cols = wide ? 5 : 2, gw = 8, cwm = (w - 16 - (cols - 1) * gw) / cols;
-  const chips = E04_MANAGEMENT.map(([name, tools]) => ({ name: wrap(name, cwm - 16, 11), tools: wrap(tools, cwm - 16, 11) }));
+  // 열 수는 가장 긴 도구 이름(Coda Hale Metrics)이 한 줄에 들어가는 만큼
+  const cols = w >= 648 ? 5 : w >= 560 ? 3 : 2, gw = 8, cwm = (w - 16 - (cols - 1) * gw) / cols;
+  const chips = E04_MANAGEMENT.map(([name, tools]) => ({ name: wrap(name, cwm - 12, 11), tools: wrapTools(tools, cwm - 12) }));
   const rowsN = Math.ceil(chips.length / cols), rowH = Array.from({ length: rowsN }, (_, r) => Math.max(...chips.slice(r * cols, r * cols + cols).map(c => 12 + (c.name.length + c.tools.length) * 14)));
   const mH = 28 + rowH.reduce((n, h) => n + h + 8, 0);
   area(g, { x: 0, y: mTop, w, h: mH }, 'MANAGEMENT', { dash: true });
   chips.forEach((c, i) => {
     const r = Math.floor(i / cols), x = 8 + (i % cols) * (cwm + gw), y = mTop + 26 + rowH.slice(0, r).reduce((n, h) => n + h + 8, 0);
     g.rect(x, y, cwm, rowH[r], { r: 6, fill: C.bg, stroke: C.grid, lw: 1 });
-    c.name.forEach((l, j) => g.text(x + 8, y + 16 + j * 14, l, { size: 11, weight: 600, color: C.ink }));
-    c.tools.forEach((l, j) => g.text(x + 8, y + 16 + (c.name.length + j) * 14, l, { size: 11, color: C.muted }));
+    c.name.forEach((l, j) => g.text(x + 6, y + 16 + j * 14, l, { size: 11, weight: 600, color: C.ink }));
+    c.tools.forEach((l, j) => g.text(x + 6, y + 16 + (c.name.length + j) * 14, l, { size: 11, color: C.muted }));
   });
   return frame(g, mTop + mH + 2, s.phase);
+}
+
+// 도구 목록 줄바꿈: 도구 이름 단위로 나누고, 한 이름이 칸보다 길 때만 그 이름 안에서 나눈다
+function wrapTools(s: string, maxW: number) {
+  const out: string[] = [];
+  let line = '';
+  for (const tool of s.split(' · ')) {
+    const cand = line ? line + ' · ' + tool : tool;
+    if (textW(cand, 11) <= maxW) { line = cand; continue; }
+    if (line) out.push(line + ' ·');
+    if (textW(tool, 11) <= maxW) line = tool;
+    else { const parts = wrap(tool, maxW, 11); out.push(...parts.slice(0, -1)); line = parts[parts.length - 1]; }
+  }
+  if (line) out.push(line);
+  return out;
 }
 
 /* ---------- E05 Temporal: Server의 Event History와 Worker A/B ---------- */
@@ -345,9 +372,10 @@ function bar(g: G, x: number, y: number, w: number, q: number, color: string) {
   g.rect(x, y - 4, w, 6, { r: 3, fill: C.grid });
   if (q > 0) g.rect(x, y - 4, Math.max(3, w * q), 6, { r: 3, fill: color });
 }
-function tag(g: G, x: number, y: number, text: string, color: string, line: string, alpha = 1) {
+// 꼬리표: 점선은 '기록된 결과 사용'에만 쓴다(범례와 같은 뜻)
+function tag(g: G, x: number, y: number, text: string, color: string, line: string, alpha = 1, dashed = false) {
   const bw = textW(text, 11) + 10;
-  g.rect(x, y - 11, bw, 16, { r: 4, fill: C.paper, stroke: line, dash: [3, 2], lw: 1, alpha });
+  g.rect(x, y - 11, bw, 16, { r: 4, fill: C.paper, stroke: line, dash: dashed ? [3, 2] : null, lw: 1, alpha });
   g.text(x + 5, y + 1, text, { size: 11, weight: 600, color, alpha });
 }
 function temporalV2(w: number, t: number): LessonFrame {
@@ -369,11 +397,13 @@ function temporalV2(w: number, t: number): LessonFrame {
   dot(g, t, [{ x: pillX, y: 24 }, { x: pillX, y: cards[4].y }], E05.signal[0], E05.signal[1], C.orange);
   E05_HISTORY.forEach(([name, sub], i) => {
     const b = cards[i];
-    if (!s.cards[i]) { g.rect(b.x, b.y, b.w, b.h, { r: 6, stroke: C.grid, dash: [3, 3] }); return; }
+    if (!s.cards[i]) return;
     const a = appear(t, E05_CARD_AT[i]), pending = i === 2 && !s.calcResult;
-    g.rect(b.x, b.y, b.w, b.h, { r: 6, fill: i === 2 && !pending ? C.orangeTint : C.paper, stroke: pending ? C.line : i === 2 ? C.orange : C.ink, dash: pending ? [4, 3] : null, lw: 1.1, alpha: a });
+    g.rect(b.x, b.y, b.w, b.h, { r: 6, fill: i === 2 && !pending ? C.orangeTint : C.paper, stroke: pending ? C.line : i === 2 ? C.orange : C.ink, lw: 1.1, alpha: a });
     g.text(b.x + 10, b.y + 16, name, { size: 11, weight: 600, color: i === 2 && !pending ? C.orangeText : C.ink, alpha: a });
     g.text(b.x + 10, b.y + 31, pending ? '결과 없음' : sub, { size: 11, color: pending ? C.muted : C.ink, mono: i === 2 && !pending, alpha: a });
+    // 재시도로 결과가 채워진 카드에는 그 사실을 남긴다(정지 장면에서도 재시도가 보이게)
+    if (i === 2 && s.calcResult) g.text(b.x + b.w - 10, b.y + 16, '재시도로 완료', { size: 11, weight: 600, align: 'right', color: C.orangeText, alpha: appear(t, E05.calcRep[1]) });
     if (i === 2 && s.timeout > 0 && t < E05.timeout[1]) {
       g.text(b.x + b.w - 10, b.y + 16, '타임아웃', { size: 11, weight: 600, align: 'right', color: C.orangeText });
       bar(g, b.x + b.w - 70, b.y + 30, 60, s.timeout, C.orange);
@@ -387,6 +417,7 @@ function temporalV2(w: number, t: number): LessonFrame {
   const link = (i: number): Pt[] => wide ? [{ x: sw, y: workers[i].y + wH / 2 }, { x: workers[i].x, y: workers[i].y + wH / 2 }] : [{ x: workers[i].x + ww / 2, y: sBottom }, { x: workers[i].x + ww / 2, y: wTop }];
   [0, 1].forEach(i => { const [p, q] = link(i); g.line(p.x, p.y, q.x, q.y, { stroke: C.line, lw: 1.2 }); });
   const down = (i: number) => link(i), up = (i: number) => [...link(i)].reverse();
+  dot(g, t, down(0), E05.started, E05.collect[0]);
   dot(g, t, up(0), E05.collectRep[0], E05.collectRep[1]);
   dot(g, t, down(0), E05.calcSched, E05.calc1[0]);
   dot(g, t, down(1), E05.retry[0], E05.retry[1]);
@@ -396,11 +427,12 @@ function temporalV2(w: number, t: number): LessonFrame {
   dot(g, t, up(1), E05.creditRep[0], E05.creditRep[1]);
   workers.forEach((wk, i) => {
     const dead = i === 0 && s.crashed;
-    g.rect(wk.x, wk.y, ww, wH, { r: 10, fill: dead ? C.redTint : C.paper, stroke: dead ? C.red : i === 1 && t >= E05.retry[0] ? C.green : C.ink, lw: 1.2 });
+    g.rect(wk.x, wk.y, ww, wH, { r: 10, fill: dead ? C.redTint : C.paper, stroke: dead ? C.red : i === 1 && t >= E05.retry[1] ? C.green : C.ink, lw: 1.2 });
     g.text(wk.x + 10, wk.y + 20, wk.name, { size: 12, weight: 700, color: dead ? C.redText : C.ink });
     // 설명 줄은 두 줄까지(좁은 폭) 자리를 잡아 둔다
-    const sub = i === 1 && t >= E05.replay[0] ? 'Event History로 Replay' : '코드를 실행할 뿐 · 자기 상태 없음';
-    para(g, wk.x + 10, wk.y + 36, sub, ww - 20, { size: 11, lh: 14, color: i === 1 && t >= E05.replay[0] ? C.greenText : C.muted });
+    // Worker B의 부제는 Replay 입력(점)이 도착할 때 바뀐다
+    const replayed = i === 1 && t >= E05.replay[1], sub = replayed ? 'Event History로 Replay' : '코드를 실행할 뿐 · 자기 상태 없음';
+    para(g, wk.x + 10, wk.y + 36, sub, ww - 20, { size: 11, lh: 14, color: replayed ? C.greenText : C.muted });
     // 좁은 폭(Worker 두 칸이 나란히)은 여백을 줄여 표시 자리를 확보한다
     const pad = wide ? 10 : 8, codeW = textW('승인 대기(7일)', 11), mx = wk.x + pad + codeW + (wide ? 8 : 3), mw = ww - (mx - wk.x) - (wide ? 10 : 4);
     E05_CODE.forEach((code, j) => {
@@ -411,7 +443,7 @@ function temporalV2(w: number, t: number): LessonFrame {
         if (j === 0 && s.collect > 0) bar(g, mx, ly, mw, s.collect, C.blue);
         if (j === 1 && s.calc1 > 0) bar(g, mx, ly, mw, s.calc1, dead ? C.faint : C.blue);
       } else {
-        if (j <= 1 && s.bLines[j]) { on = true; tag(g, mx, ly, wide && j === 1 ? '기록값 50,000' : '기록값', C.greenText, C.green, appear(t, j === 0 ? E05.replayLines[0] : E05.replayLines[1])); }
+        if (j <= 1 && s.bLines[j]) { on = true; tag(g, mx, ly, wide && j === 1 ? '기록값 50,000' : '기록값', C.greenText, C.green, appear(t, j === 0 ? E05.replayLines[0] : E05.replayLines[1]), true); }
         else if (j === 1 && s.calc2 > 0) { on = true; bar(g, mx, ly, mw, s.calc2, C.blue); }
         if (j === 2 && s.bLines[2]) { on = true; tag(g, mx, ly, t >= E05.wake[1] ? (wide ? '✓ 승인' : '승인됨') : '대기', t >= E05.wake[1] ? C.greenText : C.orangeText, t >= E05.wake[1] ? C.green : C.orange, appear(t, t >= E05.wake[1] ? E05.wake[1] : E05.timer)); }
         if (j === 3 && s.credit > 0) { on = true; bar(g, mx, ly, mw, s.credit, C.blue); }
@@ -421,7 +453,7 @@ function temporalV2(w: number, t: number): LessonFrame {
     if (dead) g.text(wk.x + 10, wk.y + wH - 10, '✕ 프로세스 죽음', { size: 11, weight: 700, color: C.redText, alpha: appear(t, E05.crash) });
   });
   const bottom = Math.max(sBottom, workers[1].y + wH) + 14;
-  const end = para(g, 0, bottom + 4, '막대 = 실제 실행 · 점선 상자 = 기록된 결과 사용(다시 실행하지 않음)', w, { size: 11, color: C.muted });
+  const end = para(g, 0, bottom + 4, '막대 = 실제 실행 · 초록 점선 꼬리표 = 기록된 결과 사용(다시 실행하지 않음)', w, { size: 11, color: C.muted });
   return frame(g, end + 8, s.phase);
 }
 

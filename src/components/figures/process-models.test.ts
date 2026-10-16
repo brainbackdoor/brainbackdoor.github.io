@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { E01, E01_DASHES, E01_NODES, E02, E02_ROWS, E03_CARDS, E03_PATH, E04_ARROWS, E04_MANAGEMENT, E05, E05_HISTORY, e01, e02, e05, processInfo, type ProcessFigureId } from './process-models';
+import { E01, E01_DASHES, E01_NODES, E02, E02_COLS, E02_ROWS, E03_CARDS, E03_PATH, E04_ARROWS, E04_MANAGEMENT, E05, E05_HISTORY, e01, e02, e02CellAt, e05, processInfo, type ProcessFigureId } from './process-models';
 import { processRenderers } from './processCanvas';
 import type { DrawOp, LessonFrame } from './lessonCanvas';
 
@@ -35,7 +35,7 @@ describe('B07 process models keep the source meaning', () => {
   });
 
   it('E02 follows the test code: what runs, what is a @MockBean and what is out of scope', () => {
-    expect(E02_ROWS.map(r => r.cells.join(' '))).toEqual(['run run run run db', 'web out out mock out', 'out run out mock out', 'out out out run h2', 'out out run out out']);
+    expect(E02_ROWS.map(r => r.cells.join(' '))).toEqual(['run run run db na', 'web out mock out na', 'out run mock out na', 'out out run h2 na', 'out out out out run']);
     expect(E02_ROWS.map(r => r.driver)).toEqual(['RestAssured', 'MockMvc', '직접 호출 ×10', '@DataJpaTest', '직접 호출']);
     const s = said(final('E02')) + ' ' + info('E02').caption;
     for (const v of ['@BeforeEach', 'databaseCleanup.execute()', 'SET foreign_key_checks = 0', 'SET foreign_key_checks = 1', 'entityManager.flush()', 'h2', 'MockBean']) expect(s).toContain(v);
@@ -53,7 +53,8 @@ describe('B07 process models keep the source meaning', () => {
     const kind = (id: string) => E03_CARDS.find(c => c.id === id)!.kind;
     expect(E03_PATH.map(kind)).toEqual(['command', 'event', 'policy', 'command', 'event', 'policy', 'command', 'system', 'event']);
     const s = said(final('E03', 650));
-    for (const c of E03_CARDS) expect(s, c.text).toContain(c.text.split(' ')[0]);
+    const joined = s.replace(/\s+/g, '');
+    for (const c of E03_CARDS) expect(joined, c.text).toContain(c.text.replace(/\s+/g, ''));
     for (const b of ['회원', '인증', 'referer가']) expect(s).toContain(b);
     // 탐험 단계의 중복 카드는 첫 정지 장면에서 이미 지워져 있다
     const step1 = texts(processRenderers.E03(650, info('E03').steps[0])).filter(o => o.text.includes('약관을')).length;
@@ -171,10 +172,81 @@ describe('B07 scenes stay readable at every article width', () => {
 
   // 단계마다 상태 문구가 그 장면에 그려진 것만 말한다(다음 사건을 먼저 말하지 않음)
   const STEP_STATUS: Record<ProcessFigureId, [string, string, string]> = {
-    E01: ['Acceptance Criteria', '인수테스트', '개발 (TDD)'], E02: ['남았', 'TRUNCATE', 'MockBean'], E03: ['중복', '정책이', '경계'],
+    E01: ['Acceptance Criteria', '개발 (TDD)', 'Business Value'], E02: ['남았', 'TRUNCATE', 'MockBean'], E03: ['중복', '정책이', '경계'],
     E04: ['적재', 'HDFS에서 읽어', '관리 도구'], E05: ['죽었', '기록된 결과', '기록값을 쓰고'],
   };
   it('describes only what each static step has drawn', () => {
     for (const item of processInfo) item.steps.forEach((t, i) => expect(processRenderers[item.id](650, t).status, `${item.id} ${i + 1}`).toContain(STEP_STATUS[item.id][i]));
+  });
+});
+
+describe('B07 review fixes keep events, steps and source claims honest', () => {
+  const header = (f: LessonFrame, name: string) => texts(f).find(o => o.text === name && o.y < 20)!;
+  it('E02 lights each cell when the request dot reaches it, and the dot never crosses an out-of-scope cell', () => {
+    const issues: string[] = [];
+    for (const w of [650, 284]) {
+      const names = w >= 560 ? E02_COLS : ['Ctrl', 'Svc', 'Repo', 'DB', '도메인'];
+      const cx = names.map(n => header(processRenderers.E02(w, 0), n).x), half = (cx[1] - cx[0]) / 2;
+      E02_ROWS.forEach((row, r) => {
+        const win = r === 0 ? [E02.acc1] : [E02.rows[r - 1]];
+        row.cells.forEach((kind, c) => {
+          const at = e02CellAt(r, c);
+          if (at === null || kind === 'mock' || at === win[0][0]) return;
+          const dots = processRenderers.E02(w, at - 1).ops.filter(o => o.type === 'circle');
+          if (!dots.some(d => d.type === 'circle' && Math.abs(d.x - cx[c]) < 3)) issues.push(`${w} ${row.name} ${c} dot not at the cell when it lights`);
+        });
+        const [a, b] = win[0];
+        for (let t = a; t < b; t += 20) for (const d of processRenderers.E02(w, t).ops) {
+          if (d.type !== 'circle') continue;
+          row.cells.forEach((kind, c) => { if ((kind === 'out' || kind === 'na') && Math.abs(d.x - cx[c]) < half - 4) issues.push(`${w} ${row.name} ${t} dot over ${c}`); });
+        }
+      });
+    }
+    expect([...new Set(issues)]).toEqual([]);
+  });
+
+  it('E02 judges the domain column only for the unit test and says so', () => {
+    expect(E02_COLS).toEqual(['Controller', 'Service', 'Repository', 'DB', '도메인']);
+    expect(E02_ROWS.map(r => r.cells[4])).toEqual(['na', 'na', 'na', 'na', 'run']);
+    expect(info('E02').caption).toContain('판정하지 않았습니다');
+    expect(info('E02').notes.join(' ')).not.toContain('나머지는 @MockBean');
+    expect(processRenderers.E02(650, info('E02').steps[1]).status + info('E02').notes[1]).not.toContain('빈 DB에서 시작');
+  });
+
+  it('ends every figure with its final scene as the last static step', () => {
+    for (const item of processInfo) expect(item.steps.at(-1), item.id).toBe(item.final);
+  });
+
+  it('E01 does not interpret the bubble as the inside of Develop', () => {
+    for (const w of [650, 284]) for (const t of [...info('E01').steps]) expect(said(processRenderers.E01(w, t)) + info('E01').notes.join(' ')).not.toContain('Develop 안에');
+  });
+
+  it('E03 keeps the rest of the board in the final scene: incoming arrows, the three branches, other rows and the cut edge', () => {
+    for (const w of [650, 284]) {
+      const s = said(final('E03', w)).replace(/\s+/g, '');
+      for (const v of ['인증 번호를 인증했다', '카카오 로그인', '구글 로그인', '인증코드 생성', '비밀번호 재설정', '사진 등록', '본인 인증', '비로그인 회원', '휴대폰 번호로 로그인 시도', '잘려']) expect(s, `${w} ${v}`).toContain(v.replace(/\s+/g, ''));
+    }
+    expect(info('E03').notes[2]).toContain('중');
+  });
+
+  it('E04 names Netty and gRPC separately and never splits a management tool across lines', () => {
+    expect(info('E04').notes.join(' ')).not.toContain('Netty(gRPC)');
+    const tools = E04_MANAGEMENT.flatMap(m => m[1].split(' · '));
+    for (const w of [650, 560, 284, 259]) {
+      const lines = texts(final('E04', w)).map(o => o.text);
+      expect(lines.filter(l => l.startsWith('·')), `${w}`).toEqual([]);
+      for (const tool of tools) expect(lines.some(l => l.includes(tool)), `${w} ${tool}`).toBe(true);
+    }
+  });
+
+  it('E05 uses dashed boxes only for recorded results and keeps the retry visible after it happened', () => {
+    for (const w of [650, 284]) for (const t of [...info('E05').steps]) for (const o of processRenderers.E05(w, t).ops) {
+      if (o.type === 'path' && o.dash) expect(o.stroke, `${w} ${t}`).toBe('#12b886');
+    }
+    for (const t of info('E05').steps.slice(1)) expect(said(processRenderers.E05(650, t))).toContain('재시도로 완료');
+    expect(said(processRenderers.E05(650, E05.replay[1] - 1))).not.toContain('Event History로 Replay');
+    expect(said(processRenderers.E05(650, E05.replay[1]))).toContain('Event History로 Replay');
+    // 데이터 수집도 Server가 Worker A에 내보낸다(점)
+    expect(processRenderers.E05(650, (E05.started + E05.collect[0]) / 2).ops.some(o => o.type === 'circle')).toBe(true);
   });
 });

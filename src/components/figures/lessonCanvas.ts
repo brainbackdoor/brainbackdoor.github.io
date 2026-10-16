@@ -256,19 +256,22 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
     }
     const want = Math.abs(cx - p0.x) / span0, reach = m.loss ? Math.min(0.9, shifted ? want : Math.max(0.55, want)) : 1;
     const tone = TONE[m.tone], q = Math.min(1, (t - m.a) / (m.b - m.a)), head = lerpPt(p0, p1full, q * reach), done = t >= m.b;
-    // 움직이는 토큰은 선 위, 자기 라벨 아래: 지나가는 동안에도 라벨 글자를 가리지 않는다
-    const dot = () => g.circle(head.x, head.y, 4.5, { fill: tone.line });
+    // 움직이는 토큰은 선 위, 자기 라벨 아래: 지나가는 동안에도 라벨 글자를 가리지 않는다.
+    // 중심이 라벨 바탕 안에 들어간 동안은 그리지 않는다(바탕 위아래로 조각만 비어져 나오지 않게)
+    const rowY = (i: number) => my + (i - (rows.length - 1) / 2) * 15 + 4;
+    const hidden = rows.some((r, i) => Math.abs(head.x - mx) < (textW(r, 11, true) + 10) / 2 && head.y > rowY(i) - 10.45 && head.y < rowY(i) + 4.4);
+    const dot = () => { if (!hidden) g.circle(head.x, head.y, 4.5, { fill: tone.line }); };
     if (m.loss) {
       g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6, dash: [5, 4] });
       if (done) {
         cross(g, head.x, head.y, C.red);
         // '× 유실'은 받는 쪽으로 쓰되, 생명선이나 받는 쪽 대기 라벨에 닿으면 보낸 쪽으로 돌려 쓴다
         const lossW = textW('× 유실', 11) + 10, toward = m.from ? head.x - 10 - lossW > edge + 4 : head.x + 10 + lossW < edge - 4;
-        label(g, head.x + ((m.from ? -1 : 1) * (toward ? 10 : -10)), head.y + 18, '× 유실', { size: 11, color: C.redText, align: (m.from ? !toward : toward) ? 'left' : 'right' });
+        late.push(() => label(g, head.x + ((m.from ? -1 : 1) * (toward ? 10 : -10)), head.y + 18, '× 유실', { size: 11, color: C.redText, align: (m.from ? !toward : toward) ? 'left' : 'right' }));
       } else late.push(dot);
     } else if (done) arrow(g, p0, p1full, { stroke: tone.line, lw: 1.6 });
     else { g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6 }); late.push(dot); }
-    late.push(() => rows.forEach((r, i) => label(g, mx, my + (i - (rows.length - 1) / 2) * 15 + 4, r, { size: 11, mono: true, weight: 600, color: tone.text, alpha: appear(t, m.a, 200) })));
+    late.push(() => rows.forEach((r, i) => label(g, mx, rowY(i), r, { size: 11, mono: true, weight: 600, color: tone.text, alpha: appear(t, m.a, 200) })));
   }
   // 시간 커서는 이 자리(라벨·토큰 바로 아래)에 끼워 넣는다
   const under = g.ops.length;

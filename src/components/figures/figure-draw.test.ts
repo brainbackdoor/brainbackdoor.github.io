@@ -369,17 +369,16 @@ describe('every figure keeps lines and filled shapes off its labels', () => {
     expect([...issues]).toEqual([]);
   });
 
-  it('keeps moving tokens above the boxes they pass', () => {
-    // 움직이는 중에도 확인한다. 라벨 바탕(글자 바로 앞의 낮은 흰 바탕) 아래로는 지나간다: 지나가는 토큰이 글자를 가리지 않게
+  it('never hides a moving token under a later fill', () => {
+    // 움직이는 중에도 확인한다(정적 단계·완료 포함). 자기 라벨 바탕 아래에 중심이 들어간 토큰은 아예 그리지 않는다: 바탕 밖으로 조각만 보이지 않게
     const issues = new Set<string>();
-    for (const [r, item] of all) for (const w of [650, 259]) for (let t = 0; t <= item.final; t += 200) {
+    for (const [r, item] of all) for (const w of [650, 259]) for (const t of [...Array.from({ length: Math.floor(item.final / 200) + 1 }, (_, k) => k * 200), ...item.steps]) {
       const f = r(w, t);
       f.ops.forEach((o, i) => {
         if (o.type !== 'circle' || o.r < 3 || o.color === 'none' || (o.alpha ?? 1) < 0.5) return;
         for (const q of f.ops.slice(i + 1)) {
-          const b = q.type === 'path' && q.fill !== 'none' && q.alpha > 0.5 ? pbox(q.d) : q.type === 'rect' && q.fill !== 'none' ? { x1: q.x, x2: q.x + q.w, y1: q.y, y2: q.y + q.h } : null, next = f.ops[f.ops.indexOf(q) + 1];
-          const labelBg = !!b && q.type === 'path' && q.fill === FIGURE_COLORS.bg && b.y2 - b.y1 <= 18 && next?.type === 'text';
-          if (b && !labelBg && o.x > b.x1 && o.x < b.x2 && o.y > b.y1 && o.y < b.y2) issues.add(`${item.id} ${w} ${t}`);
+          const b = q.type === 'path' && q.fill !== 'none' && q.alpha > 0.5 ? pbox(q.d) : q.type === 'rect' && q.fill !== 'none' ? { x1: q.x, x2: q.x + q.w, y1: q.y, y2: q.y + q.h } : null;
+          if (b && o.x > b.x1 && o.x < b.x2 && o.y > b.y1 && o.y < b.y2) issues.add(`${item.id} ${w} ${t}`);
         }
       });
     }
@@ -414,6 +413,25 @@ describe('every figure keeps lines and filled shapes off its labels', () => {
       if (t.x1 < b.x1 - 1 || t.x2 > b.x2 + 1) issues.add(`${id} ${w} ${o.text}`);
     });
     expect([...issues]).toEqual([]);
+  });
+
+  it('keeps the time cursor off the loss label right after a loss', () => {
+    // 유실 직후 시간 커서가 '× 유실' 바로 위를 지난다: 커서는 그 라벨 바탕 아래 층이어야 한다
+    const issues = new Set<string>();
+    for (const [r, item] of all) for (const w of [650, 259]) {
+      if (!r(w, item.final).ops.some(o => o.type === 'text' && o.text === '× 유실')) continue;
+      for (let t = 0; t <= item.final; t += 10) {
+        const f = r(w, t), ti = f.ops.findIndex(o => o.type === 'text' && o.text === '× 유실');
+        if (ti < 0) continue;
+        const b = tbox(f.ops[ti] as Text);
+        f.ops.forEach((o, ci) => {
+          if (o.type !== 'path' || o.stroke !== FIGURE_COLORS.blue || o.dash?.join() !== '2,3' || ci < ti) return;
+          const p = pbox(o.d);
+          if (p.y1 > b.y1 && p.y1 < b.y2 && p.x1 < b.x2 && p.x2 > b.x1) issues.add(`${item.id} ${w} ${t}`);
+        });
+      }
+    }
+    expect([...new Set([...issues].map(s => s.split(' ').slice(0, 2).join(' ')))]).toEqual([]);
   });
 
   it('never leaves a dot over a word in a static scene', () => {

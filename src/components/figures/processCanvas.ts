@@ -1,4 +1,4 @@
-/** B07 과정 5종 렌더러. 공통 그리기 도구(lessonCanvas)와 사건 모델(process-models)만 쓰고, Canvas와 정적 SVG가 같은 명령을 읽는다. */
+/** B07 과정 5종과 B08 채택 1종(X05) 렌더러. 공통 그리기 도구(lessonCanvas)와 사건 모델(process-models)만 쓰고, Canvas와 정적 SVG가 같은 명령을 읽는다. */
 import { C, TONE, appear, arrowHead, draw, ease, f2, frame, para, span, textW, wrap, type G, type LessonFrame, type Pt } from './lessonCanvas';
 import { along, route } from './infraCanvas';
 import { E01, E01_BUBBLE, E01_DASHES, E01_NODES, E02, E02_CLEAN, E02_COLS, E02_ROWS, E03, E03_CARDS, E03_DUP, E03_HOTSPOTS, E03_LEGEND, E03_PATH, E03_REST, E04, E04_ARROWS, E04_LIT, E04_MANAGEMENT, E04_NODES, E05, E05_CARD_AT, E05_CODE, E05_HISTORY, e01, e02, e02CellAt, e02Points, e03, e03At, e03Leg, e04, e04ArrowDone, e05, x05, X05, X05_ACTION, X05_LANES, X05_STAGES, type Cell, type E04Node, type ProcessFigureId, type Sticky } from './process-models';
@@ -494,10 +494,11 @@ function retroV2(w: number, t: number): LessonFrame {
     }
   }
   // 단계 이름: 지금 단계는 굵게, 지나온 단계는 보통, 아직 오지 않은 단계는 흐리게
-  X05_STAGES.forEach((name, c) => g.text(wide ? c * (boxW + gap) : 0, headY[c], name, { size: 12, weight: c === s.stage ? 700 : 600, color: c <= s.stage ? C.ink : C.muted }));
+  X05_STAGES.forEach((name, c) => g.text(wide ? c * (boxW + gap) : 0, headY[c], name, { size: 12, weight: c === s.stage ? 700 : c < s.stage ? 400 : 600, color: c <= s.stage ? C.ink : C.muted }));
   // 화살표: 칸에서 다음 단계 칸으로, 점이 지나간 뒤 완성
   const link = (c: number, l: number): Pt[] => { const a = boxes[c][l]!, b = boxes[c + 1][l]!; return wide ? [{ x: a.x + a.w + 2, y: a.y + 22 }, { x: b.x - 2, y: b.y + 22 }] : [{ x: a.x + a.w / 2, y: a.y + a.h + 2 }, { x: b.x + b.w / 2, y: b.y - 2 }]; };
-  grow(g, t, link(0, 0), X05.group[0], X05.group[1], C.ink);
+  // 고르지 않은 그룹으로 가는 화살표는 투표 순간 그룹과 함께 흐려진다
+  grow(g, t, link(0, 0), X05.group[0], X05.group[1], s.voted ? C.line : C.ink);
   grow(g, t, link(0, 1), X05.group[0], X05.group[1], C.ink);
   grow(g, t, link(1, 1), X05.vote[0], X05.vote[1], C.ink);
   grow(g, t, link(2, 1), X05.action[0], X05.action[1], C.ink);

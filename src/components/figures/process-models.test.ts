@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { E01, E01_DASHES, E01_NODES, E02, E02_COLS, E02_ROWS, E03_CARDS, E03_PATH, E04_ARROWS, E04_MANAGEMENT, E05, E05_HISTORY, e01, e02, e02CellAt, e05, processInfo, type ProcessFigureId } from './process-models';
+import { E01, E01_DASHES, E01_NODES, E02, E02_COLS, E02_ROWS, E03_CARDS, E03_PATH, E04_ARROWS, E04_MANAGEMENT, E05, E05_HISTORY, X05, e01, e02, e02CellAt, e05, processInfo, type ProcessFigureId } from './process-models';
 import { processRenderers } from './processCanvas';
 import type { DrawOp, LessonFrame } from './lessonCanvas';
 
@@ -14,7 +14,7 @@ const final = (id: ProcessFigureId, w = 650) => processRenderers[id](w, info(id)
 const ARTICLE_WIDTHS = [650, 647, 625, 346, 343, 321, 284, 281, 259];
 
 describe('B07 process models keep the source meaning', () => {
-  it('covers the five process figures', () => {
+  it('covers the five B07 process figures and the adopted B08 figure', () => {
     expect(ids).toEqual(['E01', 'E02', 'E03', 'E04', 'E05', 'X05']);
     for (const item of processInfo) expect(item.steps.every(t => t <= item.final) && item.final < item.duration, item.id).toBe(true);
   });
@@ -275,5 +275,24 @@ describe('B08 X05 team retrospective keeps the example cards and the action plan
     expect(vote).toContain('선택');
     expect(vote).not.toContain('칸반보드를');
   });
-});
 
+  it('dims the unchosen group, and its arrow, exactly at the vote', () => {
+    const color = (t: number) => texts(processRenderers.X05(650, t)).find(o => o.text === '좋은 결과물')!.color;
+    expect(color(X05.vote[1] - 1)).not.toBe(color(X05.vote[1]));
+    const arrowInto = (t: number) => processRenderers.X05(650, t).ops.filter(o => o.type === 'path' && o.fill === 'none' && /^M[^A-Z]*L[^A-Z]*$/.test(o.d) && o.stroke === '#ced4da').length;
+    expect(arrowInto(X05.vote[1] - 1)).toBe(0);
+    expect(arrowInto(X05.vote[1])).toBe(1);
+  });
+
+  it('puts the dot at the group box entrance just before the groups appear', () => {
+    const f = processRenderers.X05(650, X05.group[1] - 1), dots = f.ops.filter(o => o.type === 'circle');
+    const box = texts(processRenderers.X05(650, X05.group[1] + 400)).find(o => o.text === '좋은 결과물')!;
+    expect(dots.some(d => d.type === 'circle' && Math.abs(d.x - (box.x - 8)) < 6)).toBe(true);
+  });
+
+  it('marks the current stage bold and the past stages regular, and keeps the caption true about the tables', () => {
+    const f = processRenderers.X05(650, info('X05').steps[1]), w = (name: string) => texts(f).find(o => o.text === name)!.weight;
+    expect([w('자료 모으기'), w('그룹핑'), w('투표')]).toEqual([400, 400, 700]);
+    expect(info('X05').caption).not.toContain('아래에 그대로');
+  });
+});

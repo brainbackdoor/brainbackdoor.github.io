@@ -11,6 +11,8 @@ import { dataInfo, type DataFigureId } from './data-models';
 import { dataRenderers } from './dataCanvas';
 import { infraInfo, type InfraFigureId } from './infra-models';
 import { infraRenderers } from './infraCanvas';
+import { processInfo, type ProcessFigureId } from './process-models';
+import { processRenderers } from './processCanvas';
 
 // Figures placed inside a list item (B04 C09·T03–T05, B05 D01·D02, B06 A02–A06·O07–O09): their smallest plot is the list width.
 const LIST_EMBEDDED = new Set<string>(['C09', 'T03', 'T04', 'T05', 'D01', 'D02', 'A02', 'A03', 'A04', 'A05', 'A06', 'O07', 'O08', 'O09']);
@@ -33,9 +35,9 @@ export function LessonSvg({ frame, width, title }: {frame:LessonFrame;width:numb
   </svg>;
 }
 
-export default function LessonFigure({ figureId, sourceBlockId }: {figureId:FigureId|NetworkFigureId|SystemFigureId|DataFigureId|InfraFigureId;sourceBlockId?:string}) {
-  const info=[...lessonInfo,...networkInfo,...systemInfo,...dataInfo,...infraInfo].find(item=>item.id===figureId)!;
-  const renderer={...lessonRenderers,...networkRenderers,...systemRenderers,...dataRenderers,...infraRenderers}[figureId];
+export default function LessonFigure({ figureId, sourceBlockId }: {figureId:FigureId|NetworkFigureId|SystemFigureId|DataFigureId|InfraFigureId|ProcessFigureId;sourceBlockId?:string}) {
+  const info=[...lessonInfo,...networkInfo,...systemInfo,...dataInfo,...infraInfo,...processInfo].find(item=>item.id===figureId)!;
+  const renderer={...lessonRenderers,...networkRenderers,...systemRenderers,...dataRenderers,...infraRenderers,...processRenderers}[figureId];
   const wideWidth=figureId==='W03'?480:560;
   // Static scenes are drawn at the smallest plot of each layout and only scale up: 284px in the article
   // at a 320px viewport, 259px when a network figure sits inside a list. Wide scenes start at the layout switch.

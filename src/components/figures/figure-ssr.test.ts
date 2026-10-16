@@ -7,6 +7,7 @@ import registry from '../../../docs/migration-figures.json';
 import type { SystemFigureId } from './system-models';
 import type { DataFigureId } from './data-models';
 import type { InfraFigureId } from './infra-models';
+import type { ProcessFigureId } from './process-models';
 
 describe('TCP static rendering', () => {
   it('renders complete, readable figures without browser APIs or hydration', () => {
@@ -168,6 +169,31 @@ describe('B06 infrastructure, operations and load figures without hydration', ()
     expect(specs.map(s => s.figureId)).toEqual(['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08', 'O09']);
     for (const spec of specs) {
       const text = plain(renderToString(createElement(LessonFigure, { figureId: spec.figureId as InfraFigureId })));
+      for (const expected of spec.requiredText) expect(text, `${spec.figureId} ${expected}`).toContain(expected.normalize('NFKC').replace(/\s+/g, ''));
+    }
+  });
+});
+
+describe('B07 process figures without hydration', () => {
+  const cases = [
+    ['E01', 'Business Value', '문서화'], ['E02', 'RestAssured', 'TRUNCATE TABLE (테이블마다)'], ['E03', '로그인했다', '애그리거트'],
+    ['E04', 'Service Application', 'MANAGEMENT'], ['E05', 'TimerStarted', '프로세스 죽음'],
+  ] as const;
+  test.each(cases)('%s keeps its completed scene, static steps and source anchor', (figureId, a, b) => {
+    const html = renderToString(createElement(LessonFigure, { figureId, sourceBlockId: 'source-' + figureId }));
+    const plainHtml = html.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&').replace(/&#x27;/g, "'");
+    expect(plainHtml).toContain(a); expect(plainHtml).toContain(b);
+    expect(html).toContain('data-source-block-id="source-' + figureId + '"');
+    expect((html.match(/<svg /g) ?? []).length).toBe(8);
+    expect(html).not.toContain('<button');
+  });
+
+  it('renders every requiredText registered for the B07 figures', () => {
+    const plain = (html: string) => html.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").normalize('NFKC').replace(/\s+/g, '');
+    const specs = registry.figures.filter(f => /^E0[1-5]$/.test(f.figureId));
+    expect(specs.map(s => s.figureId)).toEqual(['E01', 'E02', 'E03', 'E04', 'E05']);
+    for (const spec of specs) {
+      const text = plain(renderToString(createElement(LessonFigure, { figureId: spec.figureId as ProcessFigureId })));
       for (const expected of spec.requiredText) expect(text, `${spec.figureId} ${expected}`).toContain(expected.normalize('NFKC').replace(/\s+/g, ''));
     }
   });

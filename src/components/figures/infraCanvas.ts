@@ -11,7 +11,7 @@ function travel(g: G, t: number, p: Pt, q: Pt, a: number, b: number, text: strin
   else token(g, h.x, h.y, text, tone, { solid: true, r: o.r ?? 9 });
 }
 // 꺾인 경로 위의 위치(길이 비율)
-function along(pts: Pt[], u: number): Pt {
+export function along(pts: Pt[], u: number): Pt {
   const seg = pts.slice(1).map((q, i) => Math.hypot(q.x - pts[i].x, q.y - pts[i].y)), total = seg.reduce((n, d) => n + d, 0);
   let d = Math.max(0, Math.min(1, u)) * total;
   for (let i = 0; i < seg.length; i++) { if (d <= seg[i] || i === seg.length - 1) return lerpPt(pts[i], pts[i + 1], seg[i] ? Math.min(1, d / seg[i]) : 1); d -= seg[i]; }
@@ -24,7 +24,7 @@ function travelAlong(g: G, t: number, pts: Pt[], a: number, b: number, text: str
   else token(g, h.x, h.y, text, tone, { solid: true, r: 9 });
 }
 // 꺾인 선 + 끝 화살촉
-function route(g: G, pts: Pt[], color: string, o: { dash?: number[] | null; lw?: number; alpha?: number; head?: boolean } = {}) {
+export function route(g: G, pts: Pt[], color: string, o: { dash?: number[] | null; lw?: number; alpha?: number; head?: boolean } = {}) {
   g.path('M' + pts.map(p => `${f2(p.x)} ${f2(p.y)}`).join('L'), { stroke: color, lw: o.lw ?? 1.4, dash: o.dash ?? null, alpha: o.alpha ?? 1 });
   if (o.head === false) return;
   const q = pts[pts.length - 1], p = pts[pts.length - 2], ang = Math.atan2(q.y - p.y, q.x - p.x), s = 6;

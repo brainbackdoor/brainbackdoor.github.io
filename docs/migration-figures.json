@@ -956,6 +956,80 @@
         "개념 예시"
       ],
       "evidenceBlockIds": []
+    },
+    {
+      "figureId": "E01",
+      "sourceId": "9178ac06-ae33-4a96-a4cd-49c96ea28351",
+      "sourceBlockId": "9b4aaa68-872e-45ef-a101-d0c9f37a1401",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "Acceptance Criteria",
+        "Mock 서버 DTO 정의",
+        "개발 (TDD)"
+      ],
+      "evidenceBlockIds": [
+        "9b4aaa68-872e-45ef-a101-d0c9f37a1401"
+      ]
+    },
+    {
+      "figureId": "E02",
+      "sourceId": "9178ac06-ae33-4a96-a4cd-49c96ea28351",
+      "sourceBlockId": "350f0be5-4253-4a2e-8982-cf0ce868ced1",
+      "sourceType": "code",
+      "mode": "after",
+      "requiredText": [
+        "databaseCleanup.execute()",
+        "SET foreign_key_checks = 0",
+        "MockBean"
+      ],
+      "evidenceBlockIds": []
+    },
+    {
+      "figureId": "E03",
+      "sourceId": "c78ba22a-b64d-4016-9f09-c9de5f94e612",
+      "sourceBlockId": "d04fba57-7d2b-406b-8d48-e8b8fababa6a",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "회원가입 확인",
+        "회원여부 정책",
+        "referer가 있을경우는?"
+      ],
+      "evidenceBlockIds": [
+        "d04fba57-7d2b-406b-8d48-e8b8fababa6a"
+      ]
+    },
+    {
+      "figureId": "E04",
+      "sourceId": "c6550c6d-0773-43bc-84a9-311a3de97b00",
+      "sourceBlockId": "94b26cb3-0dfb-41b6-91d9-aea7e19e06a1",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "Unified Log",
+        "Kafka Connect",
+        "gRPC",
+        "MANAGEMENT"
+      ],
+      "evidenceBlockIds": [
+        "94b26cb3-0dfb-41b6-91d9-aea7e19e06a1"
+      ]
+    },
+    {
+      "figureId": "E05",
+      "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
+      "sourceBlockId": "38190d37-083f-80d4-8e21-c2bc984cf496",
+      "sourceType": "image",
+      "mode": "replace",
+      "requiredText": [
+        "WorkflowStarted",
+        "Event History로 Replay",
+        "50,000 (영속화)"
+      ],
+      "evidenceBlockIds": [
+        "38190d37-083f-80d4-8e21-c2bc984cf496"
+      ]
     }
   ],
   "corrections": [

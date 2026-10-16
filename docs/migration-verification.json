@@ -6,7 +6,7 @@
       "targetPath": "/posts/c6550c6d-0773-43bc-84a9-311a3de97b00",
       "checkedTextFields": 84,
       "renderedImages": 7,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "269e468b-64a0-4e1d-a54b-cc6a5128606e",
         "8d8499cc-9903-41ba-9f3b-5525dd411c78",
@@ -777,7 +777,7 @@
       "targetPath": "/posts/9178ac06-ae33-4a96-a4cd-49c96ea28351",
       "checkedTextFields": 46,
       "renderedImages": 1,
-      "renderedFigures": 0,
+      "renderedFigures": 2,
       "excludedBlocks": [
         "86c886d0-a724-44e2-bd6a-5ae67f5a0740"
       ],
@@ -789,7 +789,7 @@
       "targetPath": "/posts/c78ba22a-b64d-4016-9f09-c9de5f94e612",
       "checkedTextFields": 44,
       "renderedImages": 9,
-      "renderedFigures": 0,
+      "renderedFigures": 1,
       "excludedBlocks": [
         "8d22849f-6dd9-4b20-9978-1ca10ad5ae20"
       ],
@@ -909,7 +909,7 @@
       "targetPath": "/posts/springcamp-2026",
       "checkedTextFields": 44,
       "renderedImages": 6,
-      "renderedFigures": 1,
+      "renderedFigures": 2,
       "excludedBlocks": [],
       "issues": []
     }
@@ -1008,7 +1008,7 @@
   "summary": {
     "pages": 58,
     "textFields": 1806,
-    "figures": 68,
+    "figures": 73,
     "pagesWithIssues": 0,
     "brokenInternalLinks": 0,
     "unavailableSourcePages": 6,

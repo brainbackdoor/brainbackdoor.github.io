@@ -188,8 +188,7 @@ describe('figure frame', () => {
     const html = renderToString(createElement(AnimatedFigure, { containerRef: { current: null }, title: '공유 counter', caption: '설명', running: false, children: null }));
     const labelledBy = html.match(/aria-labelledby="([^"]+)"/)?.[1];
     expect(labelledBy).toBeTruthy();
-    // 이름으로 한 번만 읽히도록 제목 자체는 낭독에서 뺀다
-    expect(html).toMatch(new RegExp(`<[a-z]+ id="${labelledBy}" class="sr-only" aria-hidden="true">공유 counter<`));
+    expect(html).toMatch(new RegExp(`<[a-z]+ id="${labelledBy}" class="sr-only">공유 counter<`));
     expect(html).not.toContain('animated-figure__header');
   });
 });

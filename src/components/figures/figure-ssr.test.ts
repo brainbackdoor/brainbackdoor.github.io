@@ -16,7 +16,7 @@ describe('TCP static rendering', () => {
     expect(html).toContain('RTO 만료');
     expect(html).toContain('ACK 1100');
     expect(html).toContain('재전송 타이머를 정지합니다.');
-    expect((html.match(/aria-hidden="true"/g) ?? []).length).toBe(5); // Two decorative dots, two inactive canvases and the title read once as the figure name.
+    expect((html.match(/aria-hidden="true"/g) ?? []).length).toBe(4); // Two decorative dots and two inactive canvases.
     expect(html).not.toContain('<button');
   });
 
@@ -223,10 +223,10 @@ describe('figures stay out of the search index', () => {
 });
 
 describe('figure names for assistive technology', () => {
-  it('names each figure once: the figure takes its title, the static scenes take their descriptions', () => {
+  it('names each figure by its title and each static scene by its description alone (no third reading of the title)', () => {
     for (const { figureId } of registry.figures) {
       const html = renderToString(createElement(LessonFigure, { figureId: figureId as Parameters<typeof LessonFigure>[0]['figureId'] }));
-      expect(html, figureId).toMatch(/^<figure[^>]*aria-labelledby="([^"]+)"[^>]*>\s*<strong id="\1" class="sr-only" aria-hidden="true">/);
+      expect(html, figureId).toMatch(/^<figure[^>]*aria-labelledby="([^"]+)"[^>]*>\s*<strong id="\1" class="sr-only">/);
       for (const m of html.matchAll(/<svg[^>]*aria-labelledby="([^"]+)"/g)) expect(m[1].split(' '), figureId).toHaveLength(1);
     }
   });

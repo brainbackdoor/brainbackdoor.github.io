@@ -16,8 +16,9 @@ export default function AnimatedFigure({ containerRef, title, caption, children,
   const titleId = useId();
   // Search indexes the article text only: drawn labels, captions and static scenes would add words the post never had.
   return <figure className={`animated-figure${variant === 'preview' ? ' animated-figure--preview' : ''}`} data-pagefind-ignore="" ref={containerRef} aria-labelledby={titleId} data-playing={running} data-figure-id={figureId} data-source-block-id={sourceBlockId}>
-    {/* The article heading already names the topic; the figure keeps its own name for assistive technology, read once as that name. */}
-    <strong id={titleId} className="sr-only" aria-hidden="true">{title}</strong>
+    {/* The article heading already names the topic; the figure keeps its own name for assistive technology.
+        The title stays readable as content too: a screen reader that skips figure names in browse mode still hears it. */}
+    <strong id={titleId} className="sr-only">{title}</strong>
     {children}
     <figcaption>{caption}</figcaption>
   </figure>;

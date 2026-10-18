@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-18T14:47:56.384421+00:00",
+  "generatedAt": "2026-10-18T15:15:21.298434+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -3316,8 +3316,8 @@
           "sourceUrl": "https://blog.kakaocdn.net/dn/4wFCn/btquGWvbo1h/PKvCwIJCKc8d1GFPT3CN4K/img.jpg",
           "localPath": "/content/d6132043-4fd1-4960-974c-26946e0224ce/353f8455-3ed6-407e-996c-21cce43760ee.jpg",
           "status": "downloaded",
-          "bytes": 62930,
-          "sha256": "9cec6a48096c41b2acd7d4e5068801c09f34dff09ca8fa49ffc1ec3efd02728a",
+          "bytes": 62066,
+          "sha256": "a5b4cff93c0efd0673420c1619b3a7b6fa4840c62a3ada39bb806c22cc9edfb9",
           "width": 600,
           "height": 445
         },
@@ -5950,8 +5950,8 @@
           "sourceUrl": "https://blog.kakaocdn.net/dn/r3uVA/btqARyOmt5a/3jAoe5heihusbTkNcR4Dc1/img.jpg",
           "localPath": "/content/04555c7c-eb81-4283-905e-b8f9c3f8b75c/0e1e8a94-71d3-4109-8a3b-7e60668396ff.jpg",
           "status": "downloaded",
-          "bytes": 3909741,
-          "sha256": "edb0043d248388867bfd27cc68f0b66cdfdaa1490c5f114299b84c393bf5ad42",
+          "bytes": 3896234,
+          "sha256": "d61dacf04107f4dd89eec2d2d6af2c07a2cfc5a46815b2a07c2ea05dbc0f98a5",
           "width": 4032,
           "height": 3024
         },
@@ -8052,8 +8052,8 @@
           "sourceUrl": "https://blog.kakaocdn.net/dn/bbAjNd/btqFoRCON1o/Kcrv5ZLIG2vkx5otWT0P70/img.jpg",
           "localPath": "/content/5d9c4e59-60bf-41d0-9d2a-b8125636a9c3/64b77213-f02e-4cc6-b4b0-49d20267ea0f.jpg",
           "status": "downloaded",
-          "bytes": 71942,
-          "sha256": "05d6e383c101537143398556084c8213010aba400c474c9311820417d34f6b67",
+          "bytes": 64391,
+          "sha256": "c44336245d7540ee691d6bc94b1e3c8cfed73b43637f63f75e5a4c8064afe0de",
           "width": 960,
           "height": 541
         },
@@ -11533,8 +11533,8 @@
           "sourceUrl": "https://edu.nextstep.camp/images/covers/frontend/006.jpg",
           "localPath": "/content/0f9f8b63-17c1-4475-bfa8-75f0ef0ebcad/58b877cc-f465-4cee-a110-76daf7d73778-cover.jpg",
           "status": "downloaded",
-          "bytes": 71039,
-          "sha256": "a1ce8663ddeca974321c59db87c5707f9b18c8e49bb186d223390201389f6046",
+          "bytes": 70903,
+          "sha256": "9e13c0b3dcf3e57e6285922643bd307b65353b77a4c32a672cc817ad57380fb9",
           "width": 900,
           "height": 600
         },
@@ -11553,8 +11553,8 @@
           "sourceUrl": "https://woowacourse.github.io/logo_thumnail_bg.jpg",
           "localPath": "/content/0f9f8b63-17c1-4475-bfa8-75f0ef0ebcad/f7343dd6-1cbb-4c3f-be68-b01d12f0783d-cover.jpg",
           "status": "downloaded",
-          "bytes": 65638,
-          "sha256": "e8fb1c87cfd00a9d89097a7aa92afaf1d7b5ba6ae42f41c52e167afb9fe59025",
+          "bytes": 65619,
+          "sha256": "61d801872e4623134834bc624a513264ec6c833a619cc2726af813f5e46f8b5f",
           "width": 270,
           "height": 270
         },
@@ -13877,8 +13877,8 @@
           "sourceUrl": "https://techblog.woowahan.com/wp-content/uploads/2021/06/screenshot.jpg",
           "localPath": "/content/623ea5b7-3623-4843-9926-8b29e76b9b71/9de6a59f-d46f-45fd-a509-867c7f75b934-cover.jpg",
           "status": "downloaded",
-          "bytes": 660076,
-          "sha256": "5779c90e66c39bc1c700a32fe9e22e419a5eb116980ae8de5c73363b17153543",
+          "bytes": 641852,
+          "sha256": "efbfb795ae5948fc16b90dcb92ddbc924b6b673e864c863b7d406fb08c5df27b",
           "width": 1640,
           "height": 856
         },

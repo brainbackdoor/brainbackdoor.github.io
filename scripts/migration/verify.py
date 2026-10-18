@@ -157,6 +157,14 @@ def correction_text(block, edits):
     return text
 
 
+def redacted_text(block, specs):
+    """The title as published after its redactions (replacement is literal text)."""
+    text = plain(block.get('properties', {}).get('title'))
+    for spec in specs:
+        text = re.sub(spec['pattern'], lambda _: spec['replacement'], text, count=1)
+    return text
+
+
 def redaction_issues(report, document, source_blocks, specs):
     """A requested redaction must be applied in its source anchor and traced in the conversion report."""
     issues = []
@@ -274,8 +282,12 @@ def main():
             # Image/file titles can be alt text or filenames; caption is the reading content.
             if item['type'] in {'image', 'file', 'audio', 'video', 'embed', 'bookmark'}:
                 fields = ['caption', 'description']
+            hidden_by = [spec for spec in redaction_specs if spec['sourceId'] == entry['sourceId'] and item['sourceBlockId'] in spec.get('sourceBlockIds', [])]
             for field in fields:
                 text = plain(props.get(field))
+                # A redacted title is compared as published, so a failure can never write the hidden value into the report.
+                if hidden_by and field == 'title':
+                    text = redacted_text(block, hidden_by)
                 edits = [edit for edit in correction_specs if edit['sourceId'] == entry['sourceId'] and edit['sourceBlockId'] == item['sourceBlockId']] if field == 'title' else []
                 if edits:
                     try: text = correction_text(block, edits)

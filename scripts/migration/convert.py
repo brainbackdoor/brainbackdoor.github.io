@@ -38,19 +38,29 @@ def plain(runs):
 
 
 def redacted_block(block, block_id, specs):
-    """Hide a private value on request. The registry keeps a pattern and its replacement, never the original text or its hash."""
+    """Hide a private value on request. The registry keeps a pattern and its replacement, never the original text or its hash.
+    Anything uncertain stops the conversion: a missing or blank replacement, another block type, no title,
+    a pattern that matches other than exactly once, or a match split across annotated runs."""
     hits = [spec for spec in specs if block_id in spec.get('sourceBlockIds', [])]
-    if not hits: return block, None
+    if not hits: return block, []
     result = json.loads(json.dumps(block))
     for spec in hits:
-        runs = result.get('properties', {}).get('title', [])
-        if block.get('type') != spec.get('sourceType') or not spec.get('replacement', '').strip():
-            raise ValueError('Redaction source mismatch')
+        name, replacement = spec.get('id'), spec.get('replacement')
+        if not isinstance(replacement, str) or not replacement.strip():
+            raise ValueError(f'Redaction {name} needs a replacement')
+        if block.get('type') != spec.get('sourceType'):
+            raise ValueError(f'Redaction {name} expects a {spec.get("sourceType")} block')
+        runs = (result.get('properties') or {}).get('title')
+        if not isinstance(runs, list):
+            raise ValueError(f'Redaction {name} found no title')
+        if len(re.findall(spec['pattern'], plain(runs))) != 1:
+            raise ValueError(f'Redaction {name} must match the title exactly once')
         matches = [run for run in runs if isinstance(run, list) and run and re.search(spec['pattern'], run[0])]
-        if len(matches) != 1 or len(re.findall(spec['pattern'], plain(runs))) != 1:
-            raise ValueError('Unsafe or stale redaction')
-        matches[0][0] = re.sub(spec['pattern'], spec['replacement'], matches[0][0], count=1)
-    return result, hits[0]['id']
+        if len(matches) != 1:
+            raise ValueError(f'Redaction {name} crosses source annotations')
+        # The replacement is literal text, not a regex template.
+        matches[0][0] = re.sub(spec['pattern'], lambda _: replacement, matches[0][0], count=1)
+    return result, [spec['id'] for spec in hits]
 
 
 def corrected_runs(block, edits):
@@ -477,9 +487,10 @@ class Converter:
             self.exclude_navigation(block_id, block_id)
             return ''
         # 가림: 렌더링·보고서 모두 가린 글자만 쓴다(원래 글자와 그 해시를 남기지 않는다)
-        b, redaction = redacted_block(b, block_id, self.redaction_specs)
-        if redaction:
+        b, redactions = redacted_block(b, block_id, self.redaction_specs)
+        if redactions:
             props = b.get('properties') or {}
+        for redaction in redactions:
             trace = next((item for item in self.report.setdefault('redactions', []) if item['id'] == redaction), None)
             if trace is None:
                 trace = {'id': redaction, 'sourceBlockIds': []}; self.report['redactions'].append(trace)
@@ -491,7 +502,7 @@ class Converter:
             if edit not in self.report.setdefault('corrections', []): self.report['corrections'].append(dict(edit))
         child_ids = b.get('content', []); ancestry = (*ancestors, block_id)
         record = {'sourceBlockId': block_id, 'type': typ, 'sourceTextChars': len(raw), 'sourceTextSha256': hashlib.sha256(raw.encode()).hexdigest(), 'status': 'converted'}
-        if redaction: record['redaction'] = redaction
+        if redactions: record['redaction'] = redactions[0] if len(redactions) == 1 else redactions
         self.report['blocks'].append(record)
         children = lambda: self.group(child_ids, ancestry)
         exclusion = self.hidden_configuration(block_id, b)

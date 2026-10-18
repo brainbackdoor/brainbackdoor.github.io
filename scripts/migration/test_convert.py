@@ -255,6 +255,32 @@ class RedactionTests(unittest.TestCase):
         self.assertIn('redaction-not-applied',[i['type'] for i in check('<figure id="one"><p><a href="x">20190101 - Google Drive</a></p></figure>')])
         self.assertIn('redaction-not-traced',[i['type'] for i in check('<figure id="one"><p><a href="x">기록 폴더 - Google Drive</a></p></figure>',{'sourceId':ROOT,'redactions':[]})])
 
+class RedactionEdgeTests(unittest.TestCase):
+    """Failure paths: a redaction never guesses, and verification never writes the hidden text anywhere."""
+    def spec(self, **extra):
+        return dict({'id':'redaction-one','sourceId':ROOT,'sourceType':'text','sourceBlockIds':['one'],'pattern':r'\d{8}','replacement':'날짜','reason':'개인정보 가림'},**extra)
+
+    def test_rejects_ambiguous_split_or_empty_redactions_with_a_clear_reason(self):
+        cases={'twice':[['20190101과 20190202']],'split':[['2019'],['0101',[['b']]]],'none-title':None}
+        for kind,title in cases.items():
+            blocks={'one':{'type':'text','properties':{'title':title}} if title is not None else {'type':'text'},'two':{'type':'text'}}
+            c=converter(blocks);c.redaction_specs=[self.spec()]
+            with self.subTest(kind=kind),self.assertRaises(ValueError):c.convert()
+        for replacement in ['',None,'   ']:
+            c=converter({'one':{'type':'text','properties':{'title':[['앞 20190101 뒤']]}},'two':{'type':'text'}});c.redaction_specs=[self.spec(replacement=replacement)]
+            with self.subTest(replacement=replacement),self.assertRaises(ValueError):c.convert()
+
+    def test_replacement_is_literal_text(self):
+        c=converter({'one':{'type':'text','properties':{'title':[['앞 20190101 뒤']]}},'two':{'type':'text'}});c.redaction_specs=[self.spec(replacement='날짜\\1')]
+        out=c.convert();self.assertTrue('날짜\\1' in out or '날짜&#92;1' in out, out[:200])
+
+    def test_verification_compares_redacted_text_and_never_reports_the_hidden_value(self):
+        block={'type':'text','properties':{'title':[['앞 20190101 뒤']]}}
+        spec=self.spec()
+        hidden=verify.redacted_text(block,[spec])
+        self.assertEqual(hidden,'앞 날짜 뒤')
+        self.assertEqual(verify.redaction_issues({'sourceId':ROOT,'redactions':[]},verify.ReadingPage(),{'one':{'type':'text','properties':{'title':[['다른 글']]}}},[spec])[0]['type'],'redaction-source-mismatch')
+
 class CorrectionTests(unittest.TestCase):
     def edit(self, old='잘못된 설명', new='수정한 설명'):
         import hashlib

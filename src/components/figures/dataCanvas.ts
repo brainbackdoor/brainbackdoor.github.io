@@ -299,7 +299,7 @@ function pipeline(g: G, x: number, y: number, pw: number, title: string, stages:
   stages.forEach(([name, vol], i) => {
     const on = i < reached, lines = wrap(name, pw - 20, 11, true), h = 28 + lines.length * 12;
     g.rect(x, yy, pw, h, { r: 8, fill: on ? C.paper : C.bg, stroke: on ? C.ink : C.grid, lw: 1.2, dash: on ? null : [3, 3] });
-    lines.forEach((ln, k) => g.text(x + 10, yy + 17 + k * 13, ln, { size: 11, mono: true, weight: 600, color: on ? C.ink : C.muted }));
+    lines.forEach((ln, k) => g.text(x + 10, yy + 17 + k * 13, ln, { size: 11, mono: true, weight: 600, color: on ? C.ink : C.muted, cont: k > 0 }));
     if (on) g.rect(x + 10, yy + h - 15, Math.max(10, (pw - 20) * vol), 8, { r: 3, fill: TONE[tone].tint, stroke: TONE[tone].line, lw: 1 });
     if (i < stages.length - 1) arrow(g, { x: x + pw / 2, y: yy + h + 1 }, { x: x + pw / 2, y: yy + h + 13 }, { stroke: on ? C.ink : C.grid, lw: 1.2, size: 5 });
     yy += h + 16;
@@ -450,7 +450,7 @@ function stackV2(w: number, t: number): LessonFrame {
     const x = L.x + 8 + i * (aw + 6);
     g.rect(x, midY + 28, aw, apiH, { r: 6, fill: C.paper, stroke: s.structured ? C.blue : C.grid, lw: 1 });
     g.text(x + aw / 2, midY + 46, n, { size: 11, weight: 700, mono: true, align: 'center', color: s.structured ? C.ink : C.muted });
-    if (s.langs) langRows[i].forEach((r, k) => g.text(x + aw / 2, midY + 62 + k * 12, r, { size: 10, align: 'center', color: C.greenText, alpha: appear(t, S01.langs) }));
+    if (s.langs) langRows[i].forEach((r, k) => g.text(x + aw / 2, midY + 62 + k * 12, r, { size: 10, align: 'center', color: C.greenText, alpha: appear(t, S01.langs), cont: k > 0 }));
   });
   const lowY = midY + apiH + 48;
   box(g, L.x, lowY, L.w, 40, 'Low-level APIs', { on: s.low, sub: 'RDDs · Distributed Variables', tone: 'blue' });
@@ -562,7 +562,7 @@ function planV2(w: number, t: number): LessonFrame {
       if (a > 0) {
         g.rect(x + indent, yy, cw - indent, h, { r: 6, fill: d ? C.slab : C.paper, stroke: d ? C.line : C.ink, lw: 1.1, alpha: a });
         g.text(x + indent + 8, yy + 15, op, { size: 11, weight: 700, mono: true, color: d ? C.muted : C.ink, alpha: a });
-        rows.forEach((r, k) => g.text(x + indent + 8, yy + 29 + k * 13, r, { size: 10, mono: true, color: d ? C.muted : C.blueText, alpha: a }));
+        rows.forEach((r, k) => g.text(x + indent + 8, yy + 29 + k * 13, r, { size: 10, mono: true, color: d ? C.muted : C.blueText, alpha: a, cont: k > 0 }));
       }
       yy += h + 6;
     });

@@ -17,12 +17,22 @@ import { processRenderers } from './processCanvas';
 // Figures placed inside a list item (B04 C09·T03–T05, B05 D01·D02, B06 A02–A06·O07–O09): their smallest plot is the list width.
 const LIST_EMBEDDED = new Set<string>(['C09', 'T03', 'T04', 'T05', 'D01', 'D02', 'A02', 'A03', 'A04', 'A05', 'A06', 'O07', 'O08', 'O09']);
 
+// Screen readers hear visible words only, and a wrapped sentence as one piece.
+function describe(frame:LessonFrame) {
+  const parts:string[]=[];
+  for(const op of frame.ops) if(op.type==='text'&&op.text.trim()&&(op.alpha??1)>0.05) {
+    if(op.cont&&parts.length) parts[parts.length-1]+=' '+op.text; else parts.push(op.text);
+  }
+  return parts.join(' · ');
+}
+
 /** Canvas and accessible SVG read the same commands and event state. */
 export function LessonSvg({ frame, width, title }: {frame:LessonFrame;width:number;title:string}) {
   const id=useId();
-  return <svg viewBox={`0 0 ${width} ${frame.height}`} role="img" aria-labelledby={`${id}-title ${id}-description`}>
+  // The figure already carries its title, so the scene is named by its description alone.
+  return <svg viewBox={`0 0 ${width} ${frame.height}`} role="img" aria-labelledby={`${id}-description`}>
     <title id={`${id}-title`}>{title}</title>
-    <desc id={`${id}-description`}>{frame.ops.filter(op=>op.type==='text').map(op=>op.text).join(' · ')}. {frame.status}</desc>
+    <desc id={`${id}-description`}>{describe(frame)}. {frame.status}</desc>
     {frame.ops.map((op,i)=>{
       switch(op.type) {
         case 'rect': return <rect key={i} x={op.x} y={op.y} width={op.w} height={op.h} rx="3" fill={op.fill} stroke={op.stroke}/>;

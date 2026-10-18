@@ -33,7 +33,7 @@ function dot(g: G, t: number, pts: Pt[], a: number, b: number, color: string = C
 // 가운데 정렬 여러 줄 글자
 function lines(g: G, b: Box, rows: readonly string[], o: { size?: number; weight?: number; color?: string; mono?: boolean; alpha?: number; lh?: number } = {}) {
   const size = o.size ?? 11, lh = o.lh ?? 14, top = b.y + b.h / 2 - (rows.length - 1) * lh / 2 + size * 0.36;
-  rows.forEach((r, i) => g.text(b.x + b.w / 2, top + i * lh, r, { size, weight: o.weight ?? 400, color: o.color ?? C.ink, mono: o.mono, align: 'center', alpha: o.alpha ?? 1 }));
+  rows.forEach((r, i) => g.text(b.x + b.w / 2, top + i * lh, r, { size, weight: o.weight ?? 400, color: o.color ?? C.ink, mono: o.mono, align: 'center', alpha: o.alpha ?? 1, cont: i > 0 }));
 }
 
 /* ---------- E01 ATDD 과정: 원본 그림의 C자 배치(넓은 폭) / 두 열 지그재그(좁은 폭) ---------- */
@@ -243,7 +243,7 @@ function stormV2(w: number, t: number): LessonFrame {
     // 항목 머리에만 '·'를 두고, 이어지는 줄은 들여 쓴다(목록 안의 '·'는 줄 끝에 붙여 새 항목처럼 보이지 않게)
     const rows = wrap(line.replace(/ · /g, '\u00a0· '), w - 10, 11);
     ry += 18;
-    if (ra > 0) { g.text(0, ry, '·', { size: 11, color: C.muted, alpha: ra }); rows.forEach((r, i) => g.text(10, ry + i * 18, r, { size: 11, color: C.muted, alpha: ra })); }
+    if (ra > 0) { g.text(0, ry, '·', { size: 11, color: C.muted, alpha: ra }); rows.forEach((r, i) => g.text(10, ry + i * 18, r, { size: 11, color: C.muted, alpha: ra, cont: i > 0 })); }
     ry += (rows.length - 1) * 18;
   }
   return frame(g, ry + 8, s.phase);
@@ -256,8 +256,8 @@ function node(g: G, b: Box, n: E04Node, lit: boolean, a: number) {
   g.rect(b.x, b.y, b.w, b.h, { r: 6, fill: C.paper, stroke: C.line, lw: 1 });
   if (lit) g.rect(b.x, b.y, b.w, b.h, { r: 6, fill: C.blueTint, stroke: C.blue, lw: 1.3, alpha: a });
   let y = b.y + 18;
-  for (const r of wrap(name, b.w - 16, 12)) { g.text(b.x + 8, y, r, { size: 12, weight: 600, color: C.ink }); y += 15; }
-  for (const r of tools ? wrap(tools, b.w - 16, 11) : []) { g.text(b.x + 8, y - 1, r, { size: 11, color: C.muted }); y += 14; }
+  wrap(name, b.w - 16, 12).forEach((r, i) => { g.text(b.x + 8, y, r, { size: 12, weight: 600, color: C.ink, cont: i > 0 }); y += 15; });
+  (tools ? wrap(tools, b.w - 16, 11) : []).forEach((r, i) => { g.text(b.x + 8, y - 1, r, { size: 11, color: C.muted, cont: i > 0 }); y += 14; });
 }
 function area(g: G, b: Box, title: string, o: { dash?: boolean } = {}) {
   g.rect(b.x, b.y, b.w, b.h, { r: 10, fill: o.dash ? C.paper : C.bg, stroke: C.line, lw: 1.1, dash: o.dash ? [4, 3] : null });
@@ -346,8 +346,8 @@ function platformV2(w: number, t: number): LessonFrame {
   chips.forEach((c, i) => {
     const r = Math.floor(i / cols), x = 8 + (i % cols) * (cwm + gw), y = mTop + 26 + rowH.slice(0, r).reduce((n, h) => n + h + 8, 0);
     g.rect(x, y, cwm, rowH[r], { r: 6, fill: C.bg, stroke: C.grid, lw: 1 });
-    c.name.forEach((l, j) => g.text(x + 6, y + 16 + j * 14, l, { size: 11, weight: 600, color: C.ink }));
-    c.tools.forEach((l, j) => g.text(x + 6, y + 16 + (c.name.length + j) * 14, l, { size: 11, color: C.muted }));
+    c.name.forEach((l, j) => g.text(x + 6, y + 16 + j * 14, l, { size: 11, weight: 600, color: C.ink, cont: j > 0 }));
+    c.tools.forEach((l, j) => g.text(x + 6, y + 16 + (c.name.length + j) * 14, l, { size: 11, color: C.muted, cont: j > 0 }));
   });
   return frame(g, mTop + mH + 2, s.phase);
 }
@@ -509,7 +509,7 @@ function retroV2(w: number, t: number): LessonFrame {
     const k = content(c, l, true)!, a = appear(t, appearAt(c, l));
     g.rect(b.x, b.y, b.w, b.h, { r: 6, fill: k.fill, stroke: k.stroke, lw: 1.2, alpha: a });
     g.text(b.x + 8, b.y + 18, k.head, { size: k.headSize, weight: c === 1 || c === 2 ? 700 : 600, color: k.headColor, alpha: a });
-    k.body.forEach((r, i) => g.text(b.x + 8, b.y + 34 + i * 15, r, { size: k.bodySize, color: k.bodyColor, alpha: a }));
+    k.body.forEach((r, i) => g.text(b.x + 8, b.y + 34 + i * 15, r, { size: k.bodySize, color: k.bodyColor, alpha: a, cont: i > 0 }));
   }
   return frame(g, bottom + 4, s.phase);
 }

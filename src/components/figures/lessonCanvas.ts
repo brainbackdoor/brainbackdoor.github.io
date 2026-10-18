@@ -3,7 +3,7 @@ import { arrivalTimes, cacheState, flowEvents, flowState, indexState, lockState,
 
 export type DrawOp =
  | {type:'rect';x:number;y:number;w:number;h:number;fill:string;stroke:string}
- | {type:'text';x:number;y:number;text:string;color:string;size:number;align:CanvasTextAlign;bold:boolean;mono?:boolean;alpha?:number;weight?:number}
+ | {type:'text';x:number;y:number;text:string;color:string;size:number;align:CanvasTextAlign;bold:boolean;mono?:boolean;alpha?:number;weight?:number;cont?:boolean}
  | {type:'line';x1:number;y1:number;x2:number;y2:number;color:string;dash:boolean}
  | {type:'circle';x:number;y:number;r:number;color:string;stroke?:string;strokeWidth?:number;alpha?:number}
  /** Rounded shapes, curves, arrowheads and icons share one SVG path string in Canvas and SVG. */
@@ -55,7 +55,8 @@ export function draw() {
     line(x1: number, y1: number, x2: number, y2: number, o: Opt = {}) { ops.push({ type: 'path', d: `M${f2(x1)} ${f2(y1)}L${f2(x2)} ${f2(y2)}`, fill: 'none', stroke: o.stroke ?? C.line, width: o.lw ?? 1.5, dash: o.dash || null, alpha: o.alpha ?? 1 }); },
     path(d: string, o: Opt = {}) { ops.push({ type: 'path', d, fill: o.fill ?? 'none', stroke: o.stroke ?? 'none', width: o.lw ?? 1.5, dash: o.dash || null, alpha: o.alpha ?? 1 }); },
     circle(x: number, y: number, r: number, o: Opt = {}) { ops.push({ type: 'circle', x, y, r, color: o.fill ?? C.ink, stroke: o.stroke ?? 'none', strokeWidth: o.lw ?? 1, alpha: o.alpha ?? 1 }); },
-    text(x: number, y: number, s: string | number, o: Opt = {}) { const weight = o.weight ?? 400; ops.push({ type: 'text', x, y, text: String(s), color: o.color ?? C.ink, size: o.size ?? 12, align: o.align ?? 'left', bold: weight >= 600, weight, mono: !!o.mono, alpha: o.alpha ?? 1 }); },
+    // cont: 앞 줄에서 이어지는 줄바꿈 조각(스크린리더 설명에서 앞 줄과 한 문장으로 잇는다)
+    text(x: number, y: number, s: string | number, o: Opt = {}) { const weight = o.weight ?? 400; ops.push({ type: 'text', x, y, text: String(s), color: o.color ?? C.ink, size: o.size ?? 12, align: o.align ?? 'left', bold: weight >= 600, weight, mono: !!o.mono, alpha: o.alpha ?? 1, ...(o.cont ? { cont: true } : {}) }); },
   };
 }
 export type G = ReturnType<typeof draw>;
@@ -100,7 +101,7 @@ export function para(g: G, x: number, y: number, s: string, maxW: number, o: Opt
   const size = o.size ?? 12, lh = o.lh ?? Math.round(size * 1.6);
   const rows = wrap(s, maxW, size, o.mono);
   const ax = o.align === 'center' ? x + maxW / 2 : o.align === 'right' ? x + maxW : x;
-  rows.forEach((r, i) => g.text(ax, y + i * lh, r, { ...o, size }));
+  rows.forEach((r, i) => g.text(ax, y + i * lh, r, { ...o, size, cont: i > 0 }));
   return y + (rows.length - 1) * lh;
 }
 export function arrowHead(g: G, p: Pt, ang: number, color: string, alpha = 1, size = 7) {
@@ -218,7 +219,7 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
     if (gut > 0) {
       // 바깥 여백에 줄을 나눠 쓴다
       const rows = wrap(h.label, gut - 6, 11), ox = h.lane ? bx + 10 : ax - 10;
-      late.push(() => rows.forEach((r, i) => g.text(ox, y1 + 12 + i * 14, r, { size: 11, align: h.lane ? 'left' : 'right', color: txt })));
+      late.push(() => rows.forEach((r, i) => g.text(ox, y1 + 12 + i * 14, r, { size: 11, align: h.lane ? 'left' : 'right', color: txt, cont: i > 0 })));
     } else {
       // 안쪽: 끝점 상태 라벨과 겹치지 않게 구간 시작에서 30px 아래부터
       const yl = Math.max((y1 + y2) / 2 + 4, y1 + 32);
@@ -271,7 +272,7 @@ export function seq(g: G, t: number, sp: SeqSpec): SeqGeo {
       } else late.push(dot);
     } else if (done) arrow(g, p0, p1full, { stroke: tone.line, lw: 1.6 });
     else { g.line(p0.x, p0.y, head.x, head.y, { stroke: tone.line, lw: 1.6 }); late.push(dot); }
-    late.push(() => rows.forEach((r, i) => label(g, mx, rowY(i), r, { size: 11, mono: true, weight: 600, color: tone.text, alpha: appear(t, m.a, 200) })));
+    late.push(() => rows.forEach((r, i) => label(g, mx, rowY(i), r, { size: 11, mono: true, weight: 600, color: tone.text, alpha: appear(t, m.a, 200), cont: i > 0 })));
   }
   // 시간 커서는 이 자리(라벨·토큰 바로 아래)에 끼워 넣는다
   const under = g.ops.length;
@@ -544,7 +545,7 @@ function sparkV2(w: number, t: number): LessonFrame {
     const a = appear(t, reg[i]), x = i * (nw + (wide ? 22 : 10)), done = (i === 1 && s.mapped) || (i === 2 && s.filtered) || (i === 3 && s.result !== null);
     g.rect(x, ny, nw, 34, { r: 8, fill: done ? C.greenTint : C.paper, stroke: i === 3 ? C.green : C.blue, lw: 1.3, alpha: a });
     const rows = wide ? [n] : wrap(n, nw - 6, 11, true);
-    rows.forEach((r, j) => g.text(x + nw / 2, ny + 21 + (j - (rows.length - 1) / 2) * 13, r, { size: wide ? 12 : 11, mono: true, weight: 600, align: 'center', alpha: a }));
+    rows.forEach((r, j) => g.text(x + nw / 2, ny + 21 + (j - (rows.length - 1) / 2) * 13, r, { size: wide ? 12 : 11, mono: true, weight: 600, align: 'center', alpha: a, cont: j > 0 }));
     if (i) arrow(g, { x: x - (wide ? 20 : 9), y: ny + 17 }, { x: x - 2, y: ny + 17 }, { stroke: C.blue, lw: 1.3, dash: [3, 3], alpha: a, size: 5 });
   });
   const banner = s.executed ? 'action 호출 · 계산 시작' : 'lineage 등록 · 처리 대기';

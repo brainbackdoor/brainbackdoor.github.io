@@ -126,7 +126,7 @@ function retransmitV2(w: number, t: number): LessonFrame {
     // 안내는 대기 막대 오른쪽 자리에 둔다(좁은 폭에서는 두 줄로, 바탕이 막대를 끊지 않게)
     if (!fast && t >= 2400) {
       const left = geo.ax + 20, note = '후속 DATA 없음 → 중복 ACK 없음', rows = textW(note, 11) <= geo.bx - left - 10 ? [note] : ['후속 DATA 없음 →', '중복 ACK 없음'], cx = Math.max(geo.mid, left + Math.max(...rows.map(r => textW(r, 11))) / 2 + 5);
-      rows.forEach((r, j) => label(g, cx, geo.Y(2700) + (j - (rows.length - 1) / 2) * 15, r, { size: 11, color: C.muted, alpha: appear(t, 2400) }));
+      rows.forEach((r, j) => label(g, cx, geo.Y(2700) + (j - (rows.length - 1) / 2) * 15, r, { size: 11, color: C.muted, alpha: appear(t, 2400), cont: j > 0 }));
     }
     cursor(g, geo, t, t0, t1);
     g.text(x, geo.bottom + 26, `중복 ACK ${st.dupacks} · ${st.delivered ? '복구 완료' : st.retransmitted ? '재전송 중' : '대기'}`, { size: 12, weight: 600, color: st.delivered ? C.greenText : C.muted });

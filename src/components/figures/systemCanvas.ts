@@ -24,7 +24,7 @@ function draw() {
     line(x1: number, y1: number, x2: number, y2: number, o: Opt = {}) { ops.push({ type: 'path', d: `M${f2(x1)} ${f2(y1)}L${f2(x2)} ${f2(y2)}`, fill: 'none', stroke: o.stroke ?? C.line, width: o.lw ?? 1.5, dash: o.dash || null, alpha: o.alpha ?? 1 }); },
     path(d: string, o: Opt = {}) { ops.push({ type: 'path', d, fill: o.fill ?? 'none', stroke: o.stroke ?? 'none', width: o.lw ?? 1.5, dash: o.dash || null, alpha: o.alpha ?? 1 }); },
     circle(x: number, y: number, r: number, o: Opt = {}) { ops.push({ type: 'circle', x, y, r, color: o.fill ?? C.ink, stroke: o.stroke ?? 'none', strokeWidth: o.lw ?? 1, alpha: o.alpha ?? 1 }); },
-    text(x: number, y: number, s: string | number, o: Opt = {}) { const weight = o.weight ?? 400; ops.push({ type: 'text', x, y, text: String(s), color: o.color ?? C.ink, size: o.size ?? 12, align: o.align ?? 'left', bold: weight >= 600, weight, mono: !!o.mono, alpha: o.alpha ?? 1 }); },
+    text(x: number, y: number, s: string | number, o: Opt = {}) { const weight = o.weight ?? 400; ops.push({ type: 'text', x, y, text: String(s), color: o.color ?? C.ink, size: o.size ?? 12, align: o.align ?? 'left', bold: weight >= 600, weight, mono: !!o.mono, alpha: o.alpha ?? 1, ...(o.cont ? { cont: true } : {}) }); },
   };
 }
 type G = ReturnType<typeof draw>;
@@ -65,7 +65,7 @@ function wrap(s: string, maxW: number, size: number, mono?: boolean) {
 function para(g: G, x: number, y: number, s: string, maxW: number, o: Opt = {}) {
   const size = o.size ?? 12, lh = o.lh ?? Math.round(size * 1.6);
   const rows = wrap(s, maxW, size, o.mono);
-  rows.forEach((r, i) => g.text(x, y + i * lh, r, { ...o, size }));
+  rows.forEach((r, i) => g.text(x, y + i * lh, r, { ...o, size, cont: i > 0 }));
   return y + (rows.length - 1) * lh;
 }
 
@@ -514,7 +514,7 @@ function copiesV2(w: number, t: number): LessonFrame {
   // 행 라벨: 곡선 위에 바탕을 깔아 읽히게 한다
   for (const l of labels) l.lines.forEach((line, i) => {
     g.rect(0, l.y + i * 19 - 13, textW(line, 12) + 4, 18, { r: 3, fill: C.paper });
-    g.text(0, l.y + i * 19, line, { color: C.muted });
+    g.text(0, l.y + i * 19, line, { color: C.muted, cont: i > 0 });
   });
   // List 슬롯과 뷰
   for (const r of rows) {
@@ -601,15 +601,6 @@ function cylinder(g: G, cx: number, top: number, w: number, h: number, o: Opt = 
   const rx = w / 2, ry = 6, a = o.alpha ?? 1, s = o.stroke ?? C.ink;
   g.path(`M${f2(cx - rx)} ${f2(top)}V${f2(top + h)}A${f2(rx)} ${ry} 0 0 0 ${f2(cx + rx)} ${f2(top + h)}V${f2(top)}`, { fill: o.fill ?? C.paper, stroke: s, lw: 1.4, alpha: a });
   g.path(`M${f2(cx - rx)} ${f2(top)}A${f2(rx)} ${ry} 0 1 0 ${f2(cx + rx)} ${f2(top)}A${f2(rx)} ${ry} 0 1 0 ${f2(cx - rx)} ${f2(top)}Z`, { fill: o.fill ?? C.paper, stroke: s, lw: 1.4, alpha: a });
-}
-// 경로 위의 한 점: 꺾은선 길이 기준
-function along(pts: Pt[], q: number): Pt {
-  const seg = [];
-  let total = 0;
-  for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y); seg.push(l); total += l; }
-  let d = clamp01(q) * total;
-  for (let i = 0; i < seg.length; i++) { if (d <= seg[i] || i === seg.length - 1) return lerpPt(pts[i], pts[i + 1], seg[i] ? Math.min(1, d / seg[i]) : 1); d -= seg[i]; }
-  return pts[pts.length - 1];
 }
 function polyline(g: G, pts: Pt[], o: Opt) { g.path('M' + pts.map(p => `${f2(p.x)} ${f2(p.y)}`).join('L'), { fill: 'none', ...o }); }
 // 상태 기록 막대: segs=[{a,b,label,kind}], 현재 시각까지만 그린다
@@ -918,7 +909,8 @@ function lifeV2(w: number, t: number): LessonFrame {
   const cX = narrow ? 0 : imX + imW + 56, cY = narrow ? imY + 30 + 46 : 0, cW = narrow ? w : w - cX, cH = 108;
   if (t >= C07.create) { const q = ease.out(span(t, C07.create, C07.create + 300)); const a0 = narrow ? { x: 40, y: imY + 34 } : { x: imX + imW + 6, y: 48 }, a1 = narrow ? { x: 40, y: cY - 6 } : { x: cX - 8, y: 48 }; g.line(a0.x, a0.y, lerp(a0.x, a1.x, q), lerp(a0.y, a1.y, q), { stroke: C.ink, lw: 1.4 }); if (q >= 1) arrowHead(g, a1, angle(a0, a1), C.ink); g.text(narrow ? 52 : (a0.x + a1.x) / 2, narrow ? (a0.y + a1.y) / 2 + 4 : 40, 'create', { size: 12, mono: true, align: narrow ? 'left' : 'center', alpha: q }); }
   const st = s.state, live = t >= C07.create && st !== 'removed', run = st === 'running';
-  const rmQ = st === 'removed' ? span(t, C07.rm, C07.rm + 500) : 0;
+  // 제거: 컨테이너 안 글자가 먼저 사라지고(250 ms), 그 뒤에 'rm …' 안내가 나타난다(겹쳐 보이지 않게)
+  const rmQ = st === 'removed' ? span(t, C07.rm, C07.rm + 250) : 0, rmIn = st === 'removed' ? span(t, C07.rm + 250, C07.rm + 500) : 0;
   g.rect(cX, cY, cW, cH, { r: 12, stroke: C.line, lw: 1, dash: [3, 4] });
   if (live || rmQ < 1 && t >= C07.create) {
     const a = live ? ease.out(span(t, C07.create, C07.create + 300)) : 1 - rmQ;
@@ -933,7 +925,7 @@ function lifeV2(w: number, t: number): LessonFrame {
   if (st === 'removed') {
     // 데스크톱 본문(650)에서는 상자 폭이 좁아져 두 줄로 나눈다
     const rows = wrap('rm · 컨테이너와 쓰기 계층 삭제, 이미지는 남음', cW - 24, 12);
-    rows.forEach((r, i) => g.text(cX + cW / 2, cY + cH / 2 + 4 + (i - (rows.length - 1) / 2) * 19, r, { size: 12, align: 'center', color: C.muted, alpha: rmQ }));
+    rows.forEach((r, i) => g.text(cX + cW / 2, cY + cH / 2 + 4 + (i - (rows.length - 1) / 2) * 19, r, { size: 12, align: 'center', color: C.muted, alpha: rmIn, cont: i > 0 }));
   }
   // 상태 기록
   const ty = cY + cH + 30;

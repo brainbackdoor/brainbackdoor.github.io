@@ -188,7 +188,8 @@ describe('figure frame', () => {
     const html = renderToString(createElement(AnimatedFigure, { containerRef: { current: null }, title: '공유 counter', caption: '설명', running: false, children: null }));
     const labelledBy = html.match(/aria-labelledby="([^"]+)"/)?.[1];
     expect(labelledBy).toBeTruthy();
-    expect(html).toMatch(new RegExp(`<[a-z]+ id="${labelledBy}" class="sr-only">공유 counter<`));
+    // 이름으로 한 번만 읽히도록 제목 자체는 낭독에서 뺀다
+    expect(html).toMatch(new RegExp(`<[a-z]+ id="${labelledBy}" class="sr-only" aria-hidden="true">공유 counter<`));
     expect(html).not.toContain('animated-figure__header');
   });
 });
@@ -487,6 +488,32 @@ describe('every figure keeps lines and filled shapes off its labels', () => {
       if (tbox(st).x1 < pbox(pill.d).x2 + 4) hits.push(`${w} ${t} ${st.text}`);
     }
     expect(hits).toEqual([]);
+  });
+
+  it('reads each wrapped sentence in one piece and leaves invisible words out of the SVG description', () => {
+    // 스크린리더는 desc를 읽는다: 줄바꿈된 한 문장이 ' · '로 끊기지 않고, 보이지 않는(투명도 0.05 이하) 글자는 읽지 않는다
+    const desc = (f: LessonFrame, w: number) => (renderToString(createElement(LessonSvg, { frame: f, width: w, title: 't' })).match(/<desc[^>]*>([\s\S]*?)<\/desc>/)?.[1] ?? '').replace(/&#x27;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+    const e05 = processRenderers.E05(284, 9400), n06 = networkRenderers.N06(259, 7500);
+    expect(desc(e05, 284)).toContain('일어난 사건을 순서대로 덧붙이는 append-only 기록 = 곧 워크플로우 상태');
+    expect(desc(n06, 259)).toContain('후속 DATA 없음 → 중복 ACK 없음');
+    const leaks = new Set<string>();
+    for (const [id, w, t, f] of scenes()) {
+      if (w !== 650 && w !== 259) continue;
+      const shown = new Set(f.ops.filter((o): o is Text => o.type === 'text' && (o.alpha ?? 1) > 0.05).map(o => o.text));
+      const d = desc(f, w);
+      for (const o of f.ops) if (o.type === 'text' && (o.alpha ?? 1) <= 0.05 && o.text.trim().length > 1 && !shown.has(o.text) && d.includes(o.text)) leaks.add(`${id} ${w} ${t} ${o.text}`);
+    }
+    expect([...leaks]).toEqual([]);
+  });
+
+  it('keeps visible words apart while C07 removes the container', () => {
+    // 제거 장면: 컨테이너 안 글자가 사라진 뒤 'rm …' 안내가 나타난다(둘이 반투명으로 겹치지 않는다)
+    const r = systemRenderers.C07 as (w: number, t: number) => LessonFrame, hits = new Set<string>();
+    for (const w of [650, 625, 346, 259]) for (let t = 8700; t <= 9600; t += 10) {
+      const b = r(w, t).ops.filter((o): o is Text => o.type === 'text' && !!o.text.trim() && (o.alpha ?? 1) > 0.05).map(tbox);
+      for (let i = 0; i < b.length; i++) for (let j = i + 1; j < b.length; j++) if (b[i].x1 < b[j].x2 && b[j].x1 < b[i].x2 && b[i].y1 < b[j].y2 && b[j].y1 < b[i].y2) hits.add(`${w} ${b[i].t} / ${b[j].t}`);
+    }
+    expect([...hits]).toEqual([]);
   });
 
   it('never paints a filled shape over a label drawn before it', () => {

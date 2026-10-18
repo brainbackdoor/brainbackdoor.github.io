@@ -213,7 +213,7 @@ function profileV2(w: number, t: number): LessonFrame {
     const runLines = wrap(run, w - 20, 11, true), chipH = wide ? 38 : [38, 52, 38], blockH = wide ? 34 + runLines.length * 15 + 46 : 34 + runLines.length * 15 + 38 + 52 + 38 + 2 * 8 + 14;
     g.rect(0, y, w, blockH, { r: 10, fill: act ? TONE[tone].tint : C.bg, stroke: on ? TONE[tone].line : C.grid, lw: act ? 1.6 : 1.1 });
     g.text(10, y + 18, `실행: ${['테스트', '로컬', '배포'][i]}`, { size: 11, weight: 700, color: on ? TONE[tone].text : C.muted });
-    runLines.forEach((ln, k) => g.text(10, y + 34 + k * 15, ln, { size: 11, mono: true, color: on ? C.ink : C.muted }));
+    runLines.forEach((ln, k) => g.text(10, y + 34 + k * 15, ln, { size: 11, mono: true, color: on ? C.ink : C.muted, cont: k > 0 }));
     const cy = y + 34 + runLines.length * 15 + 4;
     // 프로필 → 파일 → DB
     const chips: [string, string, boolean][] = [[prof, '프로필', true], [`application-${prof}.properties`, `account.name = ${user} · password = ••••`, false], [db, i === 2 ? 'DB URL 원문 없음' : '요구사항 기준', false]];
@@ -252,7 +252,7 @@ function deployV2(w: number, t: number): LessonFrame {
     const on = s.run >= 2 && t >= at, lines = wrap(cmd, sw - 90, 10.5, true), h = Math.max(34, 10 + lines.length * 13 + 4);
     g.rect(0, sy, sw, h, { r: 6, fill: on ? (real ? C.blueTint : C.slab) : C.paper, stroke: on ? (real ? C.blue : C.ink) : C.grid, lw: 1.1, dash: real ? null : [3, 3] });
     g.text(8, sy + h / 2 + 4, name, { size: 11, weight: 700, color: on ? (real ? C.blueText : C.ink) : C.muted });
-    lines.forEach((ln, k) => g.text(78, sy + h / 2 + 4 - (lines.length - 1) * 6.5 + k * 13, ln, { size: 10.5, mono: true, color: on ? C.ink : C.muted }));
+    lines.forEach((ln, k) => g.text(78, sy + h / 2 + 4 - (lines.length - 1) * 6.5 + k * 13, ln, { size: 10.5, mono: true, color: on ? C.ink : C.muted, cont: k > 0 }));
     sy += h + 6;
   });
   const noteY = para(g, 0, sy + 8, '실선 = 스크립트에 실제 코드 · 점선 = 주석 또는 다른 글(G02)의 명령', sw, { size: 10.5, color: C.muted });
@@ -320,7 +320,7 @@ function modulesV2(w: number, t: number): LessonFrame {
   A07_USERDATA.forEach((ln, i) => {
     const on = s.ran > i, rows = wrap(ln, lw - 26, 10.5, true);
     g.text(0, uy + 12, `${i + 1}`, { size: 10.5, weight: 700, color: on ? C.blueText : C.muted });
-    rows.forEach((r, k) => g.text(14, uy + 12 + k * 14, r, { size: 10.5, mono: true, color: on ? C.ink : C.muted }));
+    rows.forEach((r, k) => g.text(14, uy + 12 + k * 14, r, { size: 10.5, mono: true, color: on ? C.ink : C.muted, cont: k > 0 }));
     uy += 8 + rows.length * 14;
   });
   // 오른쪽(좁은 폭: 아래): 모듈 지도

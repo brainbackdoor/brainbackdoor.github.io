@@ -222,6 +222,39 @@ class FigureTests(unittest.TestCase):
     def test_valid_static_figure_with_anchor_passes(self):
         self.assertEqual(self.check('<span id="one"></span><figure data-figure-id="N01" data-source-block-id="one"><svg><text>FIFO</text></svg><p>손실 4</p></figure>'),[])
 
+class RedactionTests(unittest.TestCase):
+    """Private values hidden on request: the registry keeps only a pattern, never the original text or its hash."""
+    def spec(self, kind='bookmark'):
+        return {'id':'redaction-one','sourceId':ROOT,'sourceType':kind,'sourceBlockIds':['one'],'pattern':r'^\d{8}(?= - Google Drive$)','replacement':'기록 폴더','reason':'개인정보 가림'}
+
+    def bookmark(self, title='20190101 - Google Drive'):
+        return {'one':{'type':'bookmark','properties':{'title':[[title]],'link':[['https://drive.google.com/drive/folders/x']]}},'two':{'type':'text','properties':{'title':[['다른 본문']]}}}
+
+    def test_redaction_hides_the_bookmark_date_and_records_only_the_redacted_hash(self):
+        import hashlib
+        c=converter(self.bookmark());c.redaction_specs=[self.spec()];out=c.convert()
+        self.assertIn('기록 폴더 - Google Drive',out);self.assertNotIn('20190101',out);self.assertIn('다른 본문',out)
+        record=c.report['blocks'][0]
+        self.assertEqual(record['sourceTextSha256'],hashlib.sha256('기록 폴더 - Google Drive'.encode()).hexdigest())
+        self.assertEqual(record['redaction'],'redaction-one')
+        self.assertNotIn('20190101',str(c.report))
+        self.assertEqual(c.report['redactions'],[{'id':'redaction-one','sourceBlockIds':['one']}])
+
+    def test_redaction_rejects_another_block_type_or_a_title_without_the_pattern(self):
+        for kind in ['type','missing']:
+            c=converter(self.bookmark('사진 - Google Drive' if kind=='missing' else '20190101 - Google Drive'));c.redaction_specs=[self.spec('text' if kind=='type' else 'bookmark')]
+            with self.subTest(kind=kind),self.assertRaises(ValueError):c.convert()
+
+    def test_verification_requires_the_redaction_in_its_source_anchor_and_trace(self):
+        block={'type':'bookmark','properties':{'title':[['20190101 - Google Drive']]}};report={'sourceId':ROOT,'redactions':[{'id':'redaction-one','sourceBlockIds':['one']}]}
+        def check(html,trace=report):
+            doc=verify.ReadingPage();doc.feed('<article class="post-content">'+html+'</article>')
+            self.assertTrue(callable(getattr(verify,'redaction_issues',None)))
+            return verify.redaction_issues(trace,doc,{'one':block},[self.spec()])
+        self.assertEqual(check('<figure id="one"><p><a href="x">기록 폴더 - Google Drive</a></p></figure>'),[])
+        self.assertIn('redaction-not-applied',[i['type'] for i in check('<figure id="one"><p><a href="x">20190101 - Google Drive</a></p></figure>')])
+        self.assertIn('redaction-not-traced',[i['type'] for i in check('<figure id="one"><p><a href="x">기록 폴더 - Google Drive</a></p></figure>',{'sourceId':ROOT,'redactions':[]})])
+
 class CorrectionTests(unittest.TestCase):
     def edit(self, old='잘못된 설명', new='수정한 설명'):
         import hashlib

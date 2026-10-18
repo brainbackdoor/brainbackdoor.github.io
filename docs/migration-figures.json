@@ -1266,5 +1266,35 @@
       "reason": "쓰기 계층의 데이터는 컨테이너와 함께 사라지고, volume은 컨테이너 제거 뒤에도 남으며 bind mount는 호스트 경로와 직접 연결됨(Storage 개요)",
       "reference": "https://docs.docker.com/engine/storage/"
     }
+  ],
+  "redactions": [
+    {
+      "id": "l08-drive-folder-dates",
+      "sourceId": "9a393b4d-ea51-45d2-8823-50eb9e522ff9",
+      "sourceType": "bookmark",
+      "sourceBlockIds": [
+        "eadff773-dd83-4cc7-91b6-3e5398e28b32",
+        "0ed11bb4-9f69-48a3-81e5-b51c684082d2",
+        "d46c9833-f6b1-4ba7-ae85-566d7189ff1f",
+        "87793c39-4f1f-457f-b81b-625a7ecda065",
+        "a43812f7-b46b-458d-a139-278c2cee920c",
+        "36ac5598-b1f9-4161-af7e-3e9d0c94ac28",
+        "52b4ab3b-336b-4871-abdb-a86a16bdfdbf",
+        "106a1677-7649-42d9-9b00-7453769b4fb7",
+        "0542f60b-f119-4f12-8bba-f5ea8e56fba9",
+        "a122af32-22cd-4717-b4d6-1dbf3bb6f9d6",
+        "24c2a136-b61c-4eb4-9de4-518b333a6a11",
+        "5eac648b-f123-40ec-bca6-bc11c583f137",
+        "0b5874b5-e722-4b39-b9a8-499a217d5559",
+        "cc90583f-1f16-4cbf-a416-73d20969c72d",
+        "95990ef2-288a-47ce-a225-a520a9c91615",
+        "87032fc6-2247-44d6-8c0e-f77919336ae5",
+        "60eeadf6-186b-4f1a-9ad9-4ed4744ac90d",
+        "9e15d1ee-c0b8-4f11-a293-49307385595f"
+      ],
+      "pattern": "^\\d{8}(?= - Google Drive$)",
+      "replacement": "기록 폴더",
+      "reason": "기록 카드의 D+와 Drive 폴더 이름의 날짜를 맞추면 자녀 생년월일을 알 수 있어 폴더 이름의 날짜를 가린다(사용자 결정 2026-10-18). 원래 글자와 그 해시는 남기지 않는다."
+    }
   ]
 }

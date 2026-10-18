@@ -37,6 +37,22 @@ def plain(runs):
     return ''.join(str(run[0]) for run in (runs or []) if isinstance(run, list) and run)
 
 
+def redacted_block(block, block_id, specs):
+    """Hide a private value on request. The registry keeps a pattern and its replacement, never the original text or its hash."""
+    hits = [spec for spec in specs if block_id in spec.get('sourceBlockIds', [])]
+    if not hits: return block, None
+    result = json.loads(json.dumps(block))
+    for spec in hits:
+        runs = result.get('properties', {}).get('title', [])
+        if block.get('type') != spec.get('sourceType') or not spec.get('replacement', '').strip():
+            raise ValueError('Redaction source mismatch')
+        matches = [run for run in runs if isinstance(run, list) and run and re.search(spec['pattern'], run[0])]
+        if len(matches) != 1 or len(re.findall(spec['pattern'], plain(runs))) != 1:
+            raise ValueError('Unsafe or stale redaction')
+        matches[0][0] = re.sub(spec['pattern'], spec['replacement'], matches[0][0], count=1)
+    return result, hits[0]['id']
+
+
 def corrected_runs(block, edits):
     runs = block.get('properties', {}).get('title', [])
     if not edits: return runs
@@ -187,6 +203,7 @@ class Converter:
         self.assets = {}
         self.figure_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text())["figures"] if item["sourceId"] == self.page_id]
         self.correction_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text()).get("corrections", []) if item["sourceId"] == self.page_id]
+        self.redaction_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text()).get("redactions", []) if item["sourceId"] == self.page_id]
         self.used_ids = Counter()
         self.block_records = {}
         self.heading_min = 3
@@ -459,6 +476,14 @@ class Converter:
         if self.legacy_navigation(b):
             self.exclude_navigation(block_id, block_id)
             return ''
+        # 가림: 렌더링·보고서 모두 가린 글자만 쓴다(원래 글자와 그 해시를 남기지 않는다)
+        b, redaction = redacted_block(b, block_id, self.redaction_specs)
+        if redaction:
+            props = b.get('properties') or {}
+            trace = next((item for item in self.report.setdefault('redactions', []) if item['id'] == redaction), None)
+            if trace is None:
+                trace = {'id': redaction, 'sourceBlockIds': []}; self.report['redactions'].append(trace)
+            if block_id not in trace['sourceBlockIds']: trace['sourceBlockIds'].append(block_id)
         title = props.get('title', []); raw = plain(title)
         edits = [edit for edit in self.correction_specs if edit['sourceBlockId'] == block_id]
         text = self.rich(corrected_runs(b, edits), block_id); anchor = self.anchor(block_id)
@@ -466,6 +491,7 @@ class Converter:
             if edit not in self.report.setdefault('corrections', []): self.report['corrections'].append(dict(edit))
         child_ids = b.get('content', []); ancestry = (*ancestors, block_id)
         record = {'sourceBlockId': block_id, 'type': typ, 'sourceTextChars': len(raw), 'sourceTextSha256': hashlib.sha256(raw.encode()).hexdigest(), 'status': 'converted'}
+        if redaction: record['redaction'] = redaction
         self.report['blocks'].append(record)
         children = lambda: self.group(child_ids, ancestry)
         exclusion = self.hidden_configuration(block_id, b)

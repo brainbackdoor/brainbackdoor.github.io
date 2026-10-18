@@ -31,6 +31,7 @@ class ReadingPage(HTMLParser):
         self.figure_stack = []
         self.anchor_stack = []
         self.anchor_text = {}
+        self.anchor_all = {}  # every text inside the anchored element (figures and bookmarks included)
         self.tags = []
 
     def handle_starttag(self, tag, attrs):
@@ -56,9 +57,10 @@ class ReadingPage(HTMLParser):
                     record['prose_depth'] = self.depth
                     record['prose_active'] = True
         if attrs.get('id') and tag not in VOID:
-            record = {'id': attrs['id'], 'depth': self.depth, 'tag': tag, 'text': [], 'paragraph_seen': False, 'prose_depth': None, 'prose_active': False}
+            record = {'id': attrs['id'], 'depth': self.depth, 'tag': tag, 'text': [], 'all': [], 'paragraph_seen': False, 'prose_depth': None, 'prose_active': False}
             self.anchor_stack.append(record)
             self.anchor_text.setdefault(attrs['id'], []).append(record['text'])
+            self.anchor_all.setdefault(attrs['id'], []).append(record['all'])
         if tag in {'script', 'style'}:
             self.ignored += 1
         if attrs.get('data-figure-id'):
@@ -92,6 +94,7 @@ class ReadingPage(HTMLParser):
         if self.depth and not self.ignored:
             self.text.append(text)
             for record in self.anchor_stack:
+                record['all'].append(text)
                 if record['tag'] == 'p':
                     prose_depth = record['depth']
                 elif record['tag'] == 'li' and record['prose_active']:
@@ -154,6 +157,26 @@ def correction_text(block, edits):
     return text
 
 
+def redaction_issues(report, document, source_blocks, specs):
+    """A requested redaction must be applied in its source anchor and traced in the conversion report."""
+    issues = []
+    for spec in specs:
+        if spec['sourceId'] != report.get('sourceId'):
+            continue
+        trace = next((item for item in report.get('redactions', []) if item.get('id') == spec['id']), {})
+        for block_id in spec.get('sourceBlockIds', []):
+            def issue(kind): issues.append({'type': kind, 'blockId': block_id, 'redaction': spec['id']})
+            block = source_blocks.get(block_id, {})
+            hidden = re.findall(spec['pattern'], plain(block.get('properties', {}).get('title')))
+            if block.get('type') != spec.get('sourceType') or len(hidden) != 1:
+                issue('redaction-source-mismatch'); continue
+            if block_id not in trace.get('sourceBlockIds', []): issue('redaction-not-traced')
+            scoped = [normalized(''.join(text)) for text in document.anchor_all.get(block_id, [])]
+            if not scoped or any(normalized(hidden[0]) in text or normalized(spec['replacement']) not in text for text in scoped):
+                issue('redaction-not-applied')
+    return issues
+
+
 def correction_issues(report, document, source_blocks, specs):
     issues = []
     groups = {}
@@ -180,6 +203,7 @@ def main():
     registry = json.loads((ROOT / 'docs/migration-figures.json').read_text())
     figure_specs = registry['figures']
     correction_specs = registry.get('corrections', [])
+    redaction_specs = registry.get('redactions', [])
     inventory_data = json.loads(args.inventory.read_text())
     inventory = inventory_data['pages']
     source_blocks = {}
@@ -210,6 +234,7 @@ def main():
         document = built[output]
         issues.extend(figure_issues(report, document, source_blocks, figure_specs))
         issues.extend(correction_issues(report, document, source_blocks, correction_specs))
+        issues.extend(redaction_issues(report, document, source_blocks, redaction_specs))
         body = normalized(''.join(document.text))
         checked = 0
         excluded = []

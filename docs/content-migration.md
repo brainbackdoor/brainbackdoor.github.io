@@ -57,7 +57,13 @@ pnpm build
 python3 scripts/migration/verify.py
 ```
 
-`verify.py`는 저장소 밖 원본 캐시(`/private/tmp/brainbackdoor-migration/pages`)와 변환 보고서가 필요하다. 캐시가 사라졌다면 `collect.py`로 공개 원문을 다시 수집한 뒤 검사한다. 원본이 바뀌었을 수 있으므로 재수집 결과를 이전 시점의 동일 스냅샷으로 취급하지 않는다. `convert.py --only <sourceId>`로 한 글만 다시 변환할 수 있다.
+`verify.py`는 저장소 밖 원본 캐시(`/private/tmp/brainbackdoor-migration/pages`)와 변환 보고서가 필요하다. 캐시가 사라졌다면 공개 원문을 다시 받은 뒤 검사한다. 원본이 바뀌었을 수 있으므로 재수집 결과를 이전 시점의 동일 스냅샷으로 취급하지 않는다.
+
+- macOS는 `/private/tmp`를 주기적으로 비운다. 2026-10-17 00:00에 이 캐시가 통째로 지워졌다.
+- DNS 전환 뒤 `www.brainbackdoor.com`은 새 블로그를 가리킨다. 그래서 `collect.py`(수집 주소 `https://www.brainbackdoor.com`)로는 원문을 받을 수 없다. 또 `collect.py`는 `docs/migration-inventory.json`을 새로 쓰므로 캐시 복원에는 쓰지 않는다.
+- 캐시만 복원하는 방법: 인벤토리는 읽기만 하고, 각 `sourceId` 주소를 oopy 원본 서버에 연결해 받는다. 예: `curl -sL --resolve www.brainbackdoor.com:443:<notion2.oopy.io의 IP> https://www.brainbackdoor.com/<sourceId>`. 응답의 `__NEXT_DATA__` 중 `props.pageProps`를 `<sourceId>.json`으로, HTML을 `<sourceId>.html`로 저장한다. `pageID`가 `sourceId`와 같은지 확인한다.
+- 2026-10-18에 이 방법으로 109쪽을 모두 받았다(robots.txt 허용, 실패 0). 그 캐시로 `verify.py`를 돌린 결과는 저장된 보고서와 시각만 빼고 같았다.
+- 저장된 보고서(`docs/migration-verification.json`)를 덮지 않으려면 `--report`로 다른 경로를 준다. `convert.py --only <sourceId>`로 한 글만 다시 변환할 수 있다.
 
 `convert.py --refresh-image-dimensions`는 네트워크 요청 없이 로컬 이미지의 크기 속성과 보고서만 갱신한다. `verify.py`는 빌드된 본문 이미지의 크기 지정 여부도 검사한다.
 

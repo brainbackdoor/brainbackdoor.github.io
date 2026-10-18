@@ -2042,11 +2042,11 @@ registry 74개와 MDX의 `figureId` 74개가 서로 정확히 맞는다. 등록�
 ### 3. 회귀
 
 - `pnpm test` 17파일 331개, `pnpm check` 0건(힌트 1은 기존), `pnpm build` 332쪽, 마이그레이션 단위 테스트 31개.
-- 원문 대조(`verify.py`)는 `c936a1f` 빌드에서 58편·1,806필드·도해 74종 문제 0이었다.
-  - 그 뒤 10월 17일 00:00에 macOS 임시 폴더 정리로 원문 스냅샷 캐시(`/private/tmp/brainbackdoor-migration/pages`, 58편)가 지워져, `aa5975d`에서는 `verify.py`를 돌리지 못했다(`KeyError`).
+- 원문 대조(`verify.py`)는 `c936a1f` 빌드에서 58편·1,806필드·도해 74종 문제 0이었다. 배포 뒤 원문 캐시를 복원해 main 빌드에서 다시 돌렸고, 역시 문제 0이다(아래 배포 기록).
+  - 그 사이 10월 17일 00:00에 macOS 임시 폴더 정리로 원문 스냅샷 캐시(`/private/tmp/brainbackdoor-migration/pages`)가 지워져, `aa5975d`에서는 `verify.py`를 돌리지 못했다(`KeyError`).
   - 대신 `verify.py`의 `ReadingPage`로 B09에서 원문 대조를 통과한 main 빌드(`8cdef78`)와 지금 빌드를 비교했다. 58편 모두 도해 블록 밖의 본문 글자·앵커·링크·이미지·코드와 도해 74개의 위치·원본 블록이 같다.
   - 도해 안 글자 차이는 5편(TCP 성능, TCP 오류복구, 화면 응답 개선 미션 가이드, 도커 컨테이너 실행해보기, 조회 성능 개선 미션 가이드)에 있는 바뀐 도해의 정적 SVG 글자 순서와 줄 나눔뿐이다. 도해 필수 문구는 SSR 테스트가 확인한다.
-  - 캐시를 다시 만들려면 원본 사이트에서 58편을 다시 받아야 해서 사용자 확인을 기다린다.
+  - 캐시는 사용자 확인을 받아 10월 18일에 복원했다(방법은 [이전 안내](content-migration.md)의 검사 절).
 - 브라우저(빌드 결과물, headless Chrome): 바뀐 18종이 든 11편에서 다음을 확인했다.
   - 지면 18/18: plot 폭, 정적 SVG 폭, 가로 넘침 0.
   - 재생 162/162: 자동 재생, 화면 밖 정지·재개, 탭 숨김, Canvas 실패, 동작 줄이기, JS 미사용.
@@ -2062,8 +2062,9 @@ registry 74개와 MDX의 `figureId` 74개가 서로 정확히 맞는다. 등록�
 
 ### 배포 (2026-10-17)
 
-- **병합과 push:** fast-forward(8cdef78 → `e3b083c`). 기본 checkout은 `.claude/launch.json` 외 변경이 없었다. 병합된 main에서 `pnpm test` 331, build 332를 다시 확인하고 push했다. 원문 대조(`verify.py`)는 원문 캐시가 지워져 돌리지 못했고, 위 3절의 대체 비교로 갈음했다.
+- **병합과 push:** fast-forward(8cdef78 → `e3b083c`). 기본 checkout은 `.claude/launch.json` 외 변경이 없었다. 병합된 main에서 `pnpm test` 331, build 332를 다시 확인하고 push했다. 배포 때는 원문 캐시가 지워져 원문 대조(`verify.py`)를 3절의 대체 비교로 갈음했다.
 - **워크플로:** "Deploy to GitHub Pages" 실행 38931639027, headSha `e3b083c`, build·deploy success.
 - **공개 사이트 확인**(https://www.brainbackdoor.com)
   - 바뀐 18종이 든 11편의 HTML이 로컬 빌드와 같다. 빌드마다 바뀌는 `astro-island uid`만 다르고, 렌더러 묶음(`LessonFigure.DrNXDWo1.js`)도 같은 이름으로 200이다.
   - headless Chrome으로 11편과 홈을 1280·390에서 봤다. 도해 72/72(36개 × 2폭)가 준비·자동 재생·원본 앵커·컨트롤 없음·가로 넘침 없음이다. 바뀐 18종 중 빠진 것은 없다.
+- **원문 대조 복원(2026-10-18):** 사용자 확인을 받아 oopy 원본 서버에서 인벤토리 109쪽(글 58, 목록 49, 소개·커리큘럼 각 1)을 다시 받았다(robots.txt 허용, 실패 0). main(`cbf8aff`, 코드는 `e3b083c` 빌드와 같음)에서 `verify.py`를 돌린 결과, 58편·1,806필드·도해 74종 문제 0이다. 깨진 내부 링크 0, 원본 누락 6편·자산 6개는 기준 시점과 같다. 보고서는 저장된 `docs/migration-verification.json`과 시각만 빼고 같다. 원본이 10월 12일 수집 이후 바뀌지 않았다는 뜻이다.

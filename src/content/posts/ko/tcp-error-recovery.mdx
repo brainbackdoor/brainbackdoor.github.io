@@ -218,7 +218,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <p id="7b468263-cc24-4131-b1f6-22c099adec0f">cwnd는 송신자와 수신자 간에 값이 교환되거나 서로 통지되지 않는다&#46; 송신자와 수신자 사이에서 이동중인 데이터의 최대치는 rwnd와 cwnd 값 중 작은 값이 된다&#46; 최적의 cwnd값을 알아내는 방법은 (매 커넥션마다 수동으로 조정하지는 않고,) ACK 패킷을 받으면서 점점 윈도 사이즈를 늘려간다&#46;</p>
 
-<p id="754d1849-e5d6-4d42-ab8d-b0b63bf345ca">cwnd size는 항상 2의 배수로 증가하는 것은 아니라 maximum sender mss 크기 1만큼 증가한다&#46; (<a href="https://tools.ietf.org/html/rfc5681">https&#58;//tools&#46;ietf&#46;org/html/rfc5681</a><a href="https://lwn.net/Articles/427104/">https&#58;//lwn&#46;net/Articles/427104/</a>,"During slow start, a TCP increments cwnd by at most SMSS bytes for each ACK received that cumulatively acknowledges new data")</p>
+<p id="754d1849-e5d6-4d42-ab8d-b0b63bf345ca">Slow start에서는 새 데이터를 누적 확인하는 ACK마다 cwnd가 최대 1 SMSS만큼 증가한다&#46; (<a href="https://tools.ietf.org/html/rfc5681">RFC 5681</a><a href="https://lwn.net/Articles/427104/"> · LWN</a>)</p>
 
 </details>
 
@@ -270,7 +270,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <p id="dc04c660-f4d6-49ea-b995-c92af09b7901">혼잡 회피에서 암묵적으로 판단하기에 패킷 손실이 일어났다는 것은 네트워크 혼잡이 일어났다는 신호다&#46; 이동 경로의 어딘가에서 정체가 일어난 링크나 라우터가 패킷을 누락시켰을 것이다&#46; 그래서 네트워크에 부담을 덜어주고 더 이상의 패킷 손실을 막기 위해 윈도 사이즈를 조정해야 하는 것이다&#46;</p>
 
-<p id="1844dbdc-e426-4e34-8724-7631b2a802e5">Reno에서는 RTO로 손실을 감지하면 ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고 cwnd를 1 SMSS로 줄여 다시 slow start를 수행한다&#46; cwnd가 ssthresh에 도달하면 혼잡 회피로 전환해 RTT당 약 1 SMSS씩 증가시킨다&#46; 세 번의 중복 ACK로 감지하는 손실은 다음 절의 빠른 재전송·빠른 회복 경로와 구분한다&#46; (&lt;그림1&gt;을 참조하자)</p>
+<p id="1844dbdc-e426-4e34-8724-7631b2a802e5">Reno에서는 RTO로 손실을 감지하면 ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고 cwnd를 1 SMSS로 줄여 다시 slow start를 수행한다&#46; cwnd가 ssthresh에 도달하면 혼잡 회피로 전환해 RTT당 약 1 SMSS씩 증가시킨다&#46; 세 번의 중복 ACK로 감지하는 손실은 다음 절의 빠른 재전송·빠른 회복 경로와 구분한다&#46;</p>
 
 <span id="e391531a-3e5a-4288-a8e6-a9aeaabe3eb6" data-editorial-omission="desktop-n05-rto-intro" hidden></span>
 
@@ -280,7 +280,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 ### <strong>3) Fast Retransmission &amp; Fast Recovery</strong>
 
-<p id="602a3cd6-7a3b-4d1e-b52d-5f192fc867b3">고전 Reno에서 송신자가 연속 세 번의 중복 ACK를 받으면 RTO 전에 누락된 세그먼트를 재전송한다&#46; (&lt;그림1&gt;의 Fast Retransmission) ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고, 빠른 회복 동안 cwnd를 ssthresh + 3 × SMSS로 설정한다&#46; 추가 중복 ACK마다 cwnd를 1 SMSS씩 늘리며, 새 데이터를 확인하는 ACK가 도착하면 cwnd를 ssthresh로 낮추고 혼잡 회피를 이어간다&#46; 이 경로는 cwnd를 1 SMSS로 줄이는 RTO 경로와 다르다&#46;</p>
+<p id="602a3cd6-7a3b-4d1e-b52d-5f192fc867b3">고전 Reno에서 송신자가 연속 세 번의 중복 ACK를 받으면 RTO 전에 누락된 세그먼트를 재전송한다&#46; ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고, 빠른 회복 동안 cwnd를 ssthresh + 3 × SMSS로 설정한다&#46; 추가 중복 ACK마다 cwnd를 1 SMSS씩 늘리며, 새 데이터를 확인하는 ACK가 도착하면 cwnd를 ssthresh로 낮추고 혼잡 회피를 이어간다&#46; 이 경로는 cwnd를 1 SMSS로 줄이는 RTO 경로와 다르다&#46;</p>
 
 <details id="df0aedd3-9550-4c96-829b-797a6567d12a" className="notion-toggle" open>
 

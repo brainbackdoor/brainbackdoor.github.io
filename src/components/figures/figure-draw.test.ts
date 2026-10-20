@@ -364,6 +364,45 @@ describe('deployed figures v2 (R04)', () => {
     for (const t of loop('W02', 50)) if (t < 1600) expect(texts(renderers.W02(650, t)).some(o => o.text.includes('압축 중')), `${t}`).toBe(false);
   });
 
+  it('keeps W02 result labels on one line without reserving empty mobile rows', () => {
+    const pathBox = (d: string) => {
+      let x = 0, y = 0; const xs: number[] = [], ys: number[] = [];
+      for (const [, cmd, args] of d.matchAll(/([MLHVAZ])([^MLHVAZ]*)/g)) {
+        const n = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+        if (cmd === 'H') x = n.at(-1)!;
+        else if (cmd === 'V') y = n.at(-1)!;
+        else if (cmd !== 'Z') { x = n.at(-2)!; y = n.at(-1)!; }
+        if (cmd !== 'Z') { xs.push(x); ys.push(y); }
+      }
+      return { x1: Math.min(...xs), x2: Math.max(...xs), y1: Math.min(...ys), y2: Math.max(...ys) };
+    };
+    const sansWidth = (o: Text) => [...o.text].reduce((sum, ch) => sum + (ch.codePointAt(0)! >= 0x1100 ? .94 : ' .,:;·|!il\'"()[]'.includes(ch) ? .3 : /[A-Z0-9mwMW+=→]/.test(ch) ? .64 : .52), 0) * o.size;
+    for (const width of [259, 284, 346, 650]) {
+      const height = renderers.W02(width, 0).height;
+      // 두 전송 비교는 작은 모바일 화면에서도 300px 안에 들어오며 재생 중 뛰지 않는다.
+      expect(height, `${width} compact lanes`).toBeLessThanOrEqual(300);
+      for (const t of [0, 1200, 1600, 3399, 3400, 3899, 3900, 6899, 6900, 7400]) {
+        const f = renderers.W02(width, t), s = networkState('W02', t);
+        expect(f.height, `${width}/${t} stable height`).toBe(height);
+        const results = texts(f).filter(o => o.color === FIGURE_COLORS.greenText);
+        expect(results.map(o => o.text), `${width}/${t} complete bytes`).toEqual(Array(Number(s.decoded) + Number(s.rawReceived)).fill('동일 JSON · 18,891 B'));
+        const tracks = f.ops.flatMap(o => o.type === 'path' && o.fill === FIGURE_COLORS.plot ? [pathBox(o.d)] : []).filter(b => Math.abs(b.y2 - b.y1 - 16) < .01);
+        expect(tracks, `${width}/${t} transfer timelines`).toHaveLength(2);
+        for (const result of results) {
+          const tw = sansWidth(result), left = result.align === 'center' ? result.x - tw / 2 : result.x;
+          expect(left, `${width}/${t} label left`).toBeGreaterThanOrEqual(0);
+          expect(left + tw, `${width}/${t} label right`).toBeLessThanOrEqual(width);
+          const track = tracks.find(b => b.y1 > result.y)!;
+          expect(track.y1 - (result.y + result.size * .22), `${width}/${t} label above timeline`).toBeGreaterThanOrEqual(8);
+        }
+      }
+      if (width === 650) {
+        const results = texts(renderers.W02(width, 7400)).filter(o => o.color === FIGURE_COLORS.greenText);
+        expect(results.map(({ x, y, align }) => ({ x, y, align }))).toEqual([{ x: 331, y: 80, align: 'left' }, { x: 331, y: 238, align: 'left' }]);
+      }
+    }
+  });
+
   it('keeps visible labels apart and inside the figure at every article width', () => {
     const SANS = (s: string) => { let n = 0; for (const ch of s) { const c = ch.codePointAt(0)!; n += c >= 0x1100 ? 0.94 : ' .,:;·|!il\'"()[]'.includes(ch) ? 0.3 : /[A-Z0-9mwMW+=→]/.test(ch) ? 0.64 : 0.52; } return n; };
     const box = (o: Text) => { const w = (o.mono ? [...o.text].reduce((n, ch) => n + (ch.codePointAt(0)! >= 0x1100 ? 1 : 0.6), 0) : SANS(o.text)) * o.size; const x = o.align === 'center' ? o.x - w / 2 : o.align === 'right' ? o.x - w : o.x; return { x1: x, x2: x + w, y1: o.y - o.size * 0.8, y2: o.y + o.size * 0.22 }; };

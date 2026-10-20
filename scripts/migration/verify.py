@@ -11,7 +11,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit, urljoin
 
 ROOT = Path(__file__).resolve().parents[2]
-INLINE_PROSE = {'a', 'span', 'strong', 'em', 'b', 'i', 'u', 's', 'del', 'mark', 'code', 'sub', 'sup', 'small', 'abbr', 'cite'}
+INLINE_PROSE = {'a', 'span', 'strong', 'em', 'b', 'i', 'u', 's', 'del', 'mark', 'code', 'sub', 'sup', 'small', 'abbr', 'cite', 'label'}
 VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'}
 
 
@@ -195,17 +195,31 @@ def figure_issues(report, document, source_blocks, specs):
 
 
 def correction_text(block, edits):
-    text = plain(block.get('properties', {}).get('title'))
-    original = text
+    original_runs = json.loads(json.dumps(block.get('properties', {}).get('title', [])))
+    runs = json.loads(json.dumps(original_runs))
+    original = plain(original_runs)
     for edit in edits:
         old, new = edit.get('oldText', ''), edit.get('newText', '')
-        if (block.get('type') not in {'text', 'bulleted_list', 'numbered_list', 'callout'}
+        removing = 'removeRun' in edit
+        if (not (block.get('type') in {'text', 'bulleted_list', 'numbered_list', 'callout'}
+                 or block.get('type') == 'to_do' and edit.get('removeRun') is True)
                 or block.get('type') != edit.get('sourceType')
                 or hashlib.sha256(original.encode()).hexdigest() != edit.get('sourceTextSha256')
-                or not old or not new.strip() or old == new or text.count(old) != 1):
+                or not old or old == new or original.count(old) != 1 or plain(runs).count(old) != 1
+                or removing and (edit['removeRun'] is not True or new != '')
+                or not removing and not new.strip()):
             raise ValueError('Correction source mismatch')
-        text = text.replace(old, new, 1)
-    return text
+        matches = [run for run in runs if isinstance(run, list) and run and old in run[0]]
+        if len(matches) != 1: raise ValueError('Correction crosses source annotations')
+        if removing:
+            original_matches = [run for run in original_runs if isinstance(run, list) and run and run[0] == old]
+            if matches[0][0] != old or len(original_matches) != 1:
+                raise ValueError('Run removal must match the complete source run')
+            runs = [run for run in runs if run is not matches[0]]
+            if not plain(runs).strip(): raise ValueError('Run removal cannot empty the block text')
+        else:
+            matches[0][0] = matches[0][0].replace(old, new, 1)
+    return plain(runs)
 
 
 def redacted_text(block, specs):
@@ -248,6 +262,10 @@ def correction_issues(report, document, source_blocks, specs):
         if any(edit not in report.get('corrections', []) for edit in edits): issue('correction-not-traced')
         scoped = [normalized(''.join(text)) for text in document.anchor_text.get(block_id, [])]
         if not scoped or any(expected not in text for text in scoped): issue('correction-text-missing')
+        for edit in edits:
+            removed = normalized(edit['oldText']) if edit.get('removeRun') is True else ''
+            if removed and any(text.count(removed) > expected.count(removed) for text in scoped):
+                issue('correction-run-not-removed')
     return issues
 
 

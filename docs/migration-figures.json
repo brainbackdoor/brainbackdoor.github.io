@@ -1174,8 +1174,8 @@
       "sourceType": "text",
       "sourceTextSha256": "046b8df0820c257d98f719ea2ecf6208949b79acfabcc93cb9ac81246f52a52e",
       "oldText": "Packet loss가 감지되면, 바로 이전 Congestion window size를 ssthresh 값으로 설정하고 이후에 congestion avoidance 단계에서 그 ssthresh 값으로부터 segment를 하나씩 증가시키면서 network congestion이 발생하는 지점을 찾는다. packet loss가 발생하면 다시 ssthresh 값을 직전 cwnd의 절반으로 줄이고 다시 slow start를 수행한다. (<그림1>을 참조하자)",
-      "newText": "Reno에서는 RTO로 손실을 감지하면 ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고 cwnd를 1 SMSS로 줄여 다시 slow start를 수행한다. cwnd가 ssthresh에 도달하면 혼잡 회피로 전환해 RTT당 약 1 SMSS씩 증가시킨다. 세 번의 중복 ACK로 감지하는 손실은 다음 절의 빠른 재전송·빠른 회복 경로와 구분한다. (<그림1>을 참조하자)",
-      "reason": "RTO와 빠른 회복의 서로 다른 전이를 도해와 맞춤",
+      "newText": "Reno에서는 RTO로 손실을 감지하면 ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고 cwnd를 1 SMSS로 줄여 다시 slow start를 수행한다. cwnd가 ssthresh에 도달하면 혼잡 회피로 전환해 RTT당 약 1 SMSS씩 증가시킨다. 세 번의 중복 ACK로 감지하는 손실은 다음 절의 빠른 재전송·빠른 회복 경로와 구분한다.",
+      "reason": "RTO와 빠른 회복의 서로 다른 전이를 도해와 맞춤 모바일 개별 재검수에서 인접한 도해의 그림 참조 괄호만 제거하고 Reno 수식·분기 조건은 유지(사용자 요청).",
       "reference": "https://www.rfc-editor.org/rfc/rfc5681.html#section-3"
     },
     {
@@ -1185,8 +1185,8 @@
       "sourceType": "text",
       "sourceTextSha256": "6dcade2e3340ef6abddfaefb8a377ddadca11819439e830308da78a94087f7ea",
       "oldText": "Network에서 packet loass가 발생한 사실을 RTO가 아닌 연속 3회 DUP_ACK로 인지하게 될 경우 (<그림1>의 4번, Fast Retransmission) 이전처럼 cwnd를 초기값부터 다시 slow start를 하지 않고 현재의 절반으로 줄인 후에 congestion avoidance를 수행해서 빠르게 packet loss가 발생했던 cwnd 직전까지 찾아간다(Fast recovery).",
-      "newText": "고전 Reno에서 송신자가 연속 세 번의 중복 ACK를 받으면 RTO 전에 누락된 세그먼트를 재전송한다. (<그림1>의 Fast Retransmission) ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고, 빠른 회복 동안 cwnd를 ssthresh + 3 × SMSS로 설정한다. 추가 중복 ACK마다 cwnd를 1 SMSS씩 늘리며, 새 데이터를 확인하는 ACK가 도착하면 cwnd를 ssthresh로 낮추고 혼잡 회피를 이어간다. 이 경로는 cwnd를 1 SMSS로 줄이는 RTO 경로와 다르다.",
-      "reason": "빠른 회복의 일시적인 cwnd 증가와 이후 감소를 구분",
+      "newText": "고전 Reno에서 송신자가 연속 세 번의 중복 ACK를 받으면 RTO 전에 누락된 세그먼트를 재전송한다. ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고, 빠른 회복 동안 cwnd를 ssthresh + 3 × SMSS로 설정한다. 추가 중복 ACK마다 cwnd를 1 SMSS씩 늘리며, 새 데이터를 확인하는 ACK가 도착하면 cwnd를 ssthresh로 낮추고 혼잡 회피를 이어간다. 이 경로는 cwnd를 1 SMSS로 줄이는 RTO 경로와 다르다.",
+      "reason": "빠른 회복의 일시적인 cwnd 증가와 이후 감소를 구분 모바일 개별 재검수에서 인접한 도해의 그림 참조 괄호만 제거하고 Reno 수식·분기 조건은 유지(사용자 요청).",
       "reference": "https://www.rfc-editor.org/rfc/rfc5681.html#section-3"
     },
     {
@@ -1606,6 +1606,119 @@
       "newText": ".",
       "reason": "상단 페이지 요약을 반복하는 안내를 덜고 실습 저장소 링크 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
       "reference": "https://www.brainbackdoor.com/posts/dfe2e77f-066e-46e9-a575-ed1e65157321/#ba38a9b7-9fc0-499f-8398-9c1f776ec99f"
+    },
+    {
+      "id": "mobile-w01-repeated-summary",
+      "sourceId": "80dbc9d7-ba32-4220-9b39-b536172264f2",
+      "sourceBlockId": "3935cb99-496f-4814-a27b-953afe50b005",
+      "sourceType": "callout",
+      "sourceTextSha256": "acfd03884fb02cebaf89a6a8c16a64a721f0a4777d4d5194c9737e206b3b9755",
+      "oldText": "webpagetest, pagespeed 등으로 테스트하여, 인터넷 구간에서 성능에 영향을 주는 요소를 이해해봅니다.\nHTTP를 활용하여 서비스의 성능을 개선해봅니다.",
+      "newText": "HTTP를 활용하여 서비스의 성능을 개선해봅니다.",
+      "reason": "페이지 요약과 같은 첫 문장과 줄바꿈만 삭제하고 고유한 목적·학습 범위 안내는 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/80dbc9d7-ba32-4220-9b39-b536172264f2/#3935cb99-496f-4814-a27b-953afe50b005"
+    },
+    {
+      "id": "mobile-w04-repeated-summary",
+      "sourceId": "8e230e0d-431c-4ffe-becd-c60c1bea4615",
+      "sourceBlockId": "ca2843e5-af44-4f9c-8f26-da3c4b36e563",
+      "sourceType": "callout",
+      "sourceTextSha256": "54190bd39a75f8e3843a3554d8f71acbc58e5bc932c895ed2a16a0297525bf4d",
+      "oldText": "HTTP Cache, gzip, Servlet, Thread 등의 개념을 학습 테스트를 통해 실습해봅니다.\nHTTP, Servlet, Thread, Tomcat 등의 이론적인 부분은 강의를 통해 확인할 수 있어요.",
+      "newText": "HTTP, Servlet, Thread, Tomcat 등의 이론적인 부분은 강의를 통해 확인할 수 있어요.",
+      "reason": "페이지 요약과 같은 첫 문장과 줄바꿈만 삭제하고 고유한 목적·학습 범위 안내는 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/8e230e0d-431c-4ffe-becd-c60c1bea4615/#ca2843e5-af44-4f9c-8f26-da3c4b36e563"
+    },
+    {
+      "id": "mobile-n07-ack-1",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "754d1849-e5d6-4d42-ab8d-b0b63bf345ca",
+      "sourceType": "text",
+      "sourceTextSha256": "5d7f63774cc0e9fa1bdd90a0095ae0bc62e1bf3dcb3e0ccd2f8250cda2c1c549",
+      "oldText": "cwnd size는 항상 2의 배수로 증가하는 것은 아니라 maximum sender mss 크기 1만큼 증가한다. (",
+      "newText": "Slow start에서는 새 데이터를 누적 확인하는 ACK마다 cwnd가 최대 1 SMSS만큼 증가한다. (",
+      "reason": "한국어와 영문 인용의 같은 설명을 조건을 포함한 한국어 한 문장으로 합치고 두 출처 URL은 짧은 라벨로 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/tcp-error-recovery/#754d1849-e5d6-4d42-ab8d-b0b63bf345ca"
+    },
+    {
+      "id": "mobile-n07-ack-2",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "754d1849-e5d6-4d42-ab8d-b0b63bf345ca",
+      "sourceType": "text",
+      "sourceTextSha256": "5d7f63774cc0e9fa1bdd90a0095ae0bc62e1bf3dcb3e0ccd2f8250cda2c1c549",
+      "oldText": "https://tools.ietf.org/html/rfc5681",
+      "newText": "RFC 5681",
+      "reason": "한국어와 영문 인용의 같은 설명을 조건을 포함한 한국어 한 문장으로 합치고 두 출처 URL은 짧은 라벨로 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/tcp-error-recovery/#754d1849-e5d6-4d42-ab8d-b0b63bf345ca"
+    },
+    {
+      "id": "mobile-n07-ack-3",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "754d1849-e5d6-4d42-ab8d-b0b63bf345ca",
+      "sourceType": "text",
+      "sourceTextSha256": "5d7f63774cc0e9fa1bdd90a0095ae0bc62e1bf3dcb3e0ccd2f8250cda2c1c549",
+      "oldText": "https://lwn.net/Articles/427104/",
+      "newText": " · LWN",
+      "reason": "한국어와 영문 인용의 같은 설명을 조건을 포함한 한국어 한 문장으로 합치고 두 출처 URL은 짧은 라벨로 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/tcp-error-recovery/#754d1849-e5d6-4d42-ab8d-b0b63bf345ca"
+    },
+    {
+      "id": "mobile-n07-ack-4",
+      "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+      "sourceBlockId": "754d1849-e5d6-4d42-ab8d-b0b63bf345ca",
+      "sourceType": "text",
+      "sourceTextSha256": "5d7f63774cc0e9fa1bdd90a0095ae0bc62e1bf3dcb3e0ccd2f8250cda2c1c549",
+      "oldText": ",\"During slow start, a TCP increments cwnd by at most SMSS bytes for each ACK received that cumulatively acknowledges new data\")",
+      "newText": ")",
+      "reason": "한국어와 영문 인용의 같은 설명을 조건을 포함한 한국어 한 문장으로 합치고 두 출처 URL은 짧은 라벨로 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/tcp-error-recovery/#754d1849-e5d6-4d42-ab8d-b0b63bf345ca"
+    },
+    {
+      "id": "mobile-t08-writing-prefix",
+      "sourceId": "95248237-c6a4-4489-a51e-6c548c0c103c",
+      "sourceBlockId": "d81a6d68-026b-4083-b211-d0d6577110e8",
+      "sourceType": "text",
+      "sourceTextSha256": "af0b6a7054222b8b366772549c74eb7b590ac0380af1d8accb3a4e30c333a0c9",
+      "oldText": "이 포스팅은, ",
+      "newText": "",
+      "reason": "작성 계기 도입을 삭제하고 API 기능·예외·공식 문서 링크 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/95248237-c6a4-4489-a51e-6c548c0c103c/#d81a6d68-026b-4083-b211-d0d6577110e8",
+      "removeRun": true
+    },
+    {
+      "id": "mobile-t08-writing-topic",
+      "sourceId": "95248237-c6a4-4489-a51e-6c548c0c103c",
+      "sourceBlockId": "d81a6d68-026b-4083-b211-d0d6577110e8",
+      "sourceType": "text",
+      "sourceTextSha256": "af0b6a7054222b8b366772549c74eb7b590ac0380af1d8accb3a4e30c333a0c9",
+      "oldText": "Collections 라이브러리의 unmodifiableList API를 어떻게 활용하는 것이 좋을지",
+      "newText": "",
+      "reason": "작성 계기 문장에 속한 강조 run만 삭제하고 API 정의는 바로 뒤 문장에 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/95248237-c6a4-4489-a51e-6c548c0c103c/#d81a6d68-026b-4083-b211-d0d6577110e8",
+      "removeRun": true
+    },
+    {
+      "id": "mobile-t08-api-definition",
+      "sourceId": "95248237-c6a4-4489-a51e-6c548c0c103c",
+      "sourceBlockId": "d81a6d68-026b-4083-b211-d0d6577110e8",
+      "sourceType": "text",
+      "sourceTextSha256": "af0b6a7054222b8b366772549c74eb7b590ac0380af1d8accb3a4e30c333a0c9",
+      "oldText": " 피드백하다 작성하게 되었다. unmodifiableList 는 List에 read-only 상태로 접근 가능하도록 하며, List에 수정을 가하려고 할 경우 UnsupportedOperationException를 반환하도록 한다. - ",
+      "newText": "unmodifiableList는 List에 read-only 상태로 접근할 수 있게 하며, 수정을 시도하면 UnsupportedOperationException이 발생한다. ",
+      "reason": "작성 안내를 덜고 API 읽기 전용·수정 예외 설명과 공식 문서 링크 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/95248237-c6a4-4489-a51e-6c548c0c103c/#d81a6d68-026b-4083-b211-d0d6577110e8"
+    },
+    {
+      "id": "mobile-o09-writing-joke",
+      "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+      "sourceBlockId": "f12b46cb-029e-4304-a4e9-a5736b6f860f",
+      "sourceType": "to_do",
+      "sourceTextSha256": "ef7f23f6292f7d9a642dbc06ddbe27f5a6070589b9948115df0acf4a5fe623a7",
+      "oldText": "(뼈대 코드 작성 중.. 직접 해보셔도..? 😏)",
+      "newText": "",
+      "reason": "오래된 코드 작성 상태·농담 취소선만 삭제. EDA·큐 실습 지시와 도해의 개념 예시 조건 유지 (사용자의 모바일 개별 검수·중복 문구 축소 요청).",
+      "reference": "https://www.brainbackdoor.com/posts/dfe2e77f-066e-46e9-a575-ed1e65157321/#f12b46cb-029e-4304-a4e9-a5736b6f860f",
+      "removeRun": true
     }
   ],
   "redactions": [
@@ -1907,6 +2020,54 @@
       "sourceType": "divider",
       "sourceBlockSha256": "95c3a1cc1068ed7c53e159cfc016ac2d46fcbbc218e522425b5097381bafec5a",
       "reason": "도해 뒤 구분선과 keep-alive 제한과 규칙 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+    },
+    {
+      "id": "mobile-n09-divider",
+      "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+      "sourceBlockId": "017f1a4f-56e2-48dc-9df8-fe367e4b201a",
+      "sourceType": "divider",
+      "sourceBlockSha256": "026f9ebf8ac06f7702946226f1709d7ec6c655237559ed2b36c2ab2418e88ed2",
+      "reason": "도해 다음 절 제목과 겹친 장식선을 제거해 이중 여백 축소 (사용자의 모바일 개별 검수·불필요 여백 축소 요청)."
+    },
+    {
+      "id": "mobile-n12-divider",
+      "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+      "sourceBlockId": "99cb80f0-9ad6-43db-8bd6-2bcc3977a7a6",
+      "sourceType": "divider",
+      "sourceBlockSha256": "b8a25c6055730436ef90c5e27cb037a879bb4b9a61f412219c9e8b4665edd469",
+      "reason": "도해 뒤 HTTP Keepalive 절 제목과 겹친 장식선 제거 (사용자의 모바일 개별 검수·불필요 여백 축소 요청)."
+    },
+    {
+      "id": "mobile-w04-divider",
+      "sourceId": "8e230e0d-431c-4ffe-becd-c60c1bea4615",
+      "sourceBlockId": "9d923fd9-87c8-4d13-8254-1e4a0f12b8fa",
+      "sourceType": "divider",
+      "sourceBlockSha256": "6bff84274d5243cb10ff45067bf4683f55d0dd30d3f8aa762c874c22f29f191b",
+      "reason": "미션 뒤 Servlet 실습 절 제목과 겹친 장식선 제거 (사용자의 모바일 개별 검수·불필요 여백 축소 요청)."
+    },
+    {
+      "id": "mobile-n11-footer-divider",
+      "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+      "sourceBlockId": "626cd4be-d624-467c-9a93-c8ad7449187c",
+      "sourceType": "divider",
+      "sourceBlockSha256": "7a991d1c19d13174cf4edc2327abb452fae67e97ffa16e1abc9ee018ce59ff22",
+      "reason": "글 끝 장식선은 이어서 읽기 영역 경계와 겹쳐 제거 (사용자의 모바일 개별 검수·불필요 여백 축소 요청)."
+    },
+    {
+      "id": "mobile-x05-decorative-image",
+      "sourceId": "a1094dc5-8f5c-4725-be7c-8247fc273c44",
+      "sourceBlockId": "2a7f74b5-bf17-48a3-9d65-9d28ecffac2d",
+      "sourceType": "image",
+      "sourceBlockSha256": "64b5fca943cde9b743090ede9105e78367fc81ba4a134aa5e201d0a7ed0bdda5",
+      "reason": "액션 플랜 도출 제목과 겹친 1399×30 장식선 이미지 제거. 예시 표·실천 절차·할당 표는 유지 (사용자의 모바일 개별 검수·불필요 여백 축소 요청)."
+    },
+    {
+      "id": "mobile-t07-writing-intro",
+      "sourceId": "16b90d37-083f-8025-acc7-e77b4a9e2b32",
+      "sourceBlockId": "f083fe0c-cefb-4a10-bfc5-5df7457eb38d",
+      "sourceType": "text",
+      "sourceBlockSha256": "3092dda94df26216acbf3cb5ee9eb6aa8083346b6655478e0e256d888597dc61",
+      "reason": "뒤 절 제목이 이미 알려주는 글의 영역·정리·계획 작성 예고만 제거 (사용자의 모바일 개별 검수·불필요 여백 축소 요청)."
     }
   ]
 }

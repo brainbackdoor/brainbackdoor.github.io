@@ -117,20 +117,34 @@ def redacted_block(block, block_id, specs):
 def corrected_runs(block, edits):
     runs = block.get('properties', {}).get('title', [])
     if not edits: return runs
-    raw = plain(runs)
-    result = json.loads(json.dumps(runs))
+    original_runs = json.loads(json.dumps(runs))
+    raw = plain(original_runs)
+    result = json.loads(json.dumps(original_runs))
     for edit in edits:
-        if (block.get('type') not in {'text', 'bulleted_list', 'numbered_list', 'callout'}
+        if (not (block.get('type') in {'text', 'bulleted_list', 'numbered_list', 'callout'}
+                 or block.get('type') == 'to_do' and edit.get('removeRun') is True)
                 or block.get('type') != edit.get('sourceType')
                 or hashlib.sha256(raw.encode()).hexdigest() != edit.get('sourceTextSha256')):
             raise ValueError('Correction source mismatch')
         old, new = edit.get('oldText', ''), edit.get('newText', '')
-        if not old or not new.strip() or old == new or raw.count(old) != 1:
+        removing = 'removeRun' in edit
+        if (not old or old == new or raw.count(old) != 1
+                or removing and (edit['removeRun'] is not True or new != '')
+                or not removing and not new.strip()):
             raise ValueError('Unsafe or stale correction')
         matches = [run for run in result if isinstance(run, list) and run and old in run[0]]
         if len(matches) != 1:
             raise ValueError('Correction crosses source annotations')
-        matches[0][0] = matches[0][0].replace(old, new, 1)
+        if removing:
+            original_matches = [run for run in original_runs if isinstance(run, list) and run and run[0] == old]
+            if matches[0][0] != old or len(original_matches) != 1:
+                raise ValueError('Run removal must match the complete source run')
+            remaining = [run for run in result if run is not matches[0]]
+            if not plain(remaining).strip():
+                raise ValueError('Run removal cannot empty the block text')
+            result = remaining
+        else:
+            matches[0][0] = matches[0][0].replace(old, new, 1)
     return result
 
 

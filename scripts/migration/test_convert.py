@@ -417,6 +417,101 @@ class CorrectionTests(unittest.TestCase):
         doc=verify.ReadingPage();doc.feed('<article class="post-content"><blockquote id="one" class="notion-callout"><p>💡 잘못된 설명</p><p id="child">앞 수정한 설명 뒤 GitHub</p></blockquote></article>')
         self.assertIn('correction-text-missing',[x['type'] for x in verify.correction_issues(c.report,doc,c.blocks,[edit])])
 
+class RunRemovalTests(unittest.TestCase):
+    joke='(뼈대 코드 작성 중.. 직접 해보셔도..? 😏)'
+
+    def source(self):
+        return converter({'one':{'type':'bulleted_list','properties':{'title':[
+            ['앞 ',[['b']]],['자료',[['a','https://example.com/reference']]],['의 핵심 내용입니다. '],
+            [self.joke,[['s']]]]},'content':['child']},
+            'child':{'type':'text','properties':{'title':[['자식 본문 보존']]}},'two':{'type':'text'}})
+
+    def edit(self,c,**changes):
+        return dict({'id':'remove-annotated-joke','sourceId':ROOT,'sourceBlockId':'one','sourceType':'bulleted_list',
+            'sourceTextSha256':module.hashlib.sha256(module.plain(c.blocks['one']['properties']['title']).encode()).hexdigest(),
+            'oldText':self.joke,'newText':'','removeRun':True,'reason':'중복 제작 안내 제거'},**changes)
+
+    def test_explicit_removal_preserves_every_other_run_annotation_link_and_child(self):
+        import copy
+        c=self.source();original=copy.deepcopy(c.blocks['one']);edit=self.edit(c)
+        self.assertEqual(module.corrected_runs(original,[edit]),original['properties']['title'][:-1])
+        self.assertEqual(verify.correction_text(original,[edit]),module.plain(original['properties']['title'][:-1]))
+        c.correction_specs=[edit];out=c.convert()
+        self.assertNotIn(self.joke,out);self.assertNotIn('<del>',out)
+        self.assertIn('<strong>앞 </strong>',out)
+        self.assertIn('<a href="https://example.com/reference">자료</a>',out)
+        self.assertIn('자식 본문 보존',out);self.assertEqual(c.blocks['one'],original)
+        self.assertEqual(c.report['corrections'],[edit])
+        self.assertEqual(c.report['blocks'][0]['sourceTextSha256'],edit['sourceTextSha256'])
+
+    def test_removal_rejects_nonliteral_flags_nonempty_replacement_and_partial_run(self):
+        changes=[{'removeRun':value} for value in [False,1,'true',None]]
+        changes += [{'newText':value} for value in ['대체',' ',None]]
+        changes += [{'oldText':'직접 해보셔도..?'}]
+        for change in changes:
+            c=self.source();edit=self.edit(c,**change)
+            with self.subTest(change=change):
+                with self.assertRaises(ValueError):module.corrected_runs(c.blocks['one'],[edit])
+                with self.assertRaises(ValueError):verify.correction_text(c.blocks['one'],[edit])
+
+    def test_removal_rejects_stale_source_ambiguous_annotations_and_empty_body_even_with_children(self):
+        for case in ['hash','type','duplicate','split','last-run','whitespace-only']:
+            c=self.source();title=c.blocks['one']['properties']['title']
+            if case=='duplicate':title.append([self.joke])
+            if case=='split':title[-1:]=[[self.joke[:5],[['s']]],[self.joke[5:],[['b']]]]
+            if case=='last-run':title[:]=[[self.joke,[['s']]]]
+            if case=='whitespace-only':title[:]=[[' \n '],[self.joke,[['s']]]]
+            edit=self.edit(c)
+            if case=='hash':edit['sourceTextSha256']='0'*64
+            if case=='type':edit['sourceType']='text'
+            with self.subTest(case=case):
+                with self.assertRaises(ValueError):module.corrected_runs(c.blocks['one'],[edit])
+                with self.assertRaises(ValueError):verify.correction_text(c.blocks['one'],[edit])
+
+    def test_verifier_rejects_a_retained_removed_run_even_when_expected_prefix_is_present(self):
+        c=self.source();edit=self.edit(c);c.correction_specs=[edit];out=c.convert()
+        def check(content):
+            doc=verify.ReadingPage();doc.feed('<article class="post-content">'+content+'</article>')
+            return verify.correction_issues(c.report,doc,c.blocks,[edit])
+        self.assertEqual(check(out),[])
+        retained=out.replace('</p>','<del>'+self.joke+'</del></p>',1)
+        self.assertIn('correction-run-not-removed',[item['type'] for item in check(retained)])
+
+    def test_run_removal_and_nonempty_correction_keep_original_source_hash(self):
+        c=self.source();remove=self.edit(c)
+        replace=dict(remove,id='shorten-other-run',oldText='의 핵심 내용입니다. ',newText='의 설명입니다. ')
+        replace.pop('removeRun')
+        for edits in [[remove,replace],[replace,remove]]:
+            with self.subTest(order=[edit['id'] for edit in edits]):
+                result=module.corrected_runs(c.blocks['one'],edits)
+                self.assertEqual(module.plain(result),'앞 자료의 설명입니다. ')
+                self.assertEqual(verify.correction_text(c.blocks['one'],edits),module.plain(result))
+
+    def test_run_removal_rejects_a_partial_original_run_made_whole_by_an_earlier_correction(self):
+        c=self.source();c.blocks['one']['properties']['title']=[['AB',[['b']]],[' 남음']]
+        replace=self.edit(c,id='shorten-original-run',oldText='AB',newText='B');replace.pop('removeRun')
+        remove=self.edit(c,oldText='B')
+        for correct in [module.corrected_runs,verify.correction_text]:
+            with self.subTest(correct=correct.__name__),self.assertRaisesRegex(ValueError,'complete source run'):
+                correct(c.blocks['one'],[replace,remove])
+
+    def test_todo_allows_only_explicit_run_removal_and_preserves_checkbox_and_own_prose(self):
+        c=self.source();c.blocks['one']['type']='to_do';c.blocks['one']['properties']['checked']=[['Yes']]
+        edit=self.edit(c,sourceType='to_do');c.correction_specs=[edit];out=c.convert()
+        self.assertIn('<input type="checkbox" checked={true} disabled />',out)
+        self.assertIn('<a href="https://example.com/reference">자료</a>',out)
+        self.assertIn('자식 본문 보존',out);self.assertNotIn(self.joke,out)
+        doc=verify.ReadingPage();doc.feed('<article class="post-content">'+out+'</article>')
+        self.assertEqual(verify.correction_issues(c.report,doc,c.blocks,[edit]),[])
+        expected=verify.correction_text(c.blocks['one'],[edit])
+        child_only=verify.ReadingPage();child_only.feed('<article class="post-content"><ul><li id="one">'
+            '<p><label><input type="checkbox" disabled /></label></p><p id="child">'+expected+'</p></li></ul></article>')
+        self.assertIn('correction-text-missing',[item['type'] for item in verify.correction_issues(c.report,child_only,c.blocks,[edit])])
+        ordinary=dict(edit,oldText='핵심',newText='새로운');ordinary.pop('removeRun')
+        with self.assertRaises(ValueError):module.corrected_runs(c.blocks['one'],[ordinary])
+        with self.assertRaises(ValueError):verify.correction_text(c.blocks['one'],[ordinary])
+
+
 class OmissionTests(unittest.TestCase):
     def spec(self, c, block_id='one', **changes):
         return dict({'id':'duplicate-'+block_id, 'sourceId':ROOT, 'sourceBlockId':block_id,

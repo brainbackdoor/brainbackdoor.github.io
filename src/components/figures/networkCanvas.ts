@@ -440,8 +440,10 @@ function gzipV2(w: number, t: number): LessonFrame {
     // 압축 구간은 아래 시간 눈금과 같이 1600부터
     const stat = t < 1600 ? '전송 전' : gz ? (t < s.gzipSendAt ? '압축 중' : decoding ? '해제 중' : s.gzipReceived ? '수신 완료' : '전송 중') : (s.rawReceived ? '수신 완료' : '전송 중');
     g.text(lx, by - 20, `${(gz ? s.gzipBytes : s.rawBytes).toLocaleString()} B · ${stat}`, { size: 12, weight: 600, color: C.blueText });
-    const same = '동일 JSON · 18,891 B', ty = by + 30 + (wrap(same, rx - mid - 6, 11).length - 1) * 18;
-    if (done) para(g, mid + 6, by + 30, same, rx - mid - 6, { size: 11, weight: 600, color: C.greenText, alpha: appear(t, gz ? 3900 : 6900) });
+    // 좁은 지면의 결과 설명은 전송 줄 전체를 쓴다. 수신 막대 폭으로 감싸면 숫자·단위가 갈라지고 빈 줄까지 예약된다.
+    const same = '동일 JSON · 18,891 B', resultX = w >= 560 ? mid + 6 : 0, resultW = w >= 560 ? rx - mid - 6 : w;
+    const ty = by + 30 + (wrap(same, resultW, 11).length - 1) * 18;
+    if (done) para(g, resultX, by + 30, same, resultW, { size: 11, weight: 600, align: w >= 560 ? 'left' : 'center', color: C.greenText, alpha: appear(t, gz ? 3900 : 6900) });
     // 처리 구간과 전송 구간: 같은 시간 눈금
     const ry = ty + 26, X = (tt: number) => lx + (tt - T0) / (T1 - T0) * (rx - lx);
     g.rect(lx, ry, rx - lx, 16, { r: 4, fill: C.bg });

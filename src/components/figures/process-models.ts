@@ -91,7 +91,6 @@ export const E03_REST = [
   '회원여부 정책에서 갈라지는 3개(조건 표기 없음): 회원가입 · 인증코드 생성 · 로그인',
   '회원 경계의 다른 줄: 비밀번호 재설정 · 인증코드 생성 · 개인 상세정보 확인 · 사진 등록 · 본인 인증 (액터: 비로그인 회원)',
   '인증 경계의 다른 줄: 휴대폰 번호로 로그인 시도 · 카카오 로그인 시도 · 구글 로그인 시도',
-  '보드 오른쪽이 잘려 있어, 화면 밖으로 이어지는 연결 3개는 그리지 않았습니다.',
 ] as const;
 export const E03_LEGEND: [Sticky, string][] = [['event', '이벤트'], ['command', '커맨드'], ['policy', '정책'], ['system', '시스템'], ['actor', '액터'], ['read', '리드 모델'], ['hotspot', '핫스팟'], ['aggregate', '애그리거트']];
 // 카드가 놓이는 시각: 이벤트는 탐험(흩어짐) → 정렬, 나머지는 종류별로, 경계 넘는 화살표가 닿는 카드는 그 도착 시각
@@ -172,13 +171,13 @@ const R11 = 'a1094dc5-8f5c-4725-be7c-8247fc273c44', R10 = '9178ac06-ae33-4a96-a4
 export const processInfo = [
   { id: 'E01', title: 'ATDD 과정', short: 'ATDD', duration: 10000, final: 8400, steps: [2100, 6000, 8400], source: R10, assets: [`${R10}/9b4aaa68-872e-45ef-a101-d0c9f37a1401.webp`],
     caption: '원본 그림의 노드 9개, 실선 8개, 점선 3개(Discuss ⇢ Distill ⇢ Develop ⇢ Demo), Develop에 붙은 말풍선 5칸을 그대로 옮겼습니다. 사각형은 활동, 타원은 산출물로 읽었습니다(구분은 설명용). 원본에 되돌아가는 화살표가 없어 반복 연결은 그리지 않았습니다.',
-    notes: ['Discuss에서 User Story를 논의해 Acceptance Criteria(인수조건)를 만듭니다.', 'Distill이 인수조건을 Acceptance Test(인수테스트)로 옮깁니다. Develop에 붙은 말풍선은 인수조건 → 인수테스트 → Mock 서버 DTO 정의 → 문서화 → 개발 (TDD) 순서입니다.', 'Develop이 Software를 만들고 Demo를 거쳐 Business Value에 닿습니다. 원본처럼 한 방향으로 끝납니다.'] },
+    notes: ['Discuss에서 User Story를 논의해 Acceptance Criteria(인수조건)를 만듭니다.', 'Distill: 인수조건 → 인수테스트. Develop: 인수조건 → 인수테스트 → Mock 서버 DTO 정의 → 문서화 → 개발(TDD).', 'Develop이 Software를 만들고 Demo를 거쳐 Business Value에 닿습니다.'] },
   { id: 'E02', title: '테스트 범위와 격리', short: '테스트 범위', duration: 10000, final: 8400, steps: [2300, 3900, 8400], source: R10, assets: [],
     caption: '본문 코드의 구성: 인수(@SpringBootTest RANDOM_PORT + RestAssured, 각 테스트의 @BeforeEach에서 databaseCleanup.execute()), Controller(@WebMvcTest + MockMvc, BusinessController·BusinessRepository @MockBean), Service(classes = CacheConfig·BusinessService, BusinessRepository @MockBean), Repository(@DataJpaTest, h2), 단위(Business 도메인). 범위 밖(—) 칸은 각 테스트의 애너테이션과 코드에서 읽었습니다. 도메인 열은 단위 테스트만 표시하고, 다른 테스트의 도메인 실행 여부는 판정하지 않았습니다. DB 행 수와 두 번째 시나리오는 설명용이며, 인수테스트 DB 종류는 원문에 없어 "DB"로만 적었습니다.',
-    notes: ['인수테스트 시나리오 1이 RestAssured로 Controller부터 DB까지 실제로 실행되고, DB에 행이 남았습니다.', '다음 테스트의 @BeforeEach에서 databaseCleanup이 모든 테이블을 TRUNCATE해 DB가 비었습니다.', '테스트마다 실제로 실행하는 범위가 다릅니다. Controller Test는 BusinessController·BusinessRepository를, Service Test는 BusinessRepository를 @MockBean으로 둡니다.'] },
+    notes: ['인수테스트 시나리오 1이 RestAssured로 Controller부터 DB까지 실제로 실행되고, DB에 행이 남았습니다.', '다음 테스트의 @BeforeEach에서 databaseCleanup이 모든 테이블을 TRUNCATE해 DB가 비었습니다.', 'Controller Test는 BusinessController·BusinessRepository, Service Test는 BusinessRepository를 @MockBean으로 둡니다.'] },
   { id: 'E03', title: '이벤트스토밍 카드와 경계', short: '이벤트스토밍', duration: 11000, final: 9000, steps: [2400, 6400, 9000], source: R14, assets: [`${R14}/d04fba57-7d2b-406b-8d48-e8b8fababa6a.png`],
     caption: '원본 보드(회원·인증 두 경계)에서 회원가입 확인부터 완료 메일까지의 한 경로와, 경계를 넘는 화살표 8개 중 3개를 그렸습니다. 나머지 연결과 줄은 과정 설명에 보드 라벨 그대로 보존했습니다. 카드 라벨과 색 종류는 보드 그대로이고, 흩어진 배치·중복 카드 1장·카드가 놓이는 순서·흐르는 점은 설명용입니다.',
-    notes: ['알고 있는 도메인 이벤트를 쓰고, 시간 순서로 정렬해 실제로 중복되는 카드를 지웁니다. 위아래로 쌓인 카드는 평행한 시간입니다.', '커맨드가 이벤트를 만들고, 정책이 이벤트와 다음 커맨드를 잇습니다. 외부 시스템(메일)을 거치면 커맨드 → 시스템 → 이벤트 순서입니다.', `회원·인증 두 경계로 나눕니다. 경계를 넘는 화살표 8개 중 로그인 시도 → 회원가입 확인, 회원가입 등록 정책 → 로그인, 로그인 정책 → 개인 상세정보 수정을 그렸습니다. ${E03_REST.join(' ')}`] },
+    notes: ['알고 있는 도메인 이벤트를 쓰고, 시간 순서로 정렬해 실제로 중복되는 카드를 지웁니다. 위아래로 쌓인 카드는 평행한 시간입니다.', '커맨드가 이벤트를 만들고, 정책이 이벤트와 다음 커맨드를 잇습니다. 외부 시스템(메일)을 거치면 커맨드 → 시스템 → 이벤트 순서입니다.', `회원·인증 경계의 연결 8개 중 3개: 로그인 시도 → 회원가입 확인, 회원가입 등록 정책 → 로그인, 로그인 정책 → 개인 상세정보 수정. ${E03_REST.join(' ')}`] },
   { id: 'E04', title: '데이터 플랫폼의 데이터 경로', short: '데이터 플랫폼', duration: 10000, final: 8000, steps: [3700, 6000, 8000], source: R13, assets: [`${R13}/94b26cb3-0dfb-41b6-91d9-aea7e19e06a1.png`],
     caption: '원본 그림(Data Platform Architecture)의 영역 7개, 노드·도구 이름, 화살표 10개를 그대로 옮겼습니다. 관리 영역에는 원본처럼 선이 없습니다. 흐르는 데이터 점과 시각은 설명용이며 처리량 같은 수치는 넣지 않았습니다.',
     notes: ['Collector → Kafka → Sink를 거쳐 HDFS와 Elasticsearch에 적재합니다. Kafka Streams는 Kafka와만 주고받습니다.', '배치(Data Workflow)는 Kafka가 아니라 HDFS에서 읽고, 결과를 HDFS와 Elasticsearch에 씁니다.', 'HDFS는 Interactive Query(Drill)로, Elasticsearch는 Service API(Netty)를 거쳐 gRPC로 Service Application에 닿습니다. 관리 도구는 데이터 경로와 따로 있습니다.'] },

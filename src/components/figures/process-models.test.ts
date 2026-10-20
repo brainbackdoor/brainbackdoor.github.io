@@ -225,7 +225,7 @@ describe('B07 review fixes keep events, steps and source claims honest', () => {
     for (const w of [650, 284]) {
       const s = said(final('E03', w)).replace(/\s+/g, '');
       const notes = info('E03').notes.join(' ').replace(/\s+/g, '');
-      for (const v of ['인증 번호를 인증했다', '카카오 로그인', '구글 로그인', '인증코드 생성', '비밀번호 재설정', '사진 등록', '본인 인증', '비로그인 회원', '휴대폰 번호로 로그인 시도', '잘려']) {
+      for (const v of ['인증 번호를 인증했다', '카카오 로그인', '구글 로그인', '인증코드 생성', '비밀번호 재설정', '사진 등록', '본인 인증', '비로그인 회원', '휴대폰 번호로 로그인 시도', '조건 표기 없음']) {
         expect(notes, `${w} ${v}`).toContain(v.replace(/\s+/g, ''));
         expect(s, `${w} ${v}`).not.toContain(v.replace(/\s+/g, ''));
       }

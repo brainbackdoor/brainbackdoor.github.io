@@ -169,11 +169,12 @@ function columnV2(w: number, t: number): LessonFrame {
   // 1) 범위 조건: 루트 → 브랜치 → 리프 시작점, 11010에서 멈춤
   const q2 = para(g, 0, 14, 'WHERE id BETWEEN 11000 AND 11009', w, { size: 11, mono: true, weight: 600 });
   const root = { x: Math.max(xs[blockIx] + blockW * 0.5, w / 2), y: q2 + 22 }, branch = { x: xs[blockIx] + blockW * 0.3, y: q2 + 62 }, leafY = q2 + 92, start = { x: xs[blockIx] + 14, y: leafY };
+  g.line(root.x, root.y, branch.x, branch.y, { stroke: C.line, lw: 1.2 });
+  g.line(branch.x, branch.y, start.x, leafY, { stroke: C.line, lw: 1.2 });
+  // 높이 22px인 노드보다 큰 빈 링: 노드 방문 중에도 둘레가 보이고 글자는 덮지 않는다.
+  if (t >= D04.descend[0] && t < D04.descend[1]) { const u = ease.inOut(span(t, D04.descend[0], D04.descend[1])), pt = u < 0.5 ? lerpPt(root, branch, u * 2) : lerpPt(branch, start, u * 2 - 1); g.circle(pt.x, pt.y, 13, { fill: 'none', stroke: C.blue, lw: 2 }); }
   pill(g, root.x, root.y, '루트', { size: 11, h: 22 }); pill(g, branch.x, branch.y, '브랜치', { size: 11, h: 22 });
-  g.line(root.x, root.y + 11, branch.x, branch.y - 11, { stroke: C.line, lw: 1.2 });
-  g.line(branch.x, branch.y + 11, start.x, leafY, { stroke: C.line, lw: 1.2 });
   strip(leafY, s.rightFound, 'green', s.rightStopped);
-  if (t >= D04.descend[0] && t < D04.descend[1]) { const u = ease.inOut(span(t, D04.descend[0], D04.descend[1])), pt = u < 0.5 ? lerpPt(root, branch, u * 2) : lerpPt(branch, start, u * 2 - 1); g.circle(pt.x, pt.y, 5, { fill: C.blue }); }
   if (t >= D04.scan[0]) {
     const end = s.rightStopped ? xs[stopIx] + cw[stopIx] : xs[blockIx] + 8 + s.rightFound * ((blockW - 16) / 10);
     g.rect(xs[blockIx], leafY + 34, Math.max(2, end - xs[blockIx]), 4, { r: 2, fill: C.blue });
@@ -277,7 +278,7 @@ function joinV2(w: number, t: number): LessonFrame {
       if (t >= D06.sweep[0]) { const cy = ty + 18 + Math.min(1, s.scanProgress) * scatter.length * rh; g.path(`M${x + tw + 4} ${cy - 6}L${x + tw + 12} ${cy}L${x + tw + 4} ${cy + 6}Z`, { fill: C.orange }); }
     }
     const done = idx ? s.indexStopped : t >= D06.sweep[1];
-    g.text(x, ty + 18 + 8 * rh + 22, idx ? `탐색 1회 + 연속 ${s.read}항목${s.indexStopped ? ' · 키 2에서 멈춤' : ''}` : `드리븐 ${Math.round(Math.min(1, s.scanProgress) * 8)} / 8 비교`, { size: 12, weight: 700, color: done ? C.ink : C.muted });
+    g.text(x, ty + 18 + 8 * rh + 22, idx ? `탐색 ${t >= D06.seek[1] ? 1 : 0}회 + 연속 ${s.read}항목${s.indexStopped ? ' · 키 2에서 멈춤' : ''}` : `드리븐 ${Math.round(Math.min(1, s.scanProgress) * 8)} / 8 비교`, { size: 12, weight: 700, color: done ? C.ink : C.muted });
   }
   const end = cols === 2 ? top + 16 + 18 + 8 * rh + 22 : top + 270 + 16 + 18 + 8 * rh + 22;
   // 결과 문장이 나타날 때 높이가 바뀌지 않도록 긴 문장의 줄 수만큼 자리를 잡아 둔다
@@ -385,12 +386,14 @@ function sqlV2(w: number, t: number): LessonFrame {
         });
       }
     } else {
-      // 좁은 폭: 3번 표에 2번 순위를 함께 적는다
-      const src = t >= D09.q3[1] ? D09_Q3.map(([id, name, v]) => [id, name, v, D09_Q2.findIndex(e => e[0] === id)] as const) : D09_Q2.map(([id, name, n], i) => [id, name, String(n), i] as const);
+      // 좁은 폭: 수량 표를 지운 뒤 금액 표를 나타낸다. 서로 단위가 다른 값을 보간하지 않는다.
+      const middle = (D09.q3[0] + D09.q3[1]) / 2, amount = t >= middle;
+      const opacity = amount ? ease.inOut(span(t, middle, D09.q3[1])) : 1 - ease.inOut(span(t, D09.q3[0], middle));
+      const src = amount ? D09_Q3.map(([id, name, v]) => [id, name, v, D09_Q2.findIndex(e => e[0] === id)] as const) : D09_Q2.map(([id, name, n], i) => [id, name, String(n), i] as const);
       src.forEach(([id, name, v, from], j) => {
         const yy = ly + j * lh;
-        g.text(0, yy + 14, `${j + 1}. ${id} ${name}`, { size: 11 });
-        g.text(w, yy + 14, v, { size: 11, mono: true, weight: 700, align: 'right' });
+        g.text(0, yy + 14, `${j + 1}. ${id} ${name}`, { size: 11, alpha: opacity });
+        g.text(w, yy + 14, v, { size: 11, mono: true, weight: 700, align: 'right', alpha: opacity });
         if (t >= D09.q3[1]) g.text(0, yy + 30, from < 0 ? '수량 상위 8 밖' : `수량 ${from + 1}위 → 금액 ${j + 1}위`, { size: 10, color: from >= 0 && from > j ? C.greenText : C.muted, alpha: appear(t, D09.q3[1]) });
       });
     }
@@ -588,7 +591,7 @@ function laneV2(g: G, y: number, w: number, t: number, push: boolean) {
   g.line(gapX0, midY, gapX1, midY, { stroke: C.grid, lw: 1, dash: [3, 4] });
   list.slice(0, moved).forEach((age, i) => { const yy = top + 24 + i * rh, kept = age > 30, filt = !push && s.filtered && !kept; g.text(spX + 10, yy + 12, `age ${age}`, { size: 11, mono: true, color: filt ? C.muted : C.greenText }); if (filt) cross(g, spX + spW - 16, yy + 8, C.red, appear(t, S05.filter), 4); });
   const [ta, tb] = push ? S05.transfer2 : S05.transfer, n = push ? 5 : 8;
-  if (t >= ta && t < tb) { const k = Math.min(n - 1, Math.floor(span(t, ta, tb) * n)), u = (span(t, ta, tb) * n) % 1; token(g, lerp(gapX0 + 16, gapX1 - 16, u), midY - 14, list[k], push ? 'blue' : 'orange', { r: 9 }); }
+  if (t >= ta && t < tb) { const k = Math.min(n - 1, Math.floor(span(t, ta, tb) * n)), u = (span(t, ta, tb) * n) % 1; token(g, lerp(gapX0 + 16, gapX1 - 16, u), midY, list[k], push ? 'blue' : 'orange', { r: 9 }); }
   g.text((gapX0 + gapX1) / 2, midY + 22, `건넌 행 ${moved}`, { size: 11, weight: 700, align: 'center', color: push ? C.blueText : C.orangeText });
   return under + 16;
 }

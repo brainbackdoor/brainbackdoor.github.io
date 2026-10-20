@@ -1,7 +1,7 @@
 /** B07 과정 5종과 B08 채택 1종(X05) 렌더러. 공통 그리기 도구(lessonCanvas)와 사건 모델(process-models)만 쓰고, Canvas와 정적 SVG가 같은 명령을 읽는다. */
 import { C, TONE, appear, arrowHead, draw, ease, f2, frame, para, span, textW, wrap, type G, type LessonFrame, type Pt } from './lessonCanvas';
 import { along, route } from './infraCanvas';
-import { E01, E01_BUBBLE, E01_DASHES, E01_NODES, E02, E02_CLEAN, E02_COLS, E02_ROWS, E03, E03_CARDS, E03_DUP, E03_HOTSPOTS, E03_LEGEND, E03_PATH, E03_REST, E04, E04_ARROWS, E04_LIT, E04_MANAGEMENT, E04_NODES, E05, E05_CARD_AT, E05_CODE, E05_HISTORY, e01, e02, e02CellAt, e02Points, e03, e03At, e03Leg, e04, e04ArrowDone, e05, x05, X05, X05_ACTION, X05_LANES, X05_STAGES, type Cell, type E04Node, type ProcessFigureId, type Sticky } from './process-models';
+import { E01, E01_BUBBLE, E01_DASHES, E01_NODES, E02, E02_CLEAN, E02_COLS, E02_ROWS, E03, E03_CARDS, E03_DUP, E03_HOTSPOTS, E03_LEGEND, E03_PATH, E04, E04_ARROWS, E04_LIT, E04_MANAGEMENT, E04_NODES, E05, E05_CARD_AT, E05_CODE, E05_HISTORY, e01, e02, e02CellAt, e02Points, e03, e03At, e03Leg, e04, e04ArrowDone, e05, x05, X05, X05_ACTION, X05_LANES, X05_STAGES, type Cell, type E04Node, type ProcessFigureId, type Sticky } from './process-models';
 
 /* B07 공통 도구 */
 type Box = { x: number; y: number; w: number; h: number };
@@ -234,19 +234,7 @@ function stormV2(w: number, t: number): LessonFrame {
     sticky(g, b, E03_DUP, 'event', a);
     if (s.dupCrossed) { g.line(b.x + 4, b.y + 4, b.x + b.w - 4, b.y + b.h - 4, { stroke: C.red, lw: 2, alpha: a }); g.line(b.x + 4, b.y + b.h - 4, b.x + b.w - 4, b.y + 4, { stroke: C.red, lw: 2, alpha: a }); }
   }
-  // 추가 흐름은 원본의 라벨만 남기고 제작 설명은 덜어 낸다.
-  let ry = aBottom + 10;
-  const ra = s.bound ? appear(t, E03.bound) : 0;
-  const prefixes = ['가입 확인 ←', '회원여부 정책 → (조건 미표기)', '회원:', '인증:'];
-  for (const [i, source] of E03_REST.entries()) {
-    const line = i < prefixes.length ? prefixes[i] + source.slice(source.indexOf(':') + 1) : '오른쪽이 잘려 연결 3개 생략';
-    // 항목 머리에만 '·'를 두고, 이어지는 줄은 들여 쓴다(목록 안의 '·'는 줄 끝에 붙여 새 항목처럼 보이지 않게)
-    const rows = wrap(line.replace(/ · /g, '\u00a0· '), w - 10, 11);
-    ry += 18;
-    if (ra > 0) { g.text(0, ry, '·', { size: 11, color: C.muted, alpha: ra }); rows.forEach((r, i) => g.text(10, ry + i * 18, r, { size: 11, color: C.muted, alpha: ra, cont: i > 0 })); }
-    ry += (rows.length - 1) * 18;
-  }
-  return frame(g, ry + 8, s.phase);
+  return frame(g, aBottom + 8, s.phase);
 }
 
 /* ---------- E04 데이터 플랫폼: 원본 3열 배치(넓은 폭) / 영역을 세로로 쌓기(좁은 폭) ---------- */
@@ -391,7 +379,9 @@ function temporalV2(w: number, t: number): LessonFrame {
   const sBottom = cards[5].y + cardH + 26;
   g.rect(0, sTop, sw, sBottom - sTop, { r: 10, fill: C.bg, stroke: C.blue, lw: 1.2 });
   g.text(12, sTop + 20, 'Server · Event History', { size: 12, weight: 700, color: C.ink });
-  if (t >= E05.signal[0]) route(g, [{ x: pillX, y: 24 }, { x: pillX, y: sTop - 1 }], t >= E05.signal[1] ? C.ink : C.line, { lw: 1.3 });
+  // 승인 신호는 기존 History 카드의 글자를 가리지 않고 오른쪽 여백으로 Signal 카드에 닿는다.
+  const signalPath = [{ x: pillX, y: 24 }, { x: sw - 6, y: 24 }, { x: sw - 6, y: cards[4].y + cardH / 2 }, { x: sw - 11, y: cards[4].y + cardH / 2 }];
+  if (t >= E05.signal[0]) route(g, signalPath, t >= E05.signal[1] ? C.ink : C.line, { lw: 1.3 });
   E05_HISTORY.forEach(([name, sub], i) => {
     const b = cards[i];
     if (!s.cards[i]) return;
@@ -407,8 +397,7 @@ function temporalV2(w: number, t: number): LessonFrame {
     }
   });
   g.text(24, cards[5].y + cardH + 17, '…', { size: 12, color: C.muted });
-  // 승인 신호 점은 사건 카드 위로 지나 SignalReceived 자리에 닿는다(카드보다 나중에 칠한다)
-  dot(g, t, [{ x: pillX, y: 24 }, { x: pillX, y: cards[4].y }], E05.signal[0], E05.signal[1], C.orange);
+  dot(g, t, signalPath, E05.signal[0], E05.signal[1], C.orange);
   // Worker A·B
   const wx = wide ? sw + 36 : 0, ww = wide ? w - wx : (w - 8) / 2, wTop = wide ? sTop : sBottom + 30, wH = 24 + 32 + 4 * 22 + 30;
   const workers = [{ x: wx, y: wTop, name: 'Worker A' }, { x: wide ? wx : ww + 8, y: wide ? wTop + wH + 18 : wTop, name: 'Worker B' }];

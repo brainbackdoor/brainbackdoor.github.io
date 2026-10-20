@@ -48,6 +48,22 @@ describe('B06 infrastructure and operations models keep the source meaning', () 
     expect(texts(final('A05')).map(o => o.text).join(' ')).toContain('서비스 중단 발생');
   });
 
+  it('A05 retains the old process history at termination instead of retracting its bar', () => {
+    for (const w of ARTICLE_WIDTHS) {
+      let previous = 0;
+      for (const t of loop('A05', 20)) {
+        const bar = infraRenderers.A05(w, t).ops.find(o => o.type === 'path' && o.fill === C.blueTint && o.stroke === C.blue && o.width === 1);
+        expect(bar, `${w} ${t} old process`).toBeDefined();
+        if (bar?.type !== 'path') continue;
+        const points = /^M([-\d.]+) [-\d.]+H([-\d.]+)/.exec(bar.d)!;
+        const width = Number(points[1]) + Number(points[2]);
+        expect(width, `${w} ${t} history never shrinks`).toBeGreaterThanOrEqual(previous - 0.01);
+        if (t >= A05.kill) expect(width).toBeCloseTo(w * (A05.kill - A05.cron2) / (A05.end - A05.cron2), 1);
+        previous = width;
+      }
+    }
+  });
+
   it('A06 sends traffic only to healthy instances', () => {
     for (const t of loop('A06', 100)) {
       const s = a06(t), healthy = [s.oldest, 'healthy', s.third].filter(x => x === 'healthy').length;

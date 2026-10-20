@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { E01, E01_DASHES, E01_NODES, E02, E02_COLS, E02_ROWS, E03_CARDS, E03_PATH, E04_ARROWS, E04_MANAGEMENT, E05, E05_HISTORY, X05, e01, e02, e02CellAt, e05, processInfo, type ProcessFigureId } from './process-models';
 import { processRenderers } from './processCanvas';
-import type { DrawOp, LessonFrame } from './lessonCanvas';
+import { C, type DrawOp, type LessonFrame } from './lessonCanvas';
 
 const ids = processInfo.map(item => item.id) as ProcessFigureId[];
 const info = (id: ProcessFigureId) => processInfo.find(i => i.id === id)!;
@@ -221,10 +221,14 @@ describe('B07 review fixes keep events, steps and source claims honest', () => {
     for (const w of [650, 284]) for (const t of [...info('E01').steps]) expect(said(processRenderers.E01(w, t)) + info('E01').notes.join(' ')).not.toContain('Develop 안에');
   });
 
-  it('E03 keeps the rest of the board in the final scene: incoming arrows, the three branches, other rows and the cut edge', () => {
+  it('E03 keeps the supplemental board details in the folded notes and leaves them out of the animation', () => {
     for (const w of [650, 284]) {
       const s = said(final('E03', w)).replace(/\s+/g, '');
-      for (const v of ['인증 번호를 인증했다', '카카오 로그인', '구글 로그인', '인증코드 생성', '비밀번호 재설정', '사진 등록', '본인 인증', '비로그인 회원', '휴대폰 번호로 로그인 시도', '잘려']) expect(s, `${w} ${v}`).toContain(v.replace(/\s+/g, ''));
+      const notes = info('E03').notes.join(' ').replace(/\s+/g, '');
+      for (const v of ['인증 번호를 인증했다', '카카오 로그인', '구글 로그인', '인증코드 생성', '비밀번호 재설정', '사진 등록', '본인 인증', '비로그인 회원', '휴대폰 번호로 로그인 시도', '잘려']) {
+        expect(notes, `${w} ${v}`).toContain(v.replace(/\s+/g, ''));
+        expect(s, `${w} ${v}`).not.toContain(v.replace(/\s+/g, ''));
+      }
     }
     expect(info('E03').notes[2]).toContain('중');
   });
@@ -248,6 +252,27 @@ describe('B07 review fixes keep events, steps and source claims honest', () => {
     expect(said(processRenderers.E05(650, E05.replay[1]))).toContain('Event History로 Replay');
     // 데이터 수집도 Server가 Worker A에 내보낸다(점)
     expect(processRenderers.E05(650, (E05.started + E05.collect[0]) / 2).ops.some(o => o.type === 'circle')).toBe(true);
+  });
+
+  it('E05 brings the approval signal down the history card edge on its visible path', () => {
+    const distance = (x: number, y: number, a: number[], b: number[]) => {
+      const dx = b[0] - a[0], dy = b[1] - a[1];
+      const q = Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / (dx * dx + dy * dy || 1)));
+      return Math.hypot(x - a[0] - q * dx, y - a[1] - q * dy);
+    };
+    for (const w of [650, 331, 259]) for (let t = E05.signal[0]; t < E05.signal[1]; t += 10) {
+      const f = processRenderers.E05(w, t);
+      const dot = f.ops.find(o => o.type === 'circle' && o.color === C.orange)!;
+      if (dot.type !== 'circle') throw new Error('approval signal missing');
+      const paths = f.ops.filter((o): o is Extract<DrawOp, { type: 'path' }> => o.type === 'path' && o.fill === 'none' && /^M[^A-Z]*L[^A-Z]*(L[^A-Z]*)*$/.test(o.d));
+      const distances = paths.flatMap(o => {
+        const pts = [...o.d.matchAll(/[ML]\s*(-?[\d.]+)\s+(-?[\d.]+)/g)].map(m => [Number(m[1]), Number(m[2])]);
+        return pts.slice(1).map((p, i) => distance(dot.x, dot.y, pts[i], p));
+      });
+      expect(Math.min(...distances), `${w} ${t} off path`).toBeLessThan(0.02);
+      const serverW = w >= 560 ? Math.round(w * 0.54) : w;
+      if (dot.y >= 62) expect(dot.x, `${w} ${t} crossed history`).toBeGreaterThan(serverW - 12);
+    }
   });
 });
 

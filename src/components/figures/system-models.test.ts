@@ -136,6 +136,19 @@ describe('B04 event models keep the verified meaning', () => {
 const ARTICLE_WIDTHS = [720, 650, 625, 346, 321, 313, 284, 259];
 
 describe('B04 drawings show the model values', () => {
+  it('C02 keeps the request dot at the advancing socket connector tip', () => {
+    for (const w of ARTICLE_WIDTHS) for (let t = 1600; t < 2000; t += 10) {
+      const f = systemRenderers.C02(w, t);
+      const dot = f.ops.find(o => o.type === 'circle' && o.r === 4.5 && o.x === 40);
+      const connector = f.ops.find(o => o.type === 'path' && /^M40 60L40 [-\d.]+$/.test(o.d));
+      expect(dot, `${w} ${t} request`).toBeDefined();
+      expect(connector, `${w} ${t} connector`).toBeDefined();
+      if (dot?.type !== 'circle' || connector?.type !== 'path') continue;
+      const tipY = Number(connector.d.split('L40 ')[1]);
+      expect(Math.abs(dot.y - tipY), `${w} ${t} dot stays on the line tip`).toBeLessThan(0.01);
+    }
+  });
+
   it('draws finite shapes for every figure across the loop at article widths', () => {
     for (const id of ids) for (const w of ARTICLE_WIDTHS) for (const t of loop(id, 100)) {
       const f = systemRenderers[id](w, t);

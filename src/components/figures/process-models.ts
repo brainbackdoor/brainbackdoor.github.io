@@ -85,7 +85,7 @@ export const E03_HOTSPOTS = [{ text: '메일 주소로 로그인 시도했는지
 export const E03_PATH = ['c1', 'e1', 'p1', 'c2', 'e2', 'p2', 'c3', 's1', 'e3'] as const;
 // 탐험 단계의 중복 카드(설명용): 보드에 한 번만 나오는 라벨로(여러 번 나오는 라벨은 서로 다른 흐름이라 지워진 중복처럼 보이면 안 된다)
 export const E03_DUP = '회원가입 여부를 확인했다';
-// 그리지 않은 보드의 나머지(보드 라벨 그대로): 최종 장면 아래 목록으로 남긴다
+// 그리지 않은 보드의 나머지(보드 라벨 그대로): 접힌 과정 설명에 보존한다.
 export const E03_REST = [
   '회원가입 확인으로 들어오는 화살표 4개: 메일 주소로 로그인 시도 · 인증 번호를 인증했다 · 카카오 로그인 · 구글 로그인',
   '회원여부 정책에서 갈라지는 3개(조건 표기 없음): 회원가입 · 인증코드 생성 · 로그인',
@@ -104,7 +104,7 @@ export const e03Leg = (k: number) => { const [a, b] = E03.pulse, d = (b - a) / (
 export function e03(t: number) {
   return {
     aligned: p(t, E03.align[0], E03.align[1]), dupGone: t >= E03.dup[1], dupCrossed: t >= E03.dup[0], bound: t >= E03.bound, login: [t >= E03.login[0], t >= E03.login[1]],
-    phase: t < E03.align[0] ? '알고 있는 도메인 이벤트를 각자 씁니다.' : t < E03.dup[0] ? '이벤트를 시간 순서(왼쪽 → 오른쪽)로 정렬합니다. 위아래로 쌓인 카드는 평행한 시간입니다.' : t < E03.command ? '실제로 중복되는 이벤트를 지웁니다.' : t < E03.pulse[0] ? '커맨드·시스템·정책·액터·리드 모델·핫스팟을 붙입니다.' : t < E03.bound ? '커맨드가 이벤트를 만들고, 정책이 이벤트와 다음 커맨드를 잇습니다.' : t < E03.end ? '경계를 나눕니다: 회원과 인증. 경계를 넘는 화살표가 이어집니다.' : '회원·인증 두 경계와 한 경로입니다. 보드의 나머지 연결과 줄은 아래 목록에, 원본 보드는 접어 둡니다.',
+    phase: t < E03.align[0] ? '알고 있는 도메인 이벤트를 각자 씁니다.' : t < E03.dup[0] ? '이벤트를 시간 순서(왼쪽 → 오른쪽)로 정렬합니다. 위아래로 쌓인 카드는 평행한 시간입니다.' : t < E03.command ? '실제로 중복되는 이벤트를 지웁니다.' : t < E03.pulse[0] ? '커맨드·시스템·정책·액터·리드 모델·핫스팟을 붙입니다.' : t < E03.bound ? '커맨드가 이벤트를 만들고, 정책이 이벤트와 다음 커맨드를 잇습니다.' : t < E03.end ? '경계를 나눕니다: 회원과 인증. 경계를 넘는 화살표가 이어집니다.' : '회원·인증 두 경계와 경계를 넘는 세 경로가 이어졌습니다.',
   };
 }
 
@@ -177,8 +177,8 @@ export const processInfo = [
     caption: '본문 코드의 구성: 인수(@SpringBootTest RANDOM_PORT + RestAssured, 각 테스트의 @BeforeEach에서 databaseCleanup.execute()), Controller(@WebMvcTest + MockMvc, BusinessController·BusinessRepository @MockBean), Service(classes = CacheConfig·BusinessService, BusinessRepository @MockBean), Repository(@DataJpaTest, h2), 단위(Business 도메인). 범위 밖(—) 칸은 각 테스트의 애너테이션과 코드에서 읽었습니다. 도메인 열은 단위 테스트만 표시하고, 다른 테스트의 도메인 실행 여부는 판정하지 않았습니다. DB 행 수와 두 번째 시나리오는 설명용이며, 인수테스트 DB 종류는 원문에 없어 "DB"로만 적었습니다.',
     notes: ['인수테스트 시나리오 1이 RestAssured로 Controller부터 DB까지 실제로 실행되고, DB에 행이 남았습니다.', '다음 테스트의 @BeforeEach에서 databaseCleanup이 모든 테이블을 TRUNCATE해 DB가 비었습니다.', '테스트마다 실제로 실행하는 범위가 다릅니다. Controller Test는 BusinessController·BusinessRepository를, Service Test는 BusinessRepository를 @MockBean으로 둡니다.'] },
   { id: 'E03', title: '이벤트스토밍 카드와 경계', short: '이벤트스토밍', duration: 11000, final: 9000, steps: [2400, 6400, 9000], source: R14, assets: [`${R14}/d04fba57-7d2b-406b-8d48-e8b8fababa6a.png`],
-    caption: '원본 보드(회원·인증 두 경계)에서 회원가입 확인부터 완료 메일까지의 한 경로와, 경계를 넘는 화살표 8개 중 3개를 그렸습니다. 그리지 않은 연결과 줄은 그림 아래 목록에 보드 라벨 그대로 적었습니다. 카드 라벨과 색 종류는 보드 그대로이고, 흩어진 배치·중복 카드 1장·카드가 놓이는 순서·흐르는 점은 설명용입니다.',
-    notes: ['알고 있는 도메인 이벤트를 쓰고, 시간 순서로 정렬해 실제로 중복되는 카드를 지웁니다. 위아래로 쌓인 카드는 평행한 시간입니다.', '커맨드가 이벤트를 만들고, 정책이 이벤트와 다음 커맨드를 잇습니다. 외부 시스템(메일)을 거치면 커맨드 → 시스템 → 이벤트 순서입니다.', '회원·인증 두 경계로 나눕니다. 경계를 넘는 화살표 8개 중 로그인 시도 → 회원가입 확인, 회원가입 등록 정책 → 로그인, 로그인 정책 → 개인 상세정보 수정을 그렸고, 나머지는 아래 목록에 있습니다.'] },
+    caption: '원본 보드(회원·인증 두 경계)에서 회원가입 확인부터 완료 메일까지의 한 경로와, 경계를 넘는 화살표 8개 중 3개를 그렸습니다. 나머지 연결과 줄은 과정 설명에 보드 라벨 그대로 보존했습니다. 카드 라벨과 색 종류는 보드 그대로이고, 흩어진 배치·중복 카드 1장·카드가 놓이는 순서·흐르는 점은 설명용입니다.',
+    notes: ['알고 있는 도메인 이벤트를 쓰고, 시간 순서로 정렬해 실제로 중복되는 카드를 지웁니다. 위아래로 쌓인 카드는 평행한 시간입니다.', '커맨드가 이벤트를 만들고, 정책이 이벤트와 다음 커맨드를 잇습니다. 외부 시스템(메일)을 거치면 커맨드 → 시스템 → 이벤트 순서입니다.', `회원·인증 두 경계로 나눕니다. 경계를 넘는 화살표 8개 중 로그인 시도 → 회원가입 확인, 회원가입 등록 정책 → 로그인, 로그인 정책 → 개인 상세정보 수정을 그렸습니다. ${E03_REST.join(' ')}`] },
   { id: 'E04', title: '데이터 플랫폼의 데이터 경로', short: '데이터 플랫폼', duration: 10000, final: 8000, steps: [3700, 6000, 8000], source: R13, assets: [`${R13}/94b26cb3-0dfb-41b6-91d9-aea7e19e06a1.png`],
     caption: '원본 그림(Data Platform Architecture)의 영역 7개, 노드·도구 이름, 화살표 10개를 그대로 옮겼습니다. 관리 영역에는 원본처럼 선이 없습니다. 흐르는 데이터 점과 시각은 설명용이며 처리량 같은 수치는 넣지 않았습니다.',
     notes: ['Collector → Kafka → Sink를 거쳐 HDFS와 Elasticsearch에 적재합니다. Kafka Streams는 Kafka와만 주고받습니다.', '배치(Data Workflow)는 Kafka가 아니라 HDFS에서 읽고, 결과를 HDFS와 Elasticsearch에 씁니다.', 'HDFS는 Interactive Query(Drill)로, Elasticsearch는 Service API(Netty)를 거쳐 gRPC로 Service Application에 닿습니다. 관리 도구는 데이터 경로와 따로 있습니다.'] },

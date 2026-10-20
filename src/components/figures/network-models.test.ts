@@ -47,3 +47,82 @@ test('N10 shows tuple retention only while TIME_WAIT is active',()=>{
     for(const t of [4199,4200,9999,10000])assert.equal(networkRenderers.N10(width,t).height,height);
   }
 });
+
+test('N09 does not put an unwritten B in ACK wait',()=>{
+  for(const width of [259,331,650]){
+    const labels=(t:number)=>networkRenderers.N09(width,t).ops.filter(o=>o.type==='text').map(o=>o.text);
+    for(const t of [0,1100,1700,2499])assert.equal(labels(t).some(s=>s.startsWith('B:')),false);
+    assert.equal(labels(2500).filter(s=>s==='B: ACK 대기').length,1);
+    assert.equal(labels(2500).filter(s=>s==='B: 전송').length,1);
+    assert.equal(labels(4600).filter(s=>s==='B: 전송').length,2);
+  }
+});
+
+test('N12 waiting state follows idle expiry and ACK arrival',()=>{
+  for(const width of [259,331,650]){
+    const labels=(t:number)=>networkRenderers.N12(width,t).ops.filter(o=>o.type==='text').map(o=>o.text);
+    assert.ok(labels(3499).includes('idle 만료 대기'));
+    for(const t of [3500,4100,4499]){
+      assert.ok(labels(t).includes('probe 응답 대기'));
+      assert.equal(labels(t).includes('idle 만료 대기'),false);
+      assert.equal(labels(t).includes('응답 도착 → idle 재시작'),false);
+    }
+    assert.ok(labels(4500).includes('응답 도착 → idle 재시작'));
+  }
+});
+
+test('N13 reuses the returning response position before settling each completion marker',()=>{
+  for(const width of [259,331,650])for(const at of [3500,5300,7100]){
+    const n=String([3500,5300,7100].indexOf(at)+1);
+    const marker=(t:number,text:string)=>{
+      const op=networkRenderers.N13(width,t).ops.filter(o=>o.type==='text'&&o.text===text).at(-1);
+      assert.ok(op&&op.type==='text');return op;
+    };
+    const returning=marker(at-1,'200'),arrived=marker(at,n),settled=marker(at+300,n);
+    assert.ok(Math.hypot(returning.x-arrived.x,returning.y-arrived.y)<.1,`${width}/${at} jumped on arrival`);
+    assert.ok(Math.abs(arrived.y-settled.y-30)<.01);
+    for(let t=at;t<at+300;t++){
+      const a=marker(t,n),b=marker(t+1,n);
+      assert.ok(Math.hypot(a.x-b.x,a.y-b.y)<1,`${width}/${t} noncontinuous completion`);
+    }
+  }
+});
+
+test('N13 settles later completion markers without overlapping the stored history',()=>{
+  for(const width of [259,331,650])for(const [at,n] of [[5300,2],[7100,3]]){
+    for(let t=at;t<=at+300;t++){
+      const markers=networkRenderers.N13(width,t).ops.filter(o=>o.type==='text'&&/^\d$/.test(o.text));
+      const moving=markers.findLast(o=>o.type==='text'&&o.text===String(n))!;
+      if(moving.type!=='text')throw new Error('moving completion marker missing');
+      for(let previous=1;previous<n;previous++){
+        const stored=markers.findLast(o=>o.type==='text'&&o.text===String(previous))!;
+        if(stored.type!=='text')throw new Error('stored completion marker missing');
+        // 번호 pill의 너비19.2px, 높이18px. 기록의 경계 상자가 겹치지 않아야 한다.
+        const separated=Math.abs(moving.x-stored.x)>=19.2-0.01||Math.abs(moving.y-stored.y)>=18-0.01;
+        assert.ok(separated,`${width}/${t}: completion ${n} overlaps history ${previous}`);
+      }
+    }
+  }
+});
+
+test('N08 starts the gain probe at its highlighted interval, with baseline pacing before it',()=>{
+  for(const t of [0,1000,1999]){
+    const s=state('N08',t);assert.equal(s.gain,1);assert.equal(s.rateMbps,100);assert.equal(s.queueBytes,0);
+  }
+  assert.equal(state('N08',2000).gain,1.25);
+  assert.equal(state('N08',2000).rateMbps,125);
+  assert.equal(state('N08',3000).gain,.75);
+  assert.equal(state('N08',4000).gain,1);
+});
+
+test('W02 distinguishes completed gzip arrival from decoding completion',()=>{
+  for(const width of [259,331,650]){
+    const labels=(t:number)=>networkRenderers.W02(width,t).ops.filter(o=>o.type==='text').map(o=>o.text);
+    assert.ok(labels(3399).includes('3,039 B · 전송 중'));
+    for(const t of [3400,3899]){
+      assert.ok(labels(t).includes('3,039 B · 해제 중'));
+      assert.equal(labels(t).includes('3,039 B · 수신 완료'),false);
+    }
+    assert.ok(labels(3900).includes('3,039 B · 수신 완료'));
+  }
+});

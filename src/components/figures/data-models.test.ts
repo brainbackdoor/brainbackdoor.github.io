@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { D02, D04, D05, D05_INDEX, D06, D08, D09_Q1, D09_Q2, D09_Q3, S02, S05, S05_AGES, S06, d01, d02, d04, d05, d06, d08, d09, dataInfo, s02, s05, s06, type DataFigureId } from './data-models';
+import { D02, D04, D05, D05_INDEX, D06, D08, D09, D09_Q1, D09_Q2, D09_Q3, S02, S05, S05_AGES, S06, d01, d02, d04, d05, d06, d08, d09, dataInfo, s02, s05, s06, type DataFigureId } from './data-models';
 import { dataRenderers } from './dataCanvas';
 import { C, type DrawOp, type LessonFrame } from './lessonCanvas';
 
@@ -157,6 +157,31 @@ describe('B05 review fixes keep the source meaning and the event timing', () => 
     expect(textOp(dataRenderers.D06(650, D06.read + D06.hop), '1 · 100')!.color).toBe(C.greenText);
   });
 
+  it('D06 counts the index lookup only after reaching the first entry', () => {
+    for (const w of [650, 331, 259]) {
+      for (const t of [0, D06.seek[0], D06.seek[1] - 1]) {
+        expect(said(dataRenderers.D06(w, t)), `${w} ${t}`).toContain('탐색 0회 + 연속 0항목');
+      }
+      expect(said(dataRenderers.D06(w, D06.seek[1]))).toContain('탐색 1회 + 연속 0항목');
+    }
+  });
+
+  it('D09 fades between the mobile quantity and amount tables instead of replacing their identities in one frame', () => {
+    const mid = (D09.q3[0] + D09.q3[1]) / 2;
+    for (const w of [331, 259]) {
+      const quantity = (t: number) => textOp(dataRenderers.D09(w, t), '4958');
+      const amount = (t: number) => textOp(dataRenderers.D09(w, t), '122199.74');
+      expect(quantity(D09.q3[0])!.alpha).toBe(1);
+      expect(quantity(D09.q3[0] + 300)!.alpha).toBeLessThan(1);
+      expect(quantity(mid - 1)!.alpha).toBeLessThan(0.001);
+      expect(amount(mid)!.alpha).toBe(0);
+      expect(amount(mid + 300)!.alpha).toBeGreaterThan(0);
+      expect(amount(D09.q3[1] - 1)!.alpha).toBeGreaterThan(0.999);
+      expect(amount(D09.q3[1])!.alpha).toBe(1);
+      expect(texts(dataRenderers.D09(w, mid)).filter(o => o.y === amount(mid)!.y && (o.alpha ?? 1) > 0)).toHaveLength(0);
+    }
+  });
+
   it('D05 counts SELECT * results only after the lookup dot arrives at the table', () => {
     const inRange = D05_INDEX.filter(([age]) => age >= 30 && age <= 39);
     for (const w of [650, 284]) for (let i = 0; i < inRange.length; i++) {
@@ -202,6 +227,18 @@ describe('B05 review fixes keep the source meaning and the event timing', () => 
     expect(s05(S05.transfer2[0] + one2 / 2).moved2).toBe(0);
   });
 
+  it('S05 keeps each moving row token on its network path', () => {
+    for (const w of [650, 331, 259]) for (const [a, b] of [S05.transfer, S05.transfer2]) {
+      for (let t = a; t < b; t += 40) {
+        const f = dataRenderers.S05(w, t);
+        const row = texts(f).find(o => o.size === 12 && o.mono && /^\d+$/.test(o.text))!;
+        const paths = f.ops.filter((o): o is Extract<DrawOp, { type: 'path' }> => o.type === 'path' && o.dash?.join(',') === '3,4');
+        const ys = paths.map(o => Number(o.d.match(/^M[\d.-]+ ([\d.-]+)L/)![1]));
+        expect(Math.min(...ys.map(y => Math.abs(y - (row.y - 4.3)))), `${w} ${t}`).toBeLessThan(0.01);
+      }
+    }
+  });
+
   it('D04 lights a row of the function lane only after the cursor passes it', () => {
     // 그리기 도구는 사각형도 path로 내보낸다: 커서는 주황 삼각형, 켜진 칸은 주황 바탕의 작은 path
     const xs = (d: string) => [...d.matchAll(/[MLH]([\d.-]+)/g)].map(m => Number(m[1]));
@@ -212,6 +249,47 @@ describe('B05 review fixes keep the source meaning and the event timing', () => 
       if (!cursor) { expect(lit, `${t}`).toHaveLength(0); continue; }
       const tip = xs(cursor.d)[1];
       for (const r of lit) expect((Math.max(...xs(r.d)) + Math.min(...xs(r.d))) / 2, `${t}`).toBeLessThanOrEqual(tip + 0.5);
+    }
+  });
+
+  it('D04 keeps the moving lookup halo visible without covering the root and branch labels', () => {
+    const bounds = (d: string) => {
+      let x = 0, y = 0; const xs: number[] = [], ys: number[] = [];
+      for (const [, cmd, args] of d.matchAll(/([MLHVAZ])([^MLHVAZ]*)/g)) {
+        const n = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+        if (cmd === 'H') x = n[n.length - 1];
+        else if (cmd === 'V') y = n[n.length - 1];
+        else if (cmd !== 'Z') { x = n[n.length - 2]; y = n[n.length - 1]; }
+        if (cmd !== 'Z') { xs.push(x); ys.push(y); }
+      }
+      return { x1: Math.min(...xs), x2: Math.max(...xs), y1: Math.min(...ys), y2: Math.max(...ys) };
+    };
+    for (const w of [650, 331, 259]) {
+      const visited = new Set<string>();
+      let previous: { x: number; y: number } | null = null;
+      for (let t = D04.descend[0]; t < D04.descend[1]; t += 10) {
+        const f = dataRenderers.D04(w, t);
+        const cursor = f.ops.findIndex(o => o.type === 'circle' && o.stroke === C.blue);
+        const dot = f.ops[cursor];
+        if (dot.type !== 'circle') throw new Error('lookup cursor missing');
+        expect(dot.color, `${w} ${t} leaves the label readable`).toBe('none');
+        if (previous) expect(Math.hypot(dot.x - previous.x, dot.y - previous.y), `${w} ${t} continuous position`).toBeLessThan(12);
+        previous = dot;
+        const fills = f.ops.slice(cursor + 1).flatMap(o => o.type === 'path' && o.fill !== 'none' && o.alpha > 0.5 ? [bounds(o.d)] : []);
+        const visibleRim = Array.from({ length: 72 }, (_, k) => {
+          const angle = k * Math.PI / 36, x = dot.x + dot.r * Math.cos(angle), y = dot.y + dot.r * Math.sin(angle);
+          return !fills.some(b => x >= b.x1 && x <= b.x2 && y >= b.y1 && y <= b.y2);
+        });
+        expect(visibleRim.some(Boolean), `${w} ${t} halo remains visible`).toBe(true);
+        f.ops.forEach((o, i) => {
+          if (o.type !== 'text' || !['루트', '브랜치'].includes(o.text)) return;
+          if (Math.abs(dot.x - o.x) < 15 && Math.abs(dot.y - (o.y - 3.96)) < 12) {
+            visited.add(o.text);
+            expect(cursor, `${w} ${t} ${o.text}`).toBeLessThan(i);
+          }
+        });
+      }
+      expect([...visited].sort()).toEqual(['루트', '브랜치']);
     }
   });
 

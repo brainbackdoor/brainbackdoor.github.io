@@ -38,7 +38,7 @@ function bdpPanel(g: G, x: number, y: number, pw: number, t: number, big: boolea
 }
 function bdpV2(w: number, t: number): LessonFrame {
   const g = draw(), s = state('N02', t), { cols, pw } = twoUp(w);
-  const base = para(g, 0, 14, '100 Mbps × 40 ms ÷ 8 = 500,000 B', w, { size: 13, weight: 600, mono: true }) + 24;
+  const base = para(g, 0, 14, '100 Mbps · RTT 40 ms', w, { size: 13, weight: 600, mono: true }) + 24;
   const h = bdpPanel(g, 0, base, pw, t, false);
   bdpPanel(g, cols === 2 ? pw + 28 : 0, cols === 2 ? base : base + h + 24, pw, t, true);
   if (cols === 1) g.line(0, base + h + 8, w, base + h + 8, { stroke: C.grid, lw: 1 });
@@ -102,8 +102,7 @@ function congestionV2(w: number, t: number): LessonFrame {
     label(g, cx + (cx > w - 70 ? -8 : 8), Y(cur[1]) - 10, `cwnd ${cur[1]}`, { size: 11, weight: 700, mono: true, align: cx > w - 70 ? 'right' : 'left', color: C.blueText });
   }
   g.text(x0, y0 + h + 22, '연출 시간 →', { size: 11, color: C.muted });
-  const y = para(g, 0, y0 + h + 50, 'RTO: FlightSize 10 → ssthresh 5 · cwnd 1', w, { size: 12, color: C.muted });
-  return frame(g, y + 10, s.phase);
+  return frame(g, y0 + h + 32, s.phase);
 }
 
 /* ---------- N06 RTO와 빠른 재전송: 같은 시간 눈금에서 대기 원인과 복구 시각을 비교 ---------- */
@@ -119,7 +118,7 @@ function retransmitV2(w: number, t: number): LessonFrame {
     const st = fast ? s.fast : s.rto, done = fast ? 5500 : 7000;
     const geo = seq(g, t, {
       x, y: y0 + 30, w: pw, t0, t1, k, lanes: ['송신', '수신'], msgs,
-      holds: fast ? [{ lane: 0, a: 2700, b: 4300, label: '중복 ACK 3회', tone: 'orange' }] : [{ lane: 0, a: 1100, b: 6300, label: 'RTO 타이머 대기', tone: 'orange' }], gutters: [64, 0],
+      holds: fast ? [{ lane: 0, a: 2700, b: 4300, label: '중복 ACK', tone: 'orange' }] : [{ lane: 0, a: 1100, b: 6300, label: 'RTO 타이머 대기', tone: 'orange' }], gutters: [64, 0],
       states: [[], [[done, '복구', 'green']]],
     });
     // 안내는 대기 막대 오른쪽 자리에 둔다(좁은 폭에서는 두 줄로, 바탕이 막대를 끊지 않게)
@@ -243,7 +242,7 @@ function nagleV2(w: number, t: number): LessonFrame {
     if (t >= 2500) { const a = appear(t, 2500); g.circle(geo.ax, geo.Y(2500), 4, { fill: C.ink, alpha: a }); }
     cursor(g, geo, t, t0, t1);
     const st = nodelay ? s.nodelay : s.nagle;
-    g.text(x, geo.bottom + 26, `B: ${st.secondSent ? '전송' : 'ACK 대기'}`, { size: 12, weight: 600, color: st.secondSent ? C.blueText : C.orangeText });
+    if (t >= 2500) g.text(x, geo.bottom + 26, `B: ${st.secondSent ? '전송' : 'ACK 대기'}`, { size: 12, weight: 600, color: st.secondSent ? C.blueText : C.orangeText });
     bottom = Math.max(bottom, geo.bottom + 26 - y0);
     if (cols === 1 && i === 0) g.line(0, geo.bottom + 46, w, geo.bottom + 46, { stroke: C.grid, lw: 1 });
   }
@@ -322,7 +321,7 @@ function keepaliveV2(w: number, t: number): LessonFrame {
       states: dead ? [[[8000, '실패', 'red']], []] : undefined,
     });
     cursor(g, geo, t, t0, t1);
-    const msg = dead ? (s.failed ? '마지막 10 s 대기 → 실패' : `전송 probe ${s.unanswered}/3`) : (s.idleReset ? '응답 도착 → idle 재시작' : 'idle 만료 대기');
+    const msg = dead ? (s.failed ? '마지막 10 s 대기 → 실패' : `전송 probe ${s.unanswered}/3`) : (s.idleReset ? '응답 도착 → idle 재시작' : t >= 3500 ? 'probe 응답 대기' : 'idle 만료 대기');
     g.text(x, geo.bottom + 26, msg, { size: 12, weight: 600, color: dead && s.failed ? C.redText : dead ? C.muted : C.greenText });
     bottom = Math.max(bottom, geo.bottom + 26 - y0);
     if (cols === 1 && i === 0) g.line(0, geo.bottom + 46, w, geo.bottom + 46, { stroke: C.grid, lw: 1 });
@@ -360,7 +359,11 @@ function connPanel(g: G, x: number, y: number, pw: number, t: number, reuse: boo
     const yy = reuse ? rowY(1) : rowY(n);
     if (t < r0 + 500) token(g, lerp(lx + 22, rx - 22, ease.inOut(span(t, r0, r0 + 500))), yy, `GET ${n + 1}`, 'blue', { solid: true, r: 9 });
     else if (t < r0 + 1000) token(g, lerp(rx - 22, lx + 22, ease.inOut(span(t, r0 + 500, r0 + 1000))), yy, '200', 'green', { solid: true, r: 9 });
-    else token(g, reuse ? lx + 12 + n * 24 : lx + 18, reuse ? yy - 30 : yy, n + 1, 'green', { r: 9 });
+    else {
+      // 응답 행에서 먼저 기록 열을 맞춘 뒤 위로 올려 기존 완료 번호를 통과하지 않는다.
+      const qx = ease.out(span(t, r0 + 1000, r0 + 1150)), qy = ease.out(span(t, r0 + 1150, r0 + 1300));
+      token(g, lerp(lx + 22, reuse ? lx + 12 + n * 24 : lx + 18, qx), lerp(yy, reuse ? yy - 30 : yy, qy), n + 1, 'green', { r: 9 });
+    }
   });
   const by = top + H + 26;
   g.text(x, by, `GET ${st.requests} · handshake ${st.handshakes}`, { size: 13, weight: 700 });
@@ -435,8 +438,8 @@ function gzipV2(w: number, t: number): LessonFrame {
     if (got > 0) g.rect(mid + 6, by - 11, half * got, 22, { r: 6, fill: done ? C.greenTint : decoding ? C.orangeTint : C.blueTint, stroke: done ? C.green : decoding ? C.orange : C.blue, lw: 1.3 });
     if (sent > 0 && sent < 1) for (let d = (t * 0.05) % 14; d < 12; d += 6) g.circle(mid - 6 + d, by, 1.8, { fill: C.blue });
     // 압축 구간은 아래 시간 눈금과 같이 1600부터
-    const stat = t < 1600 ? '전송 전' : gz ? (t < s.gzipSendAt ? '압축 중' : s.gzipReceived ? '수신 완료' : '전송 중') : (s.rawReceived ? '수신 완료' : '전송 중');
-    g.text(lx, by - 20, `${(gz ? s.gzipBytes : s.rawBytes).toLocaleString()} B 전송 · 상태: ${stat}`, { size: 12, weight: 600, color: C.blueText });
+    const stat = t < 1600 ? '전송 전' : gz ? (t < s.gzipSendAt ? '압축 중' : decoding ? '해제 중' : s.gzipReceived ? '수신 완료' : '전송 중') : (s.rawReceived ? '수신 완료' : '전송 중');
+    g.text(lx, by - 20, `${(gz ? s.gzipBytes : s.rawBytes).toLocaleString()} B · ${stat}`, { size: 12, weight: 600, color: C.blueText });
     const same = '동일 JSON · 18,891 B', ty = by + 30 + (wrap(same, rx - mid - 6, 11).length - 1) * 18;
     if (done) para(g, mid + 6, by + 30, same, rx - mid - 6, { size: 11, weight: 600, color: C.greenText, alpha: appear(t, gz ? 3900 : 6900) });
     // 처리 구간과 전송 구간: 같은 시간 눈금

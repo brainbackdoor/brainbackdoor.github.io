@@ -200,8 +200,7 @@ function dns01V2(w: number, t: number): LessonFrame {
   const ly = row ? sy + 50 : sy + 4 * 34 + 14;
   lockGlyph(g, 0, ly - 10, s.served ? C.green : C.grid, { alpha: 1 });
   g.text(18, ly, s.served ? ':443이 이 인증서로 응답' : ':443 아직 아님', { size: 12, weight: 700, color: s.served ? C.greenText : C.muted });
-  const y = para(g, 0, ly + 28, 'TXT 검증 → 발급 → 수동 적용', w, { size: 12, color: C.muted });
-  return frame(g, y + 10, s.phase);
+  return frame(g, ly + 10, s.phase);
 }
 
 /* ---------- A04 프로필별 설정 파일과 DB ---------- */
@@ -210,23 +209,21 @@ function profileV2(w: number, t: number): LessonFrame {
   let y = para(g, 0, 12, '기본 설정 ← 활성 프로필로 덮어쓰기', w, { size: 11, color: C.muted }) + 14;
   A04_ROWS.forEach(([prof, run, user, db], i) => {
     const on = s.on[i], act = s.active === i, done = s.done[i], tone: Tone = i === 0 ? 'green' : i === 1 ? 'orange' : 'blue';
-    const runLines = wrap(run, w - 20, 11, true), chipH = wide ? 38 : [38, 52, 38], blockH = wide ? 34 + runLines.length * 15 + 46 : 34 + runLines.length * 15 + 38 + 52 + 38 + 2 * 8 + 14;
+    const runLines = wrap(run, w - 20, 11, true), chipH = 38, blockH = wide ? 34 + runLines.length * 15 + 46 : 34 + runLines.length * 15 + 3 * chipH + 2 * 8 + 14;
     g.rect(0, y, w, blockH, { r: 10, fill: act ? TONE[tone].tint : C.bg, stroke: on ? TONE[tone].line : C.grid, lw: act ? 1.6 : 1.1 });
     g.text(10, y + 18, `실행: ${['테스트', '로컬', '배포'][i]}`, { size: 11, weight: 700, color: on ? TONE[tone].text : C.muted });
     runLines.forEach((ln, k) => g.text(10, y + 34 + k * 15, ln, { size: 11, mono: true, color: on ? C.ink : C.muted, cont: k > 0 }));
     const cy = y + 34 + runLines.length * 15 + 4;
     // 프로필 → 파일 → DB
-    const chips: [string, string, boolean][] = [[prof, '프로필', true], [`application-${prof}.properties`, `account.name = ${user} · password = ••••`, false], [db, i === 2 ? 'DB URL 미지정' : '요구 DB', false]];
+    const chips: [string, string, boolean][] = [[prof, '프로필', true], [`application-${prof}.properties`, `account.name = ${user}`, false], [db, i === 2 ? 'DB URL 미지정' : '요구 DB', false]];
     const widths = wide ? [70, 0, 140] : [w - 20, w - 20, w - 20];
     if (wide) widths[1] = w - 20 - widths[0] - widths[2] - 2 * 26;
     let x = 10;
     chips.forEach(([main, sub, mono0], k) => {
-      const h = Array.isArray(chipH) ? chipH[k] : chipH, cyp = wide ? cy : cy + (k === 0 ? 0 : k === 1 ? 46 : 46 + 60), cxp = wide ? x : 10, cwp = widths[k], lit = s.chipsOn[i][k];
-      // 좁은 폭의 파일 칩은 account 줄을 name·password 두 줄로 나눈다
-      const subs = !wide && k === 1 ? sub.split(' · ') : [sub];
+      const h = chipH, cyp = wide ? cy : cy + k * (chipH + 8), cxp = wide ? x : 10, cwp = widths[k], lit = s.chipsOn[i][k];
       g.rect(cxp, cyp, cwp, h, { r: 6, fill: C.paper, stroke: lit ? TONE[tone].line : C.grid, lw: 1, dash: lit ? null : [3, 3] });
       g.text(cxp + 8, cyp + 15, main, { size: 11, mono: k < 2 || mono0, weight: 700, color: lit ? C.ink : C.muted });
-      subs.forEach((sb, m) => g.text(cxp + 8, cyp + 30 + m * 14, sb, { size: 10, mono: k === 1, color: C.muted }));
+      g.text(cxp + 8, cyp + 30, sub, { size: 10, mono: k === 1, color: C.muted });
       if (wide && k < 2) arrow(g, { x: cxp + cwp + 4, y: cyp + 19 }, { x: cxp + cwp + 22, y: cyp + 19 }, { stroke: s.chipsOn[i][k + 1] ? TONE[tone].line : C.grid, lw: 1.1, size: 4 });
       x += cwp + 26;
     });
@@ -242,8 +239,8 @@ function deployV2(w: number, t: number): LessonFrame {
   const g = draw(), s = a05(t), wide = w >= 560;
   const steps: [string, string, number, boolean][] = [
     ['cron', '매 10분 실행', A05.cron2, false], ['check_df', 'git fetch · rev-parse $BRANCH ≠ origin/$BRANCH', A05.diff, true],
-    ['pull', 'git pull origin master', A05.pull, true], ['build', '주석뿐 · G02: ./gradlew clean build', A05.build[1], false],
-    ['종료', '주석뿐 · G02: pgrep -f java · kill -2', A05.kill, false], ['기동', '주석뿐 · G02: nohup java -jar … &', A05.start, false], ['확인', 'G02: curl http://localhost:8080', A05.curl, false],
+    ['pull', 'git pull origin master', A05.pull, true], ['build · 주석', './gradlew clean build', A05.build[1], false],
+    ['종료 · 주석', 'pgrep -f java · kill -2', A05.kill, false], ['기동 · 주석', 'nohup java -jar … &', A05.start, false], ['확인 · 실습', 'curl http://localhost:8080', A05.curl, false],
   ];
   const sw = wide ? w * 0.58 : w;
   g.text(0, 12, '배포 스크립트(실행 2: 변경 있음)', { size: 12, weight: 700 });
@@ -267,7 +264,9 @@ function deployV2(w: number, t: number): LessonFrame {
   const ty = (wide ? Math.max(noteY, ly + 110) : ly + 110) + 30, X0 = 0, X1 = w, xAt = (ms: number) => X0 + (X1 - X0) * (ms - A05.cron2) / (A05.end - A05.cron2);
   g.text(0, ty, '프로세스(실행 2 구간)', { size: 11, weight: 700 });
   const by = ty + 10;
-  g.rect(X0, by, (t >= A05.kill ? xAt(A05.kill) : X1) - X0, 22, { r: 4, fill: C.blueTint, stroke: C.blue, lw: 1 });
+  g.rect(X0, by, X1 - X0, 22, { r: 4, fill: C.bg, stroke: C.line, lw: 1 });
+  const oldUntil = Math.max(A05.cron2, Math.min(t, A05.kill));
+  g.rect(X0, by, Math.max(2, xAt(oldUntil) - X0), 22, { r: 4, fill: C.blueTint, stroke: C.blue, lw: 1 });
   g.text(X0 + 8, by + 15, '기존 PID', { size: 10.5, weight: 600, color: C.blueText });
   if (t >= A05.kill) { const a = appear(t, A05.kill); g.rect(xAt(A05.kill) + 2, by, xAt(A05.start) - xAt(A05.kill) - 4, 22, { r: 4, fill: C.redTint, stroke: C.red, lw: 1, dash: [3, 3], alpha: a }); g.text((xAt(A05.kill) + xAt(A05.start)) / 2, by + 15, '빈 구간', { size: 10.5, weight: 700, align: 'center', color: C.redText, alpha: a }); }
   if (t >= A05.start) { const a = appear(t, A05.start); g.rect(xAt(A05.start), by, X1 - xAt(A05.start), 22, { r: 4, fill: C.greenTint, stroke: C.green, lw: 1, alpha: a }); g.text(X1 - 8, by + 15, '새 PID', { size: 10.5, weight: 600, align: 'right', color: C.greenText, alpha: a }); }

@@ -686,9 +686,9 @@ function cliV2(w: number, t: number): LessonFrame {
   // 요청: 터미널 → socket → dockerd
   const p0 = { x: 40, y: termH }, p1 = { x: 40, y: sockY }, p2 = { x: sockX + sockW + 30, y: dY + 26 };
   if (t >= C02.req[0]) {
-    const q = span(t, C02.req[0], C02.req[1]);
+    const q = ease.inOut(span(t, C02.req[0], C02.req[1]));
     g.line(p0.x, p0.y, p0.x, lerp(p0.y, p1.y, q), { stroke: C.blue, lw: 1.5 });
-    if (q < 1) g.circle(p0.x, lerp(p0.y, p1.y, ease.inOut(q)), 4.5, { fill: C.blue }); else arrowHead(g, p1, Math.PI / 2, C.blue);
+    if (q < 1) g.circle(p0.x, lerp(p0.y, p1.y, q), 4.5, { fill: C.blue }); else arrowHead(g, p1, Math.PI / 2, C.blue);
   }
   if (t >= C02.core[0] && t < C02.core[1] + 300) {
     const q = ease.inOut(span(t, C02.core[0], C02.core[1]));

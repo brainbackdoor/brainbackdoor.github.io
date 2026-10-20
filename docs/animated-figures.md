@@ -2422,7 +2422,7 @@ B06 조사 노트(`infra-ops-v2/SOURCES-A·B·C.md`)의 비밀·식별자 목록
 
 ## 37. 나머지 66종 공개 사이트 개별 검수와 후속 수정 (2026-10-20)
 
-36절에서 검수한 8종을 제외한 **66종을 실제 공개 본문에서 개별 확인했다. 18종을 수정하고 48종은 유지한다.** 이 절의 첫 검수 기준은 배포된 `d277600`이며, 아래 수정·자동 검증과 로컬 문제 구간 확인까지 마쳤다.
+36절에서 검수한 8종을 제외한 **66종을 실제 공개 본문에서 개별 확인했다. 18종을 수정하고 48종은 유지한다.** 이 절의 첫 검수 기준은 배포된 `d277600`이며, 수정·자동 검증·로컬 문제 구간 확인·배포 후 공개 재검수를 마쳤다.
 
 ### 실제 화면 확인 방법
 
@@ -2541,3 +2541,11 @@ B06 조사 노트(`infra-ops-v2/SOURCES-A·B·C.md`)의 비밀·식별자 목록
 - 로컬 실제 본문에서 390px 화면(그림 346px)의 수량·사라짐·등장·금액과 320px 화면(그림 284px)의 금액을 확인했다. 320px의 마지막 정적 장면에서 실제 글자 경계도 확인했고 이름·금액 분리, 가로 잘림·넘침 없음이다.
 - 추가 보정 후 `pnpm test --maxWorkers=2` **17개 파일·359개 통과**, `pnpm check` **오류·경고·힌트 0**, `pnpm build` **332페이지 성공**, 마이그레이션 단위 검사 **37개 통과**.
 - [실제 로컬 배치·글자 경계 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/after-e86fde5/d09-local-layout-checks.json)
+
+### 추가 보정 배포와 최종 공개 확인
+
+- D09 추가 보정과 중간 검수 기록을 `e375555`로 커밋해 push했고 [GitHub Pages 배포](https://github.com/brainbackdoor/brainbackdoor.github.io/actions/runs/39419362217)가 성공했다. 다른 담당자의 추가 코드리뷰에서도 새 문제를 찾지 못했다.
+- [실제 SQL 글](https://www.brainbackdoor.com/posts/6ad28373-149c-4d45-b835-8dfb853db638/#23a021ac-e2c8-4cc8-9bab-d06ee873e960)에서 새 번들 `/_astro/LessonFigure.BpWgM7Lg.js`를 확인했다. 모바일 390×1500에서 단계 3개·수량 사라짐·금액 등장·반복 재시작을 다시 관찰했다. 그림 높이 660px 유지, 지면 가로 넘침·기본 중복 문단 없음이다.
+- 공개 320×1500의 금액표와 마지막 정적 장면에서도 긴 고객명·금액·순위 설명의 실제 글자 경계를 확인했다. 이름과 금액이 분리되고 글자 경계 이탈·가로 넘침이 없다. 데스크톱 1280×1000의 완료 장면은 기존 가로 비교를 유지하며 글자 경계 이탈·지면 넘침이 없다. 콘솔 오류 0건이다.
+- 최종 빌드 원문 대조는 **58편·1,806필드·74종·문제 0·깨진 내부 링크 0**이다. 원문 MDX와 원본 미디어를 바꾸지 않았다. 기존 사용자 변경 `.claude/launch.json`은 커밋에 포함하지 않았다.
+- [최종 공개 모바일 390px 재생 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/after-e375555/d09-390-checks.json), [320px 실제 글자 경계](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/after-e375555/d09-320-checks.json), [데스크톱 완료 장면](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/after-e375555/d09-desktop-checks.json)

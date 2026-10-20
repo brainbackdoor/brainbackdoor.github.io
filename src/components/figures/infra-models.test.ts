@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { A03, A04, A05, A06, A07_USERDATA, O04_ROWS, O08, a01, a03, a04, a05, a06, o02, o07, o08, o09, infraInfo, type InfraFigureId } from './infra-models';
 import { infraRenderers } from './infraCanvas';
 import type { DrawOp, LessonFrame } from './lessonCanvas';
+import { C } from './lessonCanvas';
 
 const ids = infraInfo.map(item => item.id) as InfraFigureId[];
 const info = (id: InfraFigureId) => infraInfo.find(i => i.id === id)!;
@@ -27,7 +28,7 @@ describe('B06 infrastructure and operations models keep the source meaning', () 
 
   it('A02 ends TLS at nginx and sends plain HTTP to the WAS', () => {
     const f = said(final('A02'));
-    for (const s of ['TLS 종료 지점', 'HTTP 평문', '172.17.0.1:8080', '암호화 원문 없음']) expect(f).toContain(s);
+    for (const s of ['TLS 종료 지점', 'HTTP 평문', '172.17.0.1:8080', 'DB 암호화 미확인']) expect(f).toContain(s);
     expect(f).not.toContain('TLS 1.3');
   });
 
@@ -44,7 +45,7 @@ describe('B06 infrastructure and operations models keep the source meaning', () 
   it('A05 leaves an empty window between stopping the old process and starting the new one', () => {
     for (const t of loop('A05')) { const s = a05(t); expect(s.down).toBe(!s.oldUp && !s.newUp); }
     expect(a05(A05.kill + 100).down).toBe(true);
-    expect(said(final('A05'))).toContain('무중단 배포가 아닙니다');
+    expect(texts(final('A05')).map(o => o.text).join(' ')).toContain('서비스 중단 발생');
   });
 
   it('A06 sends traffic only to healthy instances', () => {
@@ -107,6 +108,29 @@ describe('B06 infrastructure and operations models keep the source meaning', () 
 });
 
 describe('B06 scenes stay readable at every article width', () => {
+  it('O03 span and O05 GET dots follow the displayed bent connector through every segment', () => {
+    const cases = [['O03', [259, 346], 3200, 3800], ['O05', [560, 650], 3200, 4000]] as const;
+    for (const [id, widths, start, end] of cases) for (const w of widths) {
+      const visited = new Set<number>();
+      for (let t = start; t < end; t += 10) {
+        const f = infraRenderers[id](w, t), dot = f.ops.find(o => o.type === 'circle' && o.color === C.orange);
+        expect(dot, `${id} ${w} ${t}`).toBeDefined();
+        if (!dot || dot.type !== 'circle') continue;
+        const path = f.ops.find(o => o.type === 'path' && /^M[-\d.]+ [-\d.]+(?:L[-\d.]+ [-\d.]+){3}$/.test(o.d) && (id === 'O03' ? o.dash?.join() === '4,3' : o.width === 1.1));
+        expect(path, `${id} ${w} connector`).toBeDefined();
+        if (!path || path.type !== 'path') continue;
+        const pts = [...path.d.matchAll(/[ML]([-\d.]+) ([-\d.]+)/g)].map(([, x, y]) => ({ x: Number(x), y: Number(y) }));
+        const distances = pts.slice(1).map((q, i) => {
+          const p = pts[i], dx = q.x - p.x, dy = q.y - p.y, u = Math.max(0, Math.min(1, ((dot.x - p.x) * dx + (dot.y - p.y) * dy) / (dx * dx + dy * dy)));
+          return Math.hypot(dot.x - p.x - u * dx, dot.y - p.y - u * dy);
+        });
+        expect(Math.min(...distances), `${id} ${w} ${t}`).toBeLessThan(0.02);
+        visited.add(distances.indexOf(Math.min(...distances)));
+      }
+      expect([...visited].sort(), `${id} ${w} traverses all bends`).toEqual([0, 1, 2]);
+    }
+  });
+
   it('keeps visible labels apart and inside the figure through the whole loop, also between the measured widths', () => {
     const SANS = (s: string) => { let n = 0; for (const ch of s) { const c = ch.codePointAt(0)!; n += c >= 0x1100 ? 0.94 : ' .,:;·|!il\'"()[]'.includes(ch) ? 0.3 : /[A-Z0-9mwMW+=→]/.test(ch) ? 0.64 : 0.52; } return n; };
     const box = (o: Text) => { const w = (o.mono ? [...o.text].reduce((n, ch) => n + (ch.codePointAt(0)! >= 0x1100 ? 1 : 0.6), 0) : SANS(o.text)) * o.size; const x = o.align === 'center' ? o.x - w / 2 : o.align === 'right' ? o.x - w : o.x; return { x1: x, x2: x + w, y1: o.y - o.size * 0.8, y2: o.y + o.size * 0.22 }; };
@@ -189,11 +213,14 @@ describe('B06 review fixes keep each static step and source text honest', () => 
   });
 
   it('keeps unsupported claims as possibilities or recommendations', () => {
-    expect(said(final('O08')) + info('O08').notes.join(' ')).toContain('그대로 늘지 않을 수 있습니다');
-    expect(said(final('O09'))).toContain('원문에 구현 없음');
+    expect(texts(final('O08')).map(o => o.text).join(' ')).toContain('증설 대수와 처리량은 비례하지 않을 수 있음');
+    expect(texts(final('O09')).map(o => o.text).join(' ')).toContain('개념 예시');
+    expect(texts(final('O09')).map(o => o.text).join(' ')).toContain('접수됨 ≠ 처리 완료');
     expect(said(final('O05')) + info('O05').notes.join(' ')).not.toContain('다른 서버입니다');
     expect(said(final('O06'))).not.toContain('한계?');
-    expect(texts(final('A05')).filter(o => o.text.includes('(설명용)')).length).toBeGreaterThanOrEqual(3);
+    const logs = texts(final('A05')).map(o => o.text);
+    expect(logs).toContain('실행 기록 · 상태 예시');
+    for (const label of ['[실행 2] 변경 감지', '[실행 2] 프로세스 종료', '[실행 2] 새 프로세스']) expect(logs).toContain(label);
   });
 
   it('O02 keeps the same statistics at every width', () => {

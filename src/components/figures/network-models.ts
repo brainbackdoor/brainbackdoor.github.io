@@ -44,7 +44,7 @@ export const networkInfo = [
         "notes": [
             "SYN에는 초기 순번이 있고 한 순번을 사용합니다.",
             "클라이언트는 SYN/ACK 수신, 서버는 최종 ACK 수신 후 ESTABLISHED입니다.",
-            "DATA 1,460 B 뒤 ACK는 다음 기대 순번 2,461. rwnd는 수신자가 통지하는 값입니다."
+            "DATA 1,460 B 뒤 다음 기대 순번은 ACK 2,461. 수신 윈도 rwnd 8,192 B."
         ]
     },
     {
@@ -318,7 +318,7 @@ export const networkInfo = [
         "notes": [
             "서로 다른 stream의 프레임이 한 연결에 섞여 나갑니다.",
             "앞의 TCP 범위가 손실되면 뒤의 stream 3·5 프레임도 수신 TCP 버퍼에 대기합니다.",
-            "복구 뒤 TCP가 연속 바이트를 넘기면 HTTP/2가 각 stream으로 분배합니다. 캐시·HTTP/3 비교는 포함하지 않습니다."
+            "TCP HOL 복구 뒤 연속 바이트를 각 stream으로 분배합니다."
         ]
     },
     {

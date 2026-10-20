@@ -216,7 +216,7 @@ function localStrip(g: G, ox: number, oy: number, w: number, t: number, s: State
     g.rect(cx, yy + 16, cw, 26, { r: 6, fill: C.paper, stroke: flash > 0 ? C.blue : C.line, lw: flash > 0 ? 1.6 : 1 });
     g.text(cx + cw / 2, yy + 34, v, { size: 15, weight: 700, mono: true, align: 'center' });
   });
-  const note = '서로 다른 변수 · 1과 1을 공유 합계로 더하지 않음';
+  const note = '지역 변수: 요청별 독립';
   if (narrow) return para(g, ox, y + 2 * fh + 10 + 24, note, w, { color: C.muted }) + 8;
   para(g, ox + 2 * (fw + 12) + 6, y + 26, note, w - 2 * (fw + 12) - 6, { color: C.muted });
   return y + fh + 8;
@@ -435,8 +435,8 @@ function carriersV2(w: number, t: number): LessonFrame {
     vtPanel(g, pw + gap, top, pw, 24, t, narrow);
     g.line(pw + gap / 2, top, pw + gap / 2, y, { stroke: C.grid, lw: 1 });
   }
-  y = para(g, 0, y + 34, 'JDK 24는 synchronized 관련 pinning을 개선했습니다. native·foreign 호출 경로의 pinning은 남습니다.', w, { color: C.muted });
-  y = para(g, 0, y + 22, '원본 그림의 max-connections 8192 · max-threads 200은 원본 설정 예이고, carrier 1 · DB connection 1은 설명용 조건입니다.', w, { color: C.muted });
+  y = para(g, 0, y + 34, 'JDK 24: synchronized pinning 개선 · native·foreign pinning은 남음', w, { color: C.muted });
+  y = para(g, 0, y + 22, '비교 조건: carrier 1개 · DB connection 1개', w, { color: C.muted });
   return { ops: g.ops, height: Math.ceil(y + 10), status: s.phase };
 }
 
@@ -473,10 +473,10 @@ function copiesV2(w: number, t: number): LessonFrame {
   const labelW = ix - 24;
   type Row = { key: 'view' | 'getter' | 'shallow' | 'deep'; tag: string; group?: string; label: string; sy: number; cy: number; ny: number };
   const rows: Row[] = ([
-    { key: 'view', tag: 'L0', group: '원문 ImmutableCart', label: '생성자 · items = unmodifiableList(L0), 외부 List L0의 뷰' },
-    { key: 'getter', tag: 'G1', label: 'getItems() · new ArrayList(items)로 만든 G1' },
-    { key: 'shallow', tag: 'L1', group: '비교안', label: '생성자에서 List를 복사한 L1' },
-    { key: 'deep', tag: 'L2', label: 'name 요소까지 새로 만든 L2' },
+    { key: 'view', tag: 'L0', group: 'ImmutableCart', label: '생성자: unmodifiableList(L0) 뷰' },
+    { key: 'getter', tag: 'G1', label: 'getter: new ArrayList(items)' },
+    { key: 'shallow', tag: 'L1', group: '비교안', label: 'List 복사' },
+    { key: 'deep', tag: 'L2', label: '요소까지 복사' },
   ] as const).map(r => ({ ...r, sy: 0, cy: 0, ny: 0 }));
   const noteRows: Record<string, number> = { view: 3, getter: 1 };
   let y = 0;
@@ -719,12 +719,7 @@ function cliV2(w: number, t: number): LessonFrame {
       g.text(cx + 4, inY + 44, s.running ? 'nginx 실행 중' : 'created', { size: 12, weight: 600, color: s.running ? C.greenText : C.ink });
     }
   }
-  // 원본 명령 관계도: 움직이지 않는 참조
-  const REL = ['Registry: login / logout / search / push / pull', 'Image: rmi / images / history / tag / inspect', 'Dockerfile + .dockerignore → build → Image', 'Image → create / run → Container', 'Container → commit → 새 Image', 'Image ↔ save / load ↔ Backup', 'Container → export → Backup → import → Image', 'Container: start / stop / restart / pause / unpause / wait', 'Container: exec / attach / top / logs / inspect / cp / diff / rm / kill', 'Docker: events / version / info'];
-  let ry = dY + dH + 40;
-  g.text(0, ry, '원본 명령 관계', { size: 12, weight: 600, color: C.muted });
-  for (const r of REL) ry = para(g, 0, ry + 20, r, w, { size: 12, color: C.muted, lh: 18 });
-  return { ops: g.ops, height: Math.ceil(ry + 10), status: s.phase };
+  return { ops: g.ops, height: Math.ceil(dY + dH + 8), status: s.phase };
 }
 
 /* ---------- C03 같은 프로세스의 두 PID, 별도 예의 chroot root ---------- */
@@ -732,7 +727,7 @@ const C03 = { pid: 2500, root: 4200, move: 400 };
 function namespacesV2(w: number, t: number): LessonFrame {
   const g = draw(), s = state('C03', t), narrow = w < 560;
   // PID: host namespace 안의 container namespace, 그 안의 한 프로세스
-  g.text(0, 15, 'PID namespace · 원본 nginx 실습', { size: 13, weight: 600 });
+  g.text(0, 15, 'PID namespace · nginx', { size: 13, weight: 600 });
   const oy = 28, oh = 132, ix = w * (narrow ? 0.4 : 0.46), iy = oy + 34, iw = w - ix - 12, ih = oh - 46;
   g.rect(0, oy, w, oh, { r: 12, fill: C.bg, stroke: C.muted, lw: 1.2 });
   g.text(14, oy + 22, 'host', { size: 12, weight: 600, color: C.muted });
@@ -750,7 +745,7 @@ function namespacesV2(w: number, t: number): LessonFrame {
   // chroot: 별도 예. 경로 트리와 root 경계
   const ty = oy + oh + 34;
   g.line(0, ty - 18, w, ty - 18, { stroke: C.grid, lw: 1 });
-  g.text(0, ty, '별도 예 · chroot가 바꾸는 root', { size: 13, weight: 600 });
+  g.text(0, ty, 'chroot · root 변경', { size: 13, weight: 600 });
   const rows: [string, number][] = [['/', 0], ['bin', 1], ['usr', 1], ['home', 1], ['joe', 2], ['bin', 3], ['usr', 3], ['bin/cp', 4], ['local/bin/gcc · ape', 4], ['local/lib', 4], ['lib', 4]];
   const rh = 22, rx0 = 16, top = ty + 30, ind = narrow ? 18 : 22;
   rows.forEach(([name, lvl], i) => {
@@ -830,7 +825,7 @@ function bridgeV2(w: number, t: number): LessonFrame {
   g.line(lx - 34, ly + 18, lx + 34, ly + 18, { stroke: C.ink, lw: 1.6 });
   g.text(lx - 44, ly + 4, 'client', { size: 12, weight: 600, align: 'right' });
   if (s.replyReceived) g.text(lx + 44, ly + 4, '응답 도착', { size: 12, weight: 600, color: C.greenText });
-  const noteY = para(g, 0, ly + 52, 'Linux host와 기본 bridge의 개념 경로입니다. Docker Desktop의 host→VM 경로는 별도입니다.', w, { color: C.muted });
+  const noteY = para(g, 0, ly + 52, 'Linux 기본 bridge · Docker Desktop은 VM 경유', w, { color: C.muted });
   // 4. 이동 중인 요청·응답
   if (reqTip && !s.requestReceived) g.circle(reqTip.x, reqTip.y, 5, { fill: C.blue });
   if (resTip && !s.replyReceived) g.circle(resTip.x, resTip.y, 5, { fill: C.green });
@@ -876,7 +871,7 @@ function volumesV2(w: number, t: number): LessonFrame {
     if (t >= C06.read - C06.move && t < C06.read) { const q = ease.inOut(span(t, C06.read - C06.move, C06.read)); chip(g, cx, lerp(stTop - 10, slotY + slotH + 4, q), 'record A', 'read'); }
     if (s.replacementRead) g.text(cx, slotY + 52, '읽음: record A', { size: 12, align: 'center', color: C.greenText });
   });
-  const ny = para(g, 0, 160 + 66 + 26 + 50, 'mount가 가린 기존 파일은 삭제된 것이 아닙니다. 빈 named volume의 초기 복사와 bind mount의 가림은 구분합니다.', w, { color: C.muted });
+  const ny = para(g, 0, 160 + 66 + 26 + 50, '빈 named volume: 초기 복사 · bind mount: 기존 파일을 가림(삭제 아님)', w, { color: C.muted });
   return { ops: g.ops, height: Math.ceil(ny + 10), status: s.phase };
 }
 
@@ -908,18 +903,20 @@ function lifeV2(w: number, t: number): LessonFrame {
   // 컨테이너: 하나의 상자가 상태를 바꾼다
   const cX = narrow ? 0 : imX + imW + 56, cY = narrow ? imY + 30 + 46 : 0, cW = narrow ? w : w - cX, cH = 108;
   if (t >= C07.create) { const q = ease.out(span(t, C07.create, C07.create + 300)); const a0 = narrow ? { x: 40, y: imY + 34 } : { x: imX + imW + 6, y: 48 }, a1 = narrow ? { x: 40, y: cY - 6 } : { x: cX - 8, y: 48 }; g.line(a0.x, a0.y, lerp(a0.x, a1.x, q), lerp(a0.y, a1.y, q), { stroke: C.ink, lw: 1.4 }); if (q >= 1) arrowHead(g, a1, angle(a0, a1), C.ink); g.text(narrow ? 52 : (a0.x + a1.x) / 2, narrow ? (a0.y + a1.y) / 2 + 4 : 40, 'create', { size: 12, mono: true, align: narrow ? 'left' : 'center', alpha: q }); }
-  const st = s.state, live = t >= C07.create && st !== 'removed', run = st === 'running';
+  const st = s.state, live = t >= C07.create && st !== 'removed';
+  // 퇴장 중에는 제거 직전 장면을 유지한다. 모델의 removed 결과는 퇴장이 끝난 뒤 표시한다.
+  const shown = st === 'removed' ? state('C07', C07.rm - 1) : s, shownState = shown.state, run = shownState === 'running';
   // 제거: 컨테이너 안 글자가 먼저 사라지고(250 ms), 그 뒤에 'rm …' 안내가 나타난다(겹쳐 보이지 않게)
   const rmQ = st === 'removed' ? span(t, C07.rm, C07.rm + 250) : 0, rmIn = st === 'removed' ? span(t, C07.rm + 250, C07.rm + 500) : 0;
   g.rect(cX, cY, cW, cH, { r: 12, stroke: C.line, lw: 1, dash: [3, 4] });
   if (live || rmQ < 1 && t >= C07.create) {
     const a = live ? ease.out(span(t, C07.create, C07.create + 300)) : 1 - rmQ;
-    g.rect(cX, cY, cW, cH, { r: 12, fill: run ? C.blueTint : C.paper, stroke: run ? C.blue : C.ink, lw: 1.5, dash: st === 'created' ? [4, 3] : null, alpha: a });
+    g.rect(cX, cY, cW, cH, { r: 12, fill: run ? C.blueTint : C.paper, stroke: run ? C.blue : C.ink, lw: 1.5, dash: shownState === 'created' ? [4, 3] : null, alpha: a });
     // 쓰기 계층
     g.rect(cX + 10, cY + 10, cW - 20, 26, { r: 6, fill: C.paper, stroke: C.blue, lw: 1.1, dash: [4, 3], alpha: a });
-    g.text(cX + 20, cY + 28, s.writableData ? '쓰기 계층 · 데이터 있음' : '쓰기 계층', { size: 12, color: s.writableData ? C.blueText : C.muted, alpha: a });
-    procBox(g, cX + 60, cY + 64, run ? 'CMD' : st === 'exited' ? 'CMD 종료' : 'CMD 대기', { running: run, alpha: a });
-    g.text(cX + cW - 12, cY + 69, st, { size: 13, weight: 700, mono: true, align: 'right', color: run ? C.blueText : st === 'exited' ? C.orangeText : C.ink, alpha: a });
+    g.text(cX + 20, cY + 28, shown.writableData ? '쓰기 계층 · 데이터 있음' : '쓰기 계층', { size: 12, color: shown.writableData ? C.blueText : C.muted, alpha: a });
+    procBox(g, cX + 60, cY + 64, run ? 'CMD' : shownState === 'exited' ? 'CMD 종료' : 'CMD 대기', { running: run, alpha: a });
+    g.text(cX + cW - 12, cY + 69, shownState, { size: 13, weight: 700, mono: true, align: 'right', color: run ? C.blueText : shownState === 'exited' ? C.orangeText : C.ink, alpha: a });
     g.text(cX + 12, cY + 98, `CMD 실행 ${s.cmdCalls}회`, { size: 12, color: C.muted, alpha: a });
   }
   if (st === 'removed') {
@@ -1031,7 +1028,7 @@ function shellV2(w: number, t: number): LessonFrame {
   let y;
   if (narrow) { y = shellPanel(g, 0, 0, pw, t, false); g.line(0, y + 6, w, y + 6, { stroke: C.grid, lw: 1 }); y = shellPanel(g, 0, y + 22, pw, t, true); }
   else { y = Math.max(shellPanel(g, 0, 0, pw, t, false), shellPanel(g, pw + gap, 0, pw, t, true)); }
-  y = para(g, 0, y + 26, 'nohup은 SIGHUP을 무시하게 할 뿐이고, 로그 파일로 보내는 것은 1>·2>&1 리다이렉션입니다. 자동 재시작이나 SIGKILL 보호는 아닙니다.', w, { color: C.muted });
+  y = para(g, 0, y + 26, 'nohup: SIGHUP 무시 · 1>·2>&1: 로그 리다이렉션', w, { color: C.muted });
   return { ops: g.ops, height: Math.ceil(y + 10), status: s.phase };
 }
 
@@ -1083,7 +1080,7 @@ function diagnoseV2(w: number, t: number): LessonFrame {
     para(g, x + 10, y + rh - (narrow ? 30 : 14) - extra * 17, cmds, cw - 20, { size: 12, mono: true, color: C.blueText, lh: 17 });
   });
   const end = top + rows * (rh + gap) - gap + 14;
-  const y = para(g, 0, end + 26, '원본 명령 10개와 관찰 영역의 연결입니다. 측정값은 원본 출력에만 있고, 이 지도에는 수치를 만들지 않습니다.', w, { color: C.muted });
+  const y = end;
 
   return { ops: g.ops, height: Math.ceil(y + 10), status: s.phase };
 }
@@ -1153,7 +1150,7 @@ function threadStatesV2(w: number, t: number): LessonFrame {
   g.rect(wp.x - 30, wp.y - 11, 60, 22, { r: 11, fill: C.ink, stroke: C.ink, lw: 1 });
   g.text(wp.x, wp.y + 4.5, 'worker', { size: 12, mono: true, weight: 600, align: 'center', color: '#fff' });
   if (s.monitor === 'worker') lockGlyph(g, wp.x + 34, wp.y - 7, C.blueText, { patch: true });
-  const y = para(g, 0, r2 + 72, 'Java SE 21 Thread.State의 한 worker 예입니다. 원본 Arthas 스냅샷: total 46 / RUNNABLE 14 / BLOCKED 0 / WAITING 14 / TIMED_WAITING 6 / internal 12. 이를 이 경로의 실측 변화로 사용하지 않고, WAITING 수만으로 장애를 판정하지 않습니다.', w, { color: C.muted });
+  const y = para(g, 0, r2 + 72, 'Java SE 21 · Thread.State', w, { color: C.muted });
   return { ops: g.ops, height: Math.ceil(y + 10), status: s.phase };
 }
 
@@ -1289,7 +1286,7 @@ function coroutineV2(w: number, t: number): LessonFrame {
   let y;
   if (narrow) { y = coroutinePanel(g, 0, 0, pw, t, false); g.line(0, y + 14, w, y + 14, { stroke: C.grid, lw: 1 }); y = coroutinePanel(g, 0, y + 30, pw, t, true); }
   else y = Math.max(coroutinePanel(g, 0, 0, pw, t, false), coroutinePanel(g, pw + gap, 0, pw, t, true));
-  y = para(g, 0, y + 30, '두 모델을 같은 메커니즘으로 그리지 않습니다. Coroutine의 일반 blocking 호출은 자동 suspend되지 않으며 context와 dispatcher에 따라 worker 선택이 달라집니다. 재개 worker B는 이 예의 선택입니다.', w, { color: C.muted });
+  y = para(g, 0, y + 30, 'Coroutine: 일반 blocking 호출은 자동 suspend되지 않음 · 재개 worker는 dispatcher에 따름', w, { color: C.muted });
   return { ops: g.ops, height: Math.ceil(y + 10), status: s.phase };
 }
 

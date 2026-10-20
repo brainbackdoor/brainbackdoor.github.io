@@ -102,9 +102,8 @@ function congestionV2(w: number, t: number): LessonFrame {
     label(g, cx + (cx > w - 70 ? -8 : 8), Y(cur[1]) - 10, `cwnd ${cur[1]}`, { size: 11, weight: 700, mono: true, align: cx > w - 70 ? 'right' : 'left', color: C.blueText });
   }
   g.text(x0, y0 + h + 22, '연출 시간 →', { size: 11, color: C.muted });
-  let y = para(g, 0, y0 + h + 54, `cwnd ${s.cwnd} SMSS = ${(s.cwnd * 1460).toLocaleString()} B`, w, { size: 13, weight: 600, color: C.blueText }) + 26;
-  for (const n of ['ssthresh 전: 새 데이터 ACK에 따른 증가', 'ssthresh 후: RTT당 약 1 SMSS 증가', 'RTO: FlightSize 10 → ssthresh 5 / cwnd 1']) y = para(g, 0, y, n, w, { color: C.muted }) + 21;
-  return frame(g, y - 10, s.phase);
+  const y = para(g, 0, y0 + h + 50, 'RTO: FlightSize 10 → ssthresh 5 · cwnd 1', w, { size: 12, color: C.muted });
+  return frame(g, y + 10, s.phase);
 }
 
 /* ---------- N06 RTO와 빠른 재전송: 같은 시간 눈금에서 대기 원인과 복구 시각을 비교 ---------- */
@@ -140,7 +139,7 @@ function retransmitV2(w: number, t: number): LessonFrame {
 function layersV2(w: number, t: number): LessonFrame {
   const g = draw(), s = state('N07', t), wide = w >= 560;
   const parts = [{ key: 'L2 header', short: 'L2', bytes: '14 B', lv: 3, f: 0.15 }, { key: 'IPv4 header', short: 'IPv4', bytes: '20 B', lv: 2, f: 0.15 }, { key: 'TCP header', short: 'TCP', bytes: '20 B', lv: 1, f: 0.15 }, { key: 'payload', short: 'payload', bytes: '1,460 B', lv: 0, f: 0.43 }, { key: 'FCS', short: 'FCS', bytes: '4 B', lv: 3, f: 0.12 }];
-  const attachAt = [0, 1700, 3000, 4300], bx = 0, bw = w, by = para(g, 0, 14, '한 프레임 안의 바이트 영역 · 너비는 바이트 비례가 아님', w, { size: 12, color: C.muted }) + 16, bh = 52;
+  const attachAt = [0, 1700, 3000, 4300], bx = 0, bw = w, by = para(g, 0, 14, '영역 너비는 바이트 비례 아님', w, { size: 12, color: C.muted }) + 16, bh = 52;
   let x = bx;
   const pos = parts.map(p => { const r = { x, w: bw * p.f }; x += bw * p.f; return r; });
   parts.forEach((p, i) => {
@@ -165,10 +164,9 @@ function layersV2(w: number, t: number): LessonFrame {
     label(g, cx, sy + 15, text, { size: 12, weight: mtu ? 700 : 600, color: mtu ? C.blueText : C.ink, alpha: al });
     sy += 34;
   }
-  let y = sy + 8;
-  if (s.level >= 3) y = para(g, 0, y, 'IP MTU 제외: L2 header / FCS', w, { size: 12, weight: 600, color: C.orangeText }) + 22;
-  if (!wide) y = para(g, 0, y, 'L2 header 14 B · IPv4 header 20 B · TCP header 20 B · payload 1,460 B · FCS 4 B', w, { size: 11, color: C.muted }) + 18;
-  return frame(g, y - 8, s.phase);
+  const y = sy + 8;
+  if (s.level >= 3) g.text(0, y, 'MTU 제외: L2 · FCS', { size: 12, weight: 600, color: C.orangeText, alpha: appear(t, 4300) });
+  return frame(g, y + 10, s.phase);
 }
 
 /* ---------- N08 관측값: 같은 경로 위에서 Reno는 손실 신호를, BBR은 전달률·최소 RTT를 읽는다 ---------- */
@@ -208,11 +206,11 @@ function bbrV2(w: number, t: number): LessonFrame {
   g.text(12, ay + 39, decided ? '관측: 3개의 중복 ACK → 손실 추정' : '관측: 손실 신호 대기', { size: 12, weight: 600, color: decided ? C.redText : C.muted });
   g.text(12, ay + 60, 'FlightSize 20 SMSS', { size: 12, mono: true });
   g.text(12, ay + 80, `ssthresh ${s.renoThreshold} SMSS`, { size: 12, mono: true, weight: decided ? 700 : 400, color: decided ? C.orangeText : C.ink, alpha: decided ? Math.max(0.4, a) : 1 });
-  let y = para(g, 0, ay + 118, '선택한 Reno 사건의 결정 기준만 비교합니다. CUBIC 성능 곡선은 그리지 않습니다.', w, { size: 12, color: C.muted }) + 30;
+  let y = ay + 118;
   g.line(0, y - 8, w, y - 8, { stroke: C.grid, lw: 1 });
   // BBRv1
   g.text(0, y + 14, 'BBRv1 · 관측 모델', { size: 13, weight: 700 });
-  pathRow(g, y + 30, w, t, s.gain, s.queueBytes / 125000, `설명용 큐 ${s.queueBytes.toLocaleString()} B`);
+  pathRow(g, y + 30, w, t, s.gain, s.queueBytes / 125000, `예시 큐 ${s.queueBytes.toLocaleString()} B`);
   const oy = y + 98;
   g.rect(0, oy, Math.min(w, 300), 52, { r: 8, fill: C.blueTint, stroke: C.blue, lw: 1.2 });
   g.text(12, oy + 21, '추정: BtlBw 100 Mbps / RTprop 40 ms', { size: 12, weight: 600, color: C.blueText });
@@ -251,7 +249,7 @@ function nagleV2(w: number, t: number): LessonFrame {
   }
   const y = (cols === 2 ? bottom : bottom * 2 + 40) + 30;
   g.circle(4, y - 4, 4, { fill: C.ink });
-  g.text(14, y, '앱의 두 번째 write · 두 패널 같은 시각', { size: 12, color: C.muted });
+  g.text(14, y, '두 번째 write · 동시', { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -270,11 +268,9 @@ function closeV2(w: number, t: number): LessonFrame {
     holds: [{ lane: 0, a: 4200, b: 7200, label: '2MSL', tone: 'blue' }, { lane: 0, a: 7200, b: 10000, label: '2MSL 재시작', tone: 'blue' }, { lane: 1, a: 3500, b: 6500, label: '재전송 타이머', tone: 'orange' }],
   });
   cursor(g, geo, t, 600, 10300);
-  const y = notes(g, geo.bottom + 30, w, [
-    [`능동: ${s.active} · 수동: ${s.passive}`, C.ink],
-    s.active === 'CLOSED' ? '압축한 2MSL 만료 → 이전 상태 해제' : s.active === 'TIME_WAIT' ? '같은 4-tuple의 이전 연결 상태 유지' : s.active === 'ESTABLISHED' ? '연결 사용 중 · 종료 시작 전' : 'FIN/ACK 교환 · 종료 진행 중',
-    'TIME_WAIT은 모든 로컬 포트를 잠그는 상태가 아닙니다.',
-  ]);
+  const y = geo.bottom + 30;
+  if (s.active === 'TIME_WAIT') g.text(0, y, 'TIME_WAIT: 같은 4-tuple 유지', { size: 12, color: C.muted });
+  else if (s.active === 'CLOSED') g.text(0, y, '2MSL 만료 → 상태 해제', { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -368,7 +364,7 @@ function connPanel(g: G, x: number, y: number, pw: number, t: number, reuse: boo
   });
   const by = top + H + 26;
   g.text(x, by, `GET ${st.requests} · handshake ${st.handshakes}`, { size: 13, weight: 700 });
-  para(g, x, by + 24, reuse && s.reuse.closed ? 'Connection: close → 종료' : 'HTTP/1.1 · 직렬 요청', pw, { size: 12, color: C.muted });
+  para(g, x, by + 24, 'HTTP/1.1 · 직렬 요청', pw, { size: 12, color: C.muted });
   return by + 34 - y;
 }
 function reuseV2(w: number, t: number): LessonFrame {
@@ -384,7 +380,7 @@ const ROWS: readonly (readonly [string, number, number, number, number, 'prep' |
 function waterfallV2(w: number, t: number): LessonFrame {
   const g = draw(), s = state('W01', t), narrow = w < 420, bx = narrow ? 0 : 112, bw = w - bx - 4, step = narrow ? 64 : 46, top = 58;
   const M = (ms: number) => bx + bw * ms / 540;
-  g.text(0, 14, '설명용 0–540 ms', { size: 12, weight: 600 });
+  g.text(0, 14, '예시 0–540 ms', { size: 12, weight: 600 });
   for (let ms = 0; ms <= 500; ms += 100) { g.line(M(ms), top - 14, M(ms), top + step * 7 - 10, { stroke: C.grid, lw: 1 }); g.text(M(ms), top - 20, ms, { size: 11, mono: true, align: ms === 0 ? 'left' : 'center', color: C.muted }); }
   const tone = { prep: [C.blueTint, C.blue], wait: [C.orangeTint, C.orange], body: [C.greenTint, C.green] } as const;
   // 구간 라벨(좁은 폭에서는 행 이름도)은 커서·TTFB 선보다 나중에 바탕과 함께 그려 선에 끊기지 않게 한다
@@ -415,9 +411,7 @@ function waterfallV2(w: number, t: number): LessonFrame {
   mark(320, 3900, 'TTFB 320 ms', C.blueText);
   names.forEach(f => f());
   for (const [x, yy, text, align] of spans) label(g, x, yy, text, { size: 11, mono: true, align, color: C.muted });
-  let y = top + step * 7 + (t >= 3900 ? 44 : 22);
-  y = para(g, 0, y, `TTFB ${s.firstByte ? '도착' : '대기'} / HTML ${s.htmlComplete ? '완료' : '수신 전 / 수신 중'}`, w, { size: 12, weight: 600, color: C.blueText });
-  return frame(g, y + 10, s.phase);
+  return frame(g, top + step * 7 + 18, s.phase);
 }
 
 /* ---------- W02 gzip: 같은 문서의 압축 → 전송 → 복원, 처리 구간과 전송 구간을 따로 ---------- */
@@ -443,7 +437,7 @@ function gzipV2(w: number, t: number): LessonFrame {
     // 압축 구간은 아래 시간 눈금과 같이 1600부터
     const stat = t < 1600 ? '전송 전' : gz ? (t < s.gzipSendAt ? '압축 중' : s.gzipReceived ? '수신 완료' : '전송 중') : (s.rawReceived ? '수신 완료' : '전송 중');
     g.text(lx, by - 20, `${(gz ? s.gzipBytes : s.rawBytes).toLocaleString()} B 전송 · 상태: ${stat}`, { size: 12, weight: 600, color: C.blueText });
-    const same = '같은 JSON 500행 · 원문 18,891 B', ty = by + 30 + (wrap(same, rx - mid - 6, 11).length - 1) * 18;
+    const same = '동일 JSON · 18,891 B', ty = by + 30 + (wrap(same, rx - mid - 6, 11).length - 1) * 18;
     if (done) para(g, mid + 6, by + 30, same, rx - mid - 6, { size: 11, weight: 600, color: C.greenText, alpha: appear(t, gz ? 3900 : 6900) });
     // 처리 구간과 전송 구간: 같은 시간 눈금
     const ry = ty + 26, X = (tt: number) => lx + (tt - T0) / (T1 - T0) * (rx - lx);
@@ -462,8 +456,7 @@ function gzipV2(w: number, t: number): LessonFrame {
   const h1 = lane(0, false);
   g.line(0, h1 + 18, w, h1 + 18, { stroke: C.grid, lw: 1 });
   const h2 = lane(h1 + 36, true);
-  const y = para(g, 0, h1 + 36 + h2 + 30, 'gzip 수신 완료 → decode → 사용', w, { size: 12, weight: 600, color: C.orangeText });
-  return frame(g, y + 10, s.phase);
+  return frame(g, h1 + 36 + h2 + 10, s.phase);
 }
 
 /* ---------- W04 ETag: 저장된 표현이 304에서 재사용되고 200에서 교체되는 자리 ---------- */
@@ -486,9 +479,7 @@ function etagV2(w: number, t: number): LessonFrame {
     g.text(x + 10, y + 37, sub, { size: 11, color: C.muted, alpha: a });
     if (wide && i) arrow(g, { x: geo.ax - 4, y: geo.Y(at) }, { x: cw + 4, y: y + 23 }, { stroke: col, lw: 1.2, alpha: a, size: 6 });
   });
-  let y = (wide ? geo.bottom : geo.bottom + 24 + 46) + 32;
-  y = notes(g, y, w, [[`저장 태그: ${s.changed.tag} · 304 후 본문 v1 재사용`, C.greenText], 'no-cache: 저장 가능, 사용 전 재검증', 'no-store: 새 응답 저장 금지', 'must-revalidate: stale 응답 재사용 금지', 'unsafe 성공 요청: 대상 URI 캐시 무효화']);
-  return frame(g, y + 10, s.phase);
+  return frame(g, (wide ? geo.bottom : geo.bottom + 24 + 46) + 10, s.phase);
 }
 
 /* ---------- W05 HTTP/2: 앞 바이트 범위 하나가 세 stream의 분배를 막는다 ---------- */
@@ -543,7 +534,6 @@ function statusV2(w: number, t: number): LessonFrame {
       g.text(bx + 10, ry + 51, missing ? '대상 없음' : 'endpoint · 결과 0건', { size: 11, color: missing ? C.orangeText : C.blueText });
       // 응답 문서: 4000에 나타난다
       const ra = appear(t, 4000), code = s.ready ? (missing ? '404' : '200') : '—';
-      g.text(x, ry + 92, '조회 결과 없음', { size: 11, color: C.muted });
       if (s.ready) pill(g, x + pw - 34, ry + 88, code, { size: 13, h: 26, min: 56, fill: missing ? C.orangeTint : C.blueTint, stroke: missing ? C.orange : C.blue, color: missing ? C.orangeText : C.blueText, alpha: ra, mono: true });
       else g.text(x + pw - 12, ry + 94, code, { size: 13, align: 'right', color: C.muted });
     });
@@ -551,7 +541,7 @@ function statusV2(w: number, t: number): LessonFrame {
     if (cols === 1 && i === 0) g.line(0, y0 + bottom + 12, w, y0 + bottom + 12, { stroke: C.grid, lw: 1 });
   }
   let y = (cols === 2 ? bottom : bottom * 2 + 30) + 30;
-  y = para(g, 0, y, '별도 전제: 컬렉션 리소스는 존재하고 검색 결과만 없음 → 200 + []', w, { size: 12, color: C.muted });
+  y = para(g, 0, y, '컬렉션 존재 · 검색 결과 0건 → 200 + []', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 

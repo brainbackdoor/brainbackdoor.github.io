@@ -15,7 +15,9 @@ describe('TCP static rendering', () => {
     expect((html.match(/<svg /g) ?? []).length).toBe(2);
     expect(html).toContain('RTO 만료');
     expect(html).toContain('ACK 1100');
-    expect(html).toContain('재전송 타이머를 정지합니다.');
+    expect(html).toContain('재전송 타이머가 정지합니다.');
+    expect(html).toContain('설명용 시간축');
+    expect(html).not.toContain('tcp-figure__description');
     expect((html.match(/aria-hidden="true"/g) ?? []).length).toBe(4); // Two decorative dots and two inactive canvases.
     expect(html).not.toContain('<button');
   });
@@ -30,7 +32,7 @@ describe('TCP static rendering', () => {
     expect(html).not.toContain('tcp-figure__description');
     expect(html).toContain('RTO 만료');
     expect(html).toContain('ACK 1100');
-    expect(html).toContain('실제 RTT·RTO 측정값이 아닌 설명용 시간축');
+    expect(html).not.toContain('<figcaption');
   });
 
   it('uses separate accessibility and SVG identifiers for multiple instances', () => {
@@ -43,7 +45,7 @@ describe('TCP static rendering', () => {
     expect(ids.length).toBeGreaterThan(2);
     expect(new Set(ids).size).toBe(ids.length);
     expect(html).toContain('Normal delivery and retransmission');
-    expect(html).toContain('The retransmission timer stops.');
+    expect(html).toContain('stops the retransmission timer.');
   });
 });
 
@@ -63,7 +65,7 @@ describe('lesson figures without hydration', () => {
     const html=renderToString(createElement('main',{},createElement(LessonFigure,{figureId:'T01'}),createElement(LessonFigure,{figureId:'T01'})));
     const ids=[...html.matchAll(/\sid="([^"]+)"/g)].map(m=>m[1]);
     expect(ids.length).toBeGreaterThan(4);expect(new Set(ids).size).toBe(ids.length);
-    expect(html).toContain('순환 대기');expect(html).toContain('http-nio-8080-exec-5/6');
+    expect(html).toContain('순환 대기');expect(html).toContain('exec-5');expect(html).toContain('exec-6');
   });
 });
 
@@ -121,7 +123,7 @@ describe('registry requiredText stays in the static scenes', () => {
 
 describe('B05 DB, SQL and Spark figures without hydration', () => {
   const cases = [
-    ['D01', 'binlog.000002', '비동기 복제(기본)'], ['D02', 'RoutingDataSource', '2회차: B · 적용 후'], ['D04', 'WHERE id BETWEEN 11000 AND 11009', '두 결과 모두 10행'],
+    ['D01', 'binlog.000002', '비동기 복제(기본)'], ['D02', 'RoutingDataSource', '2회차: B · 적용 후'], ['D04', 'WHERE id BETWEEN 11000 AND 11009', '같은 10행'],
     ['D05', '보조 인덱스 (age, id)', '테이블 접근 0회'], ['D06', 'Chef Anton\'s Gumbo Mix', '키 2에서 멈춤'], ['D07', 'LIMIT 150,10', '바깥 ORDER BY'],
     ['D08', 'Global Buffer', 'Too many connections'], ['D09', 'Camembert Pierrot', '122199.74'], ['S01', 'Low-level APIs', 'Kubernetes'],
     ['S02', 'Partition 2', '3 + 3 = 6'], ['S04', 'Education#18 AS education#238', '원문 출력 없음'], ['S05', '건넌 행 8', '건넌 행 5'],
@@ -219,6 +221,20 @@ describe('figures stay out of the search index', () => {
       expect(html, figureId).toMatch(/^<figure[^>]*data-pagefind-ignore/);
     }
     for (const variant of ['default', 'preview'] as const) expect(renderToString(createElement(TcpRecoveryFigure, { variant })), variant).toMatch(/^<figure[^>]*data-pagefind-ignore/);
+  });
+});
+
+describe('figures keep repeated narration off the reading surface', () => {
+  it('leaves every lesson as a drawing with optional collapsed steps, without repeated status or production captions', () => {
+    for (const { figureId } of registry.figures) {
+      const html = renderToString(createElement(LessonFigure, { figureId: figureId as Parameters<typeof LessonFigure>[0]['figureId'] }));
+      expect(html, figureId).not.toContain('lesson-status');
+      expect(html, figureId).not.toContain('lesson-lock-ids');
+      expect(html, figureId).not.toContain('<figcaption');
+      expect(html, figureId).toContain('<summary>과정 보기</summary>');
+      expect(html, figureId).not.toMatch(/<details[^>]*\sopen(?:[\s=>])/);
+      expect((html.match(/<svg /g) ?? []).length, figureId).toBe(8);
+    }
   });
 });
 

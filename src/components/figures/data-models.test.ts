@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { D02, D04, D06, D09_Q1, D09_Q2, D09_Q3, S02, S05, S05_AGES, d01, d02, d04, d05, d06, d08, d09, dataInfo, s02, s05, s06, type DataFigureId } from './data-models';
+import { D02, D04, D05, D05_INDEX, D06, D08, D09_Q1, D09_Q2, D09_Q3, S02, S05, S05_AGES, S06, d01, d02, d04, d05, d06, d08, d09, dataInfo, s02, s05, s06, type DataFigureId } from './data-models';
 import { dataRenderers } from './dataCanvas';
 import { C, type DrawOp, type LessonFrame } from './lessonCanvas';
 
@@ -24,7 +24,8 @@ describe('B05 DB and Spark event models keep the source meaning', () => {
       if (s.replicaValue === 'B') expect(s.relayEvent).toBe(true);
     }
     expect(d01(4300)).toMatchObject({ relayEvent: true, replicaValue: 'A' });
-    expect(said(dataRenderers.D01(650, info('D01').final))).toContain('비동기 복제(기본)');
+    expect(info('D01').caption).toContain('비동기(기본)');
+    for (const label of ['커밋 OK', 'relay log', 'SQL(applier) 스레드']) expect(said(dataRenderers.D01(650, info('D01').final))).toContain(label);
   });
 
   it('D02 routes by readOnly and reads the old value before replication applies', () => {
@@ -51,7 +52,7 @@ describe('B05 DB and Spark event models keep the source meaning', () => {
 
   it('D06 reads the five consecutive ProductID=1 entries and stops at key 2', () => {
     expect(d06(D06.stop)).toMatchObject({ read: 5, indexStopped: true });
-    expect(said(dataRenderers.D06(650, info('D06').final))).toContain('두 경우 결과는 같은 5행: 100 · 124 · 185 · 270 · 283');
+    expect(said(dataRenderers.D06(650, info('D06').final))).toContain('같은 5행: 100 · 124 · 185 · 270 · 283');
   });
 
   it('D08 holds four illustrative connections and rejects the fifth with an error', () => {
@@ -144,7 +145,7 @@ describe('B05 review fixes keep the source meaning and the event timing', () => 
     expect(d02(D02.write[2]).masterValue).toBe('B');
     const f = dataRenderers.D02(650, info('D02').final);
     expect(textOp(f, 'readOnly 아님')).toBeTruthy();
-    expect(textOp(f, '쓰기 (설명용)')).toBeTruthy();
+    expect(textOp(f, '쓰기')).toBeTruthy();
     const ts = texts(f).map(o => o.text);
     expect(ts[ts.indexOf('findLines()') + 1]).toBe('readOnly 아님');
   });
@@ -154,6 +155,43 @@ describe('B05 review fixes keep the source meaning and the event timing', () => 
     expect([d06(t).read, d06(t).arrived]).toEqual([1, 0]);
     expect(textOp(dataRenderers.D06(650, t), '1 · 100')!.color).not.toBe(C.greenText);
     expect(textOp(dataRenderers.D06(650, D06.read + D06.hop), '1 · 100')!.color).toBe(C.greenText);
+  });
+
+  it('D05 counts SELECT * results only after the lookup dot arrives at the table', () => {
+    const inRange = D05_INDEX.filter(([age]) => age >= 30 && age <= 39);
+    for (const w of [650, 284]) for (let i = 0; i < inRange.length; i++) {
+      const readAt = D05.read + i * D05.gap, arriveAt = readAt + D05.hop;
+      for (const t of [readAt, arriveAt - 1, arriveAt]) {
+        const s = d05(t), labels = texts(dataRenderers.D05(w, t)).filter(o => o.text.startsWith('반환 id '));
+        expect(labels.map(o => o.text), `${w} ${t}`).toEqual([
+          `반환 id ${s.coveringRows} · 테이블 접근 0회`,
+          `반환 id ${s.tableRows} · 테이블 접근 ${s.tableAccess}회`,
+        ]);
+        expect(s.tableRows).toBe(t < arriveAt ? i : i + 1);
+      }
+    }
+  });
+
+  it('D08 keeps active buffers in their slots when sort ends', () => {
+    for (const w of ARTICLE_WIDTHS) {
+      const before = texts(dataRenderers.D08(w, D08.sort[1] - 1)), after = texts(dataRenderers.D08(w, D08.sort[1]));
+      expect(before.find(o => o.text === 'sort')).toBeTruthy();
+      expect(after.find(o => o.text === 'sort')).toBeUndefined();
+      for (const name of ['Global Buffer', 'C1', 'C2', 'C3', 'C4', 'join']) {
+        const a = before.find(o => o.text === name)!, b = after.find(o => o.text === name)!;
+        expect([a.x, a.y], `${w} ${name}`).toEqual([b.x, b.y]);
+      }
+      expect(d08(D08.sort[1])).toMatchObject({ sort: false, join: true, conns: 4 });
+    }
+  });
+
+  it('S06 increments original reads on arrival and keeps partition recomputation separate', () => {
+    for (const w of [650, 284]) {
+      for (const t of [0, S06.read[0], S06.read[1] - 1]) expect(said(dataRenderers.S06(w, t))).toContain('원본 읽기 0회');
+      expect(said(dataRenderers.S06(w, S06.read[1]))).toContain('원본 읽기 1회');
+      expect(said(dataRenderers.S06(w, S06.recompute[1] - 1))).not.toContain('P2 재계산 1회');
+      expect(said(dataRenderers.S06(w, S06.recompute[1]))).toContain('원본 읽기 1회 + P2 재계산 1회');
+    }
   });
 
   it('S05 counts a row as moved only when its token reaches Spark', () => {

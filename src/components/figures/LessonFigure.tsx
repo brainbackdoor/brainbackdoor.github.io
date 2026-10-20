@@ -59,9 +59,6 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
   const failed=useRef(false);
   const [ready,setReady]=useState(false);
   const [width,setWidth]=useState(0);
-  const finalStatus=renderer(wideWidth,info.final).status;
-  const [status,setStatus]=useState(finalStatus);
-  const lastStatus=useRef(finalStatus);
   const staticFrames=useMemo(()=>({wide:renderer(width||wideWidth,info.final),narrow:renderer(width||narrowWidth,info.final)}),[renderer,width,wideWidth,narrowWidth,info.final]);
 
   const frame=useCallback((elapsed:number)=>{
@@ -71,11 +68,10 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
       const scene=renderer(current.width,Math.min(elapsed,info.final));
       paintLesson(current.context,scene,current.width,current.dpr,current.font,current.mono);
       canvas.dataset.elapsed=String(Math.round(elapsed));
-      if(lastStatus.current!==scene.status){lastStatus.current=scene.status;setStatus(scene.status);}
     } catch {
-      failed.current=true;setReady(false);setStatus(finalStatus);lastStatus.current=finalStatus;
+      failed.current=true;setReady(false);
     }
-  },[renderer,info.final,finalStatus]);
+  },[renderer,info.final]);
   const playback=useFigurePlayback({containerRef,durationMs:info.duration,finalElapsedMs:info.final,enabled:ready,onFrame:frame});
 
   useEffect(()=>{
@@ -122,16 +118,14 @@ export default function LessonFigure({ figureId, sourceBlockId }: {figureId:Figu
     <div className="lesson-static lesson-static--narrow"><LessonSvg frame={renderer(width||narrowWidth,elapsed)} width={width||narrowWidth} title={title}/></div>
   </>;
   const style={'--lesson-wide-height':`${staticFrames.wide.height}px`,'--lesson-narrow-height':`${staticFrames.narrow.height}px`} as CSSProperties;
-  return <AnimatedFigure containerRef={containerRef} title={info.title} caption={info.caption} running={playback.running} figureId={figureId} sourceBlockId={sourceBlockId}>
+  return <AnimatedFigure containerRef={containerRef} title={info.title} running={playback.running} figureId={figureId} sourceBlockId={sourceBlockId}>
     <div className={`lesson-plot lesson-layout--${figureId}`} ref={plotRef} data-ready={ready&&!playback.reducedMotion} style={style}>
       {staticPair(info.final,info.title)}
       <canvas ref={canvasRef} aria-hidden="true" />
     </div>
     <p className="sr-only" hidden={!ready||playback.reducedMotion}>완료 장면 설명. {info.notes[2]}</p>
-    <p className="lesson-status">{ready?status:finalStatus}</p>
-    {figureId==='T01'&&<p className="lesson-lock-ids">L1: 0x00000005c0c4b1e8<br/>L2: 0x00000005c0c4b1f8<br/>exec-5/6: http-nio-8080-exec-5/6</p>}
     <details className={`lesson-steps lesson-layout--${figureId}`}>
-      <summary>단계별 장면</summary>
+      <summary>과정 보기</summary>
       {info.steps.map((elapsed,i)=><div className="lesson-step" key={elapsed}>
         <p>{i+1}. {info.notes[i]}</p>
         <div className="lesson-step-plot" style={{'--lesson-wide-height':`${renderer(width||wideWidth,elapsed).height}px`,'--lesson-narrow-height':`${renderer(width||narrowWidth,elapsed).height}px`} as CSSProperties}>{staticPair(elapsed,`${info.title} · ${i+1}`)}</div>

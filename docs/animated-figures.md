@@ -2194,3 +2194,216 @@ B06 조사 노트(`infra-ops-v2/SOURCES-A·B·C.md`)의 비밀·식별자 목록
 - **병합과 push:** fast-forward(001caeb → `5c12963`). 병합된 main에서 `pnpm test` 334, build 332, 원문 대조 문제 0을 다시 확인하고 push했다.
 - **워크플로:** "Deploy to GitHub Pages" 실행 39137733626, headSha `5c12963`, build·deploy success.
 - **공개 사이트 확인:** 가린 이미지 17장과 메타데이터를 덜어낸 사진 4장이 공개 주소에서 로컬 파일과 바이트까지 같다(21/21). L08 공개 페이지의 북마크 링크 글자는 '기록 폴더 - Google Drive' 18개이고, 날짜 꼴 링크 글자는 0개다.
+
+
+## 35. 현재 애니메이션 설계 원칙 재검토 (2026-10-20)
+
+**검토 기준: 현재 HEAD `f5517bc`. 결과: 본문 도해 74종 중 개선 권고 8종, 표시 의도 확인 1종, 이번 기준에서 추가 문제를 찾지 못한 65종.** 검토 기록만 추가했고 제품 코드·본문·배포는 변경하지 않았다. 개선 완료 기록이 아니다.
+
+### 기준과 검토 범위
+
+[애니메이션을 설계하는 방법](https://kciter.so/posts/how-to-design-animation/)의 재현 가능한 그래프·구간 분해·입력 의존성·파이프라인·상태 전환·속성 분리·방향 전환을 기준으로 적용했다. 글은 의무 규격이 아니므로 아래 평가는 이 블로그의 설명 목적에 맞춘 판단이다. 스프링·물리·랜덤·역재생을 모든 도해에 요구하지 않는다. 패킷의 일정한 이동이나 의미 값의 이산 변경 자체는 결함으로 세지 않았다.
+
+- 레지스트리 74개 ID와 MDX의 실제 사용 위치를 대조했다. 별도 TCP 정상/손실 장면·홈 preview, 독서 진행바·호버 전환·원본 미디어의 포함 방식도 확인했다.
+- 74종 각각의 모델·렌더러와 단계별 3장면(도해 폭 560px, 총 222장면)을 검토했다. 비교 이미지 19장은 검토용 렌더러 출력이며 실제 본문 스크린샷이 아니다.
+- 74종의 650/346/259px 전 구간을 25ms 간격으로 평가해 높이 변화를 조사했다. 가변 높이는 N07·W01뿐이었다. 추가로 데이터/과정 19종의 350/650px 20ms 간격 20,098프레임, 시스템/인프라 33종의 3폭·9시점 891표본에서 유효 좌표·같은 시간의 재현성을 확인했다. 순수 프레임 재현성만으로 Canvas의 이전 그림까지 지워지는지는 알 수 없다.
+- 브라우저에서 실제 홈과 W01 본문을 확인했다. 문제 후보 8종 및 S06은 현재 production renderer와 `paintLesson`을 그대로 호출하는 별도 검토 화면에서 지정 시점과 반복 경계를 재현했다. 검토 도구의 Canvas도 제품처럼 완료 장면 높이로 고정했다.
+- 공개 W01 본문의 컴포넌트 주소 `/_astro/LessonFigure.Dh69m-1N.js`는 현재 로컬 `dist`의 번들명과 같았다. 모든 공개 페이지의 동작을 전부 재생·검증했다는 뜻은 아니다.
+- 기존 `pnpm test`: **17개 파일, 334개 테스트 통과**. 이번에 발견한 잔상·위치 점프·라벨 전환은 기존 테스트 통과와 별개다.
+
+### 개선 권고와 재현 조건
+
+| 항목 | 대상·시점 | 관찰과 기준 적용 | 개선 방향 |
+| --- | --- | --- | --- |
+| M01 · 우선 | N07, W01 · 첫 완료 후 다음 루프 초반 | Canvas는 최종 높이를 유지하지만 현재 `frame.height`만 지운다. N07은 4300ms, W01은 3900ms부터 22px 커져, 다음 루프의 작은 프레임에서 이전 하단 문구가 남는다. W01은 `TTFB 대기 / HTML 수신 전 / 수신 중` 아래 `TTFB 도착 / HTML 완료`가 동시에 보인다. N07은 초기 payload 장면에 이전 `IP MTU 제외` 문구가 남는다. 같은 시간의 화면이 이전 재생 이력에 의존한다. | 실제 Canvas 전체 높이를 지우고 하단 영역을 고정한다. 첫 프레임만이 아니라 완료→초기 프레임을 연속으로 그리는 검사를 추가한다. |
+| M02 · 보통 | W01 · 3900ms | TTFB 마커가 등장하면서 이미 보이던 하단 상태 문구가 22px 순간 이동한다. 이벤트 라벨 변경과 배치 위치가 같은 분기에 결합되어 있다. | 마커·상태 영역의 자리를 처음부터 확보하거나 위치 트랙을 따로 둔다. |
+| M03 · 보통 | N01 · 4800ms 및 후속 수신 시점 | 새 수신 이력 추가 때 기존 토큰의 목표 위치가 한 칸씩 바뀐다. 650px에서 4799→4800ms의 기존 1번 토큰 x=299→275px로 24px 점프한다. 기존 토큰의 도착 보간은 이미 끝나 있어 새 목표로 즉시 이동한다. | 새 토큰의 등장과 기존 이력 재배치를 별도 트랙으로 구성하거나 이력 슬롯을 고정한다. |
+| M04 · 보통 | C07 · 8800~9050ms | 제거되는 상자를 소멸시키면서 내용은 이미 새 `removed` 상태로 계산한다. 직전 `CMD / running`이 `CMD 대기 / removed`로 바뀐 뒤 사라져 재대기처럼 읽힌다. 8900ms의 투명도는 0.6이다. | 소멸 중에는 제거 직전 표현을 보존하거나 별도 removing 표현을 둔다. 의미 상태와 나가는 장면의 표현 상태를 분리한다. |
+| M05 · 보통 | D05 · 1500~1999ms 등 | `SELECT *` 쪽의 `반환 id 1 · 테이블 접근 0회`가 테이블 도착(2000ms)보다 먼저 보인다. 인덱스에서 id를 읽었다는 뜻일 수 있어 데이터 오류로 단정하지 않는다. 다만 SELECT *의 반환으로 읽히는 라벨과 이동 단계가 어긋난다. | 인덱스 항목 수라면 `읽은 인덱스 id`로 명확히 하고, 결과 반환 수라면 테이블 도착 상태 `tableRows`에 연결한다. |
+| M06 · 보통 | D08 · 5600ms | sort 버퍼가 종료될 때 아직 6000ms까지 활성인 join 버퍼가 즉시 왼쪽으로 이동한다. 650px의 join 중심 x=594.25→545.75px로 48.5px 점프한다. | 버퍼별 고정 슬롯을 사용하거나 재배치 위치를 독립적으로 보간한다. |
+| M07 · 낮음 | O03 모바일 3200~3800ms / O05 데스크톱 3200~4000ms | 안내선은 꺾인 route, 이동 점은 양끝을 잇는 직선 travel을 사용한다. O03 폭346·3500ms에서 점은 안내 수직선보다 14px 안쪽으로 이동한다. O05 폭650·3400ms에서도 꺾인 경로를 가로지른다. 관계를 설명하는 선과 움직임이 서로 다르다. | 같은 경로 좌표 배열을 route와 `travelAlong`에 공유하고 구간 길이를 기준으로 진행한다. |
+
+직접 확인한 소스 위치:
+
+- M01: [paintLesson의 지우기 범위](/Users/dong-gyu/Workspaces/blog/src/components/figures/lessonCanvas.ts:597), [Canvas 크기 고정](/Users/dong-gyu/Workspaces/blog/src/components/figures/LessonFigure.tsx:99), [N07 하단 영역](/Users/dong-gyu/Workspaces/blog/src/components/figures/networkCanvas.ts:169)
+- M02: [W01 하단 위치 분기](/Users/dong-gyu/Workspaces/blog/src/components/figures/networkCanvas.ts:418)
+- M03: [N01 기존 이력의 목표 위치](/Users/dong-gyu/Workspaces/blog/src/components/figures/lessonCanvas.ts:366)
+- M04: [C07 제거 중 내용 계산](/Users/dong-gyu/Workspaces/blog/src/components/figures/systemCanvas.ts:911)
+- M05: [D05 반환 라벨](/Users/dong-gyu/Workspaces/blog/src/components/figures/dataCanvas.ts:232)
+- M06: [D08 조건부 버퍼 배치](/Users/dong-gyu/Workspaces/blog/src/components/figures/dataCanvas.ts:329)
+- M07: [O03 경로와 이동](/Users/dong-gyu/Workspaces/blog/src/components/figures/infraCanvas.ts:456), [O05 경로와 이동](/Users/dong-gyu/Workspaces/blog/src/components/figures/infraCanvas.ts:514)
+
+**Q01 · S06 표시 의도 확인:** 0ms부터 `원본 읽기 1회 · 메모리 재사용 0회`가 보이지만 원본 읽기는 1000~1400ms에 진행한다. 다른 횟수처럼 누적값이라면 읽기 완료 사건에 연결해야 한다. 미리 보여주는 비용 요약이라면 그 뜻을 라벨로 밝히는 편이 좋다. [dataCanvas.ts:674](/Users/dong-gyu/Workspaces/blog/src/components/figures/dataCanvas.ts:674). 개선 권고 8종에는 넣지 않았다.
+
+### 에셋별 확인 목록
+
+아래 `적합`은 이번 설계 원칙·표본 검토에서 추가 문제를 찾지 못했다는 뜻이다. 모든 환경의 무결함 보장이 아니다. 각 ID는 현재 본문 사용 위치로 연결한다.
+
+| ID | 에셋 | 판정 | 확인 사항 |
+| --- | --- | --- | --- |
+| [N01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/95400228-c9fb-4397-ac45-281f2a6c7446.mdx:41) | 버퍼 크기와 대기 | 개선 권고 | 수신 이력 추가 때 기존 토큰이 24px 순간 이동(M03) |
+| [N02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/95400228-c9fb-4397-ac45-281f2a6c7446.mdx:81) | RTT와 전송 윈도 | 적합 | 전송량과 ACK 귀환을 별도 구간으로 구성 |
+| [N03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/tcp-error-recovery.mdx:105) | 수신 윈도와 전송 재개 | 적합 | 수신·윈도 통지·앱 읽기·전송 재개를 사건 순서에 연결 |
+| [N04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/tcp-error-recovery.mdx:73) | 연결 수립과 윈도 통지 | 적합 | 메시지 도착 시점에 연결 상태 변경 |
+| [N05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/tcp-error-recovery.mdx:251) | Slow start와 혼잡 회피 | 적합 | 모델의 cwnd 사건을 이산 계단으로 표시 |
+| [N06](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/tcp-error-recovery.mdx:295) | RTO와 빠른 재전송 | 적합 | 중복 ACK와 RTO 경로를 분리 |
+| [N07](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/tcp-error-recovery.mdx:227) | 프레임·MTU·MSS | 개선 권고 | 루프 재시작 뒤 이전 하단 문구 잔류(M01) |
+| [N08](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/tcp-error-recovery.mdx:321) | 혼잡 제어의 관측값 | 적합 | gain 단계·큐 변화·관측 사건 분리 |
+| [N09](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/02773af9-5c93-43b5-89b4-bbab94536195.mdx:69) | 작은 쓰기와 ACK 대기 | 적합 | 두 번째 쓰기와 ACK 대기 관계 유지 |
+| [N10](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/beae0ed2-e020-4681-abac-fdb9e5f12c5f.mdx:35) | 마지막 ACK 유실과 TIME_WAIT | 적합 | FIN/ACK와 타이머 재시작 조건 명확 |
+| [N11](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/02773af9-5c93-43b5-89b4-bbab94536195.mdx:93) | TCP의 순서 보장과 HOL | 적합 | 수신 버퍼와 앱 전달 상태 분리 |
+| [N12](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/beae0ed2-e020-4681-abac-fdb9e5f12c5f.mdx:75) | TCP keepalive의 응답과 실패 | 적합 | idle·probe·interval·실패 대기 구간 분해 |
+| [N13](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/beae0ed2-e020-4681-abac-fdb9e5f12c5f.mdx:87) | HTTP 연결 재사용 | 적합 | handshake와 요청 왕복을 구별 |
+| [W01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/80dbc9d7-ba32-4220-9b39-b536172264f2.mdx:43) | 첫 바이트와 리소스 요청 | 개선 권고 | 반복 초기화 잔상 및 3900ms 하단 문구 점프(M01/M02) |
+| [W02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/80dbc9d7-ba32-4220-9b39-b536172264f2.mdx:108) | gzip 전송과 복원 | 적합 | 압축·전송·해제를 독립 구간으로 조합 |
+| [W03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/80dbc9d7-ba32-4220-9b39-b536172264f2.mdx:75) | Proxy cache · MISS → HIT | 적합 | 응답을 모두 받은 후 저장, 다음 요청에서 HIT |
+| [W04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/8e230e0d-431c-4ffe-becd-c60c1bea4615.mdx:47) | ETag 재검증과 표현 변경 | 적합 | 304 재사용과 새 본문 교체 시점 분리 |
+| [W05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/80dbc9d7-ba32-4220-9b39-b536172264f2.mdx:193) | HTTP/2 스트림과 TCP 손실 | 적합 | TCP 버퍼 대기와 HTTP/2 분배 분리 |
+| [W06](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/14b691d7-7fd7-4e95-8787-49e06111755f.mdx:17) | 조회 결과 없음의 두 전제 | 적합 | 요청과 전제별 응답을 독립 표현 |
+| [C01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6c414539-eeb5-402c-a18e-3eb02209e487.mdx:69) | VM과 공유 커널 | 적합 | 단계 강조와 커널 수 정보를 분리 |
+| [C02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6c414539-eeb5-402c-a18e-3eb02209e487.mdx:173) | CLI부터 컨테이너 시작까지 | 적합 | 요청→daemon→이미지→create→start 순서 유지 |
+| [C03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6c414539-eeb5-402c-a18e-3eb02209e487.mdx:267) | 같은 프로세스의 두 PID와 root | 적합 | PID 등장과 root 경계 이동을 별도 구간으로 구성 |
+| [C04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6c414539-eeb5-402c-a18e-3eb02209e487.mdx:398) | 읽기 전용 이미지와 쓰기 계층 | 적합 | 기존 이미지 보존, 파일·새 읽기층·추가 변경 분리 |
+| [C05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6c414539-eeb5-402c-a18e-3eb02209e487.mdx:509) | 공개 포트에서 bridge와 veth까지 | 적합 | 요청/응답이 길이 기반의 동일 경로를 진행 |
+| [C06](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6c414539-eeb5-402c-a18e-3eb02209e487.mdx:662) | 컨테이너 교체 뒤에도 남는 데이터 | 적합 | 컨테이너 제거와 저장소 유지, 재읽기 구별 |
+| [C07](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/9fcd92ce-d741-48a9-a0f5-4951c8400bd7.mdx:47) | 빌드와 시작·중지·재시작·제거 | 개선 권고 | 제거 중 CMD 대기 상태가 잠깐 나타남(M04) |
+| [C08](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6c414539-eeb5-402c-a18e-3eb02209e487.mdx:41) | 개별 변경과 같은 이미지로 교체 | 적합 | 기존 서버 소멸과 새 서버 교체를 조합 |
+| [C09](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/b47f2941-5949-4368-890b-ca7825b419b9.mdx:195) | 쉘·프로세스·로그와 SIGHUP | 적합 | 세션 종료·신호 도착·프로세스 결과 분리 |
+| [C10](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/b47f2941-5949-4368-890b-ca7825b419b9.mdx:305) | 원본 10개 명령과 관찰 지표 | 적합 | 명령별 관찰선과 순차 강조 분리 |
+| [T01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/f78dedef-13f8-4ac2-b216-51600ce03d07.mdx:75) | 두 스레드의 교착 | 적합 | 점유·대기·순환 상태와 나타남 분리 |
+| [T02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/f78dedef-13f8-4ac2-b216-51600ce03d07.mdx:203) | Thread 상태와 monitor 소유권 | 적합 | 스레드 위치 전환과 monitor 소유권 분리 |
+| [T03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/8e230e0d-431c-4ffe-becd-c60c1bea4615.mdx:91) | 한 Servlet 인스턴스의 생명주기 | 적합 | 인스턴스·init/service/destroy를 공통 시간축에 표현 |
+| [T04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/8e230e0d-431c-4ffe-becd-c60c1bea4615.mdx:83) | 공유 counter의 lost update | 적합 | read/write 이동과 실제 counter 갱신을 구별 |
+| [T05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/8e230e0d-431c-4ffe-becd-c60c1bea4615.mdx:175) | 실행 슬롯과 대기·완료 작업 | 적합 | 대기·실행·완료를 분리하고 작업 정체성 유지 |
+| [T06](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/springcamp-2026.mdx:51) | carrier 재사용과 DB connection 상한 | 적합 | carrier·monitor·DB의 서로 다른 점유 기간 유지 |
+| [T07](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/2024-retrospect.mdx:37) | Virtual Thread와 Coroutine의 대기·재개 | 적합 | 대기·보관·재개 위치를 독립 표현 |
+| [T08](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/95248237-c6a4-4489-a51e-6c548c0c103c.mdx:71) | 뷰·List 복사·Item 복사 | 적합 | 참조·복사·변경 전파·거절을 독립 트랙으로 구성 |
+| [D01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/1101a2b0-66bf-4b74-a95d-c2c98492093b.mdx:31) | 복제 로그 전달 | 적합 | 쓰기·응답·로그 수신·적용을 구간별 연결 |
+| [D02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/1101a2b0-66bf-4b74-a95d-c2c98492093b.mdx:143) | 읽기/쓰기 라우팅과 복제 지연 | 적합 | 라우팅 결정과 DB 도착·결과를 구별 |
+| [D03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708.mdx:239) | 복합 인덱스의 열 순서 | 적합 | 행 확인과 읽기 커서의 사건 시점 일치 |
+| [D04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708.mdx:70) | 컬럼 가공과 인덱스 스캔 | 적합 | 인덱스 탐색과 전체 스캔·발견 결과 구별 |
+| [D05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708.mdx:220) | covering index와 테이블 왕복 | 개선 권고 | SELECT *의 반환 id 라벨이 테이블 도착보다 선행(M05) |
+| [D06](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708.mdx:305) | 조인 키 인덱스와 드리븐 탐색 | 적합 | 인덱스 읽기와 테이블 도착 상태 분리 |
+| [D07](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708.mdx:389) | 모수 줄이기: 먼저 줄이고 조인 | 적합 | 비교 경로의 처리 단계·양을 독립 구성 |
+| [D08](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708.mdx:537) | MySQL 메모리와 연결 한도 | 개선 권고 | sort 종료 때 활성 join 버퍼가 즉시 재배치(M06) |
+| [D09](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6ad28373-149c-4d45-b835-8dfb853db638.mdx:65) | 집계·정렬 정답 읽기 | 적합 | 결과 행 등장과 순위 연결을 독립 구성 |
+| [S01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/833771f4-d722-4c80-8967-2f0024885bff.mdx:29) | Spark의 저장소·API·작업 영역 | 적합 | 계층·언어·영역·읽기/쓰기 구간 분해 |
+| [S02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/c9edaff4-1f8b-48aa-a092-730b932155fb.mdx:21) | DataFrame과 partition | 적합 | 논리 분할·task 배정·집계·Driver 결과 구별 |
+| [S03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/c9edaff4-1f8b-48aa-a092-730b932155fb.mdx:284) | Spark · 지연 실행 | 적합 | lineage·action·map·filter·count 순서 분리 |
+| [S04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/c9edaff4-1f8b-48aa-a092-730b932155fb.mdx:165) | 실행계획 최적화 | 적합 | 계획 생성·가지치기·최적화 계획 등장 구별 |
+| [S05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/c9edaff4-1f8b-48aa-a092-730b932155fb.mdx:230) | predicate pushdown | 적합 | 필터 이동과 저장소 필터·결과 전송 분리 |
+| [S06](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/833771f4-d722-4c80-8967-2f0024885bff.mdx:103) | 반복 처리와 cache | 표시 의도 확인 | 시작 전 원본 읽기 1회가 누적값인지 최종 예고인지 불명확(Q01) |
+| [A01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/1824fb4e-415b-4a61-8ec4-76e5102ee32f.mdx:27) | 망 구성과 접근 경로 | 적합 | 허용/차단 흐름의 표시선과 이동이 같은 경로 사용 |
+| [A02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/0798ec80-70e7-441d-a238-2dc640122bce.mdx:276) | Reverse Proxy와 TLS 종료 | 적합 | redirect→TLS→요청→응답의 순서 유지 |
+| [A03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/0798ec80-70e7-441d-a238-2dc640122bce.mdx:186) | DNS-01 챌린지와 인증서 적용 | 적합 | 발급 조건과 인증서 적용을 별도 구간으로 구성 |
+| [A04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/0798ec80-70e7-441d-a238-2dc640122bce.mdx:329) | 프로필별 설정 파일과 DB | 적합 | 프로필별 설정·DB 강조를 순차 조합 |
+| [A05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/0798ec80-70e7-441d-a238-2dc640122bce.mdx:512) | 배포 스크립트의 흐름과 중단 구간 | 적합 | 변경 감지·종료·기동·확인, 중단 구간 구별 |
+| [A06](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/b065c018-114e-4897-9a53-98115cd9b382.mdx:438) | ASG 증설·대상 등록·축소 | 적합 | 등록·healthy 조건에 따른 트래픽 표현 |
+| [A07](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/dfe2e77f-066e-46e9-a575-ed1e65157321.mdx:27) | 모듈·DB·배포본 연결 | 적합 | 명령·모듈·DB 관계를 사건별 연결 |
+| [O01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/6660b3f1-de92-4053-b3e0-08a84ea34432.mdx:118) | 로그·메트릭 수집 경로 | 적합 | 수집 레인·대시보드·누락을 독립 표현 |
+| [O02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/ad9d2017-f854-4a97-bddb-6a8981dc14c1.mdx:465) | 한 실행의 지표를 함께 보기 | 적합 | 공통 시간 커서와 실행 전체 통계를 구별 |
+| [O03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/1ca5dd49-2787-4f09-b88b-8e5881aa0b15.mdx:83) | APM agent·collector·저장·web | 개선 권고 | 모바일 span 점이 표시 경로를 이탈(M07) |
+| [O04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/1ca5dd49-2787-4f09-b88b-8e5881aa0b15.mdx:113) | 호출 트리와 구간 시간 | 적합 | 실측 구간 시간과 후속 오류 설명을 구별 |
+| [O05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/ad9d2017-f854-4a97-bddb-6a8981dc14c1.mdx:128) | 부하 발생기와 대상 서버 | 개선 권고 | 데스크톱 GET 점이 꺾인 경로를 가로지름(M07) |
+| [O06](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/dfe2e77f-066e-46e9-a575-ed1e65157321.mdx:299) | Smoke·Load·Stress 부하 모양 | 적합 | 시간-VU 원 그래프를 선형 보간하여 의미 유지 |
+| [O07](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/ad9d2017-f854-4a97-bddb-6a8981dc14c1.mdx:607) | DAU·RPS·VU 계산 | 적합 | 계산 단계·요청·think time·결과 구간 분해 |
+| [O08](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/dfe2e77f-066e-46e9-a575-ed1e65157321.mdx:497) | 증설과 서킷 브레이커 | 적합 | OPEN/HALF/CLOSED 조건과 호출 차단 구별 |
+| [O09](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/dfe2e77f-066e-46e9-a575-ed1e65157321.mdx:553) | 동기·비동기와 큐 | 적합 | 사건 설명을 위한 시간 정지와 큐 작업 구별 |
+| [E01](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/9178ac06-ae33-4a96-a4cd-49c96ea28351.mdx:23) | ATDD 과정 | 적합 | 경로 도착과 노드 활성화, 말풍선 시간차 구성 |
+| [E02](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/9178ac06-ae33-4a96-a4cd-49c96ea28351.mdx:622) | 테스트 범위와 격리 | 적합 | 요청 도착과 실행 범위 활성화 일치 |
+| [E03](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/c78ba22a-b64d-4016-9f09-c9de5f94e612.mdx:371) | 이벤트스토밍 카드와 경계 | 적합 | 재현 가능한 산포 좌표, 위치와 투명도 분리 |
+| [E04](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/c6550c6d-0773-43bc-84a9-311a3de97b00.mdx:27) | 데이터 플랫폼의 데이터 경로 | 적합 | 경로별 구간과 도착에 따른 노드 활성화 연결 |
+| [E05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/springcamp-2026.mdx:185) | Temporal Event History와 Replay | 적합 | 장애·재시도·Replay·승인을 명시 구간으로 분리 |
+| [X05](/Users/dong-gyu/Workspaces/blog/src/content/posts/ko/a1094dc5-8f5c-4725-be7c-8247fc273c44.mdx:141) | 팀 회고: 카드에서 액션 플랜까지 | 적합 | 카드·그룹·선택·액션을 별도 상태로 조합 |
+
+### 공통 재생·추가 대상
+
+- **TCP 정상/손실과 홈 preview:** 데이터·ACK·RTO·재전송 구간과 완료 상태가 같은 시간 상수를 사용한다. 이번 검토에서 추가 문제를 찾지 못했다. 홈은 손실 장면의 변형이므로 별도 신규 ID로 세지 않았다.
+- **공통 플레이어:** 프레임 개수가 아닌 경과 시간으로 계산하고, 화면 밖·숨긴 탭·동작 줄이기 조건을 분리한다. 자동 루프의 즉시 초기화 자체를 위반으로 보지 않았다. M01은 초기화 이후 남는 잘못된 그림이 문제다. 무조건적인 스프링·역재생 추가는 필요하지 않다.
+- **독서 진행바:** 스크롤 위치의 직접 함수여서 위아래로 이동할 때 같은 값으로 돌아온다. 호버 색·불투명도 전환은 CSS의 현재 값에서 이어진다. smooth scroll의 동작 줄이기 분기도 코드에서 확인했다. 이번 검토에서 추가 문제를 찾지 못했다.
+- **원본 GIF 2개:** C08·N08 아래 접힌 `원본 도해`로 보존된 자료다. 현재 제작한 애니메이션 74종과 중복 집계하지 않았다. 원본 프레임별 모션 설계를 다시 평가하거나 원본을 수정하지 않았다.
+- **MP4 3개:** 회고·일상 글의 사용자 재생 영상(`controls`, `preload="metadata"`)이다. UI 애니메이션 그래프 평가 대상으로 세지 않았다.
+
+### 검토 산출물과 한계
+
+- [전체 인벤토리](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/inventory.json), [전 구간 높이 조사](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/height-check.json)
+- 이미지의 폭 560px은 비교용 도해 폭이다. 모바일 수치 조사와 O03의 폭346px 재현은 화면 전체 viewport 폭과 구별한다. 실제 320/390px 지면 전체의 회귀 검사를 이번에 전부 반복하지 않았다.
+- 프레임 출력·사건 경계 재현·코드 검토를 함께 사용했다. 74종의 매 프레임을 사람이 연속 재생으로 관찰했다거나, 성능·스크린리더·모든 브라우저를 전수 검수했다고 주장하지 않는다.
+- 수정 우선순위는 M01 → M04/M05 → M02/M03/M06 → M07이다. Q01은 횟수 라벨의 뜻을 정한 뒤 처리한다.
+
+단계별 비교 이미지(각 ID 3시점):
+
+- [N01 · N03 · W03 · T01](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-01.png)
+- [D03 · S03 · N02 · N04](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-02.png)
+- [N05 · N06 · N07 · N08](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-03.png)
+- [N09 · N10 · N11 · N12](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-04.png)
+- [N13 · W01 · W02 · W04](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-05.png)
+- [W05 · W06 · C01 · C02](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-06.png)
+- [C03 · C04 · C05 · C06](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-07.png)
+- [C07 · C08 · C09 · C10](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-08.png)
+- [T02 · T03 · T04 · T05](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-09.png)
+- [T06 · T07 · T08 · D01](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-10.png)
+- [D02 · D04 · D05 · D06](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-11.png)
+- [D07 · D08 · D09 · S01](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-12.png)
+- [S02 · S04 · S05 · S06](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-13.png)
+- [A01 · A02 · A03 · A04](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-14.png)
+- [A05 · A06 · A07 · O01](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-15.png)
+- [O02 · O03 · O04 · O05](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-16.png)
+- [O06 · O07 · O08 · O09](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-17.png)
+- [E01 · E02 · E03 · E04](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-18.png)
+- [E05 · X05](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/sheet-19.png)
+
+## 36. 애니메이션 8종 수정과 문구 정리 (2026-10-20)
+
+35절의 개선 권고 8종을 수정했다. 본문 도해 74종의 기본 화면에서 긴 캡션과 중복 상태 문단을 제거하고, 도해 안의 제작 안내·반복 설명도 정리했다. 아래 검수는 수정한 로컬 사이트 기준이다.
+
+### 우선순위별 수정
+
+| 순위 | 대상 | 수정 결과 | 회귀 확인 |
+| --- | --- | --- | --- |
+| 1 | N07 · M01 | Canvas의 실제 픽셀 영역 전체를 지우고 프레임 높이를 고정했다. MTU 제외 항목은 해당 사건부터 고정 위치에 표시한다. | 완료→초기 프레임이 새 Canvas의 초기 프레임과 같은지 DPR 1·1.5·2에서 검사. 실제 모바일 루프 재시작 뒤 잔상 없음. |
+| 1 | W01 · M01/M02 | 긴 하단 상태 문구를 제거하고 TTFB 마커 영역을 고정했다. 높이는 데스크톱 398px, 모바일 524px로 일정하다. | 전 구간 높이·반복 경계 검사. 실제 본문에서 다음 루프의 이전 문구 잔류와 3900ms의 위치 점프 없음. |
+| 2 | C07 · M04 | 8800~9050ms 소멸 중에는 제거 직전의 CMD·running·쓰기 데이터 표현을 유지한다. | 제거 직전·소멸 중·제거 후 상태 검사. 실제 8884ms 화면에서 running을 유지하며 사라짐. |
+| 2 | D05 · M05 | covering 쪽 반환 수와 SELECT * 쪽 반환 수를 분리했다. SELECT * 반환 수는 테이블 도착부터 증가한다. | 1500~1999ms 반환 0, 2000ms 이후 반환 1 검사. 실제 1649ms 화면에서도 SELECT * 반환 0. |
+| 3 | N01 · M03 | 새 수신 사건의 300ms 구간에서 기존 수신 이력을 연속 이동시킨다. | 수신 경계 양쪽 좌표의 연속성 검사. 실제 모바일 수신 구간 확인. |
+| 3 | D08 · M06 | 연결·sort·join에 고정 슬롯을 사용한다. sort 종료가 활성 join의 위치에 영향을 주지 않는다. | 5599/5600ms의 join 좌표 일치 검사. 실제 5685ms 화면에서 sort 자리만 비고 join은 제자리. |
+| 4 | O03 · M07 | 모바일 span 점과 안내선이 같은 경로 좌표를 사용한다. | 구간을 10ms 간격으로 검사해 점과 경로의 거리 확인. 실제 모바일 3316ms 경로 확인. |
+| 4 | O05 · M07 | 데스크톱 GET 점과 안내선이 같은 경로 좌표를 사용한다. | 구간을 10ms 간격으로 검사해 점과 경로의 거리 확인. 실제 데스크톱 3387ms 경로 확인. |
+
+- **Q01 · S06도 수정:** 읽기 횟수를 완료 사건 기준으로 정했다. 첫 읽기 완료 1400ms 전에는 0회, 완료 후 1회다. partition 재계산 횟수도 7000ms 완료 후 증가한다. 실제 초기 모바일 화면에서 원본 읽기 0회를 확인했다.
+- 문구 정리 과정에서 N10의 TIME_WAIT 안내가 진입 전부터 노출되는 회귀를 찾아 수정했다. 안내는 4200ms 진입 후, 만료 문구는 10000ms 이후 표시하고 높이는 고정한다.
+
+### 문구 정리 범위
+
+- **74종 공통:** 바깥의 실시간 상태 문단과 긴 캡션을 제거했다. T01의 중복 식별자 문단도 제거했다. 제목, 핵심 라벨·수치·단위, SVG 설명과 완료 장면의 접근성 설명은 유지한다.
+- **도해 내부:** 원본 보존·제작 방식 안내, 이미 그림으로 보이는 결과를 다시 서술하는 문장, 긴 Docker 명령 목록 등을 제거하거나 짧은 라벨로 줄였다.
+- **필수 조건:** JDK 버전 차이, 예시 수치, 비동기 복제의 응답 시점, 조인 결과가 같아지는 전제, 바깥 ORDER BY의 필요, TCP/stream 관계처럼 의미를 바꾸는 조건은 짧은 라벨이나 접힌 과정 설명에 유지했다.
+- **과정 보기:** 기본적으로 접혀 있다. 펼치면 기존 3개 단계와 설명을 볼 수 있다. `단계별 장면`을 `과정 보기`로 줄이고 도해 앞뒤 여백도 조정했다.
+- **별도 TCP 도해·홈:** 패널 아래 반복 설명을 제거했다. 본문에는 설명용 시간축·손실 예제의 조건만 짧게 남겼고 홈 미리보기의 캡션은 제거했다.
+- 원문 MDX의 문단·코드·원본 미디어는 변경하지 않았다. 레지스트리의 필수 문구는 T02·T08·D04·D08의 축약된 라벨에 맞췄으며 사용 위치·원본 연결·근거 블록은 유지한다.
+
+### 실제 화면 재검수
+
+- 기존 검토용 화면 대신 **실제 본문 페이지**에서 8종 각각을 viewport **1280×900, 390×1000, 320×1000**으로 열었다(24개 조합). 모두 Canvas 재생, 가로 넘침 없음, 제거한 중복 문단·캡션 없음, 과정 설명의 초기 접힘을 확인했다.
+- N07·W01은 실제 재생의 완료→초기 반복을 관찰했다. C07·D05·N01·D08·O03·O05는 해당 사건 구간에서 추가 스크린샷을 남겼다.
+- S06의 초기 횟수와 과정 설명 펼치기, 홈 TCP 미리보기·한국어 본문 TCP의 정상/손실 패널도 확인했다. W03은 새 탭에서 초기화와 hydration 오류 없음을 확인했다.
+- 영문 TCP 글은 현재 `draft: true`여서 실제 게시 경로 검수 대상에 넣지 않았다. 영문 도해의 SSR 검사는 유지한다.
+- 이 확인은 위 화면과 사건 구간의 재검수다. 74종 전체를 모든 브라우저·스크린리더에서 다시 연속 재생한 검수는 아니다.
+
+검수 기록과 대표 화면:
+
+- [브라우저 검수 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/fixed-browser-checks.json)
+- [W01 · 데스크톱 정리 후](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/phase-w01-desktop-clean.jpg)
+- [N07 · 반복 재시작](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/loop-n07-mobile390.jpg), [W01 · 반복 재시작](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/loop-w01-mobile390.jpg)
+- [C07 · 소멸 중 상태](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/phase-c07-fade-out.jpg), [D05 · 테이블 도착 전](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/phase-d05-before-table-arrival.jpg)
+- [N01 · 이력 이동](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/phase-n01-history-slide.jpg), [D08 · sort 종료 후](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/phase-d08-after-sort.jpg)
+- [O03 · 모바일 경로](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/phase-o03-mobile-route.jpg), [O05 · 데스크톱 경로](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/phase-o05-desktop-route.jpg)
+
+### 자동 검증
+
+- `pnpm test`: **17개 파일 · 345개 테스트 통과**. 잔상·높이·사건 경계·연속 좌표·74종 기본 문구 제거의 회귀 검사를 포함한다.
+- `pnpm check`: **오류·경고·힌트 0건**.
+- `pnpm build`: **332페이지 성공**.
+- 마이그레이션 단위 테스트: **37개 통과**.
+- 원문 대조: **58편 · 1,806필드 · 도해 74종 · 문제 0 · 깨진 내부 링크 0**. 기존의 수집 불가 원문 6개·에셋 6개는 그대로다.
+- `git diff --check` 통과. 변경은 로컬 작업 트리에 있으며 커밋·공개 배포는 하지 않았다.

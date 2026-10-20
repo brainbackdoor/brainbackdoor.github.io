@@ -37,3 +37,13 @@ test('N10 expiry explanation appears only after TIME_WAIT ends',()=>{
   for(const t of [0,1000,1100,2900,4200,7200,9999])assert.equal(text(t).includes('2MSL 만료'),false);
   assert.ok(text(10000).includes('2MSL 만료'));
 });
+
+test('N10 shows tuple retention only while TIME_WAIT is active',()=>{
+  for(const width of [650,346,259]){
+    const text=(t:number)=>networkRenderers.N10(width,t).ops.filter(o=>o.type==='text').map(o=>o.text).join(' ');
+    for(const t of [0,1100,2900,4199,10000])assert.equal(text(t).includes('TIME_WAIT: 같은 4-tuple 유지'),false);
+    for(const t of [4200,7200,9999])assert.equal(text(t).includes('TIME_WAIT: 같은 4-tuple 유지'),true);
+    const height=networkRenderers.N10(width,0).height;
+    for(const t of [4199,4200,9999,10000])assert.equal(networkRenderers.N10(width,t).height,height);
+  }
+});

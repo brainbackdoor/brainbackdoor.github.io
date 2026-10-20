@@ -473,7 +473,7 @@
       "requiredText": [
         "TIMED_WAITING",
         "sleep() · monitor 유지",
-        "total 46"
+        "monitor 소유"
       ],
       "evidenceBlockIds": []
     },
@@ -556,7 +556,7 @@
       "requiredText": [
         "UnsupportedOperationException",
         "unmodifiableList",
-        "name 요소까지 새로 만든 L2"
+        "요소까지 복사"
       ],
       "evidenceBlockIds": []
     },
@@ -595,7 +595,7 @@
       "requiredText": [
         "WHERE SUBSTRING(id, 1, 4) = 1100 AND LENGTH(id) = 5",
         "WHERE id BETWEEN 11000 AND 11009",
-        "두 결과 모두 10행"
+        "같은 10행"
       ],
       "evidenceBlockIds": []
     },
@@ -648,7 +648,7 @@
       "mode": "after",
       "requiredText": [
         "Global Buffer",
-        "max_connections = 4 (설명용)",
+        "연결 한도 4",
         "Too many connections"
       ],
       "evidenceBlockIds": []

@@ -44,7 +44,7 @@ function replicationV2(w: number, t: number): LessonFrame {
   g.rect(app.x, app.y, app.w, app.h, { r: 8, fill: C.paper, stroke: C.ink, lw: 1.3 });
   g.text(app.x + app.w / 2, app.y + 31, '앱', { size: 13, weight: 700, align: 'center' });
   server(g, mst.x, mst.y, mst.w, mst.h, 'mysql-master', ':13306');
-  valueCell(g, mst.x + 12, mst.y + 34, mst.w - 24, '역 이름 (설명용)', s.masterValue, D01.write[1], t);
+  valueCell(g, mst.x + 12, mst.y + 34, mst.w - 24, '역 이름', s.masterValue, D01.write[1], t);
   logStack(g, mst.x + 12, mst.y + 96, mst.w - 24, 'binlog.000002', '… @683 이전', s.binlogEvent, D01.write[1], t);
   g.text(mst.x + 12, mst.y + 176, 'Binlog Dump', { size: 11, mono: true, color: C.muted });
   server(g, rep.x, rep.y, rep.w, rep.h, 'mysql-slave', ':13307');
@@ -64,16 +64,13 @@ function replicationV2(w: number, t: number): LessonFrame {
     arrow(g, mstL2, appR2, { stroke: C.green, lw: 1.3, size: 6 });
     const a = appear(t, D01.ack[1]), lx = wide ? 0 : ax + 50, ly = wide ? app.y + app.h + 20 : (app.y + app.h + mst.y) / 2 - 3;
     g.text(lx, ly, '커밋 OK', { size: 11, weight: 700, color: C.greenText, alpha: a });
-    g.text(lx, ly + 14, '복제를 기다리지 않음', { size: 11, color: C.greenText, alpha: a });
   }
   travel(g, t, mstL2, appR2, D01.ack[0], D01.ack[1], 'OK', 'green');
   const shipA = wide ? { x: mst.x + mst.w, y: mst.y + 130 } : { x: w / 2, y: mst.y + mst.h }, shipB = wide ? { x: rep.x, y: rep.y + 102 } : { x: w / 2, y: rep.y };
   if (t >= D01.ship[1]) arrow(g, shipA, shipB, { stroke: C.blue, lw: 1.3, size: 6 }); else g.line(shipA.x, shipA.y, shipB.x, shipB.y, { stroke: C.grid, lw: 1.2, dash: [3, 4] });
   travel(g, t, shipA, shipB, D01.ship[0], D01.ship[1], '이벤트', 'blue');
   travel(g, t, { x: rep.x + rep.w - 44, y: rep.y + 114 }, { x: rep.x + rep.w - 44, y: rep.y + 165 }, D01.apply[0], D01.apply[1], '적용', 'green', { line: false });
-  const by = Math.max(app.y + app.h, mst.y + mst.h, rep.y + rep.h) + 34;
-  const y = para(g, 0, by, '비동기 복제(기본) · binlog 파일·위치 기반 · source 1 : replica 1', w, { size: 12, weight: 600 });
-  return frame(g, y + 10, s.phase);
+  return frame(g, Math.max(app.y + app.h, mst.y + mst.h, rep.y + rep.h) + 10, s.phase);
 }
 
 /* ---------- D02 라우팅: readOnly로 대상 선택, 적용 전 slave 읽기는 이전 값 ---------- */
@@ -87,7 +84,7 @@ function routingV2(w: number, t: number): LessonFrame {
   g.text(sv.x + 12, sv.y + 20, 'StationService', { size: 12, weight: 700, mono: true });
   const rows = [
     { name: 'findLines()', mono: true, tag: 'readOnly 아님', ro: false, y: sv.y + 52 },
-    { name: '쓰기 (설명용)', mono: false, tag: 'readOnly 아님', ro: false, y: sv.y + 92 },
+    { name: '쓰기', mono: false, tag: 'readOnly 아님', ro: false, y: sv.y + 92 },
     { name: 'findAllStations()', mono: true, tag: 'readOnly', ro: true, y: sv.y + 132 },
   ];
   rows.forEach((r, i) => {
@@ -116,7 +113,7 @@ function routingV2(w: number, t: number): LessonFrame {
   // 복제(지연, 설명용): master → slave
   const ra = wide ? { x: mst.x + dbW / 2, y: mst.y + 86 } : { x: mst.x + dbW, y: mst.y + 43 }, rb = wide ? { x: slv.x + dbW / 2, y: slv.y } : { x: slv.x, y: slv.y + 43 };
   if (t >= D02.apply) arrow(g, ra, rb, { stroke: C.green, lw: 1.3, size: 6 });
-  else if (t >= D02.write[2]) { g.line(ra.x, ra.y, rb.x, rb.y, { stroke: C.orange, lw: 1.3, dash: [4, 3] }); label(g, wide ? w - 6 : w / 2, wide ? (ra.y + rb.y) / 2 + 4 : db0.y + 86 + 18, '복제 지연(설명용)', { size: 11, color: C.orangeText, align: wide ? 'right' : 'center' }); }
+  else if (t >= D02.write[2]) { g.line(ra.x, ra.y, rb.x, rb.y, { stroke: C.orange, lw: 1.3, dash: [4, 3] }); label(g, wide ? w - 6 : w / 2, wide ? (ra.y + rb.y) / 2 + 4 : db0.y + 86 + 18, '복제 지연', { size: 11, color: C.orangeText, align: wide ? 'right' : 'center' }); }
   // 요청 경로
   const svOut = (i: number) => wide ? { x: sv.x + svW, y: rows[i].y - 4 } : { x: w * (rows[i].ro ? 0.7 : 0.3), y: sv.y + svH }, rtIn = wide ? { x: rt.x - 14, y: rt.y + 32 } : { x: w / 2, y: rt.y - 12 };
   const rtOut = (dst: 'master' | 'slave') => { const b = dst === 'master' ? mst : slv; return [wide ? { x: rt.x + rtW + 20, y: rt.y + 32 } : { x: dst === 'master' ? w * 0.25 : w * 0.75, y: rt.y + rtH }, wide ? { x: b.x, y: b.y + 43 } : { x: b.x + dbW / 2, y: b.y }] as const; };
@@ -140,8 +137,7 @@ function routingV2(w: number, t: number): LessonFrame {
   g.text(0, by - 12, 'findAllStations() 결과', { size: 12, weight: 600 });
   res('1회차: A · 적용 전', D02.read1[2], 'orange', 0);
   res('2회차: B · 적용 후', D02.read2[2], 'green', 1);
-  const y = para(g, 0, by + (wide ? 48 : 82), '판단 기준은 트랜잭션 시작 시점의 readOnly. slave가 멈춰도 master로 자동 전환하지 않습니다.', w, { size: 12, color: C.muted });
-  return frame(g, y + 10, s.phase);
+  return frame(g, by + (wide ? 28 : 62), s.phase);
 }
 
 /* ---------- D04 컬럼 가공: 모든 행을 계산 / 시작점에서 범위 밖까지 ---------- */
@@ -182,7 +178,7 @@ function columnV2(w: number, t: number): LessonFrame {
     const end = s.rightStopped ? xs[stopIx] + cw[stopIx] : xs[blockIx] + 8 + s.rightFound * ((blockW - 16) / 10);
     g.rect(xs[blockIx], leafY + 34, Math.max(2, end - xs[blockIx]), 4, { r: 2, fill: C.blue });
   }
-  g.text(0, leafY + 62, s.rightStopped ? '시작점 11000 → 11010(범위 밖)에서 멈춤' : s.rightFound ? '시작점에서 리프를 읽는 중' : t >= D04.descend[1] ? '시작점 11000에 도착' : '시작점을 찾아 내려가는 중', { size: 12, weight: 600, color: C.blueText });
+  g.text(0, leafY + 62, s.rightStopped ? '11010에서 멈춤' : s.rightFound ? '리프 스캔' : t >= D04.descend[1] ? '11000 도착' : '시작점 탐색', { size: 12, weight: 600, color: C.blueText });
   // 2) 가공한 조건: 처음부터 끝까지 행마다 함수 계산
   const q1 = para(g, 0, leafY + 104, 'WHERE SUBSTRING(id, 1, 4) = 1100 AND LENGTH(id) = 5', w, { size: 11, mono: true, weight: 600 });
   // 칸은 커서 끝이 그 칸의 가운데를 지날 때 켜진다(넓은 폭은 10칸, 좁은 폭은 진행 막대의 10등분)
@@ -194,10 +190,10 @@ function columnV2(w: number, t: number): LessonFrame {
     g.rect(xs[0], y1 + 34, Math.max(2, cx - xs[0]), 4, { r: 2, fill: C.orange });
     g.path(`M${cx - 6} ${y1 + 46}L${cx} ${y1 + 38}L${cx + 6} ${y1 + 46}Z`, { fill: C.orange });
   }
-  g.text(0, y1 + 66, s.leftDone ? '모든 행 계산 · 멈출 지점 없음' : t >= D04.sweep[0] ? '행마다 SUBSTRING·LENGTH 계산 중' : '처음 행부터 함수를 계산할 차례', { size: 12, weight: 600, color: C.orangeText });
+  g.text(0, y1 + 66, s.leftDone ? '전체 행 계산 완료' : t >= D04.sweep[0] ? '행마다 함수 계산' : '함수 계산 대기', { size: 12, weight: 600, color: C.orangeText });
   const done = s.leftDone && s.rightStopped;
-  const y = para(g, 0, y1 + 96, done ? '두 결과 모두 10행: 11000 … 11009' : '결과 10행을 찾는 중', w, { size: 13, weight: 700, color: done ? C.greenText : C.muted });
-  return frame(g, y + 10, s.phase);
+  if (done) g.text(0, y1 + 96, '결과 10행: 11000 … 11009', { size: 13, weight: 700, color: C.greenText });
+  return frame(g, y1 + 106, s.phase);
 }
 
 /* ---------- D05 covering index: 인덱스 항목만으로 반환 / 항목마다 테이블 왕복 ---------- */
@@ -229,7 +225,7 @@ function coveringPanel(g: G, x: number, y: number, pw: number, t: number, coveri
     else g.line(ix + ixW + 2, iy, tbX - 2, ty, { stroke: C.orange, lw: 1, alpha: 0.5 });
   });
   const by = top + 7 * rh + 22;
-  g.text(x, by, `반환 id ${s.read} · 테이블 접근 ${covering ? 0 : s.tableAccess}회`, { size: 12, weight: 700, color: covering ? C.blueText : C.orangeText });
+  g.text(x, by, `반환 id ${covering ? s.coveringRows : s.tableRows} · 테이블 접근 ${covering ? 0 : s.tableAccess}회`, { size: 12, weight: 700, color: covering ? C.blueText : C.orangeText });
   return by + 10 - y;
 }
 function coveringV2(w: number, t: number): LessonFrame {
@@ -238,9 +234,7 @@ function coveringV2(w: number, t: number): LessonFrame {
   const h = coveringPanel(g, 0, 24, pw, t, true);
   coveringPanel(g, cols === 2 ? pw + 28 : 0, cols === 2 ? 24 : 24 + h + 30, pw, t, false);
   if (cols === 1) g.line(0, 24 + h + 14, w, 24 + h + 14, { stroke: C.grid, lw: 1 });
-  const y = (cols === 2 ? 24 + h : 24 + h * 2 + 30) + 30;
-  const yy = para(g, 0, y, '보조 인덱스 항목에는 PK가 들어 있어 id만 필요하면 테이블에 가지 않습니다(MySQL 문서 기준 Extra: Using index · 원문에는 EXPLAIN 출력 없음).', w, { size: 12, color: C.muted });
-  return frame(g, yy + 10, s.phase);
+  return frame(g, cols === 2 ? 24 + h : 24 + h * 2 + 30, s.phase);
 }
 
 /* ---------- D06 조인: 드리븐 인덱스 탐색 + 연속 항목 / 인덱스 없이 전체 비교 ---------- */
@@ -262,12 +256,12 @@ function joinV2(w: number, t: number): LessonFrame {
   const scatter = [[3, '1', '270'], [0, '1', '100'], [6, '…', '…'], [1, '1', '124'], [5, '2', '…'], [2, '1', '185'], [7, '77', '2155'], [4, '1', '283']] as const;
   for (let pnl = 0; pnl < 2; pnl++) {
     const idx = pnl === 0, x = cols === 2 ? pnl * (pw + 28) : 0, y = cols === 2 ? top : top + pnl * 270;
-    g.text(x, y, idx ? '드리븐 조인 키에 인덱스 있음' : '인덱스 없음 · 전체 비교(설명용)', { size: 12, weight: 700, color: idx ? C.blueText : C.orangeText });
+    g.text(x, y, idx ? '드리븐 인덱스 있음' : '인덱스 없음 · 전체 비교', { size: 12, weight: 700, color: idx ? C.blueText : C.orangeText });
     const ty = y + 16;
     if (idx) {
       // 탐색 점이 지면 안에 들어오도록 인덱스 열을 12px 들여 쓴다
       const ix = x + 12, iw = 60, tx = ix + iw + 40, tw = Math.min(110, pw - 12 - iw - 40);
-      g.text(x, ty + 10, '인덱스', { size: 11, color: C.muted }); g.text(tx, ty + 10, '테이블 · 설명용 배치', { size: 11, color: C.muted });
+      g.text(x, ty + 10, '인덱스', { size: 11, color: C.muted }); g.text(tx, ty + 10, '테이블', { size: 11, color: C.muted });
       driven.forEach(([pid], i) => { const read = i < s.read, stop = i === 5 && s.indexStopped; g.rect(ix, ty + 18 + i * rh, iw, rh - 3, { r: 4, fill: read ? C.blueTint : C.paper, stroke: read ? C.blue : stop ? C.red : C.line, lw: stop ? 1.6 : 1 }); g.text(ix + iw / 2, ty + 18 + i * rh + 14, pid, { size: 11, mono: true, align: 'center', weight: stop ? 700 : 400, color: read ? C.blueText : stop ? C.redText : C.muted }); });
       scatter.forEach(([, pid, od], j) => { const k = pid === '1' ? D06_MATCH.indexOf(Number(od) as typeof D06_MATCH[number]) : -1, hit = k >= 0 && k < s.arrived; g.rect(tx, ty + 18 + j * rh, tw, rh - 3, { r: 4, fill: hit ? C.greenTint : C.paper, stroke: hit ? C.green : C.line, lw: 1 }); g.text(tx + 8, ty + 18 + j * rh + 14, `${pid} · ${od}`, { size: 11, mono: true, color: hit ? C.greenText : C.muted }); });
       D06_MATCH.forEach((od, k) => {
@@ -278,7 +272,7 @@ function joinV2(w: number, t: number): LessonFrame {
       if (t >= D06.seek[0] && t < D06.seek[1]) { const u = ease.inOut(span(t, D06.seek[0], D06.seek[1])); g.circle(x + 5, lerp(ty + 14, ty + 28, u), 5, { fill: C.blue }); }
     } else {
       const tw = Math.min(150, pw - 20);
-      g.text(x, ty + 10, '테이블 전체(설명용 배치)', { size: 11, color: C.muted });
+      g.text(x, ty + 10, '테이블 전체', { size: 11, color: C.muted });
       scatter.forEach(([, pid, od], j) => { const pos = (j + 0.5) / scatter.length, passed = s.scanProgress >= pos, hit = passed && pid === '1'; g.rect(x, ty + 18 + j * rh, tw, rh - 3, { r: 4, fill: hit ? C.greenTint : passed ? C.slab : C.paper, stroke: hit ? C.green : C.line, lw: 1 }); g.text(x + 8, ty + 18 + j * rh + 14, `${pid} · ${od}`, { size: 11, mono: true, color: hit ? C.greenText : C.muted }); });
       if (t >= D06.sweep[0]) { const cy = ty + 18 + Math.min(1, s.scanProgress) * scatter.length * rh; g.path(`M${x + tw + 4} ${cy - 6}L${x + tw + 12} ${cy}L${x + tw + 4} ${cy + 6}Z`, { fill: C.orange }); }
     }
@@ -287,8 +281,8 @@ function joinV2(w: number, t: number): LessonFrame {
   }
   const end = cols === 2 ? top + 16 + 18 + 8 * rh + 22 : top + 270 + 16 + 18 + 8 * rh + 22;
   // 결과 문장이 나타날 때 높이가 바뀌지 않도록 긴 문장의 줄 수만큼 자리를 잡아 둔다
-  const both = s.indexStopped && t >= D06.sweep[1], result = `두 경우 결과는 같은 5행: ${D06_MATCH.join(' · ')}`;
-  para(g, 0, end + 30, both ? result : '결과 행을 찾는 중', w, { size: 13, weight: 700, color: both ? C.greenText : C.muted });
+  const both = s.indexStopped && t >= D06.sweep[1], result = `같은 5행: ${D06_MATCH.join(' · ')}`;
+  if (both) para(g, 0, end + 30, result, w, { size: 13, weight: 700, color: C.greenText });
   return frame(g, end + 30 + (wrap(result, w, 13).length - 1) * 21 + 10, s.phase);
 }
 
@@ -312,29 +306,26 @@ function prefilterV2(w: number, t: number): LessonFrame {
   const B = [['salary 10001~50000', 0.6], ['GROUP BY id · SUM', 0.4], ['ORDER BY SUM DESC', 0.4], ['LIMIT 150,10', 0.03], ['10 id ⋈ employee', 0.03], ['10행', 0.03]] as const;
   const aEnd = pipeline(g, 0, 0, cw, 'A · 바로 조인', A, Math.max(0, s.aStage - 1), 'orange');
   const bEnd = pipeline(g, cw + 16, 0, cw, 'B · 먼저 줄이고 조인', B, Math.max(0, s.bStage - 1), 'blue');
-  let y = Math.max(aEnd, bEnd) + 10;
-  y = para(g, 0, y, '막대: 단계를 지나는 행의 양(설명용). 조인에 참여하는 행이 A는 범위 전체, B는 10행입니다.', w, { size: 12, color: C.muted }) + 22;
-  y = para(g, 0, y, 'B는 바깥 ORDER BY가 없으면 출력 순서가 보장되지 않습니다.', w, { size: 12, color: C.orangeText });
-  return frame(g, y + 10, s.phase);
+  return frame(g, Math.max(aEnd, bEnd), s.phase);
 }
 
 /* ---------- D08 메모리·연결: 전역 버퍼 고정, 연결·연산 버퍼, 한도 초과 오류 ---------- */
 function memoryV2(w: number, t: number): LessonFrame {
   const g = draw(), s = d08(t), wide = w >= 560;
-  g.text(0, 14, 'mysqld 메모리 (크기는 설명용)', { size: 12, weight: 700 });
+  g.text(0, 14, 'mysqld 메모리', { size: 12, weight: 700 });
   // 넓은 폭: 한 줄 막대 / 좁은 폭: 전역 버퍼 한 줄 + 연결·연산 버퍼 한 줄
   const by = 26, gw = wide ? w * 0.46 : w, unit = wide ? w * 0.08 : (w - 5 * 3) / 6, ow = wide ? w * 0.07 : unit, rowY = wide ? by : by + 40;
   g.rect(0, by, gw, 34, { r: 6, fill: C.blueTint, stroke: C.blue, lw: 1.2 });
   g.text(8, by + 21, 'Global Buffer', { size: 11, weight: 700, color: C.blueText });
-  let x = wide ? gw + 4 : 0;
-  for (let i = 0; i < s.conns; i++) { const a = appear(t, D08.conns[i]); g.rect(x, rowY, unit, 34, { r: 6, fill: C.orangeTint, stroke: C.orange, lw: 1.2, alpha: a }); g.text(x + unit / 2, rowY + 21, `C${i + 1}`, { size: 11, mono: true, weight: 700, align: 'center', color: C.orangeText, alpha: a }); x += unit + 3; }
-  if (s.sort) { g.rect(x, rowY, ow, 34, { r: 6, fill: C.redTint, stroke: C.red, lw: 1.2 }); g.text(x + ow / 2, rowY + 21, 'sort', { size: 10, mono: true, align: 'center', color: C.redText }); x += ow + 3; }
-  if (s.join) { g.rect(x, rowY, ow, 34, { r: 6, fill: C.redTint, stroke: C.red, lw: 1.2 }); g.text(x + ow / 2, rowY + 21, 'join', { size: 10, mono: true, align: 'center', color: C.redText }); }
-  let ny = para(g, 0, rowY + 56, 'innodb_buffer_pool_size · key_buffer_size(MyISAM): 시작할 때 한 번', w, { size: 11, color: C.blueText });
-  ny = para(g, 0, ny + 20, '연결 C1…: 스레드·연결 버퍼 / sort·join: 그 연산 동안만', w, { size: 11, color: C.orangeText });
+  const connectionX = wide ? gw + 4 : 0;
+  for (let i = 0; i < s.conns; i++) { const x = connectionX + i * (unit + 3), a = appear(t, D08.conns[i]); g.rect(x, rowY, unit, 34, { r: 6, fill: C.orangeTint, stroke: C.orange, lw: 1.2, alpha: a }); g.text(x + unit / 2, rowY + 21, `C${i + 1}`, { size: 11, mono: true, weight: 700, align: 'center', color: C.orangeText, alpha: a }); }
+  // 연산이 끝나도 살아 있는 다른 버퍼의 위치는 유지한다.
+  const sortX = connectionX + D08.conns.length * (unit + 3), joinX = sortX + ow + 3;
+  if (s.sort) { g.rect(sortX, rowY, ow, 34, { r: 6, fill: C.redTint, stroke: C.red, lw: 1.2 }); g.text(sortX + ow / 2, rowY + 21, 'sort', { size: 10, mono: true, align: 'center', color: C.redText }); }
+  if (s.join) { g.rect(joinX, rowY, ow, 34, { r: 6, fill: C.redTint, stroke: C.red, lw: 1.2 }); g.text(joinX + ow / 2, rowY + 21, 'join', { size: 10, mono: true, align: 'center', color: C.redText }); }
   // 연결 칸: max_connections 4(설명용) + 관리자 1
-  const sy = ny + 34, n = 5, sw = (w - (n - 1) * 8) / n;
-  g.text(0, sy - 10, 'max_connections = 4 (설명용) + 관리자용 1', { size: 12, weight: 600 });
+  const sy = rowY + 84, n = 5, sw = (w - (n - 1) * 8) / n;
+  g.text(0, sy - 10, '연결 한도 4 + 관리자 1 (예시)', { size: 12, weight: 600 });
   for (let i = 0; i < n; i++) {
     const admin = i === 4, used = !admin && i < s.conns, x0 = i * (sw + 8);
     g.rect(x0, sy, sw, 40, { r: 8, fill: used ? C.orangeTint : C.paper, stroke: admin ? C.faint : used ? C.orange : C.line, lw: 1.2, dash: admin ? [3, 3] : null });
@@ -350,9 +341,7 @@ function memoryV2(w: number, t: number): LessonFrame {
     if (!s.rejected) token(g, lerp(from, cx, u), ry, 'C5', 'orange', { solid: true, r: 10 });
     else { cross(g, cx, ry, C.red); label(g, cx + 14, ry + 4, 'C5 · Too many connections 오류', { size: 12, weight: 700, align: 'left', color: C.redText, alpha: appear(t, D08.reject[1]) }); }
   }
-  let y = ry + 34;
-  y = para(g, 0, y, 'back_log는 연결을 수락하기 직전의 짧은 TCP 대기열이며 한도를 넘은 연결을 보관하지 않습니다.', w, { size: 12, color: C.muted });
-  return frame(g, y + 10, s.phase);
+  return frame(g, ry + 20, s.phase);
 }
 
 /* ---------- D09 SQL 정답: 1번 단계와 상위 8행, 2번→3번 순위 변화(기울기) ---------- */
@@ -360,7 +349,7 @@ function sqlV2(w: number, t: number): LessonFrame {
   // 순위 기울기는 오른쪽 열에 긴 고객명과 금액이 함께 들어가는 600px부터 쓴다(그 아래는 표에 순위 변화를 적는 배치)
   const g = draw(), s = d09(t), wide = w >= 600;
   // 1번 단계
-  const stages = ['예시 스키마 연결', '상품별 SUM(수량)', '≥ 200', '수량 내림차순'];
+  const stages = ['스키마 연결', '상품별 SUM(수량)', '≥ 200', '수량 내림차순'];
   const sw = (w - 3 * 14) / 4, bh = wide ? 40 : 52;
   stages.forEach((name, i) => {
     const on = i < s.q1Stage, x = i * (sw + 14), rows = wide ? [name] : name.split(' ');
@@ -368,7 +357,7 @@ function sqlV2(w: number, t: number): LessonFrame {
     rows.forEach((r, k) => g.text(x + sw / 2, bh / 2 + 4 + (k - (rows.length - 1) / 2) * 13, r, { size: 11, weight: 600, align: 'center', color: on ? C.blueText : C.muted }));
     if (i < 3) arrow(g, { x: x + sw + 1, y: bh / 2 }, { x: x + sw + 12, y: bh / 2 }, { stroke: on ? C.blue : C.grid, lw: 1.2, size: 5 });
   });
-  const ty = para(g, 0, bh + 24, '1번 · 200개 이상 팔린 상품 (72행 중 원본 캡처 상위 8행)', w, { size: 12, weight: 700 }) + 10, rh = 24;
+  const ty = para(g, 0, bh + 24, '1번 · 판매 수량 ≥ 200 (72행 중 상위 8행)', w, { size: 12, weight: 700 }) + 10, rh = 24;
   D09_Q1.forEach(([id, name, n], i) => {
     if (i >= s.q1Rows) return;
     const a = appear(t, D09.rows[0] + i * 125, 200), yy = ty + i * rh;
@@ -406,11 +395,7 @@ function sqlV2(w: number, t: number): LessonFrame {
       });
     }
   }
-  const end = ly + 8 * lh + 20;
-  // 마지막 문장이 바뀌어도 높이가 그대로이도록 긴 문장의 줄 수만큼 자리를 잡는다
-  const done = 'QUICK-Stop(63)은 수량 3위 → 금액 1위. 25·24·35는 금액 상위 8 밖, 51·34·62가 새로 들어옵니다.', before = '정답 SQL은 원문에 없고 결과 캡처만 있습니다.';
-  para(g, 0, end, s.q3 ? done : before, w, { size: 12, color: s.q3 ? C.greenText : C.muted });
-  return frame(g, end + (Math.max(wrap(done, w, 12).length, wrap(before, w, 12).length) - 1) * 19 + 10, s.phase);
+  return frame(g, ly + 8 * lh + 10, s.phase);
 }
 
 const dbRenderers = { D01: replicationV2, D02: routingV2, D04: columnV2, D05: coveringV2, D06: joinV2, D07: prefilterV2, D08: memoryV2, D09: sqlV2 };
@@ -456,7 +441,7 @@ function stackV2(w: number, t: number): LessonFrame {
   box(g, L.x, lowY, L.w, 40, 'Low-level APIs', { on: s.low, sub: 'RDDs · Distributed Variables', tone: 'blue' });
   // 작업 영역
   const arX = wide ? w - arW : 0, arY = wide ? 0 : lowY + 70;
-  const arT = para(g, arX, arY + 12, '한 프레임워크로 묶은 작업 영역', arW, { size: 11, weight: 600, color: C.muted, lh: 14 });
+  const arT = para(g, arX, arY + 12, '작업 영역', arW, { size: 11, weight: 600, color: C.muted, lh: 14 });
   AREAS.forEach((n, i) => {
     const aw2 = wide ? arW : (w - 8) / 2, x = wide ? arX : (i % 2) * (aw2 + 8), y = arT + 10 + (wide ? i * 30 : Math.floor(i / 2) * 30);
     g.rect(x, y, aw2, 24, { r: 12, fill: s.areas ? C.greenTint : C.paper, stroke: s.areas ? C.green : C.grid, lw: 1, dash: s.areas ? null : [3, 3] });
@@ -471,16 +456,14 @@ function stackV2(w: number, t: number): LessonFrame {
   if (s.written) arrow(g, outA, outB, { stroke: C.green, lw: 1.3, size: 6 });
   travel(g, t, outA, outB, S01.write[0], S01.write[1], '쓰기', 'green', { line: false, r: 9 });
   const bottom = wide ? Math.max(storesBottom, lowY + 40, areasBottom) : areasBottom;
-  let y = bottom + 30;
-  if (s.managers) y = para(g, 0, y, '실행: Standalone · YARN · Kubernetes (원문의 Mesos는 Spark 4.0에서 제거)', w, { size: 12, color: C.muted, alpha: appear(t, S01.managers) });
-  return frame(g, y + 10 + (s.managers ? 0 : 19 * (wrap('실행: Standalone · YARN · Kubernetes (원문의 Mesos는 Spark 4.0에서 제거)', w, 12).length - 1)), s.phase);
+  return frame(g, bottom + 10, s.phase);
 }
 
 /* ---------- S02 하나의 논리 표 → partition → executor → driver ---------- */
 function partitionV2(w: number, t: number): LessonFrame {
   const g = draw(), s = s02(t), wide = w >= 560;
   const tw = wide ? 300 : w, rh = 22, split = appear(t, S02.split[1]);
-  g.text(0, 12, 'DataFrame (논리 뷰 · 하나의 표)', { size: 12, weight: 700 });
+  g.text(0, 12, 'DataFrame · 6행 예시', { size: 12, weight: 700 });
   // 열 위치: 머리글 폭을 재서 남는 폭을 두 간격에 나눈다(좁은 폭에서 머리글이 붙지 않음)
   const cols = ['customer_id', 'Invoice_id', 'creation_date'], hw = cols.map(c => textW(c, 11, true)), gap = Math.min(28, (tw - 12 - hw[0] - hw[1] - hw[2]) / 2);
   const cx = [6, 6 + hw[0] + gap, 6 + hw[0] + hw[1] + 2 * gap];
@@ -517,9 +500,7 @@ function partitionV2(w: number, t: number): LessonFrame {
   g.text(12, dy + 27, s.action ? 'Driver · count()' : 'Driver', { size: 12, weight: 700 });
   workers.forEach((b, k) => { const tx = b.x + b.w - 22 - k * 40; travel(g, t, { x: tx, y: b.y + wh - 12 }, { x: tx, y: dy + 22 }, S02.driver[0], S02.driver[1], '3', 'green', { line: false, r: 9 }); });
   if (s.result !== null) g.text(w - 12, dy + 28, '3 + 3 = 6', { size: 14, weight: 700, mono: true, align: 'right', color: C.greenText, alpha: appear(t, S02.driver[1]) });
-  if (s.split && !s.action) label(g, w / 2, dy - 10, '그림 기준 예시 분할 · 아직 계산 전', { size: 11, color: C.muted, alpha: split });
-  const y = para(g, 0, dy + 74, '논리 표의 6행 = partition 3 + 3. 사용자는 하나의 표를, Spark는 partition 단위 작업을 봅니다.', w, { size: 12, color: C.muted });
-  return frame(g, y + 10, s.phase);
+  return frame(g, dy + 54, s.phase);
 }
 
 /* ---------- S04 실행계획: Analyzed → (가지치기·병합) → Optimized ---------- */
@@ -576,15 +557,15 @@ function planV2(w: number, t: number): LessonFrame {
   // 가지치기 표시는 넓은 폭에서 Optimized 트리 아래, 좁은 폭에서 두 트리 사이
   if (s.optimizing) label(g, wide ? cw + 28 : 5, wide ? oEnd + 8 : aEnd + 14, '가지치기 · Project 병합', { size: 11, weight: 600, align: 'left', color: C.blueText, alpha: appear(t, S04.optimize[0]) });
   // 결과 문장이 바뀌어도 높이가 그대로이도록 긴 문장의 줄 수만큼 자리를 잡는다
-  const y = Math.max(aEnd, oEnd) + 26, done = '결과 스키마 education: string · 최대 5행 — 최적화 전후 같음', before = '최적화는 결과를 바꾸지 않고 연산만 줄입니다.';
-  para(g, 0, y, s.result ? done : before, w, { size: 12, weight: s.result ? 700 : 400, color: s.result ? C.greenText : C.muted });
-  return frame(g, y + (Math.max(wrap(done, w, 12).length, wrap(before, w, 12).length) - 1) * 19 + 10, s.phase);
+  const y = Math.max(aEnd, oEnd) + 26, done = '결과 스키마 education: string · 최대 5행';
+  if (s.result) para(g, 0, y, done, w, { size: 12, weight: 700, color: C.greenText });
+  return frame(g, y + (wrap(done, w, 12).length - 1) * 19 + 10, s.phase);
 }
 
 /* ---------- S05 predicate pushdown: 같은 결과, 건너는 행 수 ---------- */
 function laneV2(g: G, y: number, w: number, t: number, push: boolean) {
   const s = s05(t), dbW = Math.min(150, w * 0.38), spW = Math.min(120, w * 0.34), spX = w - spW, rh = 18;
-  g.text(0, y + 12, push ? 'pushdown: 저장소에서 거른 뒤 전송' : 'pushdown 없음: 전송 뒤 Spark에서 거름', { size: 12, weight: 700, color: push ? C.blueText : C.orangeText });
+  g.text(0, y + 12, push ? 'pushdown 있음' : 'pushdown 없음', { size: 12, weight: 700, color: push ? C.blueText : C.orangeText });
   const top = y + 22, boxH = 8 * rh + 28, under = top + boxH + 18;
   g.rect(0, top, dbW, boxH, { r: 8, fill: C.bg, stroke: C.ink, lw: 1.2 });
   g.text(8, top + 15, 'DB · people', { size: 11, weight: 700, mono: true });
@@ -613,20 +594,18 @@ function laneV2(g: G, y: number, w: number, t: number, push: boolean) {
 }
 function pushdownV2(w: number, t: number): LessonFrame {
   const g = draw(), s = s05(t);
-  const head = para(g, 0, 12, '.filter($"age" > 30) · JDBC (원문 그림, 값은 설명용)', w, { size: 11, mono: true, weight: 600 });
+  const head = para(g, 0, 12, '.filter($"age" > 30) · JDBC', w, { size: 11, mono: true, weight: 600 });
   const e1 = laneV2(g, head + 12, w, t, false);
   g.line(0, e1 + 10, w, e1 + 10, { stroke: C.grid, lw: 1 });
   const e2 = laneV2(g, e1 + 24, w, t, true);
-  let y = e2 + 26;
-  y = para(g, 0, y, '두 경우 결과는 같은 5행(34·41·52·31·38). 실제 JDBC 조회는 필요한 열 목록을 씁니다.', w, { size: 12, color: C.muted });
-  return frame(g, y + 10, s.phase);
+  return frame(g, e2 + 10, s.phase);
 }
 
 /* ---------- S06 반복: 잡마다 HDFS 왕복 / cache 재사용과 lineage 재계산 ---------- */
 function iterateV2(w: number, t: number): LessonFrame {
   const g = draw(), s = s06(t), wide = w >= 560;
   // MapReduce: 넓은 폭은 잡 셋을 가로로, 좁은 폭은 세로로. 읽기·쓰기 칩은 상자 윗변에 잠깐 뜬다
-  g.text(0, 12, 'MapReduce · 잡마다 HDFS에 쓰고 다시 읽음', { size: 12, weight: 700, color: C.orangeText });
+  g.text(0, 12, 'MapReduce', { size: 12, weight: 700, color: C.orangeText });
   const y1 = 30, jx0 = 50, jw = wide ? (w - jx0 - 2 * 40) / 3 : w - jx0, jh = 46, step = wide ? jw + 40 : jh + 30;
   cylinder(g, 22, y1 + 6, 36, 34, { fill: C.slab });
   g.text(22, y1 + 58, 'HDFS', { size: 10, align: 'center', color: C.muted });
@@ -644,10 +623,10 @@ function iterateV2(w: number, t: number): LessonFrame {
     }
   });
   const mrEnd = wide ? y1 + jh : y1 + 2 * step + jh;
-  g.text(w, mrEnd + 36, `디스크 읽기·쓰기 ${s.mrIO}회(설명용)`, { size: 11, weight: 700, align: 'right', color: C.orangeText });
+  g.text(w, mrEnd + 36, `디스크 읽기·쓰기 ${s.mrIO}회`, { size: 11, weight: 700, align: 'right', color: C.orangeText });
   // Spark
   const y2 = mrEnd + 72;
-  g.text(0, y2, 'Spark · 첫 action에서 cache를 채우고 재사용', { size: 12, weight: 700, color: C.blueText });
+  g.text(0, y2, 'Spark · cache', { size: 12, weight: 700, color: C.blueText });
   const src = { x: 22, y: y2 + 30 };
   cylinder(g, src.x, src.y - 12, 36, 34, { fill: C.slab });
   g.text(src.x, src.y + 40, '원본', { size: 10, align: 'center', color: C.muted });
@@ -668,14 +647,12 @@ function iterateV2(w: number, t: number): LessonFrame {
   // 반복 칩은 상자 아래 한 줄
   const ry = ey + eh + 18, its = [S06.fill[1], S06.it2[1], S06.it3[1]];
   its.forEach((at, i) => { const on = t >= at; pill(g, ex + 30 + i * 62, ry, `반복 ${i + 1}`, { size: 10, h: 20, fill: on ? C.greenTint : C.paper, stroke: on ? C.green : C.grid, color: on ? C.greenText : C.muted }); });
-  if (t >= S06.recompute[0]) label(g, ex + 5, ry + 30, s.recovered ? 'P2는 lineage로 그 부분만 다시 계산됨' : 'lineage로 P2만 다시 계산 중', { size: 11, weight: 600, align: 'left', color: C.greenText, alpha: appear(t, S06.recompute[0]) });
+  if (t >= S06.recompute[0]) label(g, ex + 5, ry + 30, s.recovered ? 'P2 재계산 완료' : 'lineage로 P2 재계산', { size: 11, weight: 600, align: 'left', color: C.greenText, alpha: appear(t, S06.recompute[0]) });
   // 재계산 뒤에는 원본을 P2만큼 한 번 더 읽는다. 문장이 길어져도 높이가 그대로이도록 긴 문장 기준으로 자리를 잡는다
-  const sumLong = '원본 읽기 1회 + P2 재계산 1회 · 메모리 재사용 2회(설명용)';
-  para(g, 0, ry + 58, s.recovered ? sumLong : `원본 읽기 1회 · 메모리 재사용 ${Math.max(0, s.iterations - 1)}회(설명용)`, w, { size: 11, weight: 700, color: C.blueText });
+  const sumLong = '원본 읽기 1회 + P2 재계산 1회 · 메모리 재사용 2회';
+  para(g, 0, ry + 58, s.recovered ? sumLong : `원본 읽기 ${t >= S06.read[1] ? 1 : 0}회 · 메모리 재사용 ${Math.max(0, s.iterations - 1)}회`, w, { size: 11, weight: 700, color: C.blueText });
   const sumY = ry + 58 + (wrap(sumLong, w, 11).length - 1) * 18;
-  let y = sumY + 30;
-  y = para(g, 0, y, s.recovered ? '두 줄의 결과는 같습니다. 디스크를 거친 횟수가 다릅니다(shuffle 중간 파일은 Spark도 디스크에 씁니다).' : 'cache()는 표시일 뿐이고 첫 action에서 채워집니다.', w, { size: 12, color: C.muted });
-  return frame(g, Math.max(y, sumY + 30 + 19 * (wrap('두 줄의 결과는 같습니다. 디스크를 거친 횟수가 다릅니다(shuffle 중간 파일은 Spark도 디스크에 씁니다).', w, 12).length - 1)) + 10, s.phase);
+  return frame(g, sumY + 10, s.phase);
 }
 
 const sparkRenderers = { S01: stackV2, S02: partitionV2, S04: planV2, S05: pushdownV2, S06: iterateV2 };

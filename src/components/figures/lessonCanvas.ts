@@ -364,8 +364,10 @@ function queuePanel(g: G, x: number, y: number, pw: number, t: number, cap: numb
     token(g, lerp(tx + 6, x + 12 + i * 24, q), lerp(cy, ly + 4, q), id, 'red', { r: 10, dash: [3, 2] });
   });
   s.processed.forEach((id, i) => {
-    const out = 3600 + i * 1200, q = ease.out(span(t, out, out + 300)), px = outX - 12 - (s.processed.length - 1 - i) * 24;
-    token(g, lerp(outX - 12, px, q), lerp(cy, ly + 4, q), id, id === 6 ? 'orange' : 'green', { r: 10 });
+    const out = 3600 + i * 1200, q = ease.out(span(t, out, out + 300));
+    // 기존 기록의 이동은 새 수신 사건의 300ms 트랙을 따른다. 자신의 도착 보간이 끝나도 새 슬롯으로 뛰지 않는다.
+    const px = outX - 12 - (s.processed.length - 1 - i) * 24 + (i < s.processed.length - 1 ? 24 * shift : 0);
+    token(g, px, lerp(cy, ly + 4, q), id, id === 6 ? 'orange' : 'green', { r: 10 });
   });
   // 나가는 패킷: 출력 진행률만큼 관 출구에서 수신 쪽으로
   if (s.output > 0 && s.output < 1 && s.queued.length) {
@@ -382,7 +384,6 @@ function queuePanel(g: G, x: number, y: number, pw: number, t: number, cap: numb
   const by = ly + 44;
   g.text(x, by, `유입 ${s.arrived} · 대기 ${s.queued.length}`, { size: 12 });
   g.text(x, by + 22, `처리 ${s.processed.length} · 손실 ${s.dropped.length}`, { size: 12, weight: 600, color: s.dropped.length ? C.redText : C.greenText });
-  if (s.dropped.length) g.text(x + pw, by + 22, `× ${s.dropped.join(', ')}`, { size: 12, mono: true, align: 'right', color: C.redText });
   return by + 30 - y;
 }
 function queueV2(w: number, t: number): LessonFrame {
@@ -461,10 +462,9 @@ function indexPanel(g: G, x: number, y: number, pw: number, t: number, order: 'e
     g.path(`M${x + 2} ${yy - 6}L${x + 12} ${yy}L${x + 2} ${yy + 6}Z`, { fill: done ? C.green : C.orange });
   }
   g.text(x, top + rh * 5 + 28, `읽은 행 ${s.read} · 결과 ${s.matches.length}`, { size: 13, weight: 600 });
-  g.text(x, top + rh * 5 + 50, s.phase, { size: 12, color: C.muted });
   const fin = s.read === scan.length;
-  g.text(x, top + rh * 5 + 72, fin ? '결과: 01-13 · 10-04' : '조건: employee_id = 2', { size: 12, weight: fin ? 600 : 400, color: fin ? C.greenText : C.muted });
-  return top + rh * 5 + 80 - y;
+  g.text(x, top + rh * 5 + 50, fin ? '결과: 01-13 · 10-04' : '조건: employee_id = 2', { size: 12, weight: fin ? 600 : 400, color: fin ? C.greenText : C.muted });
+  return top + rh * 5 + 58 - y;
 }
 function indexV2(w: number, t: number): LessonFrame {
   const g = draw(), { cols, pw } = twoUp(w), inner = cols === 2 ? pw - 12 : pw - 12;
@@ -525,13 +525,9 @@ function cacheV2(w: number, t: number): LessonFrame {
   }
   // 첫 응답 본문이 다 도착해야 저장한다: 헤더만으로는 HIT가 되지 않는다
   const bottom = vertical ? cy[2] + 26 + 50 : cy[0] + 52 + 34;
-  g.text(w / 2, bottom, t < 5600 ? '① 첫 요청 · MISS' : t < 6400 ? '② 같은 키 · 조회' : '② 같은 키 · HIT', { size: 13, weight: 600, align: 'center' });
-  let y = bottom + 34;
-  g.text(0, y, 'GET /app.css', { size: 12, weight: 700, mono: true });
-  g.text(0, y + 24, `저장 응답 ${s.stored ? '200 · public' : '없음'}`, { size: 12, color: s.stored ? C.greenText : C.muted });
-  g.text(0, y + 48, `X-Proxy-Cache: ${s.hit ? 'HIT' : t >= 1800 ? 'MISS' : '—'}`, { size: 12, weight: 700, mono: true, color: s.hit ? C.greenText : C.orangeText });
-  y = para(g, 0, y + 72, `클라이언트 요청 ${s.clientRequests} · 원본 요청 ${s.originRequests}`, w, { size: 12, color: C.muted });
-  return frame(g, y + 10, s.phase);
+  g.text(0, bottom, 'GET /app.css', { size: 12, weight: 700, mono: true });
+  g.text(0, bottom + 24, `클라이언트 요청 ${s.clientRequests} · 원본 요청 ${s.originRequests}`, { size: 12, color: C.muted });
+  return frame(g, bottom + 34, s.phase);
 }
 
 /* ---------- S03 Spark: lineage는 먼저 등록되고, action 뒤에 partition 원소가 단계별로 계산된다 ---------- */
@@ -548,7 +544,7 @@ function sparkV2(w: number, t: number): LessonFrame {
     rows.forEach((r, j) => g.text(x + nw / 2, ny + 21 + (j - (rows.length - 1) / 2) * 13, r, { size: wide ? 12 : 11, mono: true, weight: 600, align: 'center', alpha: a, cont: j > 0 }));
     if (i) arrow(g, { x: x - (wide ? 20 : 9), y: ny + 17 }, { x: x - 2, y: ny + 17 }, { stroke: C.blue, lw: 1.3, dash: [3, 3], alpha: a, size: 5 });
   });
-  const banner = s.executed ? 'action 호출 · 계산 시작' : 'lineage 등록 · 처리 대기';
+  const banner = s.result !== null ? '계산 완료' : s.executed ? 'count() 호출 · 계산 중' : 'action 대기';
   g.text(0, ny + 62, banner, { size: 13, weight: 700, color: s.executed ? C.greenText : C.muted });
   // partition 격자: 열 = 입력·map·filter·count (넓은 폭) / 행 = 단계 (좁은 폭)
   const top = ny + 84, stages = ['입력', 'map', 'filter', 'count'], at = [0, 5600, 7000, 8400];
@@ -561,7 +557,6 @@ function sparkV2(w: number, t: number): LessonFrame {
       const c = cell(p, st);
       if (!wide) g.text(0, c.y + 25, stages[st], { size: 11, mono: true, color: C.muted });
       g.rect(c.x, c.y, cellW, cellH, { r: 8, fill: st && t >= at[st] ? C.paper : C.bg, stroke: C.line, lw: 1 });
-      if (st && t < at[st] - 400) g.text(c.x + cellW / 2, c.y + 24, s.executed ? '대기' : '계산 전', { size: 11, align: 'center', color: C.muted });
     }
     // 원소 칩: 입력 → map(도착 5600에 두 배) → filter(7000에 조건 밖 원소 제외) → count(8400)
     const input = s.input[p], slot = (st: number, k: number) => { const c = cell(p, st); return { x: c.x + 20 + k * 30, y: c.y + cellH / 2 }; };
@@ -594,7 +589,9 @@ function sparkV2(w: number, t: number): LessonFrame {
 }
 
 export const lessonRenderers: Record<FigureId,(width:number,elapsed:number)=>LessonFrame>={N01:queueV2,N03:flowV2,W03:cacheV2,T01:lockV2,D03:indexV2,S03:sparkV2};
-export function paintLesson(ctx:CanvasRenderingContext2D,frame:LessonFrame,w:number,dpr:number,font:string,monoFont:string=font){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,frame.height);for(const o of frame.ops){
+export function paintLesson(ctx:CanvasRenderingContext2D,frame:LessonFrame,_w:number,dpr:number,font:string,monoFont:string=font){
+ // 완료 높이로 확보한 backing canvas 전체를 지워 반복 재생이 이전 프레임에 의존하지 않게 한다.
+ ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.setTransform(dpr,0,0,dpr,0,0);for(const o of frame.ops){
  // Commands with opacity, caps or a second font are isolated so the four original commands paint exactly as before.
  if(o.type==='path'){ctx.save();ctx.globalAlpha=o.alpha;const p=new Path2D(o.d);if(o.fill!=='none'){ctx.fillStyle=o.fill;ctx.fill(p);}if(o.stroke!=='none'){ctx.strokeStyle=o.stroke;ctx.lineWidth=o.width;ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash(o.dash??[]);ctx.stroke(p);}ctx.restore();continue;}
  if(o.type==='text'&&(o.mono||o.alpha!==undefined||o.weight!==undefined)){ctx.save();ctx.globalAlpha=o.alpha??1;ctx.fillStyle=o.color;ctx.font=`${o.weight??(o.bold?600:400)} ${o.size}px ${o.mono?monoFont:font}`;ctx.textAlign=o.align;ctx.fillText(o.text,o.x,o.y);ctx.restore();continue;}

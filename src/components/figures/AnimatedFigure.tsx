@@ -4,7 +4,7 @@ import './figures.css';
 interface Props {
   containerRef: RefObject<HTMLElement | null>;
   title: string;
-  caption: string;
+  caption?: string;
   children: ReactNode;
   running: boolean;
   variant?: 'default' | 'preview';
@@ -20,6 +20,6 @@ export default function AnimatedFigure({ containerRef, title, caption, children,
         The title stays readable as content too: a screen reader that skips figure names in browse mode still hears it. */}
     <strong id={titleId} className="sr-only">{title}</strong>
     {children}
-    <figcaption>{caption}</figcaption>
+    {caption && <figcaption>{caption}</figcaption>}
   </figure>;
 }

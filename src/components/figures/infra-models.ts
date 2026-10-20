@@ -218,7 +218,7 @@ export const infraInfo = [
     notes: ['DAU × 1인당 요청 수 ÷ 86,400 × (최대/평소)로 목표 rps를 구합니다(값은 원문에 없음).', '한 반복은 요청 2개(0.5 s씩)와 대기 1 s, T = 2 s. VU 하나는 1 rps.', 'VU = 300 × 2 / 2 = 300. 실측 smoke는 VU 1이 약 2 rps(요청 7.52 ms라 T ≈ 1.015 s)였습니다.'] },
   { id: 'O08', title: '증설과 서킷 브레이커', short: '서킷 브레이커', duration: 9000, final: 7200, steps: [3800, 4920, 7200], source: G14, assets: [],
     caption: '원문 시나리오 3: 추첨 홍보(lotteryBoundary = 0)로 신청자가 몰려 지연, 목표 VUser별 iteration time 100ms 이하, front scale out, conference 응답 실패가 늘면 서킷 브레이커 뒤 scale out. 차단기 위치(front의 conference 호출)·실패율 임계·대기 시간·대수는 원문에 없어 설명용입니다.',
-    notes: ['요청이 몰려 conference 응답 실패가 늘면 차단기가 OPEN이 되어 호출하지 않고 바로 실패·대체 응답을 합니다.', '그 사이 증설합니다(대수는 설명용).', 'HALF-OPEN 시험 호출이 성공하면 CLOSED로 돌아옵니다. 증설한 만큼 처리량이 그대로 늘지 않을 수 있어 한계는 측정으로 확인합니다.'] },
+    notes: ['요청이 몰려 conference 응답 실패가 늘면 차단기가 OPEN이 되어 호출하지 않고 바로 실패·대체 응답을 합니다.', '그 사이 증설합니다. 목표는 iteration time 100ms 이하.', 'HALF-OPEN 시험 호출이 성공하면 CLOSED로 돌아옵니다. 증설한 만큼 처리량이 그대로 늘지 않을 수 있어 한계는 측정으로 확인합니다.'] },
   { id: 'O09', title: '동기·비동기와 큐', short: '큐', duration: 9000, final: 6800, steps: [1700, 4100, 6800], source: G14, assets: [],
     caption: "원문 시나리오 4: 선착순(lotteryBoundary = xxx) 모집에 요청이 몰릴 때 'EDA 구조로 변경 및 큐를 활용하여 개선'(취소선 · 원문에 구현 없음). 큐 종류·워커 수·재시도·시간은 원문에 없는 개념 예시입니다.",
     notes: ['동기는 처리가 끝날 때까지 기다리고, 비동기는 큐에 넣은 뒤 바로 "접수됨"을 응답합니다.', '동기 응답은 처리 뒤에, 비동기의 "처리 완료"는 워커가 끝낸 뒤 따로 옵니다.', '요청이 몰리면 큐가 길어지고 완료가 늦어집니다. 접수와 완료는 다릅니다.'] },

@@ -62,8 +62,8 @@ function vpcV2(w: number, t: number): LessonFrame {
   card(g, x1, row1, cw, [{ text: wide ? 'AZ2 · 외부망 · proxy·WAS' : 'AZ2 · 외부망' }, ...cidr('192.168.0.64/26', 'WAS', '')], { tone: 'blue', h: rowH });
   pill(g, x1 + cw - 32, row1 + rowH - 14, 'NAT GW', { size: 10, h: 18, fill: C.paper });
   // 원본 그림에서 NAT로만 나가는 192.168.0.160/27을 내부망으로(배정은 설명용)
-  card(g, x0, row2, cw, [{ text: wide ? 'AZ1 · 관리망 · Bastion' : 'AZ1 · 관리망' }, ...cidr('192.168.0.128/27', 'Bastion', '배정은 설명용')], { tone: 'green', h: rowH });
-  card(g, x1, row2, cw, [{ text: wide ? 'AZ2 · 내부망 · DB' : 'AZ2 · 내부망' }, ...cidr('192.168.0.160/27', 'DB', '배정은 설명용')], { tone: 'orange', h: rowH });
+  card(g, x0, row2, cw, [{ text: wide ? 'AZ1 · 관리망 · Bastion' : 'AZ1 · 관리망' }, ...cidr('192.168.0.128/27', 'Bastion', '배정 예시')], { tone: 'green', h: rowH });
+  card(g, x1, row2, cw, [{ text: wide ? 'AZ2 · 내부망 · DB' : 'AZ2 · 내부망' }, ...cidr('192.168.0.160/27', 'DB', '배정 예시')], { tone: 'orange', h: rowH });
   const bottom = row2 + rowH + 34;
   g.text(0, bottom + 18, 'VPC 192.168.0.0/24 · IGW · AZ 2개', { size: 12, weight: 700 });
   // NAT 아웃바운드(내부망 → NAT GW, 점선)
@@ -112,7 +112,7 @@ function vpcV2(w: number, t: number): LessonFrame {
     if (on) mark(g, bx + colW - 12, y + 9, false, appear(t, A01.block[i] + 600));
   });
   const end = wide ? ty + 10 + 6 * 22 : by + 10 + 3 * 22;
-  const y = para(g, 0, end + 22, '규칙에 없는 인바운드는 보안 그룹이 거부합니다(허용된 요청의 응답은 자동 허용).', w, { size: 12, color: C.muted });
+  const y = para(g, 0, end + 22, '규칙 외 인바운드 차단 · 허용된 요청의 응답은 자동 허용', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -142,7 +142,7 @@ function tlsV2(w: number, t: number): LessonFrame {
   if (s.tls) { const c = segAt(0), a = appear(t, A02.hand[1]); lockGlyph(g, c.x - 5, wide ? nh * 0.5 - 7 : c.y - 34, C.green, { alpha: a }); segLabel(0, 'TLS', C.greenText, A02.hand[1]); }
   else if (s.redirected && t < A02.hand[0]) segLabel(0, ':80 → 301', C.muted, A02.http[2]);
   if (s.decrypted) segLabel(1, 'HTTP 평문', C.orangeText, A02.req[1]);
-  if (t >= A02.db[1]) segLabel(2, '암호화 원문 없음', C.muted, A02.db[1]);
+  if (t >= A02.db[1]) segLabel(2, 'DB 암호화 미확인', C.muted, A02.db[1]);
   // 토큰: 핸드셰이크 중에는 구간 위에 '핸드셰이크'
   travel(g, t, ...lane(0, false), A02.http[0], A02.http[1], ':80', 'blue');
   travel(g, t, ...lane(0, true), A02.http[1], A02.http[2], '301', 'blue');
@@ -154,7 +154,7 @@ function tlsV2(w: number, t: number): LessonFrame {
   travel(g, t, ...lane(1, true), A02.back[1], A02.back[2], 'HTTP', 'orange', { dot: wide && gapW < 80 });
   travel(g, t, ...lane(0, true), A02.back[2], A02.back[3], 'TLS', 'green', { dot: wide && gapW < 80 });
   const end = wide ? nh + 30 : pos(3).y + nh;
-  const y = para(g, 0, end + 26, '원문 설정의 ssl_protocols는 TLSv1·TLSv1.1·TLSv1.2이고 http2는 켜져 있지 않습니다.', w, { size: 12, color: C.muted });
+  const y = para(g, 0, end + 26, 'TLSv1·TLSv1.1·TLSv1.2 · HTTP/2 비활성', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -187,7 +187,7 @@ function dns01V2(w: number, t: number): LessonFrame {
   const fy = wide ? 24 + chH + 34 : CA.y + chH + 24;
   g.text(0, fy, '/etc/letsencrypt/live/[도메인주소]/', { size: 11, mono: true, weight: 600, color: s.issued ? C.ink : C.muted });
   ['fullchain.pem', 'privkey.pem'].forEach((f, i) => { const x = i * (wide ? 150 : 128); fileGlyph(g, x, fy + 10, { color: s.issued ? C.ink : C.grid, s: 0.9 }); g.text(x + 18, fy + 24, f, { size: 11, mono: true, color: s.issued ? C.ink : C.muted }); });
-  g.text(0, fy + 46, '개인키는 서버에서 만들고 CA로 보내지 않습니다.', { size: 11, color: C.muted });
+  g.text(0, fy + 46, '개인키: 서버에서 생성·보관', { size: 11, color: C.muted });
   const steps = ['cp → 작업 폴더', 'Dockerfile COPY', 'nginx ssl_certificate', ':0.0.2 재실행 -p 443'], sy = fy + 64;
   // 네 칸이 한 줄에 들어가는 폭에서만 가로로 둔다(가장 긴 이름이 칸 안에 들어가야 화살표가 글자를 지나지 않는다)
   const row = wide && (w - 3 * 24) / 4 >= Math.max(...steps.map((st, i) => textW(st, 10.5, i > 0))) + 12, sw = row ? (w - 3 * 24) / 4 : w;
@@ -200,14 +200,14 @@ function dns01V2(w: number, t: number): LessonFrame {
   const ly = row ? sy + 50 : sy + 4 * 34 + 14;
   lockGlyph(g, 0, ly - 10, s.served ? C.green : C.grid, { alpha: 1 });
   g.text(18, ly, s.served ? ':443이 이 인증서로 응답' : ':443 아직 아님', { size: 12, weight: 700, color: s.served ? C.greenText : C.muted });
-  const y = para(g, 0, ly + 28, '발급은 TXT 검증을 통과한 뒤입니다. installer None이라 적용은 손으로 합니다.', w, { size: 12, color: C.muted });
+  const y = para(g, 0, ly + 28, 'TXT 검증 → 발급 → 수동 적용', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
 /* ---------- A04 프로필별 설정 파일과 DB ---------- */
 function profileV2(w: number, t: number): LessonFrame {
   const g = draw(), s = a04(t), wide = w >= 560;
-  let y = para(g, 0, 12, 'application.properties(기본) 위에 프로필 파일이 덮어씁니다', w, { size: 11, color: C.muted }) + 14;
+  let y = para(g, 0, 12, '기본 설정 ← 활성 프로필로 덮어쓰기', w, { size: 11, color: C.muted }) + 14;
   A04_ROWS.forEach(([prof, run, user, db], i) => {
     const on = s.on[i], act = s.active === i, done = s.done[i], tone: Tone = i === 0 ? 'green' : i === 1 ? 'orange' : 'blue';
     const runLines = wrap(run, w - 20, 11, true), chipH = wide ? 38 : [38, 52, 38], blockH = wide ? 34 + runLines.length * 15 + 46 : 34 + runLines.length * 15 + 38 + 52 + 38 + 2 * 8 + 14;
@@ -216,7 +216,7 @@ function profileV2(w: number, t: number): LessonFrame {
     runLines.forEach((ln, k) => g.text(10, y + 34 + k * 15, ln, { size: 11, mono: true, color: on ? C.ink : C.muted, cont: k > 0 }));
     const cy = y + 34 + runLines.length * 15 + 4;
     // 프로필 → 파일 → DB
-    const chips: [string, string, boolean][] = [[prof, '프로필', true], [`application-${prof}.properties`, `account.name = ${user} · password = ••••`, false], [db, i === 2 ? 'DB URL 원문 없음' : '요구사항 기준', false]];
+    const chips: [string, string, boolean][] = [[prof, '프로필', true], [`application-${prof}.properties`, `account.name = ${user} · password = ••••`, false], [db, i === 2 ? 'DB URL 미지정' : '요구 DB', false]];
     const widths = wide ? [70, 0, 140] : [w - 20, w - 20, w - 20];
     if (wide) widths[1] = w - 20 - widths[0] - widths[2] - 2 * 26;
     let x = 10;
@@ -233,7 +233,7 @@ function profileV2(w: number, t: number): LessonFrame {
     if (done) mark(g, w - 16, y + 14, true, appear(t, [A04.test, A04.local, A04.prod][i][1]));
     y += blockH + 10;
   });
-  const yy = para(g, 0, y + 14, 'password 값은 가렸습니다. 실행 방법과 프로필의 연결 방식은 원문에 없어 설명용입니다. 스크립트 사용법의 { prod | dev }와 달리 예제 프로필은 test·local·prod입니다.', w, { size: 12, color: C.muted });
+  const yy = para(g, 0, y + 14, '스크립트 인자: prod | dev · 프로필 예시: test | local | prod', w, { size: 12, color: C.muted });
   return frame(g, yy + 10, s.phase);
 }
 
@@ -241,7 +241,7 @@ function profileV2(w: number, t: number): LessonFrame {
 function deployV2(w: number, t: number): LessonFrame {
   const g = draw(), s = a05(t), wide = w >= 560;
   const steps: [string, string, number, boolean][] = [
-    ['cron', '매 10분 실행(crontab 줄은 원문 없음)', A05.cron2, false], ['check_df', 'git fetch · rev-parse $BRANCH ≠ origin/$BRANCH', A05.diff, true],
+    ['cron', '매 10분 실행', A05.cron2, false], ['check_df', 'git fetch · rev-parse $BRANCH ≠ origin/$BRANCH', A05.diff, true],
     ['pull', 'git pull origin master', A05.pull, true], ['build', '주석뿐 · G02: ./gradlew clean build', A05.build[1], false],
     ['종료', '주석뿐 · G02: pgrep -f java · kill -2', A05.kill, false], ['기동', '주석뿐 · G02: nohup java -jar … &', A05.start, false], ['확인', 'G02: curl http://localhost:8080', A05.curl, false],
   ];
@@ -255,13 +255,13 @@ function deployV2(w: number, t: number): LessonFrame {
     lines.forEach((ln, k) => g.text(78, sy + h / 2 + 4 - (lines.length - 1) * 6.5 + k * 13, ln, { size: 10.5, mono: true, color: on ? C.ink : C.muted, cont: k > 0 }));
     sy += h + 6;
   });
-  const noteY = para(g, 0, sy + 8, '실선 = 스크립트에 실제 코드 · 점선 = 주석 또는 다른 글(G02)의 명령', sw, { size: 10.5, color: C.muted });
+  const noteY = para(g, 0, sy + 8, '실선: 실행 코드 · 점선: 주석·실습 명령', sw, { size: 10.5, color: C.muted });
   // 실행 기록
   const lx = wide ? sw + 20 : 0, ly = wide ? 22 : noteY + 26, lw = wide ? w - lx : w;
   g.rect(lx, ly, lw, 110, { r: 8, fill: C.bg, stroke: C.line, lw: 1 });
-  g.text(lx + 10, ly + 18, '실행 기록', { size: 11, weight: 700 });
+  g.text(lx + 10, ly + 18, '실행 기록 · 상태 예시', { size: 11, weight: 700 });
   // 원문 echo 문자열(Nothing to do!!!, Pull Request) 외의 줄은 설명용
-  const logs: [number, string, string][] = [[A05.same, '[실행 1] Nothing to do!!!', C.muted], [A05.diff, '[실행 2] 변경 감지(설명용)', C.blueText], [A05.pull, '[실행 2] Pull Request', C.blueText], [A05.kill, '[실행 2] 프로세스 종료(설명용)', C.redText], [A05.start, '[실행 2] 새 프로세스(설명용)', C.greenText]];
+  const logs: [number, string, string][] = [[A05.same, '[실행 1] Nothing to do!!!', C.muted], [A05.diff, '[실행 2] 변경 감지', C.blueText], [A05.pull, '[실행 2] Pull Request', C.blueText], [A05.kill, '[실행 2] 프로세스 종료', C.redText], [A05.start, '[실행 2] 새 프로세스', C.greenText]];
   logs.forEach(([at, txt, color], i) => { if (t >= at) g.text(lx + 10, ly + 36 + i * 15, txt, { size: 10.5, mono: true, color, alpha: appear(t, at) }); });
   // 프로세스 시간줄: 기존 → 빈 구간 → 새 프로세스
   const ty = (wide ? Math.max(noteY, ly + 110) : ly + 110) + 30, X0 = 0, X1 = w, xAt = (ms: number) => X0 + (X1 - X0) * (ms - A05.cron2) / (A05.end - A05.cron2);
@@ -271,7 +271,7 @@ function deployV2(w: number, t: number): LessonFrame {
   g.text(X0 + 8, by + 15, '기존 PID', { size: 10.5, weight: 600, color: C.blueText });
   if (t >= A05.kill) { const a = appear(t, A05.kill); g.rect(xAt(A05.kill) + 2, by, xAt(A05.start) - xAt(A05.kill) - 4, 22, { r: 4, fill: C.redTint, stroke: C.red, lw: 1, dash: [3, 3], alpha: a }); g.text((xAt(A05.kill) + xAt(A05.start)) / 2, by + 15, '빈 구간', { size: 10.5, weight: 700, align: 'center', color: C.redText, alpha: a }); }
   if (t >= A05.start) { const a = appear(t, A05.start); g.rect(xAt(A05.start), by, X1 - xAt(A05.start), 22, { r: 4, fill: C.greenTint, stroke: C.green, lw: 1, alpha: a }); g.text(X1 - 8, by + 15, '새 PID', { size: 10.5, weight: 600, align: 'right', color: C.greenText, alpha: a }); }
-  const y = para(g, 0, by + 48, '빈 구간에는 proxy가 연결할 WAS가 없습니다(502는 설명용). 종료 후 기동이라 무중단 배포가 아닙니다.', w, { size: 12, color: s.down ? C.redText : C.muted });
+  const y = para(g, 0, by + 48, '종료 → 빈 구간 → 기동 · 서비스 중단 발생', w, { size: 12, color: s.down ? C.redText : C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -281,7 +281,7 @@ function asgV2(w: number, t: number): LessonFrame {
   // 위: CPU 계기 · ALB(좁은 폭은 CPU, ALB 순서)
   const hw = wide ? (w - 20) / 2 : w, gx = wide ? hw + 20 : 0, gy = 0, ax0 = 0, ay0 = wide ? 0 : 56;
   g.rect(gx, gy, hw, 46, { r: 8, fill: C.paper, stroke: C.line, lw: 1 });
-  g.text(gx + 10, gy + 17, `평균 CPU ${s.cpu}% (설명용) · 목표 50`, { size: 11, weight: 700, color: s.cpu > 50 ? C.orangeText : C.ink });
+  g.text(gx + 10, gy + 17, `평균 CPU(예시) ${s.cpu}% · 목표 50%`, { size: 11, weight: 700, color: s.cpu > 50 ? C.orangeText : C.ink });
   const bw = hw - 20;
   g.rect(gx + 10, gy + 26, bw, 10, { r: 3, fill: C.bg, stroke: C.line, lw: 1 });
   g.rect(gx + 10, gy + 26, bw * s.cpu / 100, 10, { r: 3, fill: s.cpu > 50 ? C.orangeTint : C.blueTint, stroke: s.cpu > 50 ? C.orange : C.blue, lw: 1 });
@@ -304,7 +304,7 @@ function asgV2(w: number, t: number): LessonFrame {
   const pol = ['먼저 AZ 균형: 2대인 2a에서 줄임', '① 가장 오래된 시작 템플릿(v1 하나뿐이라 같음)', '② 가장 오래된 인스턴스 → EC2 1', '③ 기본값'];
   let yy = head + 22;
   pol.forEach((ln, i) => { const hit = i === 2 && t >= A06.scaleIn; yy = para(g, 8, yy + 18, ln, w - 8, { size: 11, weight: hit ? 700 : 400, color: hit ? C.redText : C.ink }); });
-  const y = para(g, 0, yy + 28, '새 인스턴스 AZ(2a)·CPU 값·헬스 체크 기준은 설명용입니다.', w, { size: 12, color: C.muted });
+  const y = yy;
   return frame(g, y + 10, s.phase);
 }
 
@@ -314,7 +314,7 @@ function modulesV2(w: number, t: number): LessonFrame {
   // 왼쪽(좁은 폭: 위): S3와 사용자 데이터
   const lw = wide ? 250 : w;
   card(g, 0, 0, lw, [{ text: 'S3 · [S3버킷 경로]' }, { text: 'config.json', mono: true }, { text: 'conference-0.0.1-SNAPSHOT.jar', mono: true }], { tone: 'orange', h: 62 });
-  g.text(0, 84, 'EC2 사용자 데이터 · 명령 요약(… 생략)', { size: 11, weight: 700 });
+  g.text(0, 84, 'EC2 사용자 데이터 · 명령 요약', { size: 11, weight: 700 });
   // 명령이 길면 줄을 나눠 모두 그린다(잘라내지 않음)
   let uy = 94;
   A07_USERDATA.forEach((ln, i) => {
@@ -341,7 +341,7 @@ function modulesV2(w: number, t: number): LessonFrame {
   const calls: [Pt, Pt, number][] = [[user, mid(0, 1, 'top'), 0], [user, mid(2, 1, 'top'), 0], [mid(0, 1, 'bottom'), mid(0, 2, 'top'), 1], [{ x: cx(0) + col * 0.8, y: rowY(1) + bh }, mid(1, 2, 'top'), 2]];
   calls.forEach(([p, q, k]) => { const at = A07.calls[k]; if (s.calls > k) arrow(g, p, q, { stroke: C.blue, lw: 1.3, size: 5, alpha: appear(t, at) }); travel(g, t, p, q, at - 500, at, '', 'blue', { dot: true }); });
   const end = Math.max(wide ? uy : 0, rowY(3) + bh);
-  const y = para(g, 0, end + 30, '모듈 관계는 원본 구조도, 시작 명령은 실습환경 가이드 기준입니다. conference 외 jar·DB 이름은 원문에 없습니다.', w, { size: 12, color: C.muted });
+  const y = end;
   return frame(g, y + 10, s.phase);
 }
 
@@ -352,9 +352,9 @@ const infraOnly = { A01: vpcV2, A02: tlsV2, A03: dns01V2, A04: profileV2, A05: d
 /* ---------- O01 로그·메트릭 수집 경로 ---------- */
 function collectV2(w: number, t: number): LessonFrame {
   const g = draw(), s = o01(t), wide = w >= 560;
-  const top0 = para(g, 0, 12, 'EC2 · CloudWatch agent(config.json 예시, 60초)', w, { size: 12, weight: 700 }) - 12;
+  const top0 = para(g, 0, 12, 'EC2 · CloudWatch agent · 수집 간격 60초', w, { size: 12, weight: 700 }) - 12;
   const rows: [string, string, string, readonly [number, number], Tone | 'none'][] = [
-    ['disk · mem_available · netstat', '메트릭 · agent', '지표(namespace 원문 없음)', O01.metrics, 'blue'],
+    ['disk · mem_available · netstat', '메트릭 · agent', '지표(namespace 미지정)', O01.metrics, 'blue'],
     ['/var/log/syslog', '로그 · agent', '로그 그룹 syslog / {instance_id}', O01.logs, 'orange'],
     ['Spring 앱 · Micrometer', '메트릭 · 앱이 직접', 'namespace brainbackdoor', O01.micrometer, 'blue'],
     ['EC2 기본 지표', 'CPU · Network · EBS', 'AWS/EC2', O01.ec2, 'blue'],
@@ -381,8 +381,8 @@ function collectV2(w: number, t: number): LessonFrame {
   widgets.forEach(wd => { const pw = wd.length * 6.6 + 18; if (x + pw > w) { x = 0; yy += 28; } g.rect(x, yy, pw, 22, { r: 11, fill: s.dash ? C.blueTint : C.paper, stroke: s.dash ? C.blue : C.grid, lw: 1, dash: s.dash ? null : [3, 3] }); g.text(x + pw / 2, yy + 15, wd, { size: 11, mono: true, align: 'center', color: s.dash ? C.blueText : C.muted, alpha: s.dash ? appear(t, O01.dash) : 1 }); x += pw + 8; });
   const ay = yy + 34;
   g.rect(0, ay, w, 28, { r: 6, fill: C.paper, stroke: C.grid, lw: 1, dash: [3, 3] });
-  g.text(10, ay + 18, '알람 · 원문에 설정 없음', { size: 11, color: C.muted });
-  const y = para(g, 0, ay + 52, '본문이 대시보드에 넣으라는 mem_used_percent는 이 설정으로 수집되지 않습니다(mem_available만 수집).', w, { size: 12, color: C.muted });
+  g.text(10, ay + 18, '알람 미설정', { size: 11, color: C.muted });
+  const y = para(g, 0, ay + 52, '메모리 수집: mem_available · mem_used_percent 미수집', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -418,7 +418,7 @@ function observeV2(w: number, t: number): LessonFrame {
   g.rect(0, y, w, 30, { r: 6, fill: C.bg });
   g.text(8, y + 19, '자원', { size: 11, weight: 700 });
   if (s.gaps) { g.rect(x0, y + 5, x1 - x0, 20, { r: 4, stroke: C.faint, lw: 1, dash: [3, 3], alpha: appear(t, O02.gaps) }); g.text(x0 + 8, y + 19, '이 실행에는 자원 지표 없음', { size: 11, color: C.muted, alpha: appear(t, O02.gaps) }); }
-  const yy = para(g, 0, y + 56, '같은 시각에 함께 보이는 것은 원인이 아닙니다. 원인은 trace·로그로 따로 확인합니다.', w, { size: 12, color: C.muted });
+  const yy = para(g, 0, y + 56, '원인 확인: trace·로그', w, { size: 12, color: C.muted });
   return frame(g, yy + 10, s.phase);
 }
 
@@ -453,21 +453,22 @@ function apmV2(w: number, t: number): LessonFrame {
   const bp = (i: number) => wide ? { x: i * (bw + 30), y: ty + 12 } : { x: 0, y: ty + 12 + i * (bh + 28) };
   boxes.forEach(([a, b, c], i) => { const p = bp(i), on = i === 0 ? s.sent : i === 1 ? s.stored : s.shown; card(g, p.x, p.y, bw, [{ text: a, mono: i !== 1 }, { text: b, mono: i === 0, color: C.muted }, { text: c, color: C.muted }], { tone: 'orange', on, h: bh }); });
   // span: front-api(agent) → collector
-  const sp: [Pt, Pt] = wide ? [{ x: fx + 60, y: fy + 58 + 3 }, { x: fx + 60, y: bp(0).y - 3 }] : [{ x: w - 20, y: fy + 58 }, { x: w - 20, y: bp(0).y - 3 }];
-  if (!wide) route(g, [{ x: w - 20, y: fy + 58 }, { x: w - 6, y: fy + 66 }, { x: w - 6, y: bp(0).y - 10 }, { x: w - 20, y: bp(0).y - 3 }], s.sent ? C.orange : C.grid, { dash: [4, 3] });
-  else arrow(g, ...sp, { stroke: s.sent ? C.orange : C.grid, lw: 1.2, size: 5, dash: [4, 3] });
-  travel(g, t, ...sp, O03.span[0], O03.span[1], 'span', 'orange', { dot: !wide });
+  const sp: Pt[] = wide
+    ? [{ x: fx + 60, y: fy + 58 + 3 }, { x: fx + 60, y: bp(0).y - 3 }]
+    : [{ x: w - 20, y: fy + 58 }, { x: w - 6, y: fy + 66 }, { x: w - 6, y: bp(0).y - 10 }, { x: w - 20, y: bp(0).y - 3 }];
+  route(g, sp, s.sent ? C.orange : C.grid, { lw: 1.2, dash: [4, 3] });
+  travelAlong(g, t, sp, O03.span[0], O03.span[1], 'span', 'orange', { dot: !wide });
   for (let i = 0; i < 2; i++) { const a = bp(i), b = bp(i + 1); const p: Pt = wide ? { x: a.x + bw + 3, y: a.y + bh / 2 } : { x: w / 2, y: a.y + bh + 3 }, q: Pt = wide ? { x: b.x - 3, y: b.y + bh / 2 } : { x: w / 2, y: b.y - 3 }; arrow(g, p, q, { stroke: (i === 0 ? s.stored : s.shown) ? C.orange : C.grid, lw: 1.2, size: 5 }); }
   travel(g, t, wide ? { x: bp(0).x + bw + 3, y: bp(0).y + bh / 2 } : { x: w / 2, y: bp(0).y + bh + 3 }, wide ? { x: bp(1).x - 3, y: bp(1).y + bh / 2 } : { x: w / 2, y: bp(1).y - 3 }, O03.store[0], O03.store[1], '', 'orange', { dot: true });
   const end = wide ? bp(0).y + bh : bp(2).y + bh;
-  const y = para(g, 0, end + 26, 'sampling-rate=1이면 모든 요청을 수집합니다(주석: 20 → 5%, 100 → 1%). 저장소 방향은 Pinpoint 구조 기준입니다.', w, { size: 12, color: C.muted });
+  const y = para(g, 0, end + 26, 'sampling-rate: 1 → 100% · 20 → 5% · 100 → 1%', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
 /* ---------- O04 호출 트리와 구간 시간 ---------- */
 function treeV2(w: number, t: number): LessonFrame {
   const g = draw(), s = o04(t), wide = w >= 560;
-  const head = para(g, 0, 12, 'mixed view · /api/conferences · 11:30:24.372 기준 ms', w, { size: 11, weight: 700 });
+  const head = para(g, 0, 12, '/api/conferences · 경과 시간(ms)', w, { size: 11, weight: 700 });
   const lw = wide ? 250 : 0, x0 = lw, x1 = w - 4, X = (ms: number) => lerp(x0, x1, ms / 800), rh = wide ? 30 : 46;
   // 눈금
   const ay = head + 14;
@@ -487,8 +488,8 @@ function treeV2(w: number, t: number): LessonFrame {
   const errs: [number, string][] = [[4, '403'], [3, 'IOException'], [0, '500']];
   errs.forEach(([row, txt], k) => { if (s.err <= k) return; const y = ay + 18 + row * rh + (wide ? 6 : 20); label(g, x1 - 2, y + 12, txt, { size: 10.5, weight: 700, align: 'right', color: C.redText, alpha: appear(t, O04.err[k]) }); });
   const end = ay + 18 + O04_ROWS.length * rh;
-  let y = para(g, 0, end + 22, '실행 = self + 같은 앱 자식. getInputStream의 self 507에는 member-api 응답 대기가 들어 있습니다.', w, { size: 12, color: C.muted });
-  y = para(g, 0, y + 20, '원격 span이 호출 구간보다 5 ms 늦게 끝나며, 표 아래가 잘려 2 ms·20 ms는 보이는 행으로 설명되지 않습니다.', w, { size: 12, color: C.muted });
+  let y = para(g, 0, end + 22, '실행 = self + 같은 앱 자식 · self 507 ms: 원격 응답 대기 포함', w, { size: 12, color: C.muted });
+  y = para(g, 0, y + 20, '원격 span: 호출보다 5 ms 뒤 종료 · 하위 행 일부 생략', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -500,10 +501,10 @@ function loadgenV2(w: number, t: number): LessonFrame {
   const ctrl = { x: 0, y: 22 }, agent = { x: 0, y: 22 + bh + 34 };
   const cwid = wide ? lw : w;
   card(g, ctrl.x, ctrl.y, cwid, [{ text: 'nGrinder controller 3.5.8' }, { text: '웹 8080 · 스크립트·결과', color: C.muted }], { tone: 'blue', h: bh });
-  card(g, agent.x, agent.y, cwid, [{ text: `agent 3.5.8 · region NONE${s.approved ? ' · Approved' : ''}` }, { text: '다른 서버 · 캡처상 1대', color: C.muted }], { tone: 'blue', h: bh, on: true });
+  card(g, agent.x, agent.y, cwid, [{ text: `agent 3.5.8 · region NONE${s.approved ? ' · Approved' : ''}` }, { text: '별도 서버 · agent 1대', color: C.muted }], { tone: 'blue', h: bh, on: true });
   const tx = wide ? lw + 40 : 0, tyT = wide ? 22 : agent.y + bh + 34, tw = wide ? w - tx : w;
   g.text(tx, wide ? 12 : tyT - 10, '대상 서버', { size: 11, weight: 700, color: C.orangeText });
-  card(g, tx, tyT, tw, [{ text: '[테스트 대상 도메인]', mono: true }, { text: '위치 원문 없음', color: C.muted }], { tone: 'orange', h: bh });
+  card(g, tx, tyT, tw, [{ text: '[테스트 대상 도메인]', mono: true }, { text: '위치 미지정', color: C.muted }], { tone: 'orange', h: bh });
   // 등록·스크립트·요청·결과
   const ca: [Pt, Pt] = [{ x: cwid * 0.3, y: agent.y - 3 }, { x: cwid * 0.3, y: ctrl.y + bh + 3 }];
   const ac: [Pt, Pt] = [{ x: cwid * 0.6, y: ctrl.y + bh + 3 }, { x: cwid * 0.6, y: agent.y - 3 }];
@@ -512,10 +513,10 @@ function loadgenV2(w: number, t: number): LessonFrame {
   travel(g, t, ...ca, O05.register[0], O05.register[1], '등록', 'blue');
   travel(g, t, ...ac, O05.script[0], O05.script[1], 'Groovy', 'blue');
   const at: [Pt, Pt] = wide ? [{ x: lw + 3, y: agent.y + bh / 2 }, { x: tx - 3, y: tyT + bh / 2 }] : [{ x: w * 0.5, y: agent.y + bh + 3 }, { x: w * 0.5, y: tyT - 3 }];
-  if (wide) route(g, [at[0], { x: lw + 20, y: agent.y + bh / 2 }, { x: lw + 20, y: tyT + bh / 2 }, at[1]], s.loaded ? C.orange : C.grid, {});
-  else arrow(g, ...at, { stroke: s.loaded ? C.orange : C.grid, lw: 1.1, size: 5 });
-  travel(g, t, at[0], at[1], O05.load[0], O05.load[1], 'GET', 'orange', { dot: wide });
-  if (s.reported) g.text(cwid * 0.6 + 8, (ac[0].y + ac[1].y) / 2 + 4, wide ? '결과 보고(경로 설명용)' : '결과(설명용)', { size: 10.5, color: C.muted, alpha: appear(t, O05.result[1]) });
+  const loadPath: Pt[] = wide ? [at[0], { x: lw + 20, y: agent.y + bh / 2 }, { x: lw + 20, y: tyT + bh / 2 }, at[1]] : at;
+  route(g, loadPath, s.loaded ? C.orange : C.grid, { lw: 1.1 });
+  travelAlong(g, t, loadPath, O05.load[0], O05.load[1], 'GET', 'orange', { dot: wide });
+  if (s.reported) g.text(cwid * 0.6 + 8, (ac[0].y + ac[1].y) / 2 + 4, '결과', { size: 10.5, color: C.muted, alpha: appear(t, O05.result[1]) });
   travel(g, t, ac[1], ac[0], O05.result[0], O05.result[1], '', 'blue', { dot: true });
   // k6
   const ky = Math.max(agent.y + bh, tyT + bh) + 36;
@@ -525,7 +526,7 @@ function loadgenV2(w: number, t: number): LessonFrame {
   const kt: [Pt, Pt] = wide ? [{ x: kw + 3, y: ky + 35 }, { x: tx + tw / 2, y: tyT + bh + 3 }] : [{ x: w * 0.8, y: ky + 7 }, { x: w * 0.8, y: tyT + bh + 3 }];
   arrow(g, ...kt, { stroke: s.k6 ? C.green : C.grid, lw: 1.1, size: 5 });
   travel(g, t, ...kt, O05.k6[0], O05.k6[1], '', 'green', { dot: true });
-  const y = para(g, 0, ky + 100, '부하 발생기와 대상 서버를 나눠야 발생기의 자원 사용이 측정에 섞이지 않습니다. nGrinder 결과 수치는 원문에 없습니다.', w, { size: 12, color: C.muted });
+  const y = para(g, 0, ky + 100, '부하 발생기와 대상 서버 분리 · 발생기 자원 경합 방지', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -557,8 +558,7 @@ function shapesV2(w: number, t: number): LessonFrame {
     if (i === 1 && prog >= 1) g.text(px + pw * 0.97, py + ph - 26, '하강 잘림', { size: 10, align: 'right', color: C.muted });
   });
   const end = wide ? ch : 3 * (ch + 56) - 56;
-  let y = para(g, 0, end + 22, '모양은 원본 그래프에서 읽은 근사입니다. 지연·오류 결과 곡선은 원문에 없어 그리지 않았습니다.', w, { size: 12, color: C.muted });
-  y = para(g, 0, y + 20, '목표: VUser별 iteration time 100ms 이하.', w, { size: 12, weight: 600 });
+  const y = para(g, 0, end + 22, '부하 모양 근사 · VU · 목표: iteration time ≤ 100 ms', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
@@ -569,7 +569,7 @@ function vuV2(w: number, t: number): LessonFrame {
   const cw = wide ? (w - 3 * 16) / 4 : w;
   chain.forEach((c, i) => { const on = s.chain > i, x = wide ? i * (cw + 16) : 0, y = wide ? 0 : i * 32; g.rect(x, y, cw, 26, { r: 6, fill: on ? C.blueTint : C.paper, stroke: on ? C.blue : C.grid, lw: 1, dash: on ? null : [3, 3] }); g.text(x + cw / 2, y + 17, c, { size: 10.5, align: 'center', color: on ? C.blueText : C.muted }); });
   const cy = (wide ? 26 : 4 * 32 - 6) + 18;
-  g.text(0, cy, '값은 원문에 없음 · 예시 목표 300 rps', { size: 10.5, color: C.muted });
+  g.text(0, cy, '예시 목표: 300 rps', { size: 10.5, color: C.muted });
   // 한 VU의 반복: 요청 0.5 s × 2 + 대기 1 s
   const iy = cy + 26, X = (sec: number) => lerp(0, w, sec / 2);
   g.text(0, iy, 'VU 하나의 반복(R = 2)', { size: 11, weight: 700 });
@@ -600,9 +600,9 @@ function breakerV2(w: number, t: number): LessonFrame {
   const colW = wide ? 150 : w, bh = 46;
   const F = { x: 0, y: 0 }, Cf = wide ? { x: w - colW, y: 0 } : { x: 0, y: 2 * bh + 96 };
   const scaled = s.scaled, sa = appear(t, O08.scale[1]);
-  card(g, F.x, F.y, colW, [{ text: 'front' }, { text: scaled ? '증설(대수 설명용)' : 'scale out 전', color: C.muted }], { tone: 'blue', h: bh });
+  card(g, F.x, F.y, colW, [{ text: 'front' }, { text: scaled ? '증설 예시' : 'scale out 전', color: C.muted }], { tone: 'blue', h: bh });
   if (scaled) g.rect(F.x + 6, F.y + bh + 4, colW - 12, 8, { r: 3, fill: C.blueTint, stroke: C.blue, lw: 1, alpha: sa });
-  card(g, Cf.x, Cf.y, colW, [{ text: 'conference' }, { text: scaled ? '증설(대수 설명용)' : 'scale out 전', color: C.muted }], { tone: 'orange', h: bh });
+  card(g, Cf.x, Cf.y, colW, [{ text: 'conference' }, { text: scaled ? '증설 예시' : 'scale out 전', color: C.muted }], { tone: 'orange', h: bh });
   if (scaled) g.rect(Cf.x + 6, Cf.y + bh + 4, colW - 12, 8, { r: 3, fill: C.orangeTint, stroke: C.orange, lw: 1, alpha: sa });
   // 차단기(front의 conference 호출 위, 위치는 설명용)
   const st = s.state, stTone: Tone = st === 'OPEN' ? 'red' : st === 'HALF-OPEN' ? 'orange' : 'green';
@@ -622,15 +622,15 @@ function breakerV2(w: number, t: number): LessonFrame {
   const sw = wide ? (w - 3 * 18) / 4 : (w - 18) / 2;
   states.forEach(([name, at, tone], i) => { const on = t >= at, x = wide ? i * (sw + 18) : (i % 2) * (sw + 18), y = wide ? sy : sy + Math.floor(i / 2) * 34; g.rect(x, y, sw, 26, { r: 13, fill: on ? TONE[tone].tint : C.paper, stroke: on ? TONE[tone].line : C.grid, lw: 1, dash: on ? null : [3, 3] }); g.text(x + sw / 2, y + 17, name, { size: 11, mono: true, weight: 700, align: 'center', color: on ? TONE[tone].text : C.muted }); });
   const ey = sy + (wide ? 26 : 60) + 22;
-  let y = para(g, 0, ey, '목표: VUser별 iteration time 100ms 이하. 실패율 임계·대기 시간·대수는 원문에 없어 설명용입니다.', w, { size: 12, color: C.muted });
-  y = para(g, 0, y + 20, '증설한 대수만큼 처리량이 그대로 늘지 않을 수 있습니다(공유 DB 등). "n대 증설 시 rps"는 측정 과제입니다.', w, { size: 12, color: C.muted });
+  let y = para(g, 0, ey, '목표: VUser별 iteration time ≤ 100 ms', w, { size: 12, color: C.muted });
+  y = para(g, 0, y + 20, '증설 대수와 처리량은 비례하지 않을 수 있음 · 공유 DB 등 병목 확인', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 
 /* ---------- O09 동기·비동기와 큐 ---------- */
 function queueV2(w: number, t: number): LessonFrame {
   const g = draw(), s = o09(t), wide = w >= 560;
-  const badge = '개념 예시 · 원문에 구현 없음(취소선)', bw = textW(badge, 10.5) + 22;
+  const badge = '개념 예시', bw = textW(badge, 10.5) + 22;
   pill(g, wide ? w - bw / 2 - 1 : w / 2, 12, badge, { size: 10.5, h: 22, fill: C.paper, stroke: C.faint, color: C.muted });
   const lw = wide ? 92 : 64, x0 = lw, x1 = w - 8, X = (sec: number) => lerp(x0, x1, sec / 3.5), top = 34, lh = 40;
   const lanes = ['동기', '비동기', '워커'];
@@ -650,14 +650,14 @@ function queueV2(w: number, t: number): LessonFrame {
   if (s.done) label(g, X(3.2), wy + 22, '처리 완료', { size: 10.5, weight: 700, align: 'right', color: C.greenText });
   if (sec > 0 && sec < 3.2) g.line(X(sec), top, X(sec), top + 3 * lh - 4, { stroke: C.ink, lw: 1, dash: [3, 3] });
   g.text(X(0), top + 3 * lh + 10, '0 s', { size: 10, mono: true, color: C.muted });
-  g.text(X(3.5), top + 3 * lh + 10, '시간(설명용)', { size: 10, align: 'right', color: C.muted });
+  g.text(X(3.5), top + 3 * lh + 10, '시간(예시)', { size: 10, align: 'right', color: C.muted });
   // 몰림: 큐 길이
   const qy = top + 3 * lh + 34;
   g.text(0, qy, '선착순 몰림: 접수는 즉시, 완료는 큐 뒤에서', { size: 11, weight: 700, color: s.queued ? C.ink : C.muted });
   const qw = Math.min(w, 300);
   g.rect(0, qy + 10, qw, 34, { r: 8, fill: C.bg, stroke: C.line, lw: 1 });
   for (let k = 0; k < 4; k++) { const on = s.queued > k; g.rect(8 + k * ((qw - 16) / 4), qy + 16, (qw - 16) / 4 - 6, 22, { r: 5, fill: on ? C.blueTint : C.paper, stroke: on ? C.blue : C.grid, lw: 1, dash: on ? null : [3, 3] }); if (on) g.text(8 + k * ((qw - 16) / 4) + ((qw - 16) / 4 - 6) / 2, qy + 31, `요청 ${k + 1}`, { size: 10, align: 'center', color: C.blueText }); }
-  const y = para(g, 0, qy + 70, '큐 종류·워커 수·재시도·결과 통지 방식은 원문에 없습니다. "접수됨" 응답이 처리 완료를 뜻하지 않습니다.', w, { size: 12, color: C.muted });
+  const y = para(g, 0, qy + 70, '접수됨 ≠ 처리 완료', w, { size: 12, color: C.muted });
   return frame(g, y + 10, s.phase);
 }
 

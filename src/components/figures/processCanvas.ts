@@ -74,10 +74,9 @@ function atddV2(w: number, t: number): LessonFrame {
     chips = E01_BUBBLE.map((_, i) => ({ x: x0 + 14 + i * (cw + 18), y: top + 25, w: cw, h: 40 }));
   } else {
     top = boxes[8].y + boxes[8].h + 24;
-    const cw = (w - 24 - 2 * 14) / 3, r1 = top + 30, r2 = r1 + 40 + 22;
+    const cw = (w - 24 - 2 * 14) / 3, r1 = top + 12, r2 = r1 + 40 + 22;
     bottom = r2 + 40 + 12;
     g.rect(0, top, w, bottom - top, { r: 14, fill: C.bg, stroke: C.line, lw: 1.2 });
-    g.text(12, top + 18, 'Develop에 붙은 말풍선', { size: 11, weight: 600, color: C.muted });
     chips = E01_BUBBLE.map((_, i) => ({ x: 12 + (i % 3) * (cw + 14), y: i < 3 ? r1 : r2, w: cw, h: 40 }));
   }
   chips.forEach((b, i) => {
@@ -135,10 +134,10 @@ function testScopeV2(w: number, t: number): LessonFrame {
   });
   // 범례
   let y = top0 + 5 * rowH + 14;
-  const legend = wide ? ['실행 = 테스트에서 실제로 실행 · MockBean = @MockBean 대역 · — = 범위 밖 · 도메인 열은 단위 테스트만 표시'] : ['Ctrl·Svc·Repo = Controller·Service·Repository', 'Mock = @MockBean 대역 · — = 범위 밖', '도메인 열은 단위 테스트만 표시'];
+  const legend = wide ? ['— 범위 밖 · 도메인 열은 단위 테스트만 표시'] : ['Ctrl·Svc·Repo: Controller·Service·Repository', 'Mock: @MockBean · — 범위 밖', '도메인 열은 단위 테스트만 표시'];
   legend.forEach(l => { y = para(g, 0, y, l, w, { size: 11, color: C.muted }) + 16; });
   // 인수테스트 격리: 다음 테스트의 @BeforeEach에서 databaseCleanup.execute()
-  y = para(g, 0, y + 8, '인수테스트 격리 · 다음 테스트의 @BeforeEach → databaseCleanup.execute()', w, { size: 12, weight: 700, color: t >= E02.clean[0] ? C.ink : C.muted }) + 12;
+  y = para(g, 0, y + 8, '@BeforeEach → databaseCleanup.execute()', w, { size: 12, weight: 700, color: t >= E02.clean[0] ? C.ink : C.muted }) + 12;
   E02_CLEAN.forEach((step, i) => {
     const bw = textW(step, 11, true) + 16, by = y + i * 28, on = s.clean[i];
     if (i > 0) g.line(10, by - 6, 10, by, { stroke: on ? C.blue : C.line, lw: 1.3 });
@@ -235,11 +234,12 @@ function stormV2(w: number, t: number): LessonFrame {
     sticky(g, b, E03_DUP, 'event', a);
     if (s.dupCrossed) { g.line(b.x + 4, b.y + 4, b.x + b.w - 4, b.y + b.h - 4, { stroke: C.red, lw: 2, alpha: a }); g.line(b.x + 4, b.y + b.h - 4, b.x + b.w - 4, b.y + 4, { stroke: C.red, lw: 2, alpha: a }); }
   }
-  // 그리지 않은 보드의 나머지: 보드 라벨 그대로 목록으로(경계 단계에 나타남, 자리는 처음부터 잡아 둔다)
-  let ry = aBottom + 22;
+  // 추가 흐름은 원본의 라벨만 남기고 제작 설명은 덜어 낸다.
+  let ry = aBottom + 10;
   const ra = s.bound ? appear(t, E03.bound) : 0;
-  if (ra > 0) g.text(0, ry, '보드의 나머지', { size: 12, weight: 700, color: C.ink, alpha: ra });
-  for (const line of E03_REST) {
+  const prefixes = ['가입 확인 ←', '회원여부 정책 → (조건 미표기)', '회원:', '인증:'];
+  for (const [i, source] of E03_REST.entries()) {
+    const line = i < prefixes.length ? prefixes[i] + source.slice(source.indexOf(':') + 1) : '오른쪽이 잘려 연결 3개 생략';
     // 항목 머리에만 '·'를 두고, 이어지는 줄은 들여 쓴다(목록 안의 '·'는 줄 끝에 붙여 새 항목처럼 보이지 않게)
     const rows = wrap(line.replace(/ · /g, '\u00a0· '), w - 10, 11);
     ry += 18;
@@ -386,13 +386,11 @@ function temporalV2(w: number, t: number): LessonFrame {
   g.rect(pillX - pillW / 2, 2, pillW, 22, { r: 11, fill: C.paper, stroke: C.line, lw: 1 });
   g.text(pillX, 17, '매니저', { size: 11, weight: 600, align: 'center', color: C.ink });
   // Server · Event History: 상자를 먼저 칠하고 제목을 쓴다(글자가 상자에 덮이지 않게)
-  const subtitle = '일어난 사건을 순서대로 덧붙이는 append-only 기록 = 곧 워크플로우 상태', subRows = wrap(subtitle, sw - 24, 11).length;
-  const y = sTop + 36 + (subRows - 1) * 18 + 10;
+  const y = sTop + 32;
   const cardH = 38, cardW = sw - 24, cards: Box[] = E05_HISTORY.map((_, i) => ({ x: 12, y: y + i * (cardH + 6), w: cardW, h: cardH }));
   const sBottom = cards[5].y + cardH + 26;
   g.rect(0, sTop, sw, sBottom - sTop, { r: 10, fill: C.bg, stroke: C.blue, lw: 1.2 });
   g.text(12, sTop + 20, 'Server · Event History', { size: 12, weight: 700, color: C.ink });
-  para(g, 12, sTop + 36, subtitle, sw - 24, { size: 11, color: C.muted });
   if (t >= E05.signal[0]) route(g, [{ x: pillX, y: 24 }, { x: pillX, y: sTop - 1 }], t >= E05.signal[1] ? C.ink : C.line, { lw: 1.3 });
   E05_HISTORY.forEach(([name, sub], i) => {
     const b = cards[i];
@@ -432,8 +430,8 @@ function temporalV2(w: number, t: number): LessonFrame {
     g.text(wk.x + 10, wk.y + 20, wk.name, { size: 12, weight: 700, color: dead ? C.redText : C.ink });
     // 설명 줄은 두 줄까지(좁은 폭) 자리를 잡아 둔다
     // Worker B의 부제는 Replay 입력(점)이 도착할 때 바뀐다
-    const replayed = i === 1 && t >= E05.replay[1], sub = replayed ? 'Event History로 Replay' : '코드를 실행할 뿐 · 자기 상태 없음';
-    para(g, wk.x + 10, wk.y + 36, sub, ww - 20, { size: 11, lh: 14, color: replayed ? C.greenText : C.muted });
+    const replayed = i === 1 && t >= E05.replay[1];
+    if (replayed) para(g, wk.x + 10, wk.y + 36, 'Event History로 Replay', ww - 20, { size: 11, lh: 14, color: C.greenText });
     // 좁은 폭(Worker 두 칸이 나란히)은 여백을 줄여 표시 자리를 확보한다
     const pad = wide ? 10 : 8, codeW = textW('승인 대기(7일)', 11), mx = wk.x + pad + codeW + (wide ? 8 : 3), mw = ww - (mx - wk.x) - (wide ? 10 : 4);
     E05_CODE.forEach((code, j) => {
@@ -453,9 +451,7 @@ function temporalV2(w: number, t: number): LessonFrame {
     });
     if (dead) g.text(wk.x + 10, wk.y + wH - 10, '✕ 프로세스 죽음', { size: 11, weight: 700, color: C.redText, alpha: appear(t, E05.crash) });
   });
-  const bottom = Math.max(sBottom, workers[1].y + wH) + 14;
-  const end = para(g, 0, bottom + 4, '막대 = 실제 실행 · 초록 점선 꼬리표 = 기록된 결과 사용(다시 실행하지 않음)', w, { size: 11, color: C.muted });
-  return frame(g, end + 8, s.phase);
+  return frame(g, Math.max(sBottom, workers[1].y + wH) + 10, s.phase);
 }
 
 /* ---------- X05 팀 회고: 카드 → 그룹 → 투표 → 액션 플랜(레인 두 개) ---------- */
@@ -467,7 +463,7 @@ function retroV2(w: number, t: number): LessonFrame {
   const content = (c: number, l: number, on: boolean): RetroBox => {
     const lane = X05_LANES[l], tone = l === 0 ? TONE.blue : TONE.red, out = l === 0 && s.voted;
     if (c === 0) return { head: lane.kind, headColor: tone.text, headSize: 11, body: wrap(lane.card, boxW - 16, 12), bodySize: 12, bodyColor: C.ink, fill: tone.tint, stroke: tone.line };
-    if (c === 1) return { head: lane.group, headColor: out && on ? C.muted : C.ink, headSize: 12, body: wrap(lane.card, boxW - 16, 11), bodySize: 11, bodyColor: C.muted, fill: out && on ? C.bg : C.paper, stroke: out && on ? C.line : C.ink };
+    if (c === 1) return { head: lane.group, headColor: out && on ? C.muted : C.ink, headSize: 12, body: [], bodySize: 11, bodyColor: C.muted, fill: out && on ? C.bg : C.paper, stroke: out && on ? C.line : C.ink };
     if (l === 0) return null;
     if (c === 2) return { head: '선택됨', headColor: C.greenText, headSize: 12, body: [], bodySize: 11, bodyColor: C.ink, fill: C.greenTint, stroke: C.green };
     return { head: '액션 플랜', headColor: C.greenText, headSize: 11, body: wrap(X05_ACTION, boxW - 16, 12), bodySize: 12, bodyColor: C.ink, fill: C.greenTint, stroke: C.green };

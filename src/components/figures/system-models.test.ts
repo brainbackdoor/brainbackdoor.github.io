@@ -55,6 +55,19 @@ describe('B04 event models keep the verified meaning', () => {
     expect(systemState('C07', 6500)).toMatchObject({ state: 'exited', writableData: true, cmdCalls: 1 });
   });
 
+  it('C07 fades the last running container without changing it back to a waiting CMD', () => {
+    for (const w of [259, 650, 900]) {
+      for (let t = 8800; t < 9050; t += 10) {
+        const f = systemRenderers.C07(w, t);
+        expect(systemState('C07', t).state).toBe('removed');
+        for (const label of ['CMD', 'running', '쓰기 계층 · 데이터 있음', 'CMD 실행 2회']) expect(visible(f, label), `${w} ${t} ${label}`).toBe(true);
+        for (const label of ['CMD 대기', 'removed', '쓰기 계층']) expect(visible(f, label), `${w} ${t} ${label}`).toBe(false);
+      }
+      expect(texts(systemRenderers.C07(w, 9300)).map(o => o.text).join(' ')).toContain('이미지는 남음');
+      expect(visible(systemRenderers.C07(w, 9050), 'CMD')).toBe(false);
+    }
+  });
+
   it('C08 drifts mutable servers and ends immutable servers on the same image', () => {
     expect(systemState('C08', 9000).mutable).toEqual(['v2', 'v1+', 'v1']);
     expect(systemState('C08', 6500).immutable).toEqual(['v2', 'v2', 'v1']);
@@ -187,7 +200,8 @@ describe('B04 drawings show the model values', () => {
     for (const w of ARTICLE_WIDTHS) {
       const said = texts(systemRenderers.C09(w, systemInfo.find(i => i.id === 'C09')!.final)).map(o => o.text).join(' ');
       expect(said).not.toContain('출력을 파일로 보낼');
-      expect(said).toContain('로그 파일로 보내는 것은 1>·2>&1 리다이렉션입니다.');
+      expect(said).toContain('nohup: SIGHUP 무시');
+      expect(said).toContain('1>·2>&1: 로그 리다이렉션');
     }
   });
 

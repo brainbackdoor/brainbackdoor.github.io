@@ -40,7 +40,7 @@ describe('deployed figures keep their drawings while shared support grows', () =
 });
 
 import { readFileSync } from 'node:fs';
-import { FIGURE_COLORS, cubicBezier, paintLesson, roundedRectPath, span, type LessonFrame } from './lessonCanvas';
+import { FIGURE_COLORS, cubicBezier, draw, frame, paintLesson, para, roundedRectPath, span, type LessonFrame } from './lessonCanvas';
 import { LessonSvg } from './LessonFigure';
 import AnimatedFigure from './AnimatedFigure';
 import { progress } from './lesson-models';
@@ -117,9 +117,9 @@ describe('palette and CSS tokens', () => {
   });
 });
 
-function recordingContext() {
+function recordingContext(width = 200, height = 160) {
   const calls: unknown[][] = [];
-  const state: Record<string, unknown> = { globalAlpha: 1 };
+  const state: Record<string, unknown> = { globalAlpha: 1, canvas: { width, height } };
   const saved: Record<string, unknown>[] = [];
   const ctx = new Proxy(state, {
     get: (target, key: string) => key in target ? target[key] : (...args: unknown[]) => {
@@ -152,6 +152,33 @@ describe('shared path, text and circle commands', () => {
     expect(calls).toContainEqual(['set:font', '700 12px Mono']);
     expect(calls).toContainEqual(['fillText', 'sharedCounter', 12, 60]);
     expect(state.globalAlpha).toBe(1);
+  });
+
+  it('clears the whole backing canvas when a shorter scene follows the completed scene', () => {
+    for (const dpr of [1, 1.5, 2]) {
+      const width = 300 * dpr, height = 500 * dpr, pixels = new Uint8Array(width * height);
+      let scale = 1;
+      const rectangle = (x: number, y: number, w: number, h: number, value: number) => {
+        for (let row = Math.floor(y * scale); row < Math.min(height, Math.ceil((y + h) * scale)); row++) {
+          pixels.fill(value, row * width + Math.max(0, Math.floor(x * scale)), row * width + Math.min(width, Math.ceil((x + w) * scale)));
+        }
+      };
+      const ctx = {
+        canvas: { width, height },
+        setTransform: (a: number) => { scale = a; },
+        clearRect: (x: number, y: number, w: number, h: number) => rectangle(x, y, w, h, 0),
+        fillRect: (x: number, y: number, w: number, h: number) => rectangle(x, y, w, h, 1),
+      } as unknown as CanvasRenderingContext2D;
+      const completed: LessonFrame = { height: 500, status: '', ops: [{ type: 'rect', x: 10, y: 450, w: 100, h: 20, fill: '#000', stroke: 'none' }] };
+      const initial: LessonFrame = { height: 200, status: '', ops: [{ type: 'rect', x: 10, y: 100, w: 100, h: 20, fill: '#000', stroke: 'none' }] };
+      paintLesson(ctx, completed, 300, dpr, 'Sans');
+      expect(pixels.some(Boolean)).toBe(true);
+      paintLesson(ctx, initial, 300, dpr, 'Sans');
+      const afterReplay = pixels.slice();
+      pixels.fill(0);
+      paintLesson(ctx, initial, 300, dpr, 'Sans');
+      expect(afterReplay).toEqual(pixels);
+    }
   });
 
   it('writes the same geometry, emphasis and font role into the accessible SVG', () => {
@@ -258,6 +285,35 @@ describe('deployed figures v2 (R04)', () => {
       const s = queueState(t, 2), f = renderers.N01(650, t);
       const lost = f.ops.filter(o => o.type === 'path' && o.stroke === FIGURE_COLORS.red && o.dash !== null).length;
       expect(lost, `${t}`).toBe(s.dropped.length);
+    }
+  });
+
+  it('slides existing N01 receive history over 300 ms when the next packet arrives', () => {
+    for (const w of [650, 346, 259]) for (const at of [4800, 6000, 7200, 8400, 9600]) {
+      // 1번은 이미 수신함에 도착해 있다. 큰 버퍼의 마지막 1번 표식을 추적한다.
+      const x = (t: number) => texts(renderers.N01(w, t)).filter(o => o.text === '1' && o.mono && o.color === FIGURE_COLORS.greenText).at(-1)!.x;
+      const before = x(at - 1);
+      expect(x(at), `${w}/${at} continuity`).toBeCloseTo(before, 6);
+      expect(x(at + 150), `${w}/${at} in progress`).toBeLessThan(before);
+      expect(x(at + 150), `${w}/${at} not snapped`).toBeGreaterThan(before - 24);
+      expect(x(at + 300), `${w}/${at} destination`).toBeCloseTo(before - 24, 6);
+    }
+  });
+
+  it('reserves a constant scene height for N07 and W01 throughout repeated playback', () => {
+    for (const id of ['N07', 'W01']) for (const w of [650, 346, 259, 200]) {
+      const expected = renderers[id](w, items.find(i => i.id === id)!.final).height;
+      for (const t of loop(id, 50)) expect(renderers[id](w, t).height, `${id}/${w}/${t}`).toBe(expected);
+    }
+  });
+
+  it('keeps the W01 graph in place when the first-byte marker appears', () => {
+    for (const w of [650, 346, 259]) {
+      const before = renderers.W01(w, 3899), after = renderers.W01(w, 3900);
+      const graphLabels = (f: LessonFrame) => texts(f).filter(o => o.text !== 'TTFB 320 ms').map(({ text, x, y }) => ({ text, x, y }));
+      expect(after.height).toBe(before.height);
+      expect(graphLabels(after)).toEqual(graphLabels(before));
+      for (const t of [0, 3899, 3900, 7000]) expect(texts(renderers.W01(w, t)).some(o => /TTFB (대기|도착)/.test(o.text))).toBe(false);
     }
   });
 
@@ -492,8 +548,12 @@ describe('every figure keeps lines and filled shapes off its labels', () => {
   it('reads each wrapped sentence in one piece and leaves invisible words out of the SVG description', () => {
     // 스크린리더는 desc를 읽는다: 줄바꿈된 한 문장이 ' · '로 끊기지 않고, 보이지 않는(투명도 0.05 이하) 글자는 읽지 않는다
     const desc = (f: LessonFrame, w: number) => (renderToString(createElement(LessonSvg, { frame: f, width: w, title: 't' })).match(/<desc[^>]*>([\s\S]*?)<\/desc>/)?.[1] ?? '').replace(/&#x27;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
-    const e05 = processRenderers.E05(284, 9400), n06 = networkRenderers.N06(259, 7500);
-    expect(desc(e05, 284)).toContain('일어난 사건을 순서대로 덧붙이는 append-only 기록 = 곧 워크플로우 상태');
+    // 제품에서 덜어낸 설명 문구에 의존하지 않고 공통 줄바꿈 도구의 읽기 순서를 검증한다.
+    const g = draw(), sentence = '일어난 사건을 순서대로 덧붙이는 append-only 기록';
+    para(g, 0, 14, sentence, 100);
+    expect(g.ops.filter(o => o.type === 'text').length).toBeGreaterThan(1);
+    expect(desc(frame(g, 120, ''), 100)).toContain(sentence);
+    const n06 = networkRenderers.N06(259, 7500);
     expect(desc(n06, 259)).toContain('후속 DATA 없음 → 중복 ACK 없음');
     const leaks = new Set<string>();
     for (const [id, w, t, f] of scenes()) {

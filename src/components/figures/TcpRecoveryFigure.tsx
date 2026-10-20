@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import AnimatedFigure from './AnimatedFigure';
 import { useFigurePlayback } from './useFigurePlayback';
-import { TCP_TIME, tcpDescription, tcpLabels, tcpStateAt, type FigureLanguage, type TcpScenario, type TcpPhase } from './tcp';
+import { TCP_TIME, tcpLabels, tcpStateAt, type FigureLanguage, type TcpScenario } from './tcp';
 import { drawTcp, readFigureColors, TCP_HEIGHT, tcpY, type FigureColors } from './tcpCanvas';
 
 interface Surface {
@@ -58,12 +58,7 @@ export default function TcpRecoveryFigure({ lang = 'ko', variant = 'default' }: 
   const style = useRef<{ colors: FigureColors; font: string } | null>(null);
   const failed = useRef(false);
   const [ready, setReady] = useState(false);
-  const lastPhases = useRef<Record<TcpScenario, TcpPhase>>({ normal: 'complete', loss: 'complete' });
-  const [phases, setPhases] = useState(lastPhases.current);
   const labels = tcpLabels[lang];
-  const caption = preview
-    ? (lang === 'ko' ? '시간은 아래로 흐릅니다. 실제 RTT·RTO 측정값이 아닌 설명용 시간축이며, 뒤따르는 데이터가 없는 경우입니다.' : 'Time flows downward on an illustrative timeline, not measured RTT or RTO. No later data is sent.')
-    : labels.caption;
   const frame = useCallback((elapsed: number) => {
     if (failed.current || !style.current || !surfaces.current.length) return;
     try {
@@ -73,15 +68,9 @@ export default function TcpRecoveryFigure({ lang = 'ko', variant = 'default' }: 
         surface.canvas.dataset.phase = tcpStateAt(elapsed, surface.scenario).phase;
         surface.canvas.dataset.timer = tcpStateAt(elapsed, surface.scenario).timer;
       }
-      const next = { normal: tcpStateAt(elapsed, 'normal').phase, loss: tcpStateAt(elapsed, 'loss').phase };
-      if (lastPhases.current.normal !== next.normal || lastPhases.current.loss !== next.loss) {
-        lastPhases.current = next;
-        setPhases(next);
-      }
     } catch {
       failed.current = true;
       setReady(false);
-      setPhases({ normal: 'complete', loss: 'complete' });
     }
   }, [lang, height]);
   const playback = useFigurePlayback({ containerRef, durationMs: TCP_TIME.loop, finalElapsedMs: TCP_TIME.recovered + 500, enabled: ready, onFrame: frame });
@@ -147,7 +136,7 @@ export default function TcpRecoveryFigure({ lang = 'ko', variant = 'default' }: 
     };
   }, [playback.redraw, preview, height]);
 
-  return <AnimatedFigure containerRef={containerRef} title={preview ? labels.loss : labels.title} caption={caption} running={playback.running} variant={variant}>
+  return <AnimatedFigure containerRef={containerRef} title={preview ? labels.loss : labels.title} caption={preview ? undefined : labels.caption} running={playback.running} variant={variant}>
     <div className="tcp-figure__panels">
       {(preview ? ['loss'] as const : ['normal', 'loss'] as const).map(scenario => <div className="tcp-figure__panel" key={scenario} data-scenario={scenario} data-ready={ready}>
         {!preview && <div className="tcp-figure__panel-title"><span aria-hidden="true" />{labels[scenario]}</div>}
@@ -155,7 +144,6 @@ export default function TcpRecoveryFigure({ lang = 'ko', variant = 'default' }: 
           <StaticTcp scenario={scenario} lang={lang} height={height} />
           <canvas ref={scenario === 'normal' ? normalRef : lossRef} role="img" aria-label={scenario === 'normal' ? labels.normalAlt : labels.lossAlt} aria-hidden={!ready} />
         </div>
-        {!preview && <p className="tcp-figure__description">{tcpDescription(lang, scenario, ready ? phases[scenario] : 'complete')}</p>}
       </div>)}
     </div>
   </AnimatedFigure>;

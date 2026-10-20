@@ -2406,4 +2406,15 @@ B06 조사 노트(`infra-ops-v2/SOURCES-A·B·C.md`)의 비밀·식별자 목록
 - `pnpm build`: **332페이지 성공**.
 - 마이그레이션 단위 테스트: **37개 통과**.
 - 원문 대조: **58편 · 1,806필드 · 도해 74종 · 문제 0 · 깨진 내부 링크 0**. 기존의 수집 불가 원문 6개·에셋 6개는 그대로다.
-- `git diff --check` 통과. 변경은 로컬 작업 트리에 있으며 커밋·공개 배포는 하지 않았다.
+- `git diff --check` 통과. 이상은 커밋·공개 배포 전의 로컬 검증 결과다.
+
+### 배포 및 공개 사이트 검수 (2026-10-20)
+
+- **제품 커밋:** [`f1346f2`](https://github.com/brainbackdoor/brainbackdoor.github.io/commit/f1346f275258ea3d1c81f3daeba09d988948d5bd), main에 push. 기존 사용자 변경 `.claude/launch.json`은 제외했다.
+- **배포:** [GitHub Pages 실행 39375548268](https://github.com/brainbackdoor/brainbackdoor.github.io/actions/runs/39375548268), 해당 커밋의 build·deploy success.
+- **공개 주소:** [www.brainbackdoor.com](https://www.brainbackdoor.com). 실제 페이지가 로컬 빌드와 같은 `LessonFigure.DTQLi_Wf.js`, `TcpRecoveryFigure.D9HaYofK.js`를 사용함을 확인했다.
+- **화면:** 8종 각각을 1280×900·390×1000·320×1000으로 확인했다(24개 조합). 모두 재생되며 가로 넘침·제거한 중복 문단·초기 펼침 없음. 브라우저 콘솔 오류 0건.
+- **사건 구간:** N07·W01의 반복 재시작, C07 소멸 중 running 유지, D05 테이블 도착 전 반환 0, N01 수신 이력 이동, D08 sort 종료 후 join 위치, O03 모바일·O05 데스크톱의 경로 이동을 공개 본문에서 다시 관찰했다.
+- S06의 초기 읽기 0회와 과정 설명 3단계 펼침, 홈 TCP의 캡션 제거, 본문 TCP 정상/손실 두 패널도 확인했다.
+- **배포 전 재검증:** 테스트 345개·마이그레이션 테스트 37개 통과, 타입 검사 오류·경고·힌트 0건, 332페이지 빌드 성공, 원문 대조 58편·1,806필드·74종 문제 0.
+- [공개 사이트 검수 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/public-f1346f2/browser-checks.json), [공개 W01 데스크톱 화면](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/public-f1346f2/w01-desktop.jpg).

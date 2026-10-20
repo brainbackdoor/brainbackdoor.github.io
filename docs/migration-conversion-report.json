@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-20T13:12:25.149414+00:00",
+  "generatedAt": "2026-10-20T13:41:46.483702+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -497,7 +497,10 @@
           "type": "text",
           "sourceTextChars": 158,
           "sourceTextSha256": "427d9b3917d16d12827e580bcf066fdac6e27e74867c933ed0cb414816fd3ef9",
-          "status": "converted"
+          "sourceBlockSha256": "d6ab916c9c694b9912c23896b9ec0e1f205afb1d671fc0619e5add61f12f1eeb",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-n05-rto-intro",
+          "reason": "바로 앞의 RTO 대기와 뒤의 Fast Retransmission/Fast Recovery 설명을 반복하는 도입 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "78b39720-2194-4f1c-a965-da6612c24f29",
@@ -553,7 +556,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "30d05d08255884762ba831d175d933185e82a696908d3d9440433993ddd5662a",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-n06-divider",
+          "reason": "도해 뒤 구분선은 다음 BBR 절 제목과 경계가 겹쳐 제거 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "ca6700c6-4e90-4683-88cb-1a82c3b7c2b1",
@@ -899,6 +905,26 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         },
         {
+          "sourceBlockId": "e391531a-3e5a-4288-a8e6-a9aeaabe3eb6",
+          "type": "text",
+          "sourceTextChars": 158,
+          "sourceTextSha256": "427d9b3917d16d12827e580bcf066fdac6e27e74867c933ed0cb414816fd3ef9",
+          "sourceBlockSha256": "d6ab916c9c694b9912c23896b9ec0e1f205afb1d671fc0619e5add61f12f1eeb",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-n05-rto-intro",
+          "reason": "바로 앞의 RTO 대기와 뒤의 Fast Retransmission/Fast Recovery 설명을 반복하는 도입 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "sourceBlockId": "83424742-6a80-43fa-90d0-ff457eb3d4a4",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "30d05d08255884762ba831d175d933185e82a696908d3d9440433993ddd5662a",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-n06-divider",
+          "reason": "도해 뒤 구분선은 다음 BBR 절 제목과 경계가 겹쳐 제거 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
           "sourceBlockId": "4d4fcf3d-3443-4e12-914d-149b8ef9825d",
           "type": "column_list",
           "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
@@ -1052,6 +1078,17 @@
       ],
       "corrections": [
         {
+          "id": "desktop-n03-buffer-intro",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "d40af087-8a27-4de2-8b10-ed6fd742c0e9",
+          "sourceType": "text",
+          "sourceTextSha256": "c6041ef6704c892cdd89ff4b3522a7c363ee8f62686d952522d4b0f802a7b558",
+          "oldText": "window size를 조정하는 프로세스는 매우 명확하지만, 완벽한 것은 아니다. 데이터가 TCP 스택에 수신될 때마다 ACK가 생성되고 반복적으로 보내지지지만 수신자의 버퍼에 있는 데이터가 항상 즉시 처리되는 것은 아니기 때문이다. window size를 재조정하는 프로세스로 zero window 전송을 통한 데이트 흐름을 중지하는 방법과 TCP sliding window 등의 두가지 방법을 사용한다.",
+          "newText": "TCP 스택에 데이터가 수신되면 ACK를 반복해서 보내지만, 수신 버퍼의 데이터가 항상 즉시 처리되지는 않는다. window size를 조정하는 방법으로는 zero window 전송을 통한 데이터 흐름 중지와 TCP sliding window가 있다.",
+          "reason": "평가성 도입을 덜고 ACK·버퍼 처리·두 윈도 조정 방법을 두 문장으로 정리 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/tcp-error-recovery/#d40af087-8a27-4de2-8b10-ed6fd742c0e9"
+        },
+        {
           "id": "zero-window-probe",
           "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
           "sourceBlockId": "3915897f-b4a3-420c-b6c0-f71c001e9d42",
@@ -1116,6 +1153,24 @@
           "newText": "수신자가 순서가 맞지 않는 세그먼트를 받으면, 아직 채워지지 않은 연속 바이트 구간의 다음 순번을 같은 ACK 번호로 알릴 수 있다.",
           "reason": "중복 ACK를 손상된 패킷에 대한 응답으로 오해하지 않도록 보완",
           "reference": "https://www.rfc-editor.org/rfc/rfc5681.html#section-3"
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-n05-rto-intro",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "e391531a-3e5a-4288-a8e6-a9aeaabe3eb6",
+          "sourceType": "text",
+          "sourceBlockSha256": "d6ab916c9c694b9912c23896b9ec0e1f205afb1d671fc0619e5add61f12f1eeb",
+          "reason": "바로 앞의 RTO 대기와 뒤의 Fast Retransmission/Fast Recovery 설명을 반복하는 도입 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "id": "desktop-n06-divider",
+          "sourceId": "5df70731-ea29-47b1-bff3-9f18e8ff955f",
+          "sourceBlockId": "83424742-6a80-43fa-90d0-ff457eb3d4a4",
+          "sourceType": "divider",
+          "sourceBlockSha256": "30d05d08255884762ba831d175d933185e82a696908d3d9440433993ddd5662a",
+          "reason": "도해 뒤 구분선은 다음 BBR 절 제목과 경계가 겹쳐 제거 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "TCP 오류복구",
@@ -4453,7 +4508,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "2e5319601de6852449945de75b08f3b830279abdc174594e58aa9c088a1c0425",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-n11-divider",
+          "reason": "도해 뒤 구분선과 추가 설명 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "69c413d1-c3ef-4340-9b30-2f7970ff4b98",
@@ -4693,6 +4751,16 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         },
         {
+          "sourceBlockId": "af86324b-843e-4ac2-acfb-9720264ffdc8",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "2e5319601de6852449945de75b08f3b830279abdc174594e58aa9c088a1c0425",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-n11-divider",
+          "reason": "도해 뒤 구분선과 추가 설명 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
           "sourceBlockId": "7ad315b2-466f-4eba-a715-896fb2af9f85",
           "type": "column_list",
           "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
@@ -4813,6 +4881,16 @@
             "수신 버퍼"
           ],
           "evidenceBlockIds": []
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-n11-divider",
+          "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+          "sourceBlockId": "af86324b-843e-4ac2-acfb-9720264ffdc8",
+          "sourceType": "divider",
+          "sourceBlockSha256": "2e5319601de6852449945de75b08f3b830279abdc174594e58aa9c088a1c0425",
+          "reason": "도해 뒤 구분선과 추가 설명 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "TCP 성능",
@@ -5094,7 +5172,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "95c3a1cc1068ed7c53e159cfc016ac2d46fcbbc218e522425b5097381bafec5a",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-n13-divider",
+          "reason": "도해 뒤 구분선과 keep-alive 제한과 규칙 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "092c2baf-0a0e-4a6c-9a0c-275b1dbe0557",
@@ -5319,6 +5400,16 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         },
         {
+          "sourceBlockId": "f4a1e602-12e8-4930-a4ae-07fe66aec0e7",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "95c3a1cc1068ed7c53e159cfc016ac2d46fcbbc218e522425b5097381bafec5a",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-n13-divider",
+          "reason": "도해 뒤 구분선과 keep-alive 제한과 규칙 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
           "sourceBlockId": "088708c9-35d4-4907-a9ba-a3551d17e07a",
           "type": "column_list",
           "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
@@ -5460,6 +5551,16 @@
           "newText": " HTTP 서버는 설정한 유휴 제한에 따라 연결을 종료할 수 있다.",
           "reason": "사용자의 본문 중복 축약 요청에 따라 N13 MQ·Kafka·Apache·Nginx 용도와 FIN 괄호의 반복 대신 현재 공개된 유휴 제한에 따른 종료 조건 한 문장만 남김.",
           "reference": "https://www.brainbackdoor.com/posts/beae0ed2-e020-4681-abac-fdb9e5f12c5f/#15f31b20-1a74-48ee-8d01-ef6458d86cb6"
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-n13-divider",
+          "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+          "sourceBlockId": "f4a1e602-12e8-4930-a4ae-07fe66aec0e7",
+          "sourceType": "divider",
+          "sourceBlockSha256": "95c3a1cc1068ed7c53e159cfc016ac2d46fcbbc218e522425b5097381bafec5a",
+          "reason": "도해 뒤 구분선과 keep-alive 제한과 규칙 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "TCP keep-alive",
@@ -6415,7 +6516,10 @@
           "type": "image",
           "sourceTextChars": 9,
           "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
-          "status": "converted"
+          "sourceBlockSha256": "2565b27f2814a9f15fae0bedcaffdfc6f82ec4da8f5e317b0f70b17a73d9d2a4",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-w06-decorative-image",
+          "reason": "다음 절 제목과 중복되는 1399×30 장식선 이미지 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "142501b2-3c8d-4244-b874-752f9642471a",
@@ -7214,6 +7318,16 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         },
         {
+          "sourceBlockId": "63198d28-60af-43fb-a98c-b1c49ffd42dc",
+          "type": "image",
+          "sourceTextChars": 9,
+          "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
+          "sourceBlockSha256": "2565b27f2814a9f15fae0bedcaffdfc6f82ec4da8f5e317b0f70b17a73d9d2a4",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-w06-decorative-image",
+          "reason": "다음 절 제목과 중복되는 1399×30 장식선 이미지 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
           "sourceBlockId": "12b7d008-a1aa-4145-9ad9-a530f0275f6e",
           "type": "text",
           "sourceTextChars": 24,
@@ -7284,7 +7398,28 @@
           ]
         }
       ],
+      "corrections": [
+        {
+          "id": "desktop-w06-writing-intro",
+          "sourceId": "14b691d7-7fd7-4e95-8787-49e06111755f",
+          "sourceBlockId": "eaa3c041-cd08-4e03-8095-948df7de52c6",
+          "sourceType": "text",
+          "sourceTextSha256": "3f731771e3825666fbaeeaa962d7205b8a4c804b1e14c29eb4313cba8bf16e27",
+          "oldText": "을 세웠던지라 별다른 고민은 없었는데, 팀원과 이야기 중에 생각이 다른 부분이 있어 다른 리뷰어들과도 이야기를 나누어보았다. 이 내용을 정리하고 공유하고 또 다른 의견들을 듣는 것도 좋을 거 같아 포스팅해본다.",
+          "newText": "을 세웠던지라 별다른 고민은 없었는데, 팀원과 이야기 중에 생각이 다른 부분이 있어 다른 리뷰어들과도 이야기를 나누어보았다.",
+          "reason": "논의 맥락과 기존 기준 링크는 남기고 내용을 정리해 포스팅한다는 작성 안내만 삭제 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/14b691d7-7fd7-4e95-8787-49e06111755f/#eaa3c041-cd08-4e03-8095-948df7de52c6"
+        }
+      ],
       "omissions": [
+        {
+          "id": "desktop-w06-decorative-image",
+          "sourceId": "14b691d7-7fd7-4e95-8787-49e06111755f",
+          "sourceBlockId": "63198d28-60af-43fb-a98c-b1c49ffd42dc",
+          "sourceType": "image",
+          "sourceBlockSha256": "2565b27f2814a9f15fae0bedcaffdfc6f82ec4da8f5e317b0f70b17a73d9d2a4",
+          "reason": "다음 절 제목과 중복되는 1399×30 장식선 이미지 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
         {
           "id": "reading-w06-heading-repeat",
           "sourceId": "14b691d7-7fd7-4e95-8787-49e06111755f",
@@ -12254,7 +12389,10 @@
           "type": "image",
           "sourceTextChars": 9,
           "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
-          "status": "converted"
+          "sourceBlockSha256": "d9d08cbf4ce928a36a1d9312ea7d7944922e395df39c032e8bf5a5850162b6d0",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-s03-decorative-image",
+          "reason": "다음 절 제목이 이미 구분하는 1399×30 장식선 이미지 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "2d161b30-97ee-46ca-a040-bdac74d3df08",
@@ -12531,6 +12669,16 @@
           "sourceBlockId": "153285dd-209e-4d3e-8a10-8a0fa5fe64d4",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "5cd5d268-52dd-4d88-b27a-d934af8e9705",
+          "type": "image",
+          "sourceTextChars": 9,
+          "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
+          "sourceBlockSha256": "d9d08cbf4ce928a36a1d9312ea7d7944922e395df39c032e8bf5a5850162b6d0",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-s03-decorative-image",
+          "reason": "다음 절 제목이 이미 구분하는 1399×30 장식선 이미지 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "figures": [
@@ -12686,6 +12834,27 @@
           "newText": " 최적화다.",
           "reason": "S05의 필터 위치·전송 결과 설명을 Predicate Push Down 정의 한 문장으로 합침. 원본 주석 run 경계와 강조를 유지함",
           "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#fb506d7d-94f5-4ac8-8636-657e694fa695"
+        },
+        {
+          "id": "desktop-s03-lazy-intro",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "f35113bb-3ee0-4fd7-8ac2-02bb2af31ce2",
+          "sourceType": "text",
+          "sourceTextSha256": "404decb27ea699af24d6d57d11a0fc1419689863602aace6e61dbda7a16a4f1b",
+          "oldText": "RDD의 실제 동작은 Transformation과 Action으로 이루어져 있다. filter, map 등 다양한 ",
+          "newText": "filter, map 등 다양한 ",
+          "reason": "도해와 절 제목에 이미 나온 Transformation/Action 분류 도입만 덜고 map/filter·count·지연 평가 정의 및 강조 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/c9edaff4-1f8b-48aa-a092-730b932155fb/#f35113bb-3ee0-4fd7-8ac2-02bb2af31ce2"
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-s03-decorative-image",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "5cd5d268-52dd-4d88-b27a-d934af8e9705",
+          "sourceType": "image",
+          "sourceBlockSha256": "d9d08cbf4ce928a36a1d9312ea7d7944922e395df39c032e8bf5a5850162b6d0",
+          "reason": "다음 절 제목이 이미 구분하는 1399×30 장식선 이미지 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "Spark는 어떤 컨셉인가?",
@@ -18389,6 +18558,30 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         }
       ],
+      "corrections": [
+        {
+          "id": "desktop-a01-repo-prefix",
+          "sourceId": "1824fb4e-415b-4a61-8ec4-76e5102ee32f",
+          "sourceBlockId": "74db0ba0-cb80-4e3a-8c56-7aed917fe7ef",
+          "sourceType": "callout",
+          "sourceTextSha256": "c157e618498e6f07f3112cf3aebdc0b2859bf9730a019547e90143d941e5836f",
+          "oldText": "깃헙 ",
+          "newText": "실습 ",
+          "reason": "상단 페이지 요약과 반복되는 소개를 짧은 실습 저장소 링크로 바꾸고 유일한 GitHub 실습 주소·강조 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/1824fb4e-415b-4a61-8ec4-76e5102ee32f/#74db0ba0-cb80-4e3a-8c56-7aed917fe7ef"
+        },
+        {
+          "id": "desktop-a01-repo-suffix",
+          "sourceId": "1824fb4e-415b-4a61-8ec4-76e5102ee32f",
+          "sourceBlockId": "74db0ba0-cb80-4e3a-8c56-7aed917fe7ef",
+          "sourceType": "callout",
+          "sourceTextSha256": "c157e618498e6f07f3112cf3aebdc0b2859bf9730a019547e90143d941e5836f",
+          "oldText": "를 활용하여 미션을 진행할 수 있어요.",
+          "newText": ".",
+          "reason": "상단 페이지 요약을 반복하는 안내를 덜고 실습 저장소 링크 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/1824fb4e-415b-4a61-8ec4-76e5102ee32f/#74db0ba0-cb80-4e3a-8c56-7aed917fe7ef"
+        }
+      ],
       "figures": [
         {
           "figureId": "A01",
@@ -20584,7 +20777,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "15f8f42406d522ae0141ef2a2fa71db570324d18442d8dcd9aa2a9c45c5a5907",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o06-divider",
+          "reason": "도해 절 제목 앞의 장식 구분선을 제거해 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "95c2ce2a-0f17-48ec-9c88-412cb771b067",
@@ -20850,7 +21046,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "1299a280d57bc56ed823092966ab90a95f3964ea62dc040d6b656c35df3ed78d",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o09-divider",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "e19d0503-baed-4bd8-8977-629ef01d596c",
@@ -20984,6 +21183,50 @@
           "sourceBlockId": "6b7e95e3-d5a1-4491-aaf2-4a2b96a3ae18",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "3865daa6-c449-4adf-abcf-7887aea557f3",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "15f8f42406d522ae0141ef2a2fa71db570324d18442d8dcd9aa2a9c45c5a5907",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o06-divider",
+          "reason": "도해 절 제목 앞의 장식 구분선을 제거해 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "sourceBlockId": "d030bfe0-808d-4e26-a6b9-bb5212ab140e",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "1299a280d57bc56ed823092966ab90a95f3964ea62dc040d6b656c35df3ed78d",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o09-divider",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        }
+      ],
+      "corrections": [
+        {
+          "id": "desktop-a07-repo-prefix",
+          "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+          "sourceBlockId": "ba38a9b7-9fc0-499f-8398-9c1f776ec99f",
+          "sourceType": "callout",
+          "sourceTextSha256": "c157e618498e6f07f3112cf3aebdc0b2859bf9730a019547e90143d941e5836f",
+          "oldText": "깃헙 ",
+          "newText": "실습 ",
+          "reason": "상단 페이지 요약과 반복되는 소개를 짧은 실습 저장소 링크로 바꾸고 유일한 GitHub 실습 주소·강조 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/dfe2e77f-066e-46e9-a575-ed1e65157321/#ba38a9b7-9fc0-499f-8398-9c1f776ec99f"
+        },
+        {
+          "id": "desktop-a07-repo-suffix",
+          "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+          "sourceBlockId": "ba38a9b7-9fc0-499f-8398-9c1f776ec99f",
+          "sourceType": "callout",
+          "sourceTextSha256": "c157e618498e6f07f3112cf3aebdc0b2859bf9730a019547e90143d941e5836f",
+          "oldText": "를 활용하여 미션을 진행할 수 있어요.",
+          "newText": ".",
+          "reason": "상단 페이지 요약을 반복하는 안내를 덜고 실습 저장소 링크 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/dfe2e77f-066e-46e9-a575-ed1e65157321/#ba38a9b7-9fc0-499f-8398-9c1f776ec99f"
         }
       ],
       "figures": [
@@ -21042,6 +21285,24 @@
             "개념 예시"
           ],
           "evidenceBlockIds": []
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-o06-divider",
+          "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+          "sourceBlockId": "3865daa6-c449-4adf-abcf-7887aea557f3",
+          "sourceType": "divider",
+          "sourceBlockSha256": "15f8f42406d522ae0141ef2a2fa71db570324d18442d8dcd9aa2a9c45c5a5907",
+          "reason": "도해 절 제목 앞의 장식 구분선을 제거해 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "id": "desktop-o09-divider",
+          "sourceId": "dfe2e77f-066e-46e9-a575-ed1e65157321",
+          "sourceBlockId": "d030bfe0-808d-4e26-a6b9-bb5212ab140e",
+          "sourceType": "divider",
+          "sourceBlockSha256": "1299a280d57bc56ed823092966ab90a95f3964ea62dc040d6b656c35df3ed78d",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "컨퍼런스 신청 플랫폼 미션 요구사항",
@@ -21873,7 +22134,10 @@
           "type": "text",
           "sourceTextChars": 40,
           "sourceTextSha256": "6fc6b545412011bf4c50ebad840fffd32b372b2b460acec01ed5059167e5ea58",
-          "status": "converted"
+          "sourceBlockSha256": "556846f68c4062087bce92e65b5afb4a493be8edaa7b07b972f6eda01e54a510",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-c04-image-analogy",
+          "reason": "바로 뒤 컨테이너 이미지 불변 설명과 도해에 반복되는 프로그램 이미지 비유 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "7aa6f393-9836-469a-850d-7b42c00a1e86",
@@ -22257,6 +22521,16 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         },
         {
+          "sourceBlockId": "60dc4147-dba0-489b-af10-715dce137cef",
+          "type": "text",
+          "sourceTextChars": 40,
+          "sourceTextSha256": "6fc6b545412011bf4c50ebad840fffd32b372b2b460acec01ed5059167e5ea58",
+          "sourceBlockSha256": "556846f68c4062087bce92e65b5afb4a493be8edaa7b07b972f6eda01e54a510",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-c04-image-analogy",
+          "reason": "바로 뒤 컨테이너 이미지 불변 설명과 도해에 반복되는 프로그램 이미지 비유 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
           "sourceBlockId": "e5d47f6c-6166-49d8-9fa4-b93f2ea1f502",
           "type": "text",
           "sourceTextChars": 90,
@@ -22386,6 +22660,14 @@
         }
       ],
       "omissions": [
+        {
+          "id": "desktop-c04-image-analogy",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "60dc4147-dba0-489b-af10-715dce137cef",
+          "sourceType": "text",
+          "sourceBlockSha256": "556846f68c4062087bce92e65b5afb4a493be8edaa7b07b972f6eda01e54a510",
+          "reason": "바로 뒤 컨테이너 이미지 불변 설명과 도해에 반복되는 프로그램 이미지 비유 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
         {
           "id": "reading-c06-repeated-layer-intro",
           "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
@@ -23005,7 +23287,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "4dd08d7a55feddee4c287d5d9fb011e4186373e21fbbb05ec24cd88e3a5ebe90",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-c10-divider",
+          "reason": "절 제목 앞의 장식 구분선을 제거해 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "c985dfa9-dc5c-41fa-91ab-5093230e9edd",
@@ -23273,6 +23558,16 @@
           "sourceBlockId": "40bf3396-3be9-4675-8cdb-d57cc53f8854",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "ec2df6b9-15d8-41dc-9a5c-2502928e8aaa",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "4dd08d7a55feddee4c287d5d9fb011e4186373e21fbbb05ec24cd88e3a5ebe90",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-c10-divider",
+          "reason": "절 제목 앞의 장식 구분선을 제거해 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "figures": [
@@ -23301,6 +23596,16 @@
             "10 / 10"
           ],
           "evidenceBlockIds": []
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-c10-divider",
+          "sourceId": "b47f2941-5949-4368-890b-ca7825b419b9",
+          "sourceBlockId": "ec2df6b9-15d8-41dc-9a5c-2502928e8aaa",
+          "sourceType": "divider",
+          "sourceBlockSha256": "4dd08d7a55feddee4c287d5d9fb011e4186373e21fbbb05ec24cd88e3a5ebe90",
+          "reason": "절 제목 앞의 장식 구분선을 제거해 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "리눅스 명령어 zip",
@@ -23970,6 +24275,41 @@
             "2회차: B · 적용 후"
           ],
           "evidenceBlockIds": []
+        }
+      ],
+      "corrections": [
+        {
+          "id": "desktop-d02-master",
+          "sourceId": "1101a2b0-66bf-4b74-a95d-c2c98492093b",
+          "sourceBlockId": "7c88c52e-6252-40e1-a848-3c3c291ffc3a",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "788bd47886041da52a67eae0b7ffa9cd750385954ceb8f75f072bacc7177ba7e",
+          "oldText": " 메서드는 master에서, ",
+          "newText": "는 master에서, ",
+          "reason": "findLines/master와 findAllStations/readOnly/slave를 한 문장으로 합침. 메서드 및 annotation 강조/run 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/1101a2b0-66bf-4b74-a95d-c2c98492093b/#7c88c52e-6252-40e1-a848-3c3c291ffc3a"
+        },
+        {
+          "id": "desktop-d02-slave",
+          "sourceId": "1101a2b0-66bf-4b74-a95d-c2c98492093b",
+          "sourceBlockId": "7c88c52e-6252-40e1-a848-3c3c291ffc3a",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "788bd47886041da52a67eae0b7ffa9cd750385954ceb8f75f072bacc7177ba7e",
+          "oldText": " 메서드는 slave에서 조회합니다. ",
+          "newText": "는 ",
+          "reason": "findLines/master와 findAllStations/readOnly/slave를 한 문장으로 합침. 메서드 및 annotation 강조/run 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/1101a2b0-66bf-4b74-a95d-c2c98492093b/#7c88c52e-6252-40e1-a848-3c3c291ffc3a"
+        },
+        {
+          "id": "desktop-d02-read-only",
+          "sourceId": "1101a2b0-66bf-4b74-a95d-c2c98492093b",
+          "sourceBlockId": "7c88c52e-6252-40e1-a848-3c3c291ffc3a",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "788bd47886041da52a67eae0b7ffa9cd750385954ceb8f75f072bacc7177ba7e",
+          "oldText": "를 사용할 경우 slave를 활용합니다.",
+          "newText": "를 사용해 slave에서 조회합니다.",
+          "reason": "findLines/master와 findAllStations/readOnly/slave를 한 문장으로 합침. 메서드 및 annotation 강조/run 유지 (사용자의 데스크톱 개별 재검수·중복 문구 축소 요청).",
+          "reference": "https://www.brainbackdoor.com/posts/1101a2b0-66bf-4b74-a95d-c2c98492093b/#7c88c52e-6252-40e1-a848-3c3c291ffc3a"
         }
       ],
       "title": "MySQL Replication 간단히 구성해보기",
@@ -28250,7 +28590,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "20ff289ae97889afd452aa60427147be4b4d89740cd27da190a293575f3dcb97",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o02-divider",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "aa19ec35-0924-4e34-8141-fdc6c44fd69e",
@@ -28399,14 +28742,20 @@
           "type": "quote",
           "sourceTextChars": 24,
           "sourceTextSha256": "a680dac3134ef1a68633675ffe4c97f189a9bd9b66084a6466eb2b412c1b009a",
-          "status": "converted"
+          "sourceBlockSha256": "4f11eafbceb8b164259c3b62ea8db1f4ee22538108f0e383028e793264fd259c",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o07-repeated-equation",
+          "reason": "도해에 같은 식이 있으며 본문 일반식과 R=2·0.5s·대기1s·목표300 가정도 남으므로 중복 계산 인용 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "cfd81e02-1aca-49f9-8068-43fea6e9282a",
           "type": "text",
           "sourceTextChars": 85,
           "sourceTextSha256": "d69c7c36c393e8206423cb07f0062b8174c406a0f28bce4d9f30d2db6f074b2c",
-          "status": "converted"
+          "sourceBlockSha256": "b5c9748ab0c089ab223065516030be97c07f3fd08c126abc54fb847cd28dd3a9",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o07-repeated-conclusion",
+          "reason": "앞의 가정과 바로 뒤 도해가 보여주는 VU300·300rps 반복 결론 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "314b3ee2-d986-4b47-8eea-ca3961bb9a0f",
@@ -28434,7 +28783,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "81bd863ed7a4df9dd3f8b876b9cb26fa94975dc8b1e337cc7bf75a6f48460606",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o07-divider",
+          "reason": "글 끝 도해 다음 장식선은 이어서 읽기 경계선과 겹쳐 제거 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "2308a6cb-9591-4fb8-8ae2-15cbe70453f2",
@@ -28515,6 +28867,46 @@
           "sourceBlockId": "1fd46967-5090-44af-b38f-8d3691d5b992",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "393f0a43-26b2-4b06-98bb-60352e80e764",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "20ff289ae97889afd452aa60427147be4b4d89740cd27da190a293575f3dcb97",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o02-divider",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "sourceBlockId": "a8f1daa9-2aa6-442d-b121-1fd145ac97b5",
+          "type": "quote",
+          "sourceTextChars": 24,
+          "sourceTextSha256": "a680dac3134ef1a68633675ffe4c97f189a9bd9b66084a6466eb2b412c1b009a",
+          "sourceBlockSha256": "4f11eafbceb8b164259c3b62ea8db1f4ee22538108f0e383028e793264fd259c",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o07-repeated-equation",
+          "reason": "도해에 같은 식이 있으며 본문 일반식과 R=2·0.5s·대기1s·목표300 가정도 남으므로 중복 계산 인용 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "sourceBlockId": "cfd81e02-1aca-49f9-8068-43fea6e9282a",
+          "type": "text",
+          "sourceTextChars": 85,
+          "sourceTextSha256": "d69c7c36c393e8206423cb07f0062b8174c406a0f28bce4d9f30d2db6f074b2c",
+          "sourceBlockSha256": "b5c9748ab0c089ab223065516030be97c07f3fd08c126abc54fb847cd28dd3a9",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o07-repeated-conclusion",
+          "reason": "앞의 가정과 바로 뒤 도해가 보여주는 VU300·300rps 반복 결론 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "sourceBlockId": "6ce687d0-9fd5-41e3-8e51-292a2ffe5bf2",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "81bd863ed7a4df9dd3f8b876b9cb26fa94975dc8b1e337cc7bf75a6f48460606",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o07-divider",
+          "reason": "글 끝 도해 다음 장식선은 이어서 읽기 경계선과 겹쳐 제거 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "figures": [
@@ -28556,6 +28948,40 @@
             "VU ≠ rps ≠ 사용자 수"
           ],
           "evidenceBlockIds": []
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-o02-divider",
+          "sourceId": "ad9d2017-f854-4a97-bddb-6a8981dc14c1",
+          "sourceBlockId": "393f0a43-26b2-4b06-98bb-60352e80e764",
+          "sourceType": "divider",
+          "sourceBlockSha256": "20ff289ae97889afd452aa60427147be4b4d89740cd27da190a293575f3dcb97",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "id": "desktop-o07-repeated-equation",
+          "sourceId": "ad9d2017-f854-4a97-bddb-6a8981dc14c1",
+          "sourceBlockId": "a8f1daa9-2aa6-442d-b121-1fd145ac97b5",
+          "sourceType": "quote",
+          "sourceBlockSha256": "4f11eafbceb8b164259c3b62ea8db1f4ee22538108f0e383028e793264fd259c",
+          "reason": "도해에 같은 식이 있으며 본문 일반식과 R=2·0.5s·대기1s·목표300 가정도 남으므로 중복 계산 인용 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "id": "desktop-o07-repeated-conclusion",
+          "sourceId": "ad9d2017-f854-4a97-bddb-6a8981dc14c1",
+          "sourceBlockId": "cfd81e02-1aca-49f9-8068-43fea6e9282a",
+          "sourceType": "text",
+          "sourceBlockSha256": "b5c9748ab0c089ab223065516030be97c07f3fd08c126abc54fb847cd28dd3a9",
+          "reason": "앞의 가정과 바로 뒤 도해가 보여주는 VU300·300rps 반복 결론 삭제 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "id": "desktop-o07-divider",
+          "sourceId": "ad9d2017-f854-4a97-bddb-6a8981dc14c1",
+          "sourceBlockId": "6ce687d0-9fd5-41e3-8e51-292a2ffe5bf2",
+          "sourceType": "divider",
+          "sourceBlockSha256": "81bd863ed7a4df9dd3f8b876b9cb26fa94975dc8b1e337cc7bf75a6f48460606",
+          "reason": "글 끝 도해 다음 장식선은 이어서 읽기 경계선과 겹쳐 제거 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "성능테스트 미션 가이드",
@@ -28703,7 +29129,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "e36691d014e01d9b9470c24eceab691e9fa1d57185ca045fca427ead923a0c02",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o01-divider",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "d77ee96c-f4bc-4828-a60a-98a7deb3ff63",
@@ -29280,6 +29709,16 @@
           "sourceBlockId": "d6e5bf35-a079-4f13-90e1-7d9aee20e86c",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "7a5357fd-b6ca-4068-8d67-d7620a50ae9b",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "e36691d014e01d9b9470c24eceab691e9fa1d57185ca045fca427ead923a0c02",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-o01-divider",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "figures": [
@@ -29295,6 +29734,16 @@
             "수집 설정 없음"
           ],
           "evidenceBlockIds": []
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-o01-divider",
+          "sourceId": "6660b3f1-de92-4053-b3e0-08a84ea34432",
+          "sourceBlockId": "7a5357fd-b6ca-4068-8d67-d7620a50ae9b",
+          "sourceType": "divider",
+          "sourceBlockSha256": "e36691d014e01d9b9470c24eceab691e9fa1d57185ca045fca427ead923a0c02",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "서비스 운영하기 미션 가이드",
@@ -30276,7 +30725,10 @@
           "type": "divider",
           "sourceTextChars": 0,
           "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "status": "converted"
+          "sourceBlockSha256": "60e729c12f2d6a772f935953b80fb32d07c834a179b9707c0218cffba175d092",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-a06-divider",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "9a71e3c2-6548-492e-b0ff-de3b2788a718",
@@ -30710,6 +31162,16 @@
           "sourceBlockId": "179b3e9e-64de-48d4-b0b6-81dabe59f3ad",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "8ee0bf23-ae7f-4f85-b7e0-2cd7f01ceef4",
+          "type": "divider",
+          "sourceTextChars": 0,
+          "sourceTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceBlockSha256": "60e729c12f2d6a772f935953b80fb32d07c834a179b9707c0218cffba175d092",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-a06-divider",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "figures": [
@@ -30725,6 +31187,16 @@
             "② 가장 오래된 인스턴스 → EC2 1"
           ],
           "evidenceBlockIds": []
+        }
+      ],
+      "omissions": [
+        {
+          "id": "desktop-a06-divider",
+          "sourceId": "b065c018-114e-4897-9a53-98115cd9b382",
+          "sourceBlockId": "8ee0bf23-ae7f-4f85-b7e0-2cd7f01ceef4",
+          "sourceType": "divider",
+          "sourceBlockSha256": "60e729c12f2d6a772f935953b80fb32d07c834a179b9707c0218cffba175d092",
+          "reason": "도해 뒤 구분선과 다음 절 제목의 이중 여백 축소 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         }
       ],
       "title": "컨퍼런스 신청 플랫폼 미션 실습환경 구성 가이드",
@@ -33181,7 +33653,10 @@
           "type": "text",
           "sourceTextChars": 54,
           "sourceTextSha256": "fdef41ceee1cf7dc0482fc3008a31aecab765718ec1452a9180bbc0ba68ab533",
-          "status": "converted"
+          "sourceBlockSha256": "ea26508bb11fb906665df64d55dcf7ba7444ec271e382dab3ad65b2eddc07440",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-t06-resource-repeat",
+          "reason": "바로 뒤 mount/unmount 및 자원 재사용 설명을 반복하는 짧은 결론 삭제. I/O 대기와 JDK 조건은 유지 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
         },
         {
           "sourceBlockId": "38190d37-083f-8091-8ea4-fc8e75024454",
@@ -33556,6 +34031,16 @@
       "warnings": [],
       "excluded": [
         {
+          "sourceBlockId": "38190d37-083f-8003-ab00-dfd072c1bd5e",
+          "type": "text",
+          "sourceTextChars": 54,
+          "sourceTextSha256": "fdef41ceee1cf7dc0482fc3008a31aecab765718ec1452a9180bbc0ba68ab533",
+          "sourceBlockSha256": "ea26508bb11fb906665df64d55dcf7ba7444ec271e382dab3ad65b2eddc07440",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "desktop-t06-resource-repeat",
+          "reason": "바로 뒤 mount/unmount 및 자원 재사용 설명을 반복하는 짧은 결론 삭제. I/O 대기와 JDK 조건은 유지 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
           "sourceBlockId": "38190d37-083f-804b-85c1-ebf02798be64",
           "type": "text",
           "sourceTextChars": 192,
@@ -33598,6 +34083,24 @@
           ]
         }
       ],
+      "omissions": [
+        {
+          "id": "desktop-t06-resource-repeat",
+          "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
+          "sourceBlockId": "38190d37-083f-8003-ab00-dfd072c1bd5e",
+          "sourceType": "text",
+          "sourceBlockSha256": "ea26508bb11fb906665df64d55dcf7ba7444ec271e382dab3ad65b2eddc07440",
+          "reason": "바로 뒤 mount/unmount 및 자원 재사용 설명을 반복하는 짧은 결론 삭제. I/O 대기와 JDK 조건은 유지 (사용자의 데스크톱 개별 재검수·중복 문구/여백 축소 요청)."
+        },
+        {
+          "id": "reading-e05-replay-repeat",
+          "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
+          "sourceBlockId": "38190d37-083f-804b-85c1-ebf02798be64",
+          "sourceType": "text",
+          "sourceBlockSha256": "77129491980df46e6bee1b3bffd6cb26c8c6ff3aa3156914502001dff919359c",
+          "reason": "E05와 바로 앞 Event History·Replay·Activity Stub 목록의 기록 재사용 설명을 반복함. 결정성·at-least-once·멱등성 조건은 Replay 목록에 남김. 사용자 요청에 따른 본문 중복·여백 축소."
+        }
+      ],
       "corrections": [
         {
           "id": "vt-wait-remains",
@@ -33631,16 +34134,6 @@
           "newText": "Virtual Thread로 적용된다. 단, 직접 정의한 Executor 빈이 있으면 @Async 같은 작업 실행은 자동 구성 실행기 대신 그 빈을 쓰므로, 버전별 자동 구성 범위를 확인해야 한다.",
           "reason": "Boot 자동 구성 실행기는 Executor 빈이 없을 때만 만들어지고, 직접 정의한 Executor는 @EnableAsync 작업 실행이 사용(Task Execution and Scheduling 절). 톰캣 요청 처리와 구분",
           "reference": "https://docs.spring.io/spring-boot/docs/3.2.3/reference/html/features.html#features.task-execution-and-scheduling"
-        }
-      ],
-      "omissions": [
-        {
-          "id": "reading-e05-replay-repeat",
-          "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
-          "sourceBlockId": "38190d37-083f-804b-85c1-ebf02798be64",
-          "sourceType": "text",
-          "sourceBlockSha256": "77129491980df46e6bee1b3bffd6cb26c8c6ff3aa3156914502001dff919359c",
-          "reason": "E05와 바로 앞 Event History·Replay·Activity Stub 목록의 기록 재사용 설명을 반복함. 결정성·at-least-once·멱등성 조건은 Replay 목록에 남김. 사용자 요청에 따른 본문 중복·여백 축소."
         }
       ],
       "title": "SpringCamp 2026 후기",

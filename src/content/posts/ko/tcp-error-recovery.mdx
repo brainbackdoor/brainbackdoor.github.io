@@ -92,7 +92,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <p id="411ca4f7-3e01-48fc-ab70-c2e1d94faf45">흐름제어는 <strong>송신자가 수신자에게 처리하지 못할 만큼의 많은 데이터를 전송하는 것을 미리 방지</strong>하는 메커니즘이다&#46; 수신자가 데이터를 받지 못하는 경우는 보통 수신자가 다른 데이터를 처리하고 있거나, 밀려있는 데이터가 많거나 버퍼공간을 충분히 지정해주지 않는 경우다&#46; 이러한 문제를 해결하기 위해 양쪽의 TCP 커넥션이 각각 <span className="notion-color-red"><strong>자신의 receive window(rwnd)를 통지</strong></span>하여 수신데이터를 저장할 버퍼 공간의 크기를 서로에게 알려준다&#46; 이 버퍼 공간은 데이터 처리를 기다리는 응용 계층 프로토콜에 스택을 꽉 채울때까지 데이터가 임시적으로 저장되는 공간이다&#46; 따라서 전송 호스트는 한 번에 window size 필드에 명시된 데이터 양 만큼만 보낼 수 있다&#46;</p>
 
-<p id="d40af087-8a27-4de2-8b10-ed6fd742c0e9">window size를 조정하는 프로세스는 매우 명확하지만, 완벽한 것은 아니다&#46; 데이터가 TCP 스택에 수신될 때마다 ACK가 생성되고 반복적으로 보내지지지만 수신자의 버퍼에 있는 데이터가 항상 즉시 처리되는 것은 아니기 때문이다&#46; window size를 재조정하는 프로세스로 zero window 전송을 통한 데이트 흐름을 중지하는 방법과 TCP sliding window 등의 두가지 방법을 사용한다&#46;</p>
+<p id="d40af087-8a27-4de2-8b10-ed6fd742c0e9">TCP 스택에 데이터가 수신되면 ACK를 반복해서 보내지만, 수신 버퍼의 데이터가 항상 즉시 처리되지는 않는다&#46; window size를 조정하는 방법으로는 zero window 전송을 통한 데이터 흐름 중지와 TCP sliding window가 있다&#46;</p>
 
 <hr id="ffbcc535-7b4e-4fc7-8625-92a0a7209608" />
 
@@ -272,7 +272,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 <p id="1844dbdc-e426-4e34-8724-7631b2a802e5">Reno에서는 RTO로 손실을 감지하면 ssthresh를 max(FlightSize / 2, 2 × SMSS) 이하로 낮추고 cwnd를 1 SMSS로 줄여 다시 slow start를 수행한다&#46; cwnd가 ssthresh에 도달하면 혼잡 회피로 전환해 RTT당 약 1 SMSS씩 증가시킨다&#46; 세 번의 중복 ACK로 감지하는 손실은 다음 절의 빠른 재전송·빠른 회복 경로와 구분한다&#46; (&lt;그림1&gt;을 참조하자)</p>
 
-<p id="e391531a-3e5a-4288-a8e6-a9aeaabe3eb6">그런데 packet loss가 발생했을 경우 이전까지 TCP 송신자는 매번 retransmission timeout(RTO)가 발생할 때까지 기다려서 packet loss를 감지하였다&#46; 이에 대한 대안으로 Fast Retransmission과  Fast Recovery가 제시되었다&#46;</p>
+<span id="e391531a-3e5a-4288-a8e6-a9aeaabe3eb6" data-editorial-omission="desktop-n05-rto-intro" hidden></span>
 
 <hr id="490ed16e-0b94-4aea-a964-b38f2c399107" />
 
@@ -308,7 +308,7 @@ import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";
 
 </div>
 
-<hr id="83424742-6a80-43fa-90d0-ff457eb3d4a4" />
+<span id="83424742-6a80-43fa-90d0-ff457eb3d4a4" data-editorial-omission="desktop-n06-divider" hidden></span>
 
 <span id="ca6700c6-4e90-4683-88cb-1a82c3b7c2b1"></span>
 

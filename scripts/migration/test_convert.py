@@ -514,6 +514,25 @@ class OmissionTests(unittest.TestCase):
             c.omission_specs=[spec]
             with self.subTest(case=case),self.assertRaises(ValueError):c.convert()
 
+    def test_childless_quote_and_divider_omissions_keep_all_exact_source_and_preservation_guards(self):
+        for kind in ['quote','divider']:
+            c=self.source(kind);spec=self.spec(c);c.omission_specs=[spec];out=c.convert()
+            with self.subTest(kind=kind):
+                self.assertNotIn('중복 설명',out);self.assertIn('남기는 본문',out)
+                self.assertIn('<span id="one" data-editorial-omission="duplicate-one" hidden></span>',out)
+                self.assertEqual(verify.omission_issues(c.report,self.document(out),c.blocks,[spec]),[])
+            for case in ['hash','type','children','figure','evidence','correction','redaction']:
+                c=self.source(kind);spec=self.spec(c)
+                if case=='hash':spec['sourceBlockSha256']='0'*64
+                if case=='type':spec['sourceType']='text'
+                if case=='children':c.blocks['one']['content']=['two'];spec=self.spec(c)
+                if case=='figure':c.figure_specs=[{'sourceBlockId':'one'}]
+                if case=='evidence':c.figure_specs=[{'sourceBlockId':'two','evidenceBlockIds':['one']}]
+                if case=='correction':c.correction_specs=[{'sourceBlockId':'one'}]
+                if case=='redaction':c.redaction_specs=[{'sourceBlockIds':['one']}]
+                c.omission_specs=[spec]
+                with self.subTest(kind=kind,case=case),self.assertRaises(ValueError):c.convert()
+
     def test_omitted_callout_can_explicitly_keep_its_existing_metadata_description(self):
         c=self.source('callout');c.blocks['one']['properties']['title']=[['이 글의 설명입니다.']]
         spec=self.spec(c,keepAsDescription=True);c.omission_specs=[spec];out=c.convert()

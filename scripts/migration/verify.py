@@ -290,7 +290,7 @@ def omission_issues(report, document, source_blocks, specs, figures=(), correcti
     protected.update(spec['sourceBlockId'] for spec in corrections if spec.get('sourceId') == source_id)
     protected.update(block_id for spec in redactions if spec.get('sourceId') == source_id
                      for block_id in spec.get('sourceBlockIds', []))
-    allowed = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image', 'callout',
+    allowed = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image', 'callout', 'quote', 'divider',
                'header', 'sub_header', 'sub_sub_header', 'table'}
     names = set(); blocks = set(); alias_ids = set()
     for spec in approved:

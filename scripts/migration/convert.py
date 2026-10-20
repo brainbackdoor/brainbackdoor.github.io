@@ -37,7 +37,7 @@ def plain(runs):
     return ''.join(str(run[0]) for run in (runs or []) if isinstance(run, list) and run)
 
 
-OMISSION_TYPES = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image', 'callout',
+OMISSION_TYPES = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image', 'callout', 'quote', 'divider',
                   'header', 'sub_header', 'sub_sub_header', 'table'}
 
 

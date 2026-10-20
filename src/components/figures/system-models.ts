@@ -42,7 +42,7 @@ export const systemInfo = [
     "notes": [
       "CLI는 Unix socket을 통해 dockerd에 요청합니다.",
       "registry의 이미지 수신 후 로컬 이미지가 준비됩니다.",
-      "create와 start 이후 컨테이너가 실행됩니다. 원본의 build/pull/push/commit/export/import 등 관계도 별도 표에 남깁니다."
+      "create와 start 이후 컨테이너가 실행됩니다."
     ]
   },
   {
@@ -210,7 +210,7 @@ export const systemInfo = [
     "notes": [
       "uptime/dmesg/vmstat로 전체 부하와 오류·추이를 봅니다.",
       "CPU·프로세스·디스크·메모리를 관련 열과 연결합니다.",
-      "DEV와 TCP/ETCP, top까지 원본 10개 관계를 유지합니다. 한 지표만으로 장애를 단정하지 않습니다."
+      "DEV·TCP/ETCP·top을 함께 확인합니다. 한 지표만으로 장애를 단정하지 않습니다."
     ]
   },
   {
@@ -336,7 +336,7 @@ export const systemInfo = [
     "notes": [
       "Java thread identity와 coroutine continuation을 구분합니다.",
       "대기 상태에서 JVM stack 상태와 continuation 상태를 각각 보존합니다.",
-      "JVM scheduler와 coroutine dispatcher가 각각 재개합니다. 원본 메모리·CPU·kernel 지도는 근거에 보존합니다."
+      "JVM scheduler와 coroutine dispatcher가 각각 재개합니다."
     ]
   },
   {

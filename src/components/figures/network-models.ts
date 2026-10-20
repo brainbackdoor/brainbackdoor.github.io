@@ -112,7 +112,7 @@ export const networkInfo = [
         "notes": [
             "TCP payload 1,460 B.",
             "TCP header 20 B + IPv4 header 20 B = IP packet 1,500 B.",
-            "L2 header 14 B + IP packet + FCS 4 B = frame 1,518 B. 원본의 variable L2 가정을 이 예제로 고정합니다."
+            "L2 header 14 B + IP packet + FCS 4 B = frame 1,518 B."
         ]
     },
     {
@@ -176,7 +176,7 @@ export const networkInfo = [
         "notes": [
             "능동 종료 측 FIN→ACK, 수동 종료 측 FIN을 수신합니다.",
             "마지막 ACK가 유실되어 수동 측은 LAST-ACK. 수동 측 타이머가 FIN을 재전송합니다.",
-            "TIME_WAIT 측은 ACK를 다시 보내고 2MSL을 재시작합니다. 원본의 조기 재연결/RST 분기는 근거 이미지에 남깁니다."
+            "TIME_WAIT 측은 ACK를 다시 보내고 2MSL을 재시작합니다."
         ]
     },
     {
@@ -340,7 +340,7 @@ export const networkInfo = [
         "notes": [
             "path ID 요청과 query 조회를 동일 빈 결과로 시작합니다.",
             "대상이 정상 endpoint라는 해석과 representation을 찾지 못했다는 해석을 각각 전개합니다.",
-            "원문 200/404 의견을 각각 유지. 컬렉션이 존재하고 결과만 비었다는 별도 전제는 200 + []로 구분합니다."
+            "컬렉션이 존재하고 결과만 비었다는 별도 전제는 200 + []로 구분합니다."
         ]
     }
 ] as const;

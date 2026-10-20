@@ -64,7 +64,7 @@ import LessonFigure from "../../../components/figures/LessonFigure";
 
 </div>
 
-<p id="38190d37-083f-8003-ab00-dfd072c1bd5e">Virtual Thread는 <strong>기다릴 때 스레드를 반납</strong>한다&#46; 그만큼 자원을 효율적으로 쓸 수 있다&#46;</p>
+<span id="38190d37-083f-8003-ab00-dfd072c1bd5e" data-editorial-omission="desktop-t06-resource-repeat" hidden></span>
 
 <p id="38190d37-083f-8091-8ea4-fc8e75024454">가상 스레드는 실행될 때만 <strong>carrier 스레드</strong>(기본 <code>ForkJoinPool</code>)에 <strong>mount</strong>한다&#46; 블로킹을 만나면 <strong>unmount</strong>해 OS 스레드를 반납하고, carrier는 다른 가상 스레드를 <strong>mount</strong>한다&#46; 따라서 이론적으로 스레드 <code>대기시간</code>이 사라지는 셈이다&#46; 다만 I/O·DB 대기 자체가 줄어드는 것은 아니고, 기다리는 동안 carrier를 다른 가상 스레드가 쓰는 것이다&#46;</p>
 

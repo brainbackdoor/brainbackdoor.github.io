@@ -500,6 +500,37 @@ class OmissionTests(unittest.TestCase):
         c=self.source('table',content=['two']);c.omission_specs=[self.spec(c)]
         with self.assertRaisesRegex(ValueError,'child blocks'):c.convert()
 
+    def test_childless_callout_omission_preserves_exact_source_and_children_guards(self):
+        c=self.source('callout');spec=self.spec(c);c.omission_specs=[spec];out=c.convert()
+        self.assertNotIn('중복 설명',out);self.assertIn('남기는 본문',out)
+        self.assertIn('<span id="one" data-editorial-omission="duplicate-one" hidden></span>',out)
+        self.assertEqual(verify.omission_issues(c.report,self.document(out),c.blocks,[spec]),[])
+        for case in ['hash','type','children','figure']:
+            c=self.source('callout');spec=self.spec(c)
+            if case=='hash':spec['sourceBlockSha256']='0'*64
+            if case=='type':spec['sourceType']='text'
+            if case=='children':c.blocks['one']['content']=['two'];spec=self.spec(c)
+            if case=='figure':c.figure_specs=[{'sourceBlockId':'one'}]
+            c.omission_specs=[spec]
+            with self.subTest(case=case),self.assertRaises(ValueError):c.convert()
+
+    def test_omitted_callout_can_explicitly_keep_its_existing_metadata_description(self):
+        c=self.source('callout');c.blocks['one']['properties']['title']=[['이 글의 설명입니다.']]
+        spec=self.spec(c,keepAsDescription=True);c.omission_specs=[spec];out=c.convert()
+        self.assertIn('description: "이 글의 설명입니다."',out)
+        body=out.split('---\n',2)[-1]
+        self.assertNotIn('이 글의 설명입니다.',body)
+        self.assertIn('<span id="one" data-editorial-omission="duplicate-one" hidden></span>',body)
+        self.assertEqual(verify.omission_issues(c.report,self.document(out),c.blocks,[spec]),[])
+        for value in [False,1,'true',None]:
+            c=self.source('callout');spec=self.spec(c,keepAsDescription=value);c.omission_specs=[spec]
+            with self.subTest(value=value),self.assertRaisesRegex(ValueError,'description flag'):c.convert()
+            self.assertIn('omission-invalid-description-flag',[item['type'] for item in verify.omission_issues(c.report,self.document(''),c.blocks,[spec])])
+        for kind,field in [('text',None),('bookmark','description')]:
+            c=self.source(kind);c.blocks['one']['properties']['description']=[['중복 내용']]
+            spec=self.spec(c,keepAsDescription=True,**({'field':field} if field else {}));c.omission_specs=[spec]
+            with self.subTest(kind=kind),self.assertRaisesRegex(ValueError,'description flag'):c.convert()
+
     def test_verifier_detects_missing_changed_or_nonempty_anchors_and_trace(self):
         c=self.source();spec=self.spec(c);c.omission_specs=[spec];out=c.convert()
         valid='<span id="one" data-editorial-omission="duplicate-one" hidden></span>'

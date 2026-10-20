@@ -290,7 +290,7 @@ def omission_issues(report, document, source_blocks, specs, figures=(), correcti
     protected.update(spec['sourceBlockId'] for spec in corrections if spec.get('sourceId') == source_id)
     protected.update(block_id for spec in redactions if spec.get('sourceId') == source_id
                      for block_id in spec.get('sourceBlockIds', []))
-    allowed = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image',
+    allowed = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image', 'callout',
                'header', 'sub_header', 'sub_sub_header', 'table'}
     names = set(); blocks = set(); alias_ids = set()
     for spec in approved:
@@ -311,6 +311,9 @@ def omission_issues(report, document, source_blocks, specs, figures=(), correcti
                 or fingerprint != spec.get('sourceBlockSha256') or field is None and block.get('content')):
             issue('omission-source-mismatch')
         if block_id in protected: issue('omission-overlaps-preserved-source')
+        if 'keepAsDescription' in spec and (spec['keepAsDescription'] is not True
+                or field is not None or block.get('type') != 'callout'):
+            issue('omission-invalid-description-flag')
         aliases = spec.get('anchorAliases', [])
         if 'anchorAliases' in spec:
             if (field is not None or block.get('type') not in {'header','sub_header','sub_sub_header'}

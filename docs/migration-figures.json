@@ -1652,6 +1652,15 @@
       "sourceBlockSha256": "40372c3b29d9d09cb19ca1011e477c87845689b0480d5bbb14152a9f31602603",
       "field": "description",
       "reason": "D09 앞 영상 설명의 실습 URL·문제 3개가 바로 뒤 실습 본문·문제 목록과 중복되어 설명만 삭제함. 영상·제목·링크는 보존."
+    },
+    {
+      "id": "reading-d09-hero-repeat",
+      "sourceId": "6ad28373-149c-4d45-b835-8dfb853db638",
+      "sourceBlockId": "28024ab9-2665-42a6-aeaa-c43e14706e21",
+      "sourceType": "callout",
+      "sourceBlockSha256": "87455dae69626ac2b81e05a0d4aa80fcd5ae5797568c008a9a79f9e77b1eb0b5",
+      "reason": "공개 재검수에서 D09 상단 설명과 완전히 같은 첫 안내 상자를 발견해 본문에서 제거함. 동일 문장은 페이지 요약에 한 번만 유지하고 영상·실습 문제·정답은 보존한다.",
+      "keepAsDescription": true
     }
   ]
 }

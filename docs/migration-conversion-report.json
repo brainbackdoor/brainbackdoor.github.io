@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-20T13:02:05.411314+00:00",
+  "generatedAt": "2026-10-20T13:12:25.149414+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -24009,7 +24009,10 @@
           "type": "callout",
           "sourceTextChars": 54,
           "sourceTextSha256": "c76d5921b6457fdea99ebd5fead96b87d5d873a2f7814601223e9f2bf9c03c70",
-          "status": "converted"
+          "sourceBlockSha256": "87455dae69626ac2b81e05a0d4aa80fcd5ae5797568c008a9a79f9e77b1eb0b5",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-d09-hero-repeat",
+          "reason": "공개 재검수에서 D09 상단 설명과 완전히 같은 첫 안내 상자를 발견해 본문에서 제거함. 동일 문장은 페이지 요약에 한 번만 유지하고 영상·실습 문제·정답은 보존한다."
         },
         {
           "sourceBlockId": "12ebb46d-087a-44db-859d-27a77813ae1b",
@@ -24414,6 +24417,16 @@
       "warnings": [],
       "excluded": [
         {
+          "sourceBlockId": "28024ab9-2665-42a6-aeaa-c43e14706e21",
+          "type": "callout",
+          "sourceTextChars": 54,
+          "sourceTextSha256": "c76d5921b6457fdea99ebd5fead96b87d5d873a2f7814601223e9f2bf9c03c70",
+          "sourceBlockSha256": "87455dae69626ac2b81e05a0d4aa80fcd5ae5797568c008a9a79f9e77b1eb0b5",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-d09-hero-repeat",
+          "reason": "공개 재검수에서 D09 상단 설명과 완전히 같은 첫 안내 상자를 발견해 본문에서 제거함. 동일 문장은 페이지 요약에 한 번만 유지하고 영상·실습 문제·정답은 보존한다."
+        },
+        {
           "sourceBlockId": "b249f7d6-1950-49fe-9ae4-4ce0e9924a8e",
           "type": "bookmark",
           "field": "description",
@@ -24424,6 +24437,15 @@
         }
       ],
       "omissions": [
+        {
+          "id": "reading-d09-hero-repeat",
+          "sourceId": "6ad28373-149c-4d45-b835-8dfb853db638",
+          "sourceBlockId": "28024ab9-2665-42a6-aeaa-c43e14706e21",
+          "sourceType": "callout",
+          "sourceBlockSha256": "87455dae69626ac2b81e05a0d4aa80fcd5ae5797568c008a9a79f9e77b1eb0b5",
+          "reason": "공개 재검수에서 D09 상단 설명과 완전히 같은 첫 안내 상자를 발견해 본문에서 제거함. 동일 문장은 페이지 요약에 한 번만 유지하고 영상·실습 문제·정답은 보존한다.",
+          "keepAsDescription": true
+        },
         {
           "id": "reading-d09-video-description",
           "sourceId": "6ad28373-149c-4d45-b835-8dfb853db638",

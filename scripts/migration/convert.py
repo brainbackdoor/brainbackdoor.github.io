@@ -37,7 +37,7 @@ def plain(runs):
     return ''.join(str(run[0]) for run in (runs or []) if isinstance(run, list) and run)
 
 
-OMISSION_TYPES = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image',
+OMISSION_TYPES = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image', 'callout',
                   'header', 'sub_header', 'sub_sub_header', 'table'}
 
 
@@ -73,6 +73,9 @@ def validated_omissions(source_id, blocks, specs, figures=(), corrections=(), re
             raise ValueError(f'Editorial omission cannot remove child blocks: {block_id}')
         if block_id in protected:
             raise ValueError(f'Editorial omission overlaps preserved evidence or an edit: {block_id}')
+        if 'keepAsDescription' in spec and (spec['keepAsDescription'] is not True
+                or field is not None or block.get('type') != 'callout'):
+            raise ValueError(f'Unsafe editorial omission description flag: {block_id}')
         if 'anchorAliases' in spec:
             aliases = spec['anchorAliases']
             if (field is not None or block.get('type') not in {'header','sub_header','sub_sub_header'}
@@ -832,7 +835,8 @@ class Converter:
         def candidates(ids):
             for block_id in ids:
                 block=self.blocks.get(canonical_id(block_id),{}); raw=plain(block.get('properties',{}).get('title')).strip()
-                if canonical_id(block_id) in self.omissions: continue
+                omission = self.omissions.get(canonical_id(block_id))
+                if omission and omission.get('keepAsDescription') is not True: continue
                 if self.legacy_navigation(block): continue
                 hidden=self.hidden_configuration(canonical_id(block_id),block)
                 if not hidden and block.get('type') in ['text','quote','callout','bulleted_list','numbered_list'] and raw and '‣' not in raw and not re.match(r'^[⬅➡←→]|.*(?:이전 글|다음 글)',raw):

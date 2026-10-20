@@ -220,7 +220,7 @@ spring.threads.virtual.enabled=true
 
 </ul>
 
-<p id="38190d37-083f-804b-85c1-ebf02798be64">Activity는 본질적으로 비결정적(랜덤, DB, 부수효과)인데, 워크플로우는 결정적이어야 한다&#46; 이에 Temporal은, Activity를 1회차에만 실제로 실행하고 그 결과를 Event History에 영속화한 뒤, 재실행 때는 부르지 않고 기록된 값을 그대로 돌려준다&#46; <strong>비결정적 Activity를 워크플로우가 결정적으로 호출하는 셈이다&#46;</strong></p>
+<span id="38190d37-083f-804b-85c1-ebf02798be64" data-editorial-omission="reading-e05-replay-repeat" hidden></span>
 
 <p id="38190d37-083f-80d1-9c8a-cf0b9fc9c90a">물론 장점만 있는 건 아니다&#46; Temporal Server 클러스터 운영(또는 클라우드) 비용, 워크플로우의 결정성 제약, 그리고 진행 중인 워크플로우가 Replay로 깨질 수 있어 코드 변경 시 버전 관리가 필요하다&#46; 하지만 대부분 한 번만 치르는 비용이다&#46; 구축해 두면 이후 워크플로우는 같은 기반 위에서 돌릴 수 있다&#46;</p>
 

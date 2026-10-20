@@ -34,7 +34,7 @@ import LessonFigure from "../../../components/figures/LessonFigure";
 
 </div>
 
-<p id="e5ff6281-f106-4db3-b5cc-b9002c3373a2">Spark는 데이터를 테이블 형태로 다룰 수 있도록 API를 제공한다&#46; 물리적으로는 여러 머신의 메모리에 분산되어 있더라도, 사용자가 데이터를 마치 하나의 테이블처럼 다룰 수 있다&#46;</p>
+<p id="e5ff6281-f106-4db3-b5cc-b9002c3373a2">DataFrame은 데이터가 여러 머신에 분산돼 있어도 하나의 테이블처럼 다룰 수 있게 하는 API다&#46;</p>
 
 <span id="76c0484f-452b-47dd-a57e-e30574c7d737"></span>
 
@@ -207,7 +207,7 @@ GlobalLimit 5
 
 <li id="9715a697-ca9e-4c43-80ff-70ee0bc6a092">
 
-<p>explain() 함수를 통해 Spark DataFrame의 실행 계획을 볼 수 있다&#46; 실행 계획으로 확인해보면, Analyzed Logical Plan 과 Optimized Logical Plan 이 조금 다른것을 볼 수 있다&#46; 가령 위의 예시에선 select() 를 여러 컬럼에 대해 수행했으나, 최적화 시점에서 education 컬럼만 Projection 하였다&#46;</p>
+<p>이 예시는 최적화 후 education 컬럼만 Projection 한다&#46;</p>
 
 </li>
 
@@ -247,7 +247,7 @@ GlobalLimit 5
 
 <li id="fb506d7d-94f5-4ac8-8636-657e694fa695">
 
-<p>데이터 전체를 가져온 '후' 필터링하는 것이 아니라, <strong>저장소에서 데이터를 필터링 '</strong><span className="notion-color-red"><strong>된</strong></span><strong>' 결과물만 가져와</strong> 네트워크 및 가공 비용을 줄일 수 있다&#46; 이를 <strong>Predicate Push Down</strong> 라고 한다&#46; </p>
+<p>저장소에서 <strong>데이터를 필터링한 </strong><span className="notion-color-red"><strong>결과</strong></span><strong>만 가져와</strong> 네트워크 및 가공 비용을 줄이는 <strong>Predicate Push Down</strong> 최적화다&#46;</p>
 
 </li>
 

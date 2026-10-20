@@ -64,7 +64,7 @@ import LessonFigure from "../../../components/figures/LessonFigure";
 
 ## 4&#46; <strong>Nagle 알고리즘과 TCP&#95;NODELAY</strong>
 
-<p id="eddb70fa-c407-45eb-8ee8-5b840a850b67">TCP 세그먼트는 40바이트 상당의 플래그와 헤더를 포함하여 전송하기 때문에, TCP가 작은 크기의 데이터를 포함한 많은 수의 패킷을 전송한다면 네트워크 성능은 크게 떨어진다&#46; Nagle 알고리즘은 미확인 데이터가 있는 동안 작은 쓰기를 모아 SMSS만큼 채워지거나 ACK가 도착하면 전송한다&#46; IP MTU가 1,500 byte이고 IPv4/TCP 옵션이 없으면 TCP payload의 최대 크기는 1,460 byte다&#46; 다만 다른 모든 패킷이 확인응답을 받았을 경우에는 최대 크기보다 작은 패킷의 전송을 허락한다&#46; 전송하기 충분할 만큼의 패킷이 쌓였을 때 버퍼에 저장되어 있던 데이터가 전송된다&#46; 이 경우 크기가 작은 HTTP 메시지는 지연된다&#46; ACK 지연과 함께 고려하면 지연 시간은 더욱 늘어난다&#46; 이에 TCP&#95;NODELAY 설정을 활성화해 Nagle 알고리즘을 비활성화하기도 한다&#46;</p>
+<p id="eddb70fa-c407-45eb-8ee8-5b840a850b67">TCP 세그먼트는 40바이트 상당의 플래그와 헤더를 포함하여 전송하기 때문에, TCP가 작은 크기의 데이터를 포함한 많은 수의 패킷을 전송한다면 네트워크 성능은 크게 떨어진다&#46; Nagle 알고리즘은 미확인 데이터가 있는 동안 작은 쓰기를 모아 SMSS만큼 채워지거나 ACK가 도착하면 전송한다&#46; IP MTU가 1,500 byte이고 IPv4/TCP 옵션이 없으면 TCP payload의 최대 크기는 1,460 byte다&#46; 다만 다른 모든 패킷이 확인응답을 받았을 경우에는 최대 크기보다 작은 패킷의 전송을 허락한다&#46; Nagle 대기로 작은 HTTP 메시지가 지연될 수 있으며, ACK 지연이 겹치면 더 늦어진다&#46; 이에 TCP&#95;NODELAY 설정을 활성화해 Nagle 알고리즘을 비활성화하기도 한다&#46;</p>
 
 <LessonFigure figureId="N09" sourceBlockId="eddb70fa-c407-45eb-8ee8-5b840a850b67" client:visible />
 

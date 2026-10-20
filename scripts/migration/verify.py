@@ -8,7 +8,7 @@ import unicodedata
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote, urlsplit, urljoin
 
 ROOT = Path(__file__).resolve().parents[2]
 INLINE_PROSE = {'a', 'span', 'strong', 'em', 'b', 'i', 'u', 's', 'del', 'mark', 'code', 'sub', 'sup', 'small', 'abbr', 'cite'}
@@ -29,9 +29,12 @@ class ReadingPage(HTMLParser):
         self.current_pre = None
         self.figures = []
         self.figure_stack = []
+        self.evidence_groups = []
+        self.evidence_stack = []
         self.anchor_stack = []
         self.anchor_text = {}
         self.anchor_all = {}  # every text inside the anchored element (figures and bookmarks included)
+        self.anchor_elements = {}  # shape and all raw contents of an omission anchor
         self.tags = []
 
     def handle_starttag(self, tag, attrs):
@@ -49,24 +52,42 @@ class ReadingPage(HTMLParser):
         if tag not in VOID:
             self.depth += 1
             self.tags.append(tag)
-        # Only the first direct paragraph belongs to a list block title.
         for record in self.anchor_stack:
-            if tag == 'p' and record['tag'] == 'li' and self.depth == record['depth'] + 1 and not record['paragraph_seen']:
+            record['children'] += 1
+            record['elements'].append((tag, attrs))
+            for key in ('src', 'href'):
+                if attrs.get(key): record['links'].append(attrs[key])
+        for record in self.evidence_stack:
+            if attrs.get('id'): record['ids'].append(attrs['id'])
+            if tag == 'details': record['nestedDetails'] += 1
+            if tag == 'summary' and self.depth == record['depth'] + 1: record['summaryDepth'] = self.depth
+        # Only the first direct paragraph belongs to a list/callout block title.
+        for record in self.anchor_stack:
+            prose_container = (record['tag'] == 'li' or record['tag'] == 'blockquote'
+                               and 'notion-callout' in record['attrs'].get('class', record['attrs'].get('classname', '')).split())
+            if tag == 'p' and prose_container and self.depth == record['depth'] + 1 and not record['paragraph_seen']:
                 record['paragraph_seen'] = True
                 if not attrs.get('id'):
                     record['prose_depth'] = self.depth
                     record['prose_active'] = True
         if attrs.get('id') and tag not in VOID:
-            record = {'id': attrs['id'], 'depth': self.depth, 'tag': tag, 'text': [], 'all': [], 'paragraph_seen': False, 'prose_depth': None, 'prose_active': False}
+            record = {'id': attrs['id'], 'depth': self.depth, 'tag': tag, 'attrs': attrs,
+                      'text': [], 'all': [], 'raw': [], 'links': [], 'elements': [], 'children': 0,
+                      'paragraph_seen': False, 'prose_depth': None, 'prose_active': False}
             self.anchor_stack.append(record)
             self.anchor_text.setdefault(attrs['id'], []).append(record['text'])
             self.anchor_all.setdefault(attrs['id'], []).append(record['all'])
+            self.anchor_elements.setdefault(attrs['id'], []).append(record)
         if tag in {'script', 'style'}:
             self.ignored += 1
         if attrs.get('data-figure-id'):
             record = {'figureId': attrs['data-figure-id'], 'sourceBlockId': attrs.get('data-source-block-id'), 'text': [], 'depth': self.depth}
             self.figures.append(record)
             self.figure_stack.append(record)
+        if attrs.get('data-figure-evidence-for'):
+            record = {'figureId': attrs['data-figure-evidence-for'], 'tag': tag, 'attrs': attrs,
+                      'depth': self.depth, 'ids': [], 'summary': [], 'summaryDepth': None, 'nestedDetails': 0}
+            self.evidence_groups.append(record); self.evidence_stack.append(record)
         if tag == 'pre':
             self.current_pre = []
         if tag == 'img':
@@ -83,6 +104,9 @@ class ReadingPage(HTMLParser):
         if tag in {'script', 'style'}:
             self.ignored = max(0, self.ignored - 1)
         self.figure_stack = [record for record in self.figure_stack if record["depth"] != self.depth]
+        for record in self.evidence_stack:
+            if record['summaryDepth'] == self.depth: record['summaryDepth'] = None
+        self.evidence_stack = [record for record in self.evidence_stack if record['depth'] != self.depth]
         for record in self.anchor_stack:
             if record['prose_depth'] == self.depth:
                 record['prose_active'] = False
@@ -91,13 +115,17 @@ class ReadingPage(HTMLParser):
         self.depth -= 1
 
     def handle_data(self, text):
+        if self.depth:
+            for record in self.anchor_stack: record['raw'].append(text)
+            for record in self.evidence_stack:
+                if record['summaryDepth'] is not None: record['summary'].append(text)
         if self.depth and not self.ignored:
             self.text.append(text)
             for record in self.anchor_stack:
                 record['all'].append(text)
                 if record['tag'] == 'p':
                     prose_depth = record['depth']
-                elif record['tag'] == 'li' and record['prose_active']:
+                elif record['tag'] in {'li', 'blockquote'} and record['prose_active']:
                     prose_depth = record['prose_depth']
                 else:
                     continue
@@ -140,6 +168,29 @@ def figure_issues(report, document, source_blocks, specs):
             for expected in spec['requiredText']:
                 if normalized(expected) not in text:
                     issue('figure-information-missing', missingText=expected)
+        if 'evidenceGroup' in spec:
+            group = spec['evidenceGroup']; ids = group.get('blockIds', [])
+            source_ids = source_blocks.get(spec['sourceId'], {}).get('content', [])
+            if (not ids or len(ids) != len(set(ids)) or not isinstance(group.get('label'), str)
+                    or not group['label'].strip()
+                    or not set(spec.get('evidenceBlockIds', [])) <= set(ids)
+                    or set(ids) & {item['sourceBlockId'] for item in specs if item['sourceId'] == spec['sourceId']}
+                    or any(source_blocks.get(value, {}).get('type') not in {'header','sub_header','sub_sub_header','image'}
+                           or source_blocks[value].get('content') for value in ids)
+                    or any(source_blocks[value]['type'] == 'image' and value not in spec.get('evidenceBlockIds', []) for value in ids)
+                    or sum(source_ids[index:index+len(ids)] == ids for index in range(len(source_ids))) != 1):
+                issue('figure-evidence-group-source-mismatch')
+            if {'figureId': spec['figureId'], **group} not in report.get('evidenceGroups', []):
+                issue('figure-evidence-group-not-traced')
+            rendered = [item for item in document.evidence_groups if item['figureId'] == spec['figureId']]
+            if len(rendered) != 1:
+                issue('figure-evidence-group-not-rendered')
+            elif (rendered[0]['tag'] != 'details' or 'open' in rendered[0]['attrs']
+                  or 'figure-source' not in rendered[0]['attrs'].get('class', rendered[0]['attrs'].get('classname', '')).split()
+                  or normalized(''.join(rendered[0]['summary'])) != normalized(group.get('label', ''))
+                  or [value for value in rendered[0]['ids'] if value in ids] != ids
+                  or rendered[0]['nestedDetails']):
+                issue('figure-evidence-group-content-mismatch')
     return issues
 
 
@@ -148,7 +199,7 @@ def correction_text(block, edits):
     original = text
     for edit in edits:
         old, new = edit.get('oldText', ''), edit.get('newText', '')
-        if (block.get('type') not in {'text', 'bulleted_list', 'numbered_list'}
+        if (block.get('type') not in {'text', 'bulleted_list', 'numbered_list', 'callout'}
                 or block.get('type') != edit.get('sourceType')
                 or hashlib.sha256(original.encode()).hexdigest() != edit.get('sourceTextSha256')
                 or not old or not new.strip() or old == new or text.count(old) != 1):
@@ -200,6 +251,141 @@ def correction_issues(report, document, source_blocks, specs):
     return issues
 
 
+def source_target(url, report, pages):
+    """Resolve the existing source link rules independently of rendered HTML."""
+    def canonical(value):
+        compact = value.replace('-', '').lower()
+        return '-'.join((compact[:8],compact[8:12],compact[12:16],compact[16:20],compact[20:]))
+    if url.startswith('#'):
+        fragment = url[1:]
+        return '#' + (canonical(fragment) if re.fullmatch('[0-9a-f-]{32,36}',fragment,re.I) else fragment)
+    parsed = urlsplit(url)
+    if parsed.scheme and parsed.scheme not in {'https','http','mailto','tel'}: return ''
+    owned = (not parsed.netloc or parsed.netloc.lower() in
+             {'www.brainbackdoor.com','brainbackdoor.com','www.notion.so','notion.so'} or parsed.netloc.endswith('.notion.site'))
+    if owned:
+        match = re.search(r'(?<![0-9a-f])([0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12})(?![0-9a-f])',parsed.path,re.I)
+        if match:
+            page = next((page for page in pages if page['sourceId'] == canonical(match[1])), {})
+            if page.get('targetPath'):
+                fragment = canonical(parsed.fragment) if re.fullmatch('[0-9a-f-]{32,36}',parsed.fragment,re.I) else parsed.fragment
+                return page['targetPath'].split('#',1)[0] + '#' + fragment if fragment else page['targetPath']
+            if page.get('contentRole') == 'project-reference':
+                return (page.get('referenceUrl') or page['sourceUrl']) + ('#'+parsed.fragment if parsed.fragment else '')
+        else:
+            for page in pages:
+                if page.get('targetPath') and any(urlsplit(alias).path.rstrip('/') == parsed.path.rstrip('/')
+                    for alias in [page.get('sourceUrl',''), *page.get('aliases',[])] if alias):
+                    return page['targetPath'] + ('#'+parsed.fragment if parsed.fragment else '')
+    return urljoin(report.get('sourceUrl') or 'https://www.brainbackdoor.com/',url)
+
+
+def omission_issues(report, document, source_blocks, specs, figures=(), corrections=(), redactions=(), pages=()):
+    """Omissions need exact source approval, full trace and an empty hidden anchor."""
+    issues = []; source_id = report.get('sourceId')
+    approved = [spec for spec in specs if spec.get('sourceId') == source_id]
+    protected = {block_id for spec in figures if spec.get('sourceId') == source_id
+                 for block_id in [spec['sourceBlockId'], *spec.get('evidenceBlockIds', []),
+                                  *(spec.get('evidenceGroup') or {}).get('blockIds', [])]}
+    protected.update(spec['sourceBlockId'] for spec in corrections if spec.get('sourceId') == source_id)
+    protected.update(block_id for spec in redactions if spec.get('sourceId') == source_id
+                     for block_id in spec.get('sourceBlockIds', []))
+    allowed = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image',
+               'header', 'sub_header', 'sub_sub_header', 'table'}
+    names = set(); blocks = set(); alias_ids = set()
+    for spec in approved:
+        block_id = spec.get('sourceBlockId'); block = source_blocks.get(block_id, {})
+        def issue(kind): issues.append({'type': kind, 'blockId': block_id, 'omission': spec.get('id')})
+        fingerprint = hashlib.sha256(json.dumps(block, ensure_ascii=False, sort_keys=True,
+                                               separators=(',', ':')).encode('utf-8')).hexdigest()
+        if (not isinstance(spec.get('id'), str) or not spec['id'].strip()
+                or not isinstance(spec.get('reason'), str) or not spec['reason'].strip()
+                or spec['id'] in names or block_id in blocks):
+            issue('omission-invalid-spec')
+        names.add(spec.get('id')); blocks.add(block_id)
+        field = spec.get('field')
+        supported = (block.get('type') in allowed if field is None else
+                     field == 'description' and block.get('type') in {'bookmark', 'video', 'embed'}
+                     and bool(plain(block.get('properties', {}).get('description')).strip()))
+        if (not supported or block.get('type') != spec.get('sourceType')
+                or fingerprint != spec.get('sourceBlockSha256') or field is None and block.get('content')):
+            issue('omission-source-mismatch')
+        if block_id in protected: issue('omission-overlaps-preserved-source')
+        aliases = spec.get('anchorAliases', [])
+        if 'anchorAliases' in spec:
+            if (field is not None or block.get('type') not in {'header','sub_header','sub_sub_header'}
+                    or not isinstance(aliases, list)
+                    or any(not isinstance(alias, str) or not alias or re.search(r'\s', alias) for alias in aliases)
+                    or len(aliases) != len(set(aliases)) or set(aliases) & (set(source_blocks) | alias_ids)):
+                issue('omission-invalid-anchor-aliases'); aliases = []
+            alias_ids.update(aliases)
+        records = [item for item in report.get('blocks', []) if item.get('sourceBlockId') == block_id]
+        exclusions = [item for item in report.get('excluded', []) if item.get('sourceBlockId') == block_id]
+        def traced(item, status):
+            return (item.get('status') == status
+                    and item.get('type') == spec.get('sourceType')
+                    and item.get('omissionId') == spec.get('id')
+                    and item.get('sourceBlockSha256') == spec.get('sourceBlockSha256')
+                    and item.get('reason') == spec.get('reason')
+                    and ('anchorAliases' not in spec or item.get('anchorAliases') == spec['anchorAliases']))
+        if (spec not in report.get('omissions', []) or not records or not exclusions
+                or not all(traced(item, 'converted-with-editorial-omission' if field else 'excluded-editorial-duplicate')
+                           and (not field or field in item.get('omittedFields', [])) for item in records)
+                or not all(traced(item, 'excluded-editorial-duplicate') and (not field or item.get('field') == field) for item in exclusions)):
+            issue('omission-not-traced')
+        anchors = [record for anchor, records in document.anchor_elements.items()
+                   if re.fullmatch(re.escape(str(block_id)) + r'(?:-copy-\d+)?', anchor)
+                   for record in records]
+        if not anchors: issue('omission-anchor-missing')
+        if field:
+            description = normalized(plain(block.get('properties', {}).get(field)))
+            title = normalized(plain(block.get('properties', {}).get('title')))
+            source = plain(block.get('properties', {}).get('source')) or plain(block.get('properties', {}).get('link')) or block.get('format', {}).get('display_source', '')
+            if any(description and description in normalized(''.join(record['raw'])) for record in anchors):
+                issue('omission-field-still-rendered')
+            assets = [item for item in report.get('assets', []) if item.get('blockId') == block_id]
+            downloadable = block.get('type') == 'video' and re.search(r'\.(mp4|webm|mov)(\?|$)',source,re.I)
+            asset = next((item for item in assets if item.get('sourceUrl') == source), {})
+            href = asset.get('localPath', '') if downloadable else source_target(source, report, pages)
+            fmt = block.get('format', {})
+            video = block.get('type') == 'video' and href.startswith('/content/')
+            embed = fmt.get('display_source') or ''
+            match = re.search(r'(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/))([\w-]{11})',source)
+            if match: embed = 'https://www.youtube-nocookie.com/embed/' + match[1]
+            if not embed and block.get('type') in {'embed','video'} and source.startswith('https://') and not video: embed = source
+            iframe = embed if embed and urlsplit(embed).scheme == 'https' else ''
+            cover = fmt.get('bookmark_cover')
+            cover_asset = next((item for item in assets if item.get('sourceUrl') == cover), {}) if cover else {}
+            expected_cover = (cover_asset.get('localPath') if cover and not
+                              (block.get('type') == 'bookmark' and cover_asset.get('status') in {'failed','not-downloaded'}) else None)
+            def has_element(record, tag, key, value):
+                return any(found_tag == tag and attrs.get(key) == value for found_tag, attrs in record['elements'])
+            if any(title and title not in normalized(''.join(record['raw']))
+                   or source and (not href or not has_element(record,'a','href',href))
+                   or iframe and not has_element(record,'iframe','src',iframe)
+                   or video and not has_element(record,'video','src',href)
+                   or cover and (not cover_asset or expected_cover and not has_element(record,'img','src',expected_cover))
+                   for record in anchors):
+                issue('omission-preserved-content-missing')
+        elif any(record['tag'] != 'span' or 'hidden' not in record['attrs']
+                 or record['attrs'].get('data-editorial-omission') != spec.get('id')
+                 or record['children'] or ''.join(record['raw']).strip() for record in anchors):
+            issue('omission-anchor-not-empty')
+        for alias in aliases:
+            records = document.anchor_elements.get(alias, [])
+            if document.ids.count(alias) != 1 or len(records) != 1:
+                issue('omission-alias-missing-or-duplicate')
+            elif (records[0]['tag'] != 'div' or records[0]['attrs'].get('aria-hidden') != 'true'
+                  or 'hidden' in records[0]['attrs'] or records[0]['children'] or ''.join(records[0]['raw']).strip()):
+                issue('omission-alias-not-empty')
+    for item in [*report.get('blocks', []), *report.get('excluded', []), *report.get('omissions', [])]:
+        if (item.get('status') in {'excluded-editorial-duplicate', 'converted-with-editorial-omission'} or item in report.get('omissions', [])):
+            if not any(spec.get('sourceBlockId') == item.get('sourceBlockId')
+                       and spec.get('id') == (item.get('omissionId') or item.get('id')) for spec in approved):
+                issues.append({'type': 'omission-not-approved', 'blockId': item.get('sourceBlockId')})
+    return issues
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--inventory', type=Path, default=ROOT / 'docs/migration-inventory.json')
@@ -212,6 +398,7 @@ def main():
     figure_specs = registry['figures']
     correction_specs = registry.get('corrections', [])
     redaction_specs = registry.get('redactions', [])
+    omission_specs = registry.get('omissions', [])
     inventory_data = json.loads(args.inventory.read_text())
     inventory = inventory_data['pages']
     source_blocks = {}
@@ -243,6 +430,9 @@ def main():
         issues.extend(figure_issues(report, document, source_blocks, figure_specs))
         issues.extend(correction_issues(report, document, source_blocks, correction_specs))
         issues.extend(redaction_issues(report, document, source_blocks, redaction_specs))
+        issues.extend(omission_issues(report, document, source_blocks, omission_specs,
+                                     figure_specs, correction_specs, redaction_specs, inventory))
+        omitted_blocks = {spec['sourceBlockId'] for spec in omission_specs if spec['sourceId'] == entry['sourceId'] and not spec.get('field')}
         body = normalized(''.join(document.text))
         checked = 0
         excluded = []
@@ -284,6 +474,9 @@ def main():
                 fields = ['caption', 'description']
             hidden_by = [spec for spec in redaction_specs if spec['sourceId'] == entry['sourceId'] and item['sourceBlockId'] in spec.get('sourceBlockIds', [])]
             for field in fields:
+                if any(spec['sourceId'] == entry['sourceId'] and spec['sourceBlockId'] == item['sourceBlockId']
+                       and spec.get('field') == field for spec in omission_specs):
+                    continue
                 text = plain(props.get(field))
                 # A redacted title is compared as published, so a failure can never write the hidden value into the report.
                 if hidden_by and field == 'title':
@@ -311,7 +504,9 @@ def main():
                 issues.append({'asset': asset['localPath'], 'type': 'missing-local-asset'})
             elif hashlib.sha256(path.read_bytes()).hexdigest() != asset['sha256']:
                 issues.append({'asset': asset['localPath'], 'type': 'asset-hash-mismatch'})
-            if source_blocks.get(asset['blockId'], {}).get('type') in {'image', 'file', 'pdf'} and asset['localPath'] not in document.links:
+            if (asset['blockId'] not in omitted_blocks
+                    and source_blocks.get(asset['blockId'], {}).get('type') in {'image', 'file', 'pdf'}
+                    and asset['localPath'] not in document.links):
                 issues.append({'asset': asset['localPath'], 'type': 'asset-not-rendered'})
         duplicates = [key for key, count in Counter(document.ids).items() if count > 1]
         if duplicates:

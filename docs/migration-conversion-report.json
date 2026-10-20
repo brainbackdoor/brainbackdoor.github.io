@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-18T15:15:21.298434+00:00",
+  "generatedAt": "2026-10-20T13:02:05.411314+00:00",
   "sourceSnapshots": "Cached outside the repository",
   "pages": [
     {
@@ -2370,7 +2370,10 @@
           "type": "image",
           "sourceTextChars": 9,
           "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
-          "status": "converted"
+          "sourceBlockSha256": "dbcb052b8c72b229a73d4aeea18909578fc22f3e3e81dd9c6c365ca7186447b6",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n01-decorative-separator",
+          "reason": "N01 앞의 내용 없는 1399×30 장식 구분선이며 이미지 여백만 더함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "da657d0b-02b0-4935-93b0-413d73c35fe1",
@@ -2398,7 +2401,10 @@
           "type": "bulleted_list",
           "sourceTextChars": 42,
           "sourceTextSha256": "feee383eb1ca29544369fde1f8c9a3f95dafd66705703f259a0a6a29f5c66a94",
-          "status": "converted"
+          "sourceBlockSha256": "3cd0761c245cadd23b7d728c750edd2d20ec2e37c2de29c7c300f47ce55a805b",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-formula-ko",
+          "reason": "바로 뒤 Throughput = Window Size / RTT와 같은 공식을 한국어로 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "9ffd757b-3bc7-49c2-be35-c39da8b4eb65",
@@ -2412,7 +2418,10 @@
           "type": "text",
           "sourceTextChars": 64,
           "sourceTextSha256": "8b6f5bc5c485c15b9f86c0be1e69113f39027de5920ab3c1ade20e4232b830ba",
-          "status": "converted"
+          "sourceBlockSha256": "937bc10212071474992f9e05f1ec59826de354e3d27d20403cb4d229abc16965",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-repeated-conditions",
+          "reason": "N02 바로 앞 계산식과 도해에 명시된 100 Mbps·RTT 40 ms 조건을 문장으로 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "262a5f0f-5540-4755-91fc-303af59bdfcf",
@@ -2433,7 +2442,10 @@
           "type": "image",
           "sourceTextChars": 9,
           "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
-          "status": "converted"
+          "sourceBlockSha256": "a325f00b044982bdbcf9f32766b4153a280e04dcf9acad664955d3bc1513be3f",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-decorative-separator",
+          "reason": "N02 뒤에서 다음 절 제목과 중복 구획을 만드는 1399×30 장식 구분선. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "dc4e788f-281c-4e79-b587-fab3b6a2ccd2",
@@ -2447,14 +2459,20 @@
           "type": "bulleted_list",
           "sourceTextChars": 42,
           "sourceTextSha256": "feee383eb1ca29544369fde1f8c9a3f95dafd66705703f259a0a6a29f5c66a94",
-          "status": "converted"
+          "sourceBlockSha256": "24b6042aacc1c25f66b45e68c2cd6e125bb0d2788e1380003be2e616ff9e677e",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-repeated-formula-ko",
+          "reason": "N02 앞에 남긴 처리량 공식을 다음 절에서 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "0f3f0466-6386-4dfe-8fcb-2ae541ceb9c6",
           "type": "bulleted_list",
           "sourceTextChars": 30,
           "sourceTextSha256": "95d49bc525c1cefa74124bf285a52b02758edb351d133362938fc6eec50298d6",
-          "status": "converted"
+          "sourceBlockSha256": "9f577be6c99754002b20d0278abd5dfa7f74ce0f5ebe75e4a6d4a99b0776b70f",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-repeated-formula-en",
+          "reason": "N02 앞에 남긴 Throughput = Window Size / RTT를 다음 절에서 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "9f5fbbe4-4d78-4822-a532-51768046e58a",
@@ -2595,16 +2613,6 @@
           "height": 304
         },
         {
-          "blockId": "1716e05b-ebd8-488c-82a2-a7402ce76d17",
-          "sourceUrl": "https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b56f12fd-4b0c-4d59-89c0-33cc7efc6059/image.png",
-          "localPath": "/content/95400228-c9fb-4397-ac45-281f2a6c7446/1716e05b-ebd8-488c-82a2-a7402ce76d17.webp",
-          "status": "downloaded",
-          "bytes": 6550,
-          "sha256": "aa77bed258ed83697b93faee2891289e3f16d22739b4adddc262a4f72813c858",
-          "width": 1399,
-          "height": 30
-        },
-        {
           "blockId": "eb937029-c447-4631-ac6c-ead0fd1d874c",
           "sourceUrl": "https://t1.daumcdn.net/cfile/tistory/994329455C72351B15",
           "localPath": "/content/95400228-c9fb-4397-ac45-281f2a6c7446/eb937029-c447-4631-ac6c-ead0fd1d874c.png",
@@ -2613,16 +2621,6 @@
           "sha256": "a0c8e589fec6880c2238515da01a22e4ac0a8b9e0c5ab3c22dadd447d93ac0ec",
           "width": 400,
           "height": 236
-        },
-        {
-          "blockId": "29454604-ee2b-4df8-89fd-9c146a4875a2",
-          "sourceUrl": "https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b56f12fd-4b0c-4d59-89c0-33cc7efc6059/image.png",
-          "localPath": "/content/95400228-c9fb-4397-ac45-281f2a6c7446/29454604-ee2b-4df8-89fd-9c146a4875a2.webp",
-          "status": "downloaded",
-          "bytes": 6550,
-          "sha256": "aa77bed258ed83697b93faee2891289e3f16d22739b4adddc262a4f72813c858",
-          "width": 1399,
-          "height": 30
         },
         {
           "blockId": "b7b3f76a-be4b-4dbe-b661-e391d2deffb3",
@@ -2696,6 +2694,66 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         },
         {
+          "sourceBlockId": "1716e05b-ebd8-488c-82a2-a7402ce76d17",
+          "type": "image",
+          "sourceTextChars": 9,
+          "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
+          "sourceBlockSha256": "dbcb052b8c72b229a73d4aeea18909578fc22f3e3e81dd9c6c365ca7186447b6",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n01-decorative-separator",
+          "reason": "N01 앞의 내용 없는 1399×30 장식 구분선이며 이미지 여백만 더함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "sourceBlockId": "fc623799-b710-4396-8ba0-4f5c002b5f53",
+          "type": "bulleted_list",
+          "sourceTextChars": 42,
+          "sourceTextSha256": "feee383eb1ca29544369fde1f8c9a3f95dafd66705703f259a0a6a29f5c66a94",
+          "sourceBlockSha256": "3cd0761c245cadd23b7d728c750edd2d20ec2e37c2de29c7c300f47ce55a805b",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-formula-ko",
+          "reason": "바로 뒤 Throughput = Window Size / RTT와 같은 공식을 한국어로 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "sourceBlockId": "be53f3d9-5a2f-41e0-bd67-9d724020f65d",
+          "type": "text",
+          "sourceTextChars": 64,
+          "sourceTextSha256": "8b6f5bc5c485c15b9f86c0be1e69113f39027de5920ab3c1ade20e4232b830ba",
+          "sourceBlockSha256": "937bc10212071474992f9e05f1ec59826de354e3d27d20403cb4d229abc16965",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-repeated-conditions",
+          "reason": "N02 바로 앞 계산식과 도해에 명시된 100 Mbps·RTT 40 ms 조건을 문장으로 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "sourceBlockId": "29454604-ee2b-4df8-89fd-9c146a4875a2",
+          "type": "image",
+          "sourceTextChars": 9,
+          "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
+          "sourceBlockSha256": "a325f00b044982bdbcf9f32766b4153a280e04dcf9acad664955d3bc1513be3f",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-decorative-separator",
+          "reason": "N02 뒤에서 다음 절 제목과 중복 구획을 만드는 1399×30 장식 구분선. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "sourceBlockId": "1d513d2d-a5cf-4206-b870-14b7d627fe63",
+          "type": "bulleted_list",
+          "sourceTextChars": 42,
+          "sourceTextSha256": "feee383eb1ca29544369fde1f8c9a3f95dafd66705703f259a0a6a29f5c66a94",
+          "sourceBlockSha256": "24b6042aacc1c25f66b45e68c2cd6e125bb0d2788e1380003be2e616ff9e677e",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-repeated-formula-ko",
+          "reason": "N02 앞에 남긴 처리량 공식을 다음 절에서 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "sourceBlockId": "0f3f0466-6386-4dfe-8fcb-2ae541ceb9c6",
+          "type": "bulleted_list",
+          "sourceTextChars": 30,
+          "sourceTextSha256": "95d49bc525c1cefa74124bf285a52b02758edb351d133362938fc6eec50298d6",
+          "sourceBlockSha256": "9f577be6c99754002b20d0278abd5dfa7f74ce0f5ebe75e4a6d4a99b0776b70f",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-n02-repeated-formula-en",
+          "reason": "N02 앞에 남긴 Throughput = Window Size / RTT를 다음 절에서 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
           "sourceBlockId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924",
           "type": "column_list",
           "reason": "Original previous/source/next toolbar removed from the article at the owner's request.",
@@ -2738,6 +2796,56 @@
           "navigationGroupId": "4fa2fd36-a8ef-4ee8-a27d-bcdbc7f3c924"
         }
       ],
+      "omissions": [
+        {
+          "id": "reading-n01-decorative-separator",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "1716e05b-ebd8-488c-82a2-a7402ce76d17",
+          "sourceType": "image",
+          "sourceBlockSha256": "dbcb052b8c72b229a73d4aeea18909578fc22f3e3e81dd9c6c365ca7186447b6",
+          "reason": "N01 앞의 내용 없는 1399×30 장식 구분선이며 이미지 여백만 더함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "id": "reading-n02-formula-ko",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "fc623799-b710-4396-8ba0-4f5c002b5f53",
+          "sourceType": "bulleted_list",
+          "sourceBlockSha256": "3cd0761c245cadd23b7d728c750edd2d20ec2e37c2de29c7c300f47ce55a805b",
+          "reason": "바로 뒤 Throughput = Window Size / RTT와 같은 공식을 한국어로 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "id": "reading-n02-repeated-conditions",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "be53f3d9-5a2f-41e0-bd67-9d724020f65d",
+          "sourceType": "text",
+          "sourceBlockSha256": "937bc10212071474992f9e05f1ec59826de354e3d27d20403cb4d229abc16965",
+          "reason": "N02 바로 앞 계산식과 도해에 명시된 100 Mbps·RTT 40 ms 조건을 문장으로 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "id": "reading-n02-decorative-separator",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "29454604-ee2b-4df8-89fd-9c146a4875a2",
+          "sourceType": "image",
+          "sourceBlockSha256": "a325f00b044982bdbcf9f32766b4153a280e04dcf9acad664955d3bc1513be3f",
+          "reason": "N02 뒤에서 다음 절 제목과 중복 구획을 만드는 1399×30 장식 구분선. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "id": "reading-n02-repeated-formula-ko",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "1d513d2d-a5cf-4206-b870-14b7d627fe63",
+          "sourceType": "bulleted_list",
+          "sourceBlockSha256": "24b6042aacc1c25f66b45e68c2cd6e125bb0d2788e1380003be2e616ff9e677e",
+          "reason": "N02 앞에 남긴 처리량 공식을 다음 절에서 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "id": "reading-n02-repeated-formula-en",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "0f3f0466-6386-4dfe-8fcb-2ae541ceb9c6",
+          "sourceType": "bulleted_list",
+          "sourceBlockSha256": "9f577be6c99754002b20d0278abd5dfa7f74ce0f5ebe75e4a6d4a99b0776b70f",
+          "reason": "N02 앞에 남긴 Throughput = Window Size / RTT를 다음 절에서 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        }
+      ],
       "figures": [
         {
           "figureId": "N01",
@@ -2775,10 +2883,21 @@
           "sourceBlockId": "262a5f0f-5540-4755-91fc-303af59bdfcf",
           "sourceType": "text",
           "sourceTextSha256": "6c0635ed12e1afc6353d74b54bf9335c2ed7e2ecbc726cfa5435a6be0f3eeb13",
-          "oldText": "10000000",
-          "newText": "100000000",
-          "reason": "100 Mbps의 bit/s 중간 표기 수정",
+          "oldText": "100Mbps(bandwidth, 처리량) * 40ms(delay, RTT) = 10000000 * 0.04 = 4000000 bits = 500Kbytes",
+          "newText": "100 Mbps × 40 ms = 4,000,000 bit = 500 kB",
+          "reason": "100 Mbps의 bit/s 중간 표기 수정 N02 도해와 반복되는 단위 풀이와 중간 계산을 줄이고 링크 속도·RTT·계산 결과를 남김(사용자 요청).",
           "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
+        },
+        {
+          "id": "reading-n02-bdp-definition",
+          "sourceId": "95400228-c9fb-4397-ac45-281f2a6c7446",
+          "sourceBlockId": "c4082dd3-f9f8-4be3-9723-06e2e8d8abe4",
+          "sourceType": "text",
+          "sourceTextSha256": "a1e8bb5beb37085302c635df8217624585a5603975964485f772648f28f00ae6",
+          "oldText": "즉, 이 경우 100Mbps 속도로 40ms 동안 보낼 수 있는 데이터가 500Kbytes이기 때문에 Window size가 500Kbytes로 끊김없이 서버에서 계속 데이터를 보낼 경우, 병목구간 100Mbps를 하나의 세션이 모두 사용하게 된다. 이와 같이 병목구간의 bandwidth를 최대한 다 사용할 수 있는 window size를 BDP(Bandwidth Delay Product)라 한다.",
+          "newText": "병목구간의 bandwidth를 최대한 다 사용할 수 있는 window size를 BDP(Bandwidth Delay Product)라 한다.",
+          "reason": "사용자의 본문 중복 축약 요청에 따라 N02 앞의 계산과 도해에서 이미 보여 준 100Mbps·40ms·500Kbytes의 반복 설명을 덜고 기존 BDP 정의만 남김.",
+          "reference": "https://www.brainbackdoor.com/posts/95400228-c9fb-4397-ac45-281f2a6c7446/#c4082dd3-f9f8-4be3-9723-06e2e8d8abe4"
         }
       ],
       "title": "bufferbloat과 buffer overflow",
@@ -2801,7 +2920,7 @@
           "sub_header": 3,
           "bulleted_list": 4
         },
-        "assetCount": 5,
+        "assetCount": 3,
         "failedAssets": 0,
         "warningCount": 0,
         "unresolvedLinkCount": 0
@@ -4644,6 +4763,28 @@
           "newText": "TCP_NODELAY 설정을 활성화해 Nagle 알고리즘을 비활성화하기도 한다.",
           "reason": "설정 방향 수정",
           "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
+        },
+        {
+          "id": "reading-n09-buffer-repeat",
+          "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+          "sourceBlockId": "eddb70fa-c407-45eb-8ee8-5b840a850b67",
+          "sourceType": "text",
+          "sourceTextSha256": "249222eaf51cedc6f2434986a1b813f9f045671c76c30bb992e065099c427338",
+          "oldText": "전송을 허락한다. 전송하기 충분할 만큼의 패킷이 쌓였을 때 버퍼에 저장되어 있던 데이터가 전송된다.",
+          "newText": "전송을 허락한다.",
+          "reason": "사용자의 본문 중복 축약 요청에 따라 N09 SMSS 또는 ACK 도착 시 전송한다는 앞 설명과 중복되는 버퍼 전송 문장을 삭제하고 미확인 데이터가 없을 때의 예외는 유지함.",
+          "reference": "https://www.brainbackdoor.com/posts/02773af9-5c93-43b5-89b4-bbab94536195/#eddb70fa-c407-45eb-8ee8-5b840a850b67"
+        },
+        {
+          "id": "reading-n09-delay-cause",
+          "sourceId": "02773af9-5c93-43b5-89b4-bbab94536195",
+          "sourceBlockId": "eddb70fa-c407-45eb-8ee8-5b840a850b67",
+          "sourceType": "text",
+          "sourceTextSha256": "249222eaf51cedc6f2434986a1b813f9f045671c76c30bb992e065099c427338",
+          "oldText": "이 경우 크기가 작은 HTTP 메시지는 지연된다. ACK 지연과 함께 고려하면 지연 시간은 더욱 늘어난다. ",
+          "newText": "Nagle 대기로 작은 HTTP 메시지가 지연될 수 있으며, ACK 지연이 겹치면 더 늦어진다. ",
+          "reason": "중복 문장 축약 뒤 이 경우가 즉시 전송 예외를 가리키지 않도록, 원문에 있던 Nagle 대기와 ACK 지연 조건을 직접 적음.",
+          "reference": "https://www.brainbackdoor.com/posts/02773af9-5c93-43b5-89b4-bbab94536195/#eddb70fa-c407-45eb-8ee8-5b840a850b67"
         }
       ],
       "figures": [
@@ -4698,12 +4839,12 @@
           "bulleted_list": 4
         },
         "assetCount": 3,
-        "failedAssets": 1,
+        "failedAssets": 0,
         "warningCount": 0,
         "unresolvedLinkCount": 0
       },
-      "status": "converted",
-      "outputFile": "src/content/posts/ko/02773af9-5c93-43b5-89b4-bbab94536195.mdx"
+      "outputFile": "src/content/posts/ko/02773af9-5c93-43b5-89b4-bbab94536195.mdx",
+      "status": "converted"
     },
     {
       "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
@@ -5118,13 +5259,7 @@
         }
       ],
       "unresolvedLinks": [],
-      "warnings": [
-        {
-          "kind": "asset-download-failed",
-          "blockId": "65350709-7bf6-4b84-94ea-e4e6d71f2d6e",
-          "sourceUrl": "https://farm9.staticflickr.com/8896/18339898259_71c350b396_b.jpg"
-        }
-      ],
+      "warnings": [],
       "excluded": [
         {
           "sourceBlockId": "5e16b956-53a2-40c5-b968-bcf67a25d75b",
@@ -5289,8 +5424,8 @@
           "sourceType": "text",
           "sourceTextSha256": "3bbe125793a8f2d384bfb8df1008c39b9fae40e2313426dee7e57d2550341a3c",
           "oldText": "keep alive 기능을 켬으로써 불필요한 3 way handshake를 줄이고 TIME_WAIT 소켓도 줄일 수 있다. keep alive란, 한번 맺은 세션을 요청이 끝나더라도 유지해주는 기능이다.",
-          "newText": "HTTP 연결 재사용은 불필요한 3 way handshake와 연결 종료를 줄일 수 있다. TCP keepalive는 별도 기능으로, SO_KEEPALIVE를 켠 유휴 연결에서 상대의 응답을 확인한다.",
-          "reason": "HTTP 연결 재사용과 TCP probe 목적 분리",
+          "newText": "TCP keepalive는 SO_KEEPALIVE를 켠 유휴 연결에서 상대의 응답을 확인한다.",
+          "reason": "HTTP 연결 재사용과 TCP probe 목적 분리 사용자의 본문 중복 축약 요청에 따라 N12 다음 HTTP Keepalive 절과 중복되는 HTTP 연결 재사용 도입을 덜고 TCP 상태 확인의 조건만 유지함.",
           "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
         },
         {
@@ -5299,9 +5434,9 @@
           "sourceBlockId": "0a0f2e6b-e55f-489d-83e6-426dafe34802",
           "sourceType": "text",
           "sourceTextSha256": "3bbe125793a8f2d384bfb8df1008c39b9fae40e2313426dee7e57d2550341a3c",
-          "oldText": "클라이언트는 연결이 끊어졌다고 인지하고 서버에 RST 패킷을 보낸 다음 자신의 소켓을 닫는다.",
-          "newText": "probe를 보내는 쪽에서 연결 실패를 판정하고 소켓을 정리한다. RST 전송 등 후속 동작은 구현에 따라 다르다.",
-          "reason": "무조건 클라이언트가 RST를 보낸다는 전제 제거",
+          "oldText": "에 정의된 횟수만큼 보낸다. 이 후로도 응답이 없을 경우 클라이언트는 연결이 끊어졌다고 인지하고 서버에 RST 패킷을 보낸 다음 자신의 소켓을 닫는다. (그리하여 Keepalive를 사용할 경우 연결이 끊어졌음에도 FIN 패킷을 받지 못해 정리되지 않고 남아있던 좀비 커넥션을 없애는 효과도 발생한다.)",
+          "newText": "에 정의된 횟수만큼 보낸다. 이 후로도 응답이 없을 경우 probe를 보내는 쪽에서 연결 실패를 판정하고 소켓을 정리한다. RST 전송 등 후속 동작은 구현에 따라 다르다.",
+          "reason": "무조건 클라이언트가 RST를 보낸다는 전제 제거 사용자의 본문 중복 축약 요청에 따라 N12 직전 무응답 연결 정리 설명을 반복하는 좀비 커넥션 괄호를 덜고 응답 횟수·실패 판정 주체·구현별 후속 동작 조건은 유지함.",
           "reference": "https://www.rfc-editor.org/rfc/rfc9293.html"
         },
         {
@@ -5311,9 +5446,20 @@
           "sourceType": "text",
           "sourceTextSha256": "906009935406682c5e96ab15bee340a39ac7c405433787457495feb36d1bd06b",
           "oldText": "TCP keepalive는 서버간에 ACK 패킷을 보내 세션 테이블이 지워지지 않고 계속 세션 정보를 유지하는데 반해, HTTP Keepalive는 일정시간이 지나면 능동적으로 연결을 끊는다",
-          "newText": "TCP keepalive는 유휴 TCP 연결에서 상대의 응답을 확인하고, HTTP Keepalive는 같은 연결을 다음 HTTP 요청에도 재사용하는 방식이다. HTTP 서버는 설정한 유휴 제한에 따라 연결을 종료할 수 있다",
-          "reason": "TCP의 상태 확인과 HTTP의 연결 재사용·유휴 종료를 구분",
+          "newText": "TCP keepalive는 유휴 TCP 연결에서 상대의 응답을 확인하고, HTTP Keepalive는 같은 연결을 다음 HTTP 요청에도 재사용하는 방식이다",
+          "reason": "TCP의 상태 확인과 HTTP의 연결 재사용·유휴 종료를 구분 사용자의 본문 중복 축약 요청에 따라 N13 굵은 TCP 상태 확인·HTTP 연결 재사용 구분을 유지하고 유휴 종료 문장은 뒤의 plain run으로 분리하여 용도·FIN 반복을 제거할 수 있게 함.",
           "reference": "https://www.rfc-editor.org/rfc/rfc9112.html#section-9.3"
+        },
+        {
+          "id": "reading-n13-idle-close",
+          "sourceId": "beae0ed2-e020-4681-abac-fdb9e5f12c5f",
+          "sourceBlockId": "15f31b20-1a74-48ee-8d01-ef6458d86cb6",
+          "sourceType": "text",
+          "sourceTextSha256": "906009935406682c5e96ab15bee340a39ac7c405433787457495feb36d1bd06b",
+          "oldText": " 이에 TCP Keepalive는 mq, kafka 등 TCP 기반의 서비스들을 대상으로 지속적 연결을 유지해야 하는 경우 사용되고, HTTP Keepalive는 Apache, Nginx 등 웹 애플리케이션에서 설정된 기간까지 최대한 연결을 유지하기 위해 사용된다. (두 설정을 모두 적용했을 경우 HTTP Keepalive가 능동적으로 FIN 패킷을 보내기에 이 설정대로 동작한다.)",
+          "newText": " HTTP 서버는 설정한 유휴 제한에 따라 연결을 종료할 수 있다.",
+          "reason": "사용자의 본문 중복 축약 요청에 따라 N13 MQ·Kafka·Apache·Nginx 용도와 FIN 괄호의 반복 대신 현재 공개된 유휴 제한에 따른 종료 조건 한 문장만 남김.",
+          "reference": "https://www.brainbackdoor.com/posts/beae0ed2-e020-4681-abac-fdb9e5f12c5f/#15f31b20-1a74-48ee-8d01-ef6458d86cb6"
         }
       ],
       "title": "TCP keep-alive",
@@ -5341,8 +5487,8 @@
           "bulleted_list": 3
         },
         "assetCount": 3,
-        "failedAssets": 1,
-        "warningCount": 1,
+        "failedAssets": 0,
+        "warningCount": 0,
         "unresolvedLinkCount": 0
       },
       "outputFile": "src/content/posts/ko/beae0ed2-e020-4681-abac-fdb9e5f12c5f.mdx",
@@ -6290,7 +6436,10 @@
           "type": "text",
           "sourceTextChars": 24,
           "sourceTextSha256": "aeb01b15919f61e0fb11c60cb5f153e8e269edc37953b34b0267e8981b20b122",
-          "status": "converted"
+          "sourceBlockSha256": "44666caa3065734d48901d5c18b6f7eca2ec8ebc2635ab7d62eaed747bd86e89",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-w06-heading-repeat",
+          "reason": "바로 위 200이 적절하다는 주장 제목을 문장으로 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "eb32b543-132f-459f-b736-348c925f07ee",
@@ -7005,13 +7154,7 @@
         }
       ],
       "unresolvedLinks": [],
-      "warnings": [
-        {
-          "kind": "asset-download-failed",
-          "blockId": "ea8effe8-6554-438c-a5c5-26c54cfae6c7",
-          "sourceUrl": "https://cdn.cms-twdigitalassets.com/content/dam/developer-twitter/redesign-2021-images/og-social-card/devwebsite_card_tn.jpg.twimg.768.jpg"
-        }
-      ],
+      "warnings": [],
       "excluded": [
         {
           "sourceBlockId": "dc093830-f645-4642-bf85-dfcbfe7e0f64",
@@ -7069,6 +7212,16 @@
           "sourceBlockId": "ea3ce5ae-0866-4e8e-929a-78ded8823c7a",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "12b7d008-a1aa-4145-9ad9-a530f0275f6e",
+          "type": "text",
+          "sourceTextChars": 24,
+          "sourceTextSha256": "aeb01b15919f61e0fb11c60cb5f153e8e269edc37953b34b0267e8981b20b122",
+          "sourceBlockSha256": "44666caa3065734d48901d5c18b6f7eca2ec8ebc2635ab7d62eaed747bd86e89",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-w06-heading-repeat",
+          "reason": "바로 위 200이 적절하다는 주장 제목을 문장으로 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "d52546f5-8a74-44c4-be53-052183ec9501",
@@ -7131,6 +7284,16 @@
           ]
         }
       ],
+      "omissions": [
+        {
+          "id": "reading-w06-heading-repeat",
+          "sourceId": "14b691d7-7fd7-4e95-8787-49e06111755f",
+          "sourceBlockId": "12b7d008-a1aa-4145-9ad9-a530f0275f6e",
+          "sourceType": "text",
+          "sourceBlockSha256": "44666caa3065734d48901d5c18b6f7eca2ec8ebc2635ab7d62eaed747bd86e89",
+          "reason": "바로 위 200이 적절하다는 주장 제목을 문장으로 다시 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        }
+      ],
       "title": "200 vs 404",
       "pubDate": "2020-02-12",
       "pubDateEvidence": {
@@ -7154,8 +7317,8 @@
           "quote": 5
         },
         "assetCount": 15,
-        "failedAssets": 1,
-        "warningCount": 1,
+        "failedAssets": 0,
+        "warningCount": 0,
         "unresolvedLinkCount": 0
       },
       "outputFile": "src/content/posts/ko/14b691d7-7fd7-4e95-8787-49e06111755f.mdx",
@@ -10956,6 +11119,41 @@
           "navigationGroupId": "55229324-2731-4390-8d2e-701fc240d5b7"
         }
       ],
+      "corrections": [
+        {
+          "id": "reading-x05-intro-1",
+          "sourceId": "a1094dc5-8f5c-4725-be7c-8247fc273c44",
+          "sourceBlockId": "28bd6883-c79b-407f-8b75-7b0f0ebdf1cf",
+          "sourceType": "text",
+          "sourceTextSha256": "ee52b0f21b71bba05cf833c26ae1253ad18234df7a1cab3eb6b9cdab6674ced3",
+          "oldText": "이제는 선택의 시간입니다. ",
+          "newText": "회고의 목적에 맞게 ",
+          "reason": "액션 플랜 절 제목·X05·이어지는 절차와 반복되는 도입을 줄이고 구체적인 다음 할 일을 정한다는 목적만 유지. 원본 두 run 안에서 각각 교체",
+          "reference": "https://www.brainbackdoor.com/a1094dc5-8f5c-4725-be7c-8247fc273c44/#28bd6883-c79b-407f-8b75-7b0f0ebdf1cf"
+        },
+        {
+          "id": "reading-x05-intro-2",
+          "sourceId": "a1094dc5-8f5c-4725-be7c-8247fc273c44",
+          "sourceBlockId": "28bd6883-c79b-407f-8b75-7b0f0ebdf1cf",
+          "sourceType": "text",
+          "sourceTextSha256": "ee52b0f21b71bba05cf833c26ae1253ad18234df7a1cab3eb6b9cdab6674ced3",
+          "oldText": "회고의 목적에 맞게 잘한 일은 다음에 더 잘할 수 있게, 아쉬웠던 일은 다음에 더 잘할 수 있도록 구체적인 다음 할 일에 대해 이야기해볼겁니다.",
+          "newText": "구체적인 다음 할 일을 정합니다.",
+          "reason": "액션 플랜 절 제목·X05·이어지는 절차와 반복되는 도입을 줄이고 구체적인 다음 할 일을 정한다는 목적만 유지. 원본 두 run 안에서 각각 교체",
+          "reference": "https://www.brainbackdoor.com/a1094dc5-8f5c-4725-be7c-8247fc273c44/#28bd6883-c79b-407f-8b75-7b0f0ebdf1cf"
+        },
+        {
+          "id": "reading-x05-feedback-1",
+          "sourceId": "a1094dc5-8f5c-4725-be7c-8247fc273c44",
+          "sourceBlockId": "2bcf3b02-6ac0-4c3f-b2d0-f5f45d076308",
+          "sourceType": "numbered_list",
+          "sourceTextSha256": "f1daa6bffea7320ce7b2d86f29a004e67967312bd20d0d69f1f4620e0f78322d",
+          "oldText": " 액션 플랜에 대해 이야기 나눕니다. 액션 플랜은 자세할수록 좋습니다. 명확하고 실행가능한, 측정 가능한 목표 설정을 위해 서로 피드백을 주세요!",
+          "newText": "액션 플랜이 구체적이고 실행·측정 가능한 목표가 되도록 서로 피드백해주세요.",
+          "reason": "말하기·자세히 쓰기를 재반복하는 문장을 합치되 구체성·실행 가능성·측정 가능성·상호 피드백 조건은 유지",
+          "reference": "https://www.brainbackdoor.com/a1094dc5-8f5c-4725-be7c-8247fc273c44/#2bcf3b02-6ac0-4c3f-b2d0-f5f45d076308"
+        }
+      ],
       "figures": [
         {
           "figureId": "X05",
@@ -12400,6 +12598,96 @@
           ]
         }
       ],
+      "corrections": [
+        {
+          "id": "reading-s02-dataframe-1",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "e5ff6281-f106-4db3-b5cc-b9002c3373a2",
+          "sourceType": "text",
+          "sourceTextSha256": "7385600b578e1345ebcf5466f03716bd3eb7b5d35aa3636da669e07b3fd99a98",
+          "oldText": "Spark는 데이터를 테이블 형태로 다룰 수 있도록 API를 제공한다. 물리적으로는 여러 머신의 메모리에 분산되어 있더라도, 사용자가 데이터를 마치 하나의 테이블처럼 다룰 수 있다.",
+          "newText": "DataFrame은 데이터가 여러 머신에 분산돼 있어도 하나의 테이블처럼 다룰 수 있게 하는 API다.",
+          "reason": "바로 앞 S02 도해가 논리 표와 물리적 분산을 보여주므로 같은 뜻의 두 문장을 한 정의로 합침",
+          "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#e5ff6281-f106-4db3-b5cc-b9002c3373a2"
+        },
+        {
+          "id": "reading-s04-projection-1",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "9715a697-ca9e-4c43-80ff-70ee0bc6a092",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "3af99ce57c8987df71b18c015bae8be3edd69e8dc7958641d861e0edbc99e41f",
+          "oldText": "explain() 함수를 통해 Spark DataFrame의 실행 계획을 볼 수 있다. 실행 계획으로 확인해보면, Analyzed Logical Plan 과 Optimized Logical Plan 이 조금 다른것을 볼 수 있다. 가령 위의 예시에선 select() 를 여러 컬럼에 대해 수행했으나, 최적화 시점에서 education 컬럼만 Projection 하였다.",
+          "newText": "이 예시는 최적화 후 education 컬럼만 Projection 한다.",
+          "reason": "S04 도해와 바로 앞 explain 출력에 이미 있는 사용법·계획 차이 설명을 덜고 education 투영 결과만 유지",
+          "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#9715a697-ca9e-4c43-80ff-70ee0bc6a092"
+        },
+        {
+          "id": "reading-s05-pushdown-1",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "fb506d7d-94f5-4ac8-8636-657e694fa695",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "16ea5d935e8479daca21215be3eebf85011c6bc295037a44840dc93241255d27",
+          "oldText": "데이터 전체를 가져온 '후' 필터링하는 것이 아니라, ",
+          "newText": "저장소에서 ",
+          "reason": "S05의 필터 위치·전송 결과 설명을 Predicate Push Down 정의 한 문장으로 합침. 원본 주석 run 경계와 강조를 유지함",
+          "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#fb506d7d-94f5-4ac8-8636-657e694fa695"
+        },
+        {
+          "id": "reading-s05-pushdown-2",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "fb506d7d-94f5-4ac8-8636-657e694fa695",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "16ea5d935e8479daca21215be3eebf85011c6bc295037a44840dc93241255d27",
+          "oldText": "저장소에서 데이터를 필터링 '",
+          "newText": "데이터를 필터링한 ",
+          "reason": "S05의 필터 위치·전송 결과 설명을 Predicate Push Down 정의 한 문장으로 합침. 원본 주석 run 경계와 강조를 유지함",
+          "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#fb506d7d-94f5-4ac8-8636-657e694fa695"
+        },
+        {
+          "id": "reading-s05-pushdown-3",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "fb506d7d-94f5-4ac8-8636-657e694fa695",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "16ea5d935e8479daca21215be3eebf85011c6bc295037a44840dc93241255d27",
+          "oldText": "된",
+          "newText": "결과",
+          "reason": "S05의 필터 위치·전송 결과 설명을 Predicate Push Down 정의 한 문장으로 합침. 원본 주석 run 경계와 강조를 유지함",
+          "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#fb506d7d-94f5-4ac8-8636-657e694fa695"
+        },
+        {
+          "id": "reading-s05-pushdown-4",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "fb506d7d-94f5-4ac8-8636-657e694fa695",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "16ea5d935e8479daca21215be3eebf85011c6bc295037a44840dc93241255d27",
+          "oldText": "' 결과물만 가져와",
+          "newText": "만 가져와",
+          "reason": "S05의 필터 위치·전송 결과 설명을 Predicate Push Down 정의 한 문장으로 합침. 원본 주석 run 경계와 강조를 유지함",
+          "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#fb506d7d-94f5-4ac8-8636-657e694fa695"
+        },
+        {
+          "id": "reading-s05-pushdown-5",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "fb506d7d-94f5-4ac8-8636-657e694fa695",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "16ea5d935e8479daca21215be3eebf85011c6bc295037a44840dc93241255d27",
+          "oldText": " 네트워크 및 가공 비용을 줄일 수 있다. 이를 ",
+          "newText": " 네트워크 및 가공 비용을 줄이는 ",
+          "reason": "S05의 필터 위치·전송 결과 설명을 Predicate Push Down 정의 한 문장으로 합침. 원본 주석 run 경계와 강조를 유지함",
+          "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#fb506d7d-94f5-4ac8-8636-657e694fa695"
+        },
+        {
+          "id": "reading-s05-pushdown-6",
+          "sourceId": "c9edaff4-1f8b-48aa-a092-730b932155fb",
+          "sourceBlockId": "fb506d7d-94f5-4ac8-8636-657e694fa695",
+          "sourceType": "bulleted_list",
+          "sourceTextSha256": "16ea5d935e8479daca21215be3eebf85011c6bc295037a44840dc93241255d27",
+          "oldText": " 라고 한다. ",
+          "newText": " 최적화다.",
+          "reason": "S05의 필터 위치·전송 결과 설명을 Predicate Push Down 정의 한 문장으로 합침. 원본 주석 run 경계와 강조를 유지함",
+          "reference": "https://www.brainbackdoor.com/c9edaff4-1f8b-48aa-a092-730b932155fb/#fb506d7d-94f5-4ac8-8636-657e694fa695"
+        }
+      ],
       "title": "Spark는 어떤 컨셉인가?",
       "pubDate": "2021-11-18T21:14:00+00:00",
       "pubDateEvidence": {
@@ -12555,7 +12843,10 @@
           "type": "text",
           "sourceTextChars": 71,
           "sourceTextSha256": "ec7d7b623ffa361bcd684304c32e50ae71473cba37b1c7850d82ebec3814c264",
-          "status": "converted"
+          "sourceBlockSha256": "135d3226f0afd94469383d5e37100d95fda097cccf43b70ecdf8ccb9911011ff",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-s01-api-repeat",
+          "reason": "S01의 Dataset·DataFrame·Spark SQL API 계층과 바로 뒤 API 원본 그림을 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "668f4f19-1ab0-418c-90ff-8e0901cadc2a",
@@ -12576,7 +12867,10 @@
           "type": "text",
           "sourceTextChars": 55,
           "sourceTextSha256": "e6fb0b32082bc7cfe704ccb950283178dfbf0ab02e0d76b75eabb6bd06c1829c",
-          "status": "converted"
+          "sourceBlockSha256": "63c420aea180ffee54844a1d7d65492ea22048e55d6768e8a6e180e5592b2f7a",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-s01-connectors-repeat",
+          "reason": "S01의 저장소·connector 연결을 바로 뒤 문단에서 다시 설명함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "116d01ae-2489-4710-850c-747c2e120a13",
@@ -12695,7 +12989,10 @@
           "type": "image",
           "sourceTextChars": 9,
           "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
-          "status": "converted"
+          "sourceBlockSha256": "4b75da5418933f0bb2ee3da1c3a0b22d8bbba575c6e424165799b0178e0a5b66",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-s06-decorative-separator",
+          "reason": "S06 뒤 다음 절 제목과 중복 구획을 만드는 1399×30 장식 구분선. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "19333b6f-a6ec-4164-93cd-41a0b68312e4",
@@ -12927,16 +13224,6 @@
           "height": 1306
         },
         {
-          "blockId": "7572a480-7ebf-4e01-b581-9a3188a9e45d",
-          "sourceUrl": "https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b56f12fd-4b0c-4d59-89c0-33cc7efc6059/image.png",
-          "localPath": "/content/833771f4-d722-4c80-8967-2f0024885bff/7572a480-7ebf-4e01-b581-9a3188a9e45d.webp",
-          "status": "downloaded",
-          "bytes": 6550,
-          "sha256": "aa77bed258ed83697b93faee2891289e3f16d22739b4adddc262a4f72813c858",
-          "width": 1399,
-          "height": 30
-        },
-        {
           "blockId": "685d17f8-3092-465f-a0cd-78633059f114",
           "sourceUrl": "https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b56f12fd-4b0c-4d59-89c0-33cc7efc6059/image.png",
           "localPath": "/content/833771f4-d722-4c80-8967-2f0024885bff/685d17f8-3092-465f-a0cd-78633059f114.webp",
@@ -13006,6 +13293,36 @@
           "sourceBlockId": "5b0364f4-66b2-426d-8409-0240f6534587",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "752e19e8-6258-4ed1-b0a1-0cab574d21cc",
+          "type": "text",
+          "sourceTextChars": 71,
+          "sourceTextSha256": "ec7d7b623ffa361bcd684304c32e50ae71473cba37b1c7850d82ebec3814c264",
+          "sourceBlockSha256": "135d3226f0afd94469383d5e37100d95fda097cccf43b70ecdf8ccb9911011ff",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-s01-api-repeat",
+          "reason": "S01의 Dataset·DataFrame·Spark SQL API 계층과 바로 뒤 API 원본 그림을 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "sourceBlockId": "2853bad4-afb9-4a8e-9188-abfecd3daf71",
+          "type": "text",
+          "sourceTextChars": 55,
+          "sourceTextSha256": "e6fb0b32082bc7cfe704ccb950283178dfbf0ab02e0d76b75eabb6bd06c1829c",
+          "sourceBlockSha256": "63c420aea180ffee54844a1d7d65492ea22048e55d6768e8a6e180e5592b2f7a",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-s01-connectors-repeat",
+          "reason": "S01의 저장소·connector 연결을 바로 뒤 문단에서 다시 설명함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "sourceBlockId": "7572a480-7ebf-4e01-b581-9a3188a9e45d",
+          "type": "image",
+          "sourceTextChars": 9,
+          "sourceTextSha256": "4ee84a82b5e4c9e6651b13fd27dcf615e427ec584929f2cef7167aa99151a77a",
+          "sourceBlockSha256": "4b75da5418933f0bb2ee3da1c3a0b22d8bbba575c6e424165799b0178e0a5b66",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-s06-decorative-separator",
+          "reason": "S06 뒤 다음 절 제목과 중복 구획을 만드는 1399×30 장식 구분선. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "ae4cc0cb-be69-47d6-8514-92a1646995ab",
@@ -13110,6 +13427,56 @@
           "evidenceBlockIds": []
         }
       ],
+      "omissions": [
+        {
+          "id": "reading-s01-api-repeat",
+          "sourceId": "833771f4-d722-4c80-8967-2f0024885bff",
+          "sourceBlockId": "752e19e8-6258-4ed1-b0a1-0cab574d21cc",
+          "sourceType": "text",
+          "sourceBlockSha256": "135d3226f0afd94469383d5e37100d95fda097cccf43b70ecdf8ccb9911011ff",
+          "reason": "S01의 Dataset·DataFrame·Spark SQL API 계층과 바로 뒤 API 원본 그림을 반복함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "id": "reading-s01-connectors-repeat",
+          "sourceId": "833771f4-d722-4c80-8967-2f0024885bff",
+          "sourceBlockId": "2853bad4-afb9-4a8e-9188-abfecd3daf71",
+          "sourceType": "text",
+          "sourceBlockSha256": "63c420aea180ffee54844a1d7d65492ea22048e55d6768e8a6e180e5592b2f7a",
+          "reason": "S01의 저장소·connector 연결을 바로 뒤 문단에서 다시 설명함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "id": "reading-s06-decorative-separator",
+          "sourceId": "833771f4-d722-4c80-8967-2f0024885bff",
+          "sourceBlockId": "7572a480-7ebf-4e01-b581-9a3188a9e45d",
+          "sourceType": "image",
+          "sourceBlockSha256": "4b75da5418933f0bb2ee3da1c3a0b22d8bbba575c6e424165799b0178e0a5b66",
+          "reason": "S06 뒤 다음 절 제목과 중복 구획을 만드는 1399×30 장식 구분선. 사용자 요청에 따른 본문 중복·여백 축소."
+        }
+      ],
+      "corrections": [
+        {
+          "id": "reading-s01-numbering",
+          "sourceId": "833771f4-d722-4c80-8967-2f0024885bff",
+          "sourceBlockId": "116d01ae-2489-4710-850c-747c2e120a13",
+          "sourceType": "text",
+          "sourceTextSha256": "36f427c0af306421afc9dc43982ea98d91df6c4845341a6cc0e34972ff39340f",
+          "oldText": "4) Yarn",
+          "newText": "2) Yarn",
+          "reason": "S01과 중복되는 API·connector 설명을 삭제한 뒤 남은 특징 번호를 이어줌.",
+          "reference": "https://www.brainbackdoor.com/posts/833771f4-d722-4c80-8967-2f0024885bff/#116d01ae-2489-4710-850c-747c2e120a13"
+        },
+        {
+          "id": "reading-s06-hdfs-1",
+          "sourceId": "833771f4-d722-4c80-8967-2f0024885bff",
+          "sourceBlockId": "9d689001-653b-4935-9e98-30ba56a1e0d7",
+          "sourceType": "text",
+          "sourceTextSha256": "da3dda192da8656f7768ffe19293bd426cca2fb2174a141a4787ae503c1cf114",
+          "oldText": "하지만 MapReduce 잡의 결과를 다른 잡에서 사용하려면 HDFS에 저장해야 하여 반복 알고리즘에는 본질적으로 맞지 않다. 그리고 무엇보다도 느리다. 메모리는 디스크에 비해 100배 빠르며 네트워크 통신에 비해 일반적으로 100만배 빠르다. Hadoop은 Iteration할때마다 filesystem에 써야 한다.",
+          "newText": "MapReduce 잡의 결과를 다른 잡에서 사용하려면 HDFS에 저장해야 한다. 메모리는 디스크에 비해 100배 빠르며 네트워크 통신에 비해 일반적으로 100만배 빠르다.",
+          "reason": "S06 전후에 반복된 HDFS 저장 설명과 평가성 연결문을 덜고 잡 사이 저장 조건 및 원문 100배·일반적으로 100만배 수치를 유지",
+          "reference": "https://www.brainbackdoor.com/833771f4-d722-4c80-8967-2f0024885bff/#9d689001-653b-4935-9e98-30ba56a1e0d7"
+        }
+      ],
       "title": "왜 Spark를 써야할까 ",
       "pubDate": "2021-11-19",
       "pubDateEvidence": {
@@ -13130,7 +13497,7 @@
           "header": 4,
           "image": 10
         },
-        "assetCount": 10,
+        "assetCount": 9,
         "failedAssets": 0,
         "warningCount": 0,
         "unresolvedLinkCount": 0
@@ -21768,7 +22135,10 @@
           "type": "text",
           "sourceTextChars": 90,
           "sourceTextSha256": "6b241b56fef93a6a16149f427316e489a734ea18bfce976c7b798360748c886c",
-          "status": "converted"
+          "sourceBlockSha256": "9c7828700c226e29045f214dcfa4c9cde97fbfceafbdf26b1b3284997d56d3f8",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-c06-repeated-layer-intro",
+          "reason": "C04에서 설명한 읽기 전용 이미지·쓰기 계층을 C06 앞에서 재반복함. 영속성 필요와 volume 조건은 다음 문단에 남김. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "a1826478-ba85-428b-8c72-6d6e8df45599",
@@ -21885,6 +22255,16 @@
           "sourceBlockId": "fbaddab0-29dc-42e4-bda7-77bba88ac9ce",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "e5d47f6c-6166-49d8-9fa4-b93f2ea1f502",
+          "type": "text",
+          "sourceTextChars": 90,
+          "sourceTextSha256": "6b241b56fef93a6a16149f427316e489a734ea18bfce976c7b798360748c886c",
+          "sourceBlockSha256": "9c7828700c226e29045f214dcfa4c9cde97fbfceafbdf26b1b3284997d56d3f8",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-c06-repeated-layer-intro",
+          "reason": "C04에서 설명한 읽기 전용 이미지·쓰기 계층을 C06 앞에서 재반복함. 영속성 필요와 volume 조건은 다음 문단에 남김. 사용자 요청에 따른 본문 중복·여백 축소."
         }
       ],
       "figures": [
@@ -22003,6 +22383,16 @@
           "newText": "호스트 디렉터리에 가려져 보이지 않습니다. 이미지 안의 파일이 지워지는 것은 아닙니다. 호스트 디렉터리를 연결하는 bind mount에서는 파일이 복사되지 않으며, 비어 있는 volume을 처음 연결할 때만 기본적으로 컨테이너의 기존 파일이 볼륨으로 복사됩니다(-v의 nocopy, --mount의 volume-nocopy로 끌 수 있습니다).",
           "reason": "bind mount는 기존 파일을 가리고 복사하지 않음(bind mounts 문서). 빈 volume으로의 복사는 volume에만 해당하는 기본 동작이며 -v의 nocopy·--mount의 volume-nocopy로 끔(volumes 문서 https://docs.docker.com/engine/storage/volumes/). 바로 아래 -v 예제가 bind mount이므로 대상을 구분",
           "reference": "https://docs.docker.com/engine/storage/bind-mounts/"
+        }
+      ],
+      "omissions": [
+        {
+          "id": "reading-c06-repeated-layer-intro",
+          "sourceId": "6c414539-eeb5-402c-a18e-3eb02209e487",
+          "sourceBlockId": "e5d47f6c-6166-49d8-9fa4-b93f2ea1f502",
+          "sourceType": "text",
+          "sourceBlockSha256": "9c7828700c226e29045f214dcfa4c9cde97fbfceafbdf26b1b3284997d56d3f8",
+          "reason": "C04에서 설명한 읽기 전용 이미지·쓰기 계층을 C06 앞에서 재반복함. 영속성 필요와 volume 조건은 다음 문단에 남김. 사용자 요청에 따른 본문 중복·여백 축소."
         }
       ],
       "title": "도커 컨테이너 살펴보기",
@@ -23640,7 +24030,13 @@
           "type": "bookmark",
           "sourceTextChars": 14,
           "sourceTextSha256": "c493baf0b4e33dfe5b47a39d1c16f643596b11be325f613cdb748c3112bc5d69",
-          "status": "converted"
+          "status": "converted-with-editorial-omission",
+          "omittedFields": [
+            "description"
+          ],
+          "sourceBlockSha256": "40372c3b29d9d09cb19ca1011e477c87845689b0480d5bbb14152a9f31602603",
+          "omissionId": "reading-d09-video-description",
+          "reason": "D09 앞 영상 설명의 실습 URL·문제 3개가 바로 뒤 실습 본문·문제 목록과 중복되어 설명만 삭제함. 영상·제목·링크는 보존."
         },
         {
           "sourceBlockId": "e54e3e39-7a8b-4150-91d9-1c16617980b5",
@@ -24016,7 +24412,28 @@
       ],
       "unresolvedLinks": [],
       "warnings": [],
-      "excluded": [],
+      "excluded": [
+        {
+          "sourceBlockId": "b249f7d6-1950-49fe-9ae4-4ce0e9924a8e",
+          "type": "bookmark",
+          "field": "description",
+          "sourceBlockSha256": "40372c3b29d9d09cb19ca1011e477c87845689b0480d5bbb14152a9f31602603",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-d09-video-description",
+          "reason": "D09 앞 영상 설명의 실습 URL·문제 3개가 바로 뒤 실습 본문·문제 목록과 중복되어 설명만 삭제함. 영상·제목·링크는 보존."
+        }
+      ],
+      "omissions": [
+        {
+          "id": "reading-d09-video-description",
+          "sourceId": "6ad28373-149c-4d45-b835-8dfb853db638",
+          "sourceBlockId": "b249f7d6-1950-49fe-9ae4-4ce0e9924a8e",
+          "sourceType": "bookmark",
+          "sourceBlockSha256": "40372c3b29d9d09cb19ca1011e477c87845689b0480d5bbb14152a9f31602603",
+          "field": "description",
+          "reason": "D09 앞 영상 설명의 실습 URL·문제 3개가 바로 뒤 실습 본문·문제 목록과 중복되어 설명만 삭제함. 영상·제목·링크는 보존."
+        }
+      ],
       "figures": [
         {
           "figureId": "D09",
@@ -24033,7 +24450,32 @@
             "4cfbe91d-7d30-4622-8eeb-8575b79b4ab5",
             "515e7ced-402e-4ad2-ad35-3ae801a58fe5",
             "fd612398-af00-4397-8442-89595827666d"
-          ]
+          ],
+          "evidenceGroup": {
+            "blockIds": [
+              "a4912b45-3375-40d8-9886-7552c2ae0f19",
+              "4cfbe91d-7d30-4622-8eeb-8575b79b4ab5",
+              "9eb5dffc-55b4-49b4-96d7-853ac5858e58",
+              "515e7ced-402e-4ad2-ad35-3ae801a58fe5",
+              "6328eed9-7ccc-49b8-bff4-8660254e0bd3",
+              "fd612398-af00-4397-8442-89595827666d"
+            ],
+            "label": "원본 정답"
+          }
+        }
+      ],
+      "evidenceGroups": [
+        {
+          "figureId": "D09",
+          "blockIds": [
+            "a4912b45-3375-40d8-9886-7552c2ae0f19",
+            "4cfbe91d-7d30-4622-8eeb-8575b79b4ab5",
+            "9eb5dffc-55b4-49b4-96d7-853ac5858e58",
+            "515e7ced-402e-4ad2-ad35-3ae801a58fe5",
+            "6328eed9-7ccc-49b8-bff4-8660254e0bd3",
+            "fd612398-af00-4397-8442-89595827666d"
+          ],
+          "label": "원본 정답"
         }
       ],
       "title": "SQL, 이 정도는 알아야지 😎",
@@ -24881,7 +25323,7 @@
           "requiredText": [
             "WHERE SUBSTRING(id, 1, 4) = 1100 AND LENGTH(id) = 5",
             "WHERE id BETWEEN 11000 AND 11009",
-            "두 결과 모두 10행"
+            "같은 10행"
           ],
           "evidenceBlockIds": []
         },
@@ -24953,10 +25395,23 @@
           "mode": "after",
           "requiredText": [
             "Global Buffer",
-            "max_connections = 4 (설명용)",
+            "연결 한도 4",
             "Too many connections"
           ],
           "evidenceBlockIds": []
+        }
+      ],
+      "corrections": [
+        {
+          "id": "reading-d05-covering-1",
+          "sourceId": "7b4ef2a7-32e3-4b8e-b243-ec88a5e38708",
+          "sourceBlockId": "2096a345-cf2d-4bef-b6e7-7782cdb855ac",
+          "sourceType": "text",
+          "sourceTextSha256": "3c516f690675f23c522b203d5527233b61c10c4500e7110a36feaf45838e80b7",
+          "oldText": "인덱스 스캔과정에서 얻은 정보만으로 처리할 수 있어 테이블 액세스가 발생하지 않는 쿼리를 의미합니다.",
+          "newText": "인덱스 정보만으로 처리해 테이블 액세스가 발생하지 않는 쿼리입니다.",
+          "reason": "바로 뒤 D05가 인덱스 읽기·테이블 접근 차이를 보여주므로 정의의 반복 표현만 축약",
+          "reference": "https://www.brainbackdoor.com/7b4ef2a7-32e3-4b8e-b243-ec88a5e38708/#2096a345-cf2d-4bef-b6e7-7782cdb855ac"
         }
       ],
       "title": "조회 성능 개선하기 미션 가이드",
@@ -25939,6 +26394,30 @@
           "reason": "Replaced by the site table of contents generated from the preserved headings."
         }
       ],
+      "corrections": [
+        {
+          "id": "reading-e01-example-prefix",
+          "sourceId": "9178ac06-ae33-4a96-a4cd-49c96ea28351",
+          "sourceBlockId": "ffb3bfd0-0c2a-45d9-b76b-f83a6d15a201",
+          "sourceType": "callout",
+          "sourceTextSha256": "7e93e29ae8f11ec0a3dbe240898f01f575b002b076e974c5bb08c0fabf4342a5",
+          "oldText": "이 포스팅은 ",
+          "newText": "예제: ",
+          "reason": "E01 앞에서 페이지 설명을 반복하는 도입 대신 예제 링크만 짧게 표시함.",
+          "reference": "https://www.brainbackdoor.com/posts/9178ac06-ae33-4a96-a4cd-49c96ea28351/#ffb3bfd0-0c2a-45d9-b76b-f83a6d15a201"
+        },
+        {
+          "id": "reading-e01-example-suffix",
+          "sourceId": "9178ac06-ae33-4a96-a4cd-49c96ea28351",
+          "sourceBlockId": "ffb3bfd0-0c2a-45d9-b76b-f83a6d15a201",
+          "sourceType": "callout",
+          "sourceTextSha256": "7e93e29ae8f11ec0a3dbe240898f01f575b002b076e974c5bb08c0fabf4342a5",
+          "oldText": " 테스트 코드를 작성할 때 세웠던 기준을 다루고 있어요.",
+          "newText": "의 테스트 코드.",
+          "reason": "E01 앞의 중복 도입을 줄이되 GitHub 예제 링크와 강조는 유지함.",
+          "reference": "https://www.brainbackdoor.com/posts/9178ac06-ae33-4a96-a4cd-49c96ea28351/#ffb3bfd0-0c2a-45d9-b76b-f83a6d15a201"
+        }
+      ],
       "figures": [
         {
           "figureId": "E01",
@@ -26457,7 +26936,10 @@
           "type": "text",
           "sourceTextChars": 16,
           "sourceTextSha256": "9aab24778b7008383a73d8ff84c677173d5ecba7447f7a14f846b51b76c23a00",
-          "status": "converted"
+          "sourceBlockSha256": "70c7c9d98c555aea39b66af014cdb93945c4e49e014414116146f2deaa069ad7",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-e03-color-intro",
+          "reason": "색상 규칙 제목 아래의 일반적 도입으로, 실제 외부 시스템·정책 경로 조건은 뒤 목록에 보존함. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "56356a7c-2464-4c1a-9096-8e84cb5625fb",
@@ -26492,7 +26974,13 @@
           "type": "sub_sub_header",
           "sourceTextChars": 6,
           "sourceTextSha256": "6395a37b428a8925e06295602ef5974ad5836dd705f473b76505440bcf7a92d6",
-          "status": "converted"
+          "sourceBlockSha256": "26573c5d3cdfdd85da83b8491f3af7ea6f5fff0c21bc62a3ae50315908e54853",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-e03-figure-intro-heading",
+          "reason": "E03 자체가 바로 보여주는 적용 예시 앞의 불필요한 적용된 모습 제목. 사용자 요청에 따른 본문 중복·여백 축소.",
+          "anchorAliases": [
+            "적용된-모습"
+          ]
         },
         {
           "sourceBlockId": "d04fba57-7d2b-406b-8d48-e8b8fababa6a",
@@ -26606,6 +27094,50 @@
           "sourceBlockId": "2fa7b318-dcb7-4ee2-91cb-f0baff705635",
           "type": "table_of_contents",
           "reason": "Replaced by the site table of contents generated from the preserved headings."
+        },
+        {
+          "sourceBlockId": "9f46e6a3-53b1-412b-afc5-269d9a9ad3a5",
+          "type": "text",
+          "sourceTextChars": 16,
+          "sourceTextSha256": "9aab24778b7008383a73d8ff84c677173d5ecba7447f7a14f846b51b76c23a00",
+          "sourceBlockSha256": "70c7c9d98c555aea39b66af014cdb93945c4e49e014414116146f2deaa069ad7",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-e03-color-intro",
+          "reason": "색상 규칙 제목 아래의 일반적 도입으로, 실제 외부 시스템·정책 경로 조건은 뒤 목록에 보존함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "sourceBlockId": "ae84aac0-6346-4412-952e-d1d3b0d4a89c",
+          "type": "sub_sub_header",
+          "sourceTextChars": 6,
+          "sourceTextSha256": "6395a37b428a8925e06295602ef5974ad5836dd705f473b76505440bcf7a92d6",
+          "sourceBlockSha256": "26573c5d3cdfdd85da83b8491f3af7ea6f5fff0c21bc62a3ae50315908e54853",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-e03-figure-intro-heading",
+          "reason": "E03 자체가 바로 보여주는 적용 예시 앞의 불필요한 적용된 모습 제목. 사용자 요청에 따른 본문 중복·여백 축소.",
+          "anchorAliases": [
+            "적용된-모습"
+          ]
+        }
+      ],
+      "omissions": [
+        {
+          "id": "reading-e03-color-intro",
+          "sourceId": "c78ba22a-b64d-4016-9f09-c9de5f94e612",
+          "sourceBlockId": "9f46e6a3-53b1-412b-afc5-269d9a9ad3a5",
+          "sourceType": "text",
+          "sourceBlockSha256": "70c7c9d98c555aea39b66af014cdb93945c4e49e014414116146f2deaa069ad7",
+          "reason": "색상 규칙 제목 아래의 일반적 도입으로, 실제 외부 시스템·정책 경로 조건은 뒤 목록에 보존함. 사용자 요청에 따른 본문 중복·여백 축소."
+        },
+        {
+          "id": "reading-e03-figure-intro-heading",
+          "sourceId": "c78ba22a-b64d-4016-9f09-c9de5f94e612",
+          "sourceBlockId": "ae84aac0-6346-4412-952e-d1d3b0d4a89c",
+          "sourceType": "sub_sub_header",
+          "sourceBlockSha256": "26573c5d3cdfdd85da83b8491f3af7ea6f5fff0c21bc62a3ae50315908e54853",
+          "reason": "E03 자체가 바로 보여주는 적용 예시 앞의 불필요한 적용된 모습 제목. 사용자 요청에 따른 본문 중복·여백 축소.",
+          "anchorAliases": [
+            "적용된-모습"
+          ]
         }
       ],
       "figures": [
@@ -32874,7 +33406,10 @@
           "type": "text",
           "sourceTextChars": 192,
           "sourceTextSha256": "907068b5d4ef332b4ea42f511fb94b4f159baa86f1f82e5d488ad1826da65b37",
-          "status": "converted"
+          "sourceBlockSha256": "77129491980df46e6bee1b3bffd6cb26c8c6ff3aa3156914502001dff919359c",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-e05-replay-repeat",
+          "reason": "E05와 바로 앞 Event History·Replay·Activity Stub 목록의 기록 재사용 설명을 반복함. 결정성·at-least-once·멱등성 조건은 Replay 목록에 남김. 사용자 요청에 따른 본문 중복·여백 축소."
         },
         {
           "sourceBlockId": "38190d37-083f-80d1-9c8a-cf0b9fc9c90a",
@@ -32997,7 +33532,18 @@
       ],
       "unresolvedLinks": [],
       "warnings": [],
-      "excluded": [],
+      "excluded": [
+        {
+          "sourceBlockId": "38190d37-083f-804b-85c1-ebf02798be64",
+          "type": "text",
+          "sourceTextChars": 192,
+          "sourceTextSha256": "907068b5d4ef332b4ea42f511fb94b4f159baa86f1f82e5d488ad1826da65b37",
+          "sourceBlockSha256": "77129491980df46e6bee1b3bffd6cb26c8c6ff3aa3156914502001dff919359c",
+          "status": "excluded-editorial-duplicate",
+          "omissionId": "reading-e05-replay-repeat",
+          "reason": "E05와 바로 앞 Event History·Replay·Activity Stub 목록의 기록 재사용 설명을 반복함. 결정성·at-least-once·멱등성 조건은 Replay 목록에 남김. 사용자 요청에 따른 본문 중복·여백 축소."
+        }
+      ],
       "figures": [
         {
           "figureId": "T06",
@@ -33063,6 +33609,16 @@
           "newText": "Virtual Thread로 적용된다. 단, 직접 정의한 Executor 빈이 있으면 @Async 같은 작업 실행은 자동 구성 실행기 대신 그 빈을 쓰므로, 버전별 자동 구성 범위를 확인해야 한다.",
           "reason": "Boot 자동 구성 실행기는 Executor 빈이 없을 때만 만들어지고, 직접 정의한 Executor는 @EnableAsync 작업 실행이 사용(Task Execution and Scheduling 절). 톰캣 요청 처리와 구분",
           "reference": "https://docs.spring.io/spring-boot/docs/3.2.3/reference/html/features.html#features.task-execution-and-scheduling"
+        }
+      ],
+      "omissions": [
+        {
+          "id": "reading-e05-replay-repeat",
+          "sourceId": "38190d37-083f-8033-a7e8-f3996e11cf55",
+          "sourceBlockId": "38190d37-083f-804b-85c1-ebf02798be64",
+          "sourceType": "text",
+          "sourceBlockSha256": "77129491980df46e6bee1b3bffd6cb26c8c6ff3aa3156914502001dff919359c",
+          "reason": "E05와 바로 앞 Event History·Replay·Activity Stub 목록의 기록 재사용 설명을 반복함. 결정성·at-least-once·멱등성 조건은 Replay 목록에 남김. 사용자 요청에 따른 본문 중복·여백 축소."
         }
       ],
       "title": "SpringCamp 2026 후기",

@@ -37,6 +37,54 @@ def plain(runs):
     return ''.join(str(run[0]) for run in (runs or []) if isinstance(run, list) and run)
 
 
+OMISSION_TYPES = {'text', 'bulleted_list', 'numbered_list', 'to_do', 'image',
+                  'header', 'sub_header', 'sub_sub_header', 'table'}
+
+
+def source_block_sha256(block):
+    """Fingerprint the complete cached block, including annotations and metadata."""
+    return hashlib.sha256(json.dumps(block, ensure_ascii=False, sort_keys=True,
+                                     separators=(',', ':')).encode('utf-8')).hexdigest()
+
+
+def validated_omissions(source_id, blocks, specs, figures=(), corrections=(), redactions=()):
+    """Only an exact, childless, explicitly approved source block may be omitted."""
+    protected = {block_id for spec in figures for block_id in
+                 [spec['sourceBlockId'], *spec.get('evidenceBlockIds', []),
+                  *(spec.get('evidenceGroup') or {}).get('blockIds', [])]}
+    protected.update(spec['sourceBlockId'] for spec in corrections)
+    protected.update(block_id for spec in redactions for block_id in spec.get('sourceBlockIds', []))
+    result = {}; names = set(); alias_ids = set()
+    for spec in specs:
+        if spec.get('sourceId') != source_id: continue
+        block_id = spec.get('sourceBlockId'); block = blocks.get(block_id, {})
+        if (not isinstance(spec.get('id'), str) or not spec['id'].strip()
+                or not isinstance(spec.get('reason'), str) or not spec['reason'].strip()
+                or spec['id'] in names or block_id in result):
+            raise ValueError('Unsafe or duplicate editorial omission')
+        field = spec.get('field')
+        supported = (block.get('type') in OMISSION_TYPES if field is None else
+                     field == 'description' and block.get('type') in {'bookmark', 'video', 'embed'}
+                     and bool(plain(block.get('properties', {}).get('description')).strip()))
+        if (not supported or block.get('type') != spec.get('sourceType')
+                or source_block_sha256(block) != spec.get('sourceBlockSha256')):
+            raise ValueError(f'Editorial omission source mismatch: {block_id}')
+        if field is None and block.get('content'):
+            raise ValueError(f'Editorial omission cannot remove child blocks: {block_id}')
+        if block_id in protected:
+            raise ValueError(f'Editorial omission overlaps preserved evidence or an edit: {block_id}')
+        if 'anchorAliases' in spec:
+            aliases = spec['anchorAliases']
+            if (field is not None or block.get('type') not in {'header','sub_header','sub_sub_header'}
+                    or not isinstance(aliases, list)
+                    or any(not isinstance(alias, str) or not alias or re.search(r'\s', alias) for alias in aliases)
+                    or len(aliases) != len(set(aliases)) or set(aliases) & (set(blocks) | alias_ids)):
+                raise ValueError(f'Unsafe editorial omission anchor aliases: {block_id}')
+            alias_ids.update(aliases)
+        names.add(spec['id']); result[block_id] = spec
+    return result
+
+
 def redacted_block(block, block_id, specs):
     """Hide a private value on request. The registry keeps a pattern and its replacement, never the original text or its hash.
     Anything uncertain stops the conversion: a missing or blank replacement, another block type, no title,
@@ -69,7 +117,7 @@ def corrected_runs(block, edits):
     raw = plain(runs)
     result = json.loads(json.dumps(runs))
     for edit in edits:
-        if (block.get('type') not in {'text', 'bulleted_list', 'numbered_list'}
+        if (block.get('type') not in {'text', 'bulleted_list', 'numbered_list', 'callout'}
                 or block.get('type') != edit.get('sourceType')
                 or hashlib.sha256(raw.encode()).hexdigest() != edit.get('sourceTextSha256')):
             raise ValueError('Correction source mismatch')
@@ -211,9 +259,13 @@ class Converter:
         self.output_root = Path(output_root)
         self.report = {'sourceId': self.page_id, 'sourceUrl': entry.get('sourceUrl'), 'targetPath': entry.get('targetPath'), 'blocks': [], 'assets': [], 'unresolvedLinks': [], 'warnings': [], 'excluded': []}
         self.assets = {}
-        self.figure_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text())["figures"] if item["sourceId"] == self.page_id]
-        self.correction_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text()).get("corrections", []) if item["sourceId"] == self.page_id]
-        self.redaction_specs = [item for item in json.loads((REPO / "docs/migration-figures.json").read_text()).get("redactions", []) if item["sourceId"] == self.page_id]
+        registry = json.loads((REPO / "docs/migration-figures.json").read_text())
+        self.figure_specs = [item for item in registry["figures"] if item["sourceId"] == self.page_id]
+        self.correction_specs = [item for item in registry.get("corrections", []) if item["sourceId"] == self.page_id]
+        self.redaction_specs = [item for item in registry.get("redactions", []) if item["sourceId"] == self.page_id]
+        self.omission_specs = [item for item in registry.get("omissions", []) if item["sourceId"] == self.page_id]
+        self.omissions = {}
+        self.evidence_groups = {}
         self.used_ids = Counter()
         self.block_records = {}
         self.heading_min = 3
@@ -399,11 +451,7 @@ class Converter:
         record = {'blockId': block_id, 'sourceUrl': url, 'localPath': f'/content/{self.page_id}/{filebase}{guessed or ".bin"}', 'status': 'pending'}
         self.assets[key] = record
         self.report['assets'].append(record)
-        if not self.download:
-            record['status'] = 'not-downloaded'
-            return record['localPath']
         folder = self.output_root / 'public' / 'content' / self.page_id
-        folder.mkdir(parents=True, exist_ok=True)
         existing = sorted(folder.glob(filebase + '.*'))
         if existing and existing[0].stat().st_size:
             target = existing[0]; data = target.read_bytes()
@@ -411,6 +459,10 @@ class Converter:
             dimensions=image_dimensions(str(target))
             if dimensions: record.update(width=dimensions[0],height=dimensions[1])
             return record['localPath']
+        if not self.download:
+            record.update(status='not-downloaded', localPath=url)
+            return record['localPath']
+        folder.mkdir(parents=True, exist_ok=True)
         candidates = [url] if url.startswith(('https://','http://')) else []
         original_public = self.public_media.get((block_id,url))
         if original_public: candidates.insert(0,original_public)
@@ -447,6 +499,21 @@ class Converter:
 
     def block(self, block_id, ancestors=()):
         block_id = canonical_id(block_id)
+        if block_id in self.omissions and self.omissions[block_id].get('field') is None:
+            spec = self.omissions[block_id]; block = self.blocks[block_id]
+            raw = plain(block.get('properties', {}).get('title'))
+            record = {'sourceBlockId': block_id, 'type': block['type'],
+                      'sourceTextChars': len(raw), 'sourceTextSha256': hashlib.sha256(raw.encode()).hexdigest(),
+                      'sourceBlockSha256': spec['sourceBlockSha256'], 'status': 'excluded-editorial-duplicate',
+                      'omissionId': spec['id'], 'reason': spec['reason']}
+            if 'anchorAliases' in spec: record['anchorAliases'] = list(spec['anchorAliases'])
+            self.report['blocks'].append(record)
+            self.report['excluded'].append(dict(record))
+            if spec not in self.report.setdefault('omissions', []): self.report['omissions'].append(dict(spec))
+            anchor = self.anchor(block_id)
+            primary = f'<span id="{attr(anchor)}" data-editorial-omission="{attr(spec["id"])}" hidden></span>\n\n'
+            aliases = spec.get('anchorAliases', []) if self.used_ids[block_id] == 1 else []
+            return primary + ''.join(f'<div id="{attr(alias)}" aria-hidden="true"></div>\n\n' for alias in aliases)
         spec = next((item for item in self.figure_specs if item['sourceBlockId'] == block_id), None)
         if spec:
             typ = self.blocks.get(block_id, {}).get('type')
@@ -502,6 +569,18 @@ class Converter:
             if edit not in self.report.setdefault('corrections', []): self.report['corrections'].append(dict(edit))
         child_ids = b.get('content', []); ancestry = (*ancestors, block_id)
         record = {'sourceBlockId': block_id, 'type': typ, 'sourceTextChars': len(raw), 'sourceTextSha256': hashlib.sha256(raw.encode()).hexdigest(), 'status': 'converted'}
+        omission = self.omissions.get(block_id)
+        if omission and omission.get('field'):
+            field = omission['field']
+            b = json.loads(json.dumps(b)); props = b.get('properties', {})
+            props.pop(field)
+            record.update(status='converted-with-editorial-omission', omittedFields=[field],
+                          sourceBlockSha256=omission['sourceBlockSha256'],
+                          omissionId=omission['id'], reason=omission['reason'])
+            self.report['excluded'].append({'sourceBlockId': block_id, 'type': typ,
+                'field': field, 'sourceBlockSha256': omission['sourceBlockSha256'],
+                'status': 'excluded-editorial-duplicate', 'omissionId': omission['id'], 'reason': omission['reason']})
+            if omission not in self.report.setdefault('omissions', []): self.report['omissions'].append(dict(omission))
         if redactions: record['redaction'] = redactions[0] if len(redactions) == 1 else redactions
         self.report['blocks'].append(record)
         children = lambda: self.group(child_ids, ancestry)
@@ -580,12 +659,13 @@ class Converter:
             if embed and urlsplit(embed).scheme == 'https':
                 media += f'<iframe src="{attr(embed)}" title="{attr(plain(title) or plain(props.get("caption")) or source)}" loading="lazy" allowFullScreen sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" />\n'
             elif typ in ['embed','video','maps','figma','gist','tweet','drive'] and not media:
-                record['status'] = 'preserved-link-fallback'; self.issue('embed-link-fallback',block_id,sourceUrl=source)
+                record['renderStatus' if omission else 'status'] = 'preserved-link-fallback'
+                self.issue('embed-link-fallback',block_id,sourceUrl=source)
             cover = fmt.get('bookmark_cover')
             if cover:
                 local_cover=self.asset(cover,block_id,'cover')
                 cover_record=self.assets[(cover,block_id,'cover')]
-                if typ=='bookmark' and cover_record['status']=='failed':
+                if typ=='bookmark' and cover_record['status'] in {'failed','not-downloaded'}:
                     cover_record['renderPolicy']='unavailable bookmark preview omitted; title/description/link retained'
                 else:
                     media += f'<img className="notion-bookmark-cover" src="{attr(local_cover)}"{local_image_attributes(local_cover,self.output_root)} alt="" loading="lazy" />\n'
@@ -717,9 +797,29 @@ class Converter:
     def group(self, ids, ancestors=()):
         output=[]; list_type=None
         types={'bulleted_list':'ul','numbered_list':'ol','to_do':'ul'}
-        for block_id in ids:
+        skipped = 0
+        for index, block_id in enumerate(ids):
+            if skipped:
+                skipped -= 1; continue
+            evidence = self.evidence_groups.get(canonical_id(block_id))
+            if evidence:
+                spec, group = evidence
+                block_ids = group['blockIds']
+                if [canonical_id(value) for value in ids[index:index+len(block_ids)]] != block_ids:
+                    raise ValueError('Evidence group must match consecutive source blocks')
+                if list_type:
+                    output.append(f'</{types[list_type]}>\n\n'); list_type = None
+                contents = ''.join(self.source_block(value, ancestors) for value in block_ids)
+                output.append(f'<details className="figure-source" data-figure-evidence-for="{attr(spec["figureId"])}">\n\n'
+                              f'<summary data-pagefind-ignore="">{text_escape(group["label"])}</summary>\n\n'
+                              + contents + '</details>\n\n')
+                self.report.setdefault('evidenceGroups', []).append({'figureId': spec['figureId'], **group})
+                skipped = len(block_ids)-1
+                continue
             typ=self.blocks.get(canonical_id(block_id),{}).get('type')
-            current=typ if typ in types else None
+            # Omitted list items retain an anchor outside the list, never an
+            # invalid span child or a newly empty ul/ol.
+            current=typ if typ in types and canonical_id(block_id) not in self.omissions else None
             if current != list_type:
                 if list_type: output.append(f'</{types[list_type]}>\n\n')
                 if current: output.append(f'<{types[current]}' + (' className="notion-todo-list"' if current=='to_do' else '') + '>\n\n')
@@ -732,6 +832,7 @@ class Converter:
         def candidates(ids):
             for block_id in ids:
                 block=self.blocks.get(canonical_id(block_id),{}); raw=plain(block.get('properties',{}).get('title')).strip()
+                if canonical_id(block_id) in self.omissions: continue
                 if self.legacy_navigation(block): continue
                 hidden=self.hidden_configuration(canonical_id(block_id),block)
                 if not hidden and block.get('type') in ['text','quote','callout','bulleted_list','numbered_list'] and raw and '‣' not in raw and not re.match(r'^[⬅➡←→]|.*(?:이전 글|다음 글)',raw):
@@ -742,6 +843,24 @@ class Converter:
         return re.split(r'(?<=[.!?。])\s+',first,maxsplit=1)[0]
 
     def convert(self):
+        self.omissions = validated_omissions(self.page_id, self.blocks, self.omission_specs,
+                                             self.figure_specs, self.correction_specs, self.redaction_specs)
+        source_ids = [canonical_id(value) for value in self.root.get('content', [])]
+        figure_sources = {spec['sourceBlockId'] for spec in self.figure_specs}
+        grouped = set()
+        for spec in self.figure_specs:
+            if 'evidenceGroup' not in spec: continue
+            group = spec['evidenceGroup']; ids = group.get('blockIds', [])
+            if (not isinstance(group.get('label'), str) or not group['label'].strip()
+                    or not ids or len(ids) != len(set(ids))
+                    or set(ids) & (grouped | figure_sources)
+                    or not set(spec.get('evidenceBlockIds', [])) <= set(ids)
+                    or any(self.blocks.get(value, {}).get('type') not in {'header','sub_header','sub_sub_header','image'}
+                           or self.blocks[value].get('content') for value in ids)
+                    or any(self.blocks[value]['type'] == 'image' and value not in spec.get('evidenceBlockIds', []) for value in ids)
+                    or sum(source_ids[index:index+len(ids)] == ids for index in range(len(source_ids))) != 1):
+                raise ValueError('Unsafe or nonconsecutive figure evidence group')
+            self.evidence_groups[ids[0]] = (spec, group); grouped.update(ids)
         title=self.entry.get('title') or plain(self.root.get('properties',{}).get('title'))
         date=self.entry.get('pubDate') or source_date(self.root)[0]
         if not date: raise ValueError(f'No supported publication date for {self.page_id}')
@@ -754,6 +873,10 @@ class Converter:
         cover=self.root.get('format',{}).get('page_cover')
         if cover: metadata['image']=self.asset(cover,self.page_id,'cover')
         body=self.group(self.root.get('content',[]),(self.page_id,))
+        if set(self.omissions) != {item['sourceBlockId'] for item in self.report.get('omissions', [])}:
+            raise ValueError('Editorial omission source was not reached in this article')
+        if len(self.report.get('evidenceGroups', [])) != len(self.evidence_groups):
+            raise ValueError('Figure evidence group was not reached exactly once')
         if self.entry.get('slug')=='tcp-error-recovery':
             body='import TcpRecoveryFigure from "../../../components/figures/TcpRecoveryFigure";\n\n<TcpRecoveryFigure client:visible />\n\n'+body
         if self.report.get('figures'):

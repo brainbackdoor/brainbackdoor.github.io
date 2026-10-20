@@ -392,8 +392,9 @@ function sqlV2(w: number, t: number): LessonFrame {
       const src = amount ? D09_Q3.map(([id, name, v]) => [id, name, v, D09_Q2.findIndex(e => e[0] === id)] as const) : D09_Q2.map(([id, name, n], i) => [id, name, String(n), i] as const);
       src.forEach(([id, name, v, from], j) => {
         const yy = ly + j * lh;
+        // 긴 고객명도 전체 폭을 쓰도록 값은 다음 줄 오른쪽에 둔다.
         g.text(0, yy + 14, `${j + 1}. ${id} ${name}`, { size: 11, alpha: opacity });
-        g.text(w, yy + 14, v, { size: 11, mono: true, weight: 700, align: 'right', alpha: opacity });
+        g.text(w, yy + 30, v, { size: 11, mono: true, weight: 700, align: 'right', alpha: opacity });
         if (t >= D09.q3[1]) g.text(0, yy + 30, from < 0 ? '수량 상위 8 밖' : `수량 ${from + 1}위 → 금액 ${j + 1}위`, { size: 10, color: from >= 0 && from > j ? C.greenText : C.muted, alpha: appear(t, D09.q3[1]) });
       });
     }

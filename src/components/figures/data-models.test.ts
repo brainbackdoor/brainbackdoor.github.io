@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { D02, D04, D05, D05_INDEX, D06, D08, D09, D09_Q1, D09_Q2, D09_Q3, S02, S05, S05_AGES, S06, d01, d02, d04, d05, d06, d08, d09, dataInfo, s02, s05, s06, type DataFigureId } from './data-models';
 import { dataRenderers } from './dataCanvas';
-import { C, type DrawOp, type LessonFrame } from './lessonCanvas';
+import { C, textW, type DrawOp, type LessonFrame } from './lessonCanvas';
 
 const ids = dataInfo.map(item => item.id) as DataFigureId[];
 const info = (id: DataFigureId) => dataInfo.find(i => i.id === id)!;
@@ -179,6 +179,20 @@ describe('B05 review fixes keep the source meaning and the event timing', () => 
       expect(amount(D09.q3[1] - 1)!.alpha).toBeGreaterThan(0.999);
       expect(amount(D09.q3[1])!.alpha).toBe(1);
       expect(texts(dataRenderers.D09(w, mid)).filter(o => o.y === amount(mid)!.y && (o.alpha ?? 1) > 0)).toHaveLength(0);
+    }
+  });
+
+  it('D09 separates mobile customer names from values and leaves the rank note its own space', () => {
+    for (const w of [259, 261, 284, 306, 331, 346]) for (const [t, rows] of [[D09.q2 + 300, D09_Q2], [info('D09').final, D09_Q3]] as const) {
+      const f = dataRenderers.D09(w, t), labels = texts(f);
+      rows.forEach(([id, name, value], i) => {
+        const customer = labels.find(o => o.text === `${i + 1}. ${id} ${name}`)!;
+        const amount = labels.find(o => o.text === String(value) && o.align === 'right')!;
+        expect(customer, `${w} ${t} complete customer name`).toBeDefined();
+        expect(amount.y - customer.y, `${w} ${name} value on the next line`).toBe(16);
+        const note = labels.find(o => o.y === amount.y && o.text.startsWith('수량 '));
+        if (note) expect(w - textW(amount.text, amount.size, true) - textW(note.text, note.size), `${w} ${name} rank/value gap`).toBeGreaterThanOrEqual(16);
+      });
     }
   });
 

@@ -2476,7 +2476,7 @@ B06 조사 노트(`infra-ops-v2/SOURCES-A·B·C.md`)의 비밀·식별자 목록
 | D04 | 컬럼 가공과 인덱스 스캔 | 수정 | 루트·브랜치 글자를 가리지 않는 빈 탐색 링, 안내선과 중심 경로 일치 |
 | D06 | 조인 키 인덱스와 드리븐 탐색 | 수정 | 1700ms 탐색 완료 전 탐색 0회로 표시 |
 | D07 | 모수 줄이기: 먼저 줄이고 조인 | 유지 | 실제 3단계·반복 경계와 데스크톱 완료 배치에서 추가 문제를 찾지 못함 |
-| D09 | 집계·정렬 정답 읽기 | 수정 | 좁은 배치의 수량→금액 표를 사라짐·등장 전환으로 구별 |
+| D09 | 집계·정렬 정답 읽기 | 수정 | 좁은 배치의 수량→금액 표를 사라짐·등장 전환으로 구별. 공개 재검수에서 긴 고객명과 금액의 간격도 추가 보정 |
 | S01 | Spark의 저장소·API·작업 영역 | 유지 | 실제 3단계·반복 경계와 데스크톱 완료 배치에서 추가 문제를 찾지 못함 |
 | S02 | DataFrame과 partition | 유지 | 실제 3단계·반복 경계와 데스크톱 완료 배치에서 추가 문제를 찾지 못함 |
 | S04 | 실행계획 최적화 | 유지 | 실제 3단계·반복 경계와 데스크톱 완료 배치에서 추가 문제를 찾지 못함 |
@@ -2518,3 +2518,26 @@ B06 조사 노트(`infra-ops-v2/SOURCES-A·B·C.md`)의 비밀·식별자 목록
 - [66종 데스크톱 실제 완료 장면 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/desktop-checks.json)
 - [수정 후 문제 구간 확인 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/fixed-boundary-checks.json)
 - [수정 전 E03 모바일 화면](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/e03-s3.jpg), [수정 후 N13 기록 정착](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/local-n13-settle.jpg)
+
+### 첫 배포 후 공개 재검수
+
+- 제품·검수 기록 커밋 `e86fde5`를 main에 push했고 [GitHub Pages 배포](https://github.com/brainbackdoor/brainbackdoor.github.io/actions/runs/39388008770)가 성공했다.
+- 공개 본문에서 수정한 **18종을 다시 개별 재생**했다. 모바일 390×1500에서 단계·반복 경계 72장과 문제 시점 19장, 데스크톱 1280×1000에서 `과정 보기` 마지막 장면 18장을 저장해 검토했다. 모든 모바일 도해에서 새 번들 `/_astro/LessonFigure.nFfx_gwH.js`를 확인했다.
+- 18종 모두 루프 재시작·높이 유지·지면 가로 넘침 없음, 데스크톱 SVG 글자의 경계 이탈 없음, 콘솔 오류 0건이다. 네트워크·시스템·데이터 담당자가 새 공개 캡처도 나눠 교차 검토했다.
+- 이 재검수에서 **D09 모바일 금액표의 긴 고객명과 금액 사이가 좁은 문제**를 추가 발견했다. 기존 위치·경계 검사만으로 실제 글꼴의 여유 간격까지 보장하지 못한 사례로 기록하고 후속 보정한다.
+- E03 반복 직후의 빈 보드도 다시 관찰했다. 150ms에는 범례, 532ms에는 초기 이벤트 카드가 나타나며 단계 구성이 다시 시작된다. 화면 전체가 비거나 재생이 멈춘 현상은 아니다.
+- N02 수정 전 모바일 캡처 4장은 후속 캡처 중 교체되어 별도 보관되지 않았다. 수정 전 증거는 `n02-desktop.jpg`로 구분한다. 교체된 새 배포 데스크톱 루프 4장은 `after-e86fde5/n02-desktop-cycle-*.jpg`로 옮기고 기록에 주석을 남겼다. 66종의 최초 모바일 관찰 기록은 그대로 보존했다.
+
+공개 재검수 자료:
+
+- [18종 모바일 단계·반복·문제 시점 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/after-e86fde5/mobile-checks.json)
+- [18종 데스크톱 완료 장면 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/after-e86fde5/desktop-checks.json)
+- [E03 반복 직후 추가 관찰](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/after-e86fde5/e03-loop-recheck.json)
+
+### D09 공개 재검수 후 추가 보정
+
+- 좁은 배치에서 고객명은 첫 줄, 수량·금액은 둘째 줄 오른쪽으로 분리했다. 둘째 줄 왼쪽의 기존 순위 변화와도 별도 공간을 쓴다. 고객명·수치·단위·행 높이·전체 높이·페이드 시각·데스크톱 배치는 유지했다.
+- 그림 폭 259·261·284·306·331·346px의 수량표·금액표 전체 행에 회귀 검사를 추가했다. 이름·값의 세로 분리와 순위 설명·값의 가로 간격을 확인하며, 수정 전 실패·수정 후 통과했다.
+- 로컬 실제 본문에서 390px 화면(그림 346px)의 수량·사라짐·등장·금액과 320px 화면(그림 284px)의 금액을 확인했다. 320px의 마지막 정적 장면에서 실제 글자 경계도 확인했고 이름·금액 분리, 가로 잘림·넘침 없음이다.
+- 추가 보정 후 `pnpm test --maxWorkers=2` **17개 파일·359개 통과**, `pnpm check` **오류·경고·힌트 0**, `pnpm build` **332페이지 성공**, 마이그레이션 단위 검사 **37개 통과**.
+- [실제 로컬 배치·글자 경계 기록](/Users/dong-gyu/.codex/visualizations/2026/10/20/01a1579b-a6b5-75d3-8a3d-829ccee7a30d/animation-audit/remaining-production/after-e86fde5/d09-local-layout-checks.json)
